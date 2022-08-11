@@ -1,0 +1,83 @@
+.fc {
+    > .fc-header-toolbar {
+        > .fc-toolbar-chunk {
+            .fc-button {
+                @extend .button;
+
+                background-color: transparent;
+                border: none;
+                color: #ccc;
+
+                &:hover {
+                    @extend .is-white, :hover;
+                }
+
+                &:focus {
+                    box-shadow: none !important;
+                }
+            }
+
+            .fc-button-primary {
+                @extend .is-primary;
+
+                background-color: var(--primary);
+                color: var(--white);
+
+                &:hover {
+                    @extend .is-primary, :hover;
+                }
+
+                &:active {
+                    @extend .is-primary, :active;
+                }
+            }
+        }
+    }
+
+    .fc-col-header-cell {
+        border-color: transparent;
+
+        .fc-scrollgrid-sync-inner {
+            text-align: center;
+        }
+
+        .fc-col-header-cell-cushion {
+            color: #bbb;
+            font-weight: 400;
+        }
+    }
+
+    .fc-daygrid-day {
+        border-color: transparent;
+
+        &.fc-day-today {
+            background-color: var(--primary) !important;
+            border-radius: 10px;
+
+            .fc-daygrid-day-top {
+                > a {
+                    color: var(--white) !important;
+                }
+            }
+        }
+
+        .fc-daygrid-day-top {
+            justify-content: center;
+            color: #bbb;
+            font-weight: 600;
+
+            > a {
+                color: #bbb;
+            }
+        }
+    }
+
+    > .fc-view-harness {
+        background-color: var(--white);
+    }
+
+    .fc-daygrid-event {
+        background-color: transparent;
+        border-color: transparent;
+    }
+}
