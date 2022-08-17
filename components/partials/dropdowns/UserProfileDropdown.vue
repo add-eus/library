@@ -5,6 +5,7 @@ import { useUserSession } from "/@src/lib/stores/userSession";
 import { usePlaceManager } from "/@src/stores/placeManager";
 import { useRouter } from "vue-router";
 import { useDarkmode } from "/@src/lib/stores/darkmode";
+import * as Place from "/@src/components/models/place.vue";
 
 const { t } = useI18n();
 const userSession = useUserSession();
@@ -154,7 +155,7 @@ const placeColumns = {
             </div>
         </template>
     </VDropdown>
-    <VModel ref="model" collection="place"></VModel>
+    <VModel ref="model" :model="Place"></VModel>
     <VModal
         :open="isPlaceSelectionOpen"
         :title="t('user.dropdown.place.title')"
@@ -165,7 +166,7 @@ const placeColumns = {
         <template #content>
             <VCollection
                 :hide-add="true"
-                collection="place"
+                :model="Place"
                 :columns="placeColumns"
                 :filters="{
                     owners: {
