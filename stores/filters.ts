@@ -1,15 +1,14 @@
 import moment from "moment-with-locales-es6";
 
 export default {
-    calendar(value) {
+    calendar(value: moment) {
         if (value) {
-            console.log(value);
             if (value.toDate && value.seconds) value = value.toDate();
             return moment(value).calendar();
         }
         return null;
     },
-    nlToBr(value) {
+    nlToBr(value: string) {
         return value.replaceAll(/\n/g, "<br>");
     },
 };
