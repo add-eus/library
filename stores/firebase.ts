@@ -12,11 +12,9 @@ import { getStorage, connectStorageEmulator } from "firebase/storage";
 import { getAnalytics } from "firebase/analytics";
 import { getPerformance } from "firebase/performance";
 import { getDatabase, connectDatabaseEmulator } from "firebase/database";
-import { initializeApp, Firebase } from "firebase/app";
+import { initializeApp} from "firebase/app";
 import { getRemoteConfig, fetchAndActivate } from "firebase/remote-config";
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
-
-export type Firebase = Firebase;
 
 export const useFirebase = defineStore("firebase", () => {
     // Your web app's Firebase configuration
@@ -89,13 +87,13 @@ export const useFirebase = defineStore("firebase", () => {
 export const httpsCallable = new Proxy(
     {},
     {
-        get(object: Object, name: string) {
+        get(object: {[key: string]: Function}, name: string) {
             if (!object[name]) {
                 const callableFunction = firebaseHttpsCallable(
                     useFirebase().functions,
                     name
                 );
-                object[name] = async function (...args) {
+                object[name] = async function (...args: any[]) {
                     const result = await callableFunction(...args, navigator?.language);
                     return result.data;
                 };
@@ -105,16 +103,16 @@ export const httpsCallable = new Proxy(
     }
 );
 
-export const httpsOpen = async function (path, args) {
+export const httpsOpen = async function (path: string, args: any) {
     const { functions } = useFirebase();
-    const url = functions._url(path);
+    const url = (<any>functions)._url(path);
     const encodedArgs = encodeURIComponent(JSON.stringify(args));
-    const w = window.open(`${url}?args=${encodedArgs}`);
+    const page = <Window>window.open(`${url}?args=${encodedArgs}`);
     await new Promise((resolve) => {
         const i = setInterval(() => {
-            if (w.closed) {
+            if (page.closed) {
                 clearInterval(i);
-                resolve(w);
+                resolve(page);
             }
         }, 100);
     });

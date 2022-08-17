@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref, computed } from "vue";
-import type firebase from "firebase/app";
+import type { User as UserFirebase } from "firebase/auth";
 import {
     signInWithEmailAndPassword,
     setPersistence,
@@ -10,6 +10,8 @@ import {
     updateProfile,
     deleteUser,
     signOut,
+    ConfirmationResult,
+    ApplicationVerifier
 } from "firebase/auth";
 
 import { collection, addDoc } from "firebase/firestore";
@@ -18,7 +20,13 @@ import { useStorage } from "@vueuse/core";
 
 import { useFirebase } from "/@src/lib/stores/firebase";
 
+import {Visit} from "/@src/lib/models/visit";
+
 export type UserData = Record<string, any> | null;
+
+interface User extends UserFirebase {
+    reloadUserInfo?: any;
+}
 
 export const useUserSession = defineStore("userSession", () => {
     const firebase = useFirebase();
@@ -27,8 +35,8 @@ export const useUserSession = defineStore("userSession", () => {
 
     const auth = firebase.auth;
     const database = firebase.database;
-    const user = ref<firebase.User | null>(auth.currentUser);
-    const visits = useStorage("visits", []);
+    const user = ref<User | null>(auth.currentUser);
+    const visits = useStorage("visits", <Visit[]>[]);
 
     const loading = ref(true);
 
@@ -41,7 +49,7 @@ export const useUserSession = defineStore("userSession", () => {
     async function waitLoaded() {
         return new Promise((resolve) => {
             on("login", () => {
-                resolve();
+                resolve(true);
             });
         });
     }
@@ -77,19 +85,23 @@ export const useUserSession = defineStore("userSession", () => {
         return user;
     }
 
-    function updateUser(data) {
+    function updateUser(data: {displayName?: string, photoUrl?: string}) {
         const user = getUser();
+        if (!user.value)
+            throw new Error("No user");
+
         return updateProfile(user.value, data);
     }
 
     async function hasRole(role: string) {
         if (!(await isLoggedIn())) return false;
 
+        if (!user.value) return false;
         const customAttributes = JSON.parse(user.value.reloadUserInfo.customAttributes);
         return customAttributes.roles.indexOf(role) >= 0;
     }
 
-    async function hasOneRole(roles: array<string>) {
+    async function hasOneRole(roles: string[]) {
         if (typeof roles === "string") return hasRole(roles);
         for (let i = 0; i < roles.length; i++) if (await hasRole(roles[i])) return true;
         return false;
@@ -101,8 +113,8 @@ export const useUserSession = defineStore("userSession", () => {
         };
     }
 
-    async function addVisit(place) {
-        const visit = {
+    async function addVisit(place: string) {
+        const visit = <Visit>{
             place,
             date: new Date(),
         };
@@ -113,12 +125,14 @@ export const useUserSession = defineStore("userSession", () => {
         }
     }
 
-    async function registerVisit(visit) {
+    async function registerVisit(visit: Visit) {
+        if (!user.value)
+            throw new Error("No User");
         visit.customer = user.value.uid;
         await addDoc(collection(database, "visits"), visit);
     }
 
-    async function loginOrRegisterWithPhoneNumber(phoneNumber, recaptchaVerifier) {
+    async function loginOrRegisterWithPhoneNumber(phoneNumber: string, recaptchaVerifier: ApplicationVerifier): Promise<ConfirmationResult> {
         return await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
     }
 
@@ -127,30 +141,33 @@ export const useUserSession = defineStore("userSession", () => {
     }
 
     async function deleteAccount() {
+        if (!user.value)
+            throw new Error("No User");
         return deleteUser(user.value);
     }
 
     let isLoaded = false;
 
-    const callbacks = {};
-    function on(name, callback) {
+    const callbacks: {[key: string]: Function[]} = {};
+
+    function on(name: string, callback: Function) {
         if (!callbacks[name]) callbacks[name] = [];
         callbacks[name].push(callback);
     }
 
-    function emit(name, ...args) {
+    function emit(name: string, ...args: any[]) {
         if (!callbacks[name]) return;
         callbacks[name].forEach((callback) => callback(...args));
     }
 
-    function onLogin(authUser) {
+    function onLogin(authUser: User | null) {
         //if (!authUser) return;
         user.value = authUser;
         if (!isLoaded) {
             isLoaded = true;
         }
         if (visits.value.length > 0 && authUser) {
-            visits.value.forEach((visit) => registerVisit(visit));
+            visits.value.forEach((visit: Visit) => registerVisit(visit));
             visits.value = [];
         }
 
