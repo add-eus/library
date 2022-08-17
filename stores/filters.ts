@@ -1,4 +1,4 @@
-import moment from "moment/min/moment-with-locales";
+import moment from "moment-with-locales-es6";
 
 export default {
     calendar(value) {
