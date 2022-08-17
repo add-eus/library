@@ -7,11 +7,11 @@
 
 /* eslint-env node */
 
-const path = require("path");
-const webpack = require("webpack");
+import path from "path"
+import webpack from "webpack"
 const { bundler, styles } = require("@ckeditor/ckeditor5-dev-utils");
-const CKEditorWebpackPlugin = require("@ckeditor/ckeditor5-dev-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
+import CKEditorWebpackPlugin from "@ckeditor/ckeditor5-dev-webpack-plugin"
+import TerserPlugin from "terser-webpack-plugin"
 
 module.exports = {
     devtool: "source-map",
