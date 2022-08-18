@@ -118,6 +118,8 @@ body {
     display: flex;
     align-items: center;
     z-index: 1;
+    background-color: var(--body-color);
+    box-shadow: var(--light-box-shadow);
 
     .control {
         min-width: 280px;

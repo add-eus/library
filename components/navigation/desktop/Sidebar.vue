@@ -44,7 +44,7 @@ const themeClasses = computed(() => {
     <div class="main-sidebar" :class="[themeClasses]">
         <div class="sidebar-brand">
             <RouterLink :to="{ name: 'dashboard' }">
-                <AnimatedLogo width="36px" />
+                <img src="/logo.svg" alt="" width="36px" />
             </RouterLink>
         </div>
         <div class="sidebar-inner">
@@ -69,7 +69,7 @@ const themeClasses = computed(() => {
     left: 0;
     margin-left: 0;
     height: 100vh;
-    width: 120px;
+    width: 100px;
     background-color: var(--body-color);
     box-shadow: none;
     z-index: 35;
@@ -256,7 +256,7 @@ const themeClasses = computed(() => {
     }
 
     .sidebar-brand {
-        width: 80px;
+        width: 100%;
         height: 60px;
         display: flex;
         align-items: center;
@@ -302,15 +302,17 @@ const themeClasses = computed(() => {
 
         .icon-menu,
         .bottom-menu {
+            margin: 10px 0;
             li {
                 position: relative;
-                width: 120px;
+                width: 100%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 text-overflow: ellipsis;
                 overflow: hidden;
                 white-space: nowrap;
+                margin: 20px 0;
 
                 &.is-active,
                 &.router-link-active {
@@ -344,11 +346,16 @@ const themeClasses = computed(() => {
                     opacity: 1;
                     transition: all 0.3s; // transition-all test
                     color: var(--title-grey);
+                    text-transform: uppercase;
+                    font-size: 10px;
 
                     &:hover,
                     &.is-selected,
                     &.router-link-active {
-                        .sidebar-svg {
+                        color: var(--primary);
+
+                        .sidebar-svg,
+                        i {
                             color: var(--primary);
                         }
                     }
@@ -357,9 +364,11 @@ const themeClasses = computed(() => {
                     i {
                         height: 20px;
                         width: 20px;
+                        font-size: 20px;
                         color: var(--title-grey);
                         stroke-width: 1.6px;
                         transition: all 0.3s; // transition-all test
+                        margin: 5px;
                     }
 
                     &:hover svg,
@@ -385,6 +394,7 @@ const themeClasses = computed(() => {
             position: absolute;
             bottom: 0;
             padding: 0;
+            width: 100%;
 
             li {
                 display: flex;

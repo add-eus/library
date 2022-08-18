@@ -96,9 +96,9 @@ const props = defineProps<VViewWrapperProps>();
     position: relative;
     height: 100%;
     min-height: 100vh;
-    width: calc(100% - 80px);
+    width: calc(100% - 100px);
     padding: 0 0 60px;
-    margin-left: 80px;
+    margin-left: 100px;
     background: var(--background-grey);
     transition: all 0.3s; // transition-all test
 
@@ -138,6 +138,7 @@ const props = defineProps<VViewWrapperProps>();
     .view-wrapper {
         width: 100%;
         margin-left: 0;
+        margin-top: 60px;
 
         &.has-top-nav {
             .is-navbar-md,
@@ -167,6 +168,7 @@ const props = defineProps<VViewWrapperProps>();
     .view-wrapper {
         width: 100%;
         margin-left: 0;
+        margin-top: 60px;
 
         &.is-pushed-full {
             margin-left: 0;

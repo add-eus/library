@@ -38,6 +38,31 @@ const rootRoutes = router.getRoutes().filter((route) => {
         route.name.match(/^dashboard-[a-z]+$/)
     );
 });
+
+const childrenTabs = ref(<{ label: string; value: string }[]>[]);
+const selectedChildrenTab = ref(null);
+function fetchChildrenRoutes() {
+    childrenTabs.value = router
+        .getRoutes()
+        .filter((childRoute: any) => {
+            if (
+                !childRoute.meta ||
+                !childRoute.meta.icon ||
+                !childRoute.meta.subtitle ||
+                !childRoute.name
+            )
+                return false;
+
+            return isRootRouteActive(childRoute);
+        })
+        .map((route: any) => {
+            return {
+                label: t(route.meta.subtitle),
+                value: route.name,
+                icon: route.meta.icon,
+            };
+        });
+}
 console.log(rootRoutes);
 
 /**
@@ -53,8 +78,23 @@ watch(
         if (props.closeOnChange && isDesktopSidebarOpen.value) {
             isDesktopSidebarOpen.value = false;
         }
+
+        selectedChildrenTab.value = route.name;
     }
 );
+
+watch(selectedChildrenTab, () => {
+    router.push({ name: selectedChildrenTab.value });
+    fetchChildrenRoutes();
+});
+selectedChildrenTab.value = route.name;
+
+fetchChildrenRoutes();
+
+function isRootRouteActive(rootRoute: any) {
+    const match = route.name.match(/^(dashboard-[a-z]+)/);
+    return rootRoute.name.startsWith(match[1]);
+}
 </script>
 
 <template>
@@ -68,7 +108,7 @@ watch(
         >
             <template #brand>
                 <RouterLink :to="{ name: 'dashboard' }" class="navbar-item is-brand">
-                    <AnimatedLogo width="38px" height="38px" />
+                    <img src="/logo.svg" alt="" width="38" height="38" />
                 </RouterLink>
 
                 <div class="brand-end">
@@ -84,7 +124,10 @@ watch(
         >
             <template #links>
                 <li v-for="rootRoute in rootRoutes" :key="rootRoute.name">
-                    <RouterLink :to="{ name: rootRoute.name }">
+                    <RouterLink
+                        :to="{ name: rootRoute.name }"
+                        :class="{ 'router-link-active': isRootRouteActive(rootRoute) }"
+                    >
                         <i :class="rootRoute.meta.icon"></i>
                         <span>{{ t(rootRoute.meta.title) }}</span>
                     </RouterLink>
@@ -95,7 +138,10 @@ watch(
         <Sidebar :theme="props.theme" :is-open="isDesktopSidebarOpen">
             <template #links>
                 <li v-for="rootRoute in rootRoutes" :key="rootRoute.name">
-                    <RouterLink :to="{ name: rootRoute.name }">
+                    <RouterLink
+                        :to="{ name: rootRoute.name }"
+                        :class="{ 'router-link-active': isRootRouteActive(rootRoute) }"
+                    >
                         <i :class="rootRoute.meta.icon"></i>
                         <span>{{ t(rootRoute.meta.title) }}</span>
                     </RouterLink>
@@ -110,49 +156,18 @@ watch(
         <LanguagesPanel />
 
         <VViewWrapper>
-            <VPageContentWrapper>
+            <CollapseTransition>
+                <Toolbar v-if="childrenTabs.length > 0">
+                    <VTabs v-model="selectedChildrenTab" :tabs="childrenTabs"></VTabs>
+                </Toolbar>
+            </CollapseTransition>
+
+            <VPageContentWrapper class="pt-5">
                 <template v-if="props.nowrap">
                     <slot></slot>
                 </template>
+
                 <VPageContent v-else class="is-relative">
-                    <div class="page-title has-text-centered">
-                        <!-- Sidebar Trigger -->
-                        <VButton
-                            class="vuero-hamburger nav-trigger push-resize"
-                            tabindex="0"
-                            @keydown.space.prevent="
-                                isDesktopSidebarOpen = !isDesktopSidebarOpen
-                            "
-                            @click="isDesktopSidebarOpen = !isDesktopSidebarOpen"
-                        >
-                            <span class="menu-toggle has-chevron">
-                                <span
-                                    :class="[isDesktopSidebarOpen && 'active']"
-                                    class="icon-box-toggle"
-                                >
-                                    <span class="rotate">
-                                        <i aria-hidden="true" class="icon-line-top"></i>
-                                        <i
-                                            aria-hidden="true"
-                                            class="icon-line-center"
-                                        ></i>
-                                        <i
-                                            aria-hidden="true"
-                                            class="icon-line-bottom"
-                                        ></i>
-                                    </span>
-                                </span>
-                            </span>
-                        </VButton>
-
-                        <div v-if="route.meta && route.meta.title" class="title-wrap">
-                            <i :class="route.meta.icon"></i>
-                            <h1 class="title is-4">{{ t(route.meta.title) }}</h1>
-                        </div>
-
-                        <!--Toolbar class="desktop-toolbar" /-->
-                    </div>
-
                     <VModal
                         :open="modal.isOpen"
                         :title="modal.title"
