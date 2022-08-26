@@ -6,4 +6,6 @@
     --#{$color}-s: #{$saturation};
     --#{$color}-l: #{$lightness};
     --#{$color}: hsl(var(--#{$color}-h) var(--#{$color}-s) var(--#{$color}-l));
+
+    
 }

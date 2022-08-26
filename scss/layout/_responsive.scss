@@ -28,7 +28,7 @@ Responsive styles
     }
 
     .main-sidebar {
-        width: 60px !important;
+        width: 100px !important;
 
         &.has-labels {
             .sidebar-inner {
@@ -108,12 +108,12 @@ Responsive styles
         }
 
         .sidebar-brand {
-            width: 60px !important;
+            //width: 60px !important;
         }
 
         .sidebar-inner {
             li {
-                width: 60px !important;
+                //width: 60px !important;
             }
 
             .icon-menu {

@@ -765,3 +765,7 @@ var {
 .modal-content {
     max-height: none !important;
 }
+
+.unselectable {
+    user-select: none;
+}

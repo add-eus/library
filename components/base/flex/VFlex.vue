@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, watch } from "vue";
 
 export type VFlexDirection = "row" | "row-reverse" | "column" | "column-reverse";
 export type VFlexWrap = "nowrap" | "wrap" | "wrap-reverse";
@@ -68,7 +68,7 @@ const display = computed(() => (props.inline ? "inline-flex" : "flex"));
     </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .v-flex {
     display: v-bind(display);
     flex-direction: v-bind("props.flexDirection");

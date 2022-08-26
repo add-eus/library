@@ -164,71 +164,77 @@ function getValueByPath(row: any, key: any) {
                 >
                     <slot name="body-row" :row="row" :columns="columns" :index="index">
                         <template v-for="column in columns" :key="'row' + column.key">
-                            <VFlexTableCell :column="column">
-                                <slot
-                                    name="body-cell"
-                                    :row="row"
-                                    :column="column"
-                                    :index="index"
-                                    :value="
-                                        column.format(
-                                            getValueByPath(row, column.key),
-                                            row,
-                                            index
-                                        )
-                                    "
-                                >
-                                    <component
-                                        :is="{
-                                            render: () =>
-                                                column.renderRow?.(row, column, index),
-                                        }"
-                                        v-if="column.renderRow"
-                                    ></component>
-                                    <span
-                                        v-else-if="
-                                            typeof column.format(
-                                                getValueByPath(row, column.key),
-                                                row,
-                                                index
-                                            ) === 'object'
-                                        "
-                                        :class="[
-                                            column.cellClass,
-                                            column.inverted && 'dark-inverted',
-                                            !column.inverted &&
-                                                (column.bold
-                                                    ? 'dark-text'
-                                                    : 'light-text'),
-                                        ]"
-                                    >
-                                        <details v-if="printObjects">
-                                            <div class="language-json py-4">
-                                                <pre><code>{{ column.format(getValueByPath(row, column.key), row, index) }}</code></pre>
-                                            </div>
-                                        </details>
-                                    </span>
-                                    <span
-                                        v-else
-                                        :class="[
-                                            column.cellClass,
-                                            column.inverted && 'dark-inverted',
-                                            !column.inverted &&
-                                                (column.bold
-                                                    ? 'dark-text'
-                                                    : 'light-text'),
-                                        ]"
-                                    >
-                                        {{
+                            <Transition name="list">
+                                <VFlexTableCell :column="column">
+                                    <slot
+                                        name="body-cell"
+                                        :row="row"
+                                        :column="column"
+                                        :index="index"
+                                        :value="
                                             column.format(
                                                 getValueByPath(row, column.key),
                                                 row,
                                                 index
                                             )
-                                        }}
-                                    </span>
-                                </slot>
-                            </VFlexTableCell>
+                                        "
+                                    >
+                                        <component
+                                            :is="{
+                                                render: () =>
+                                                    column.renderRow?.(
+                                                        row,
+                                                        column,
+                                                        index
+                                                    ),
+                                            }"
+                                            v-if="column.renderRow"
+                                        ></component>
+                                        <span
+                                            v-else-if="
+                                                typeof column.format(
+                                                    getValueByPath(row, column.key),
+                                                    row,
+                                                    index
+                                                ) === 'object'
+                                            "
+                                            :class="[
+                                                column.cellClass,
+                                                column.inverted && 'dark-inverted',
+                                                !column.inverted &&
+                                                    (column.bold
+                                                        ? 'dark-text'
+                                                        : 'light-text'),
+                                            ]"
+                                        >
+                                            <details v-if="printObjects">
+                                                <div class="language-json py-4">
+                                                    <pre><code>{{ column.format(getValueByPath(row, column.key), row, index) }}</code></pre>
+                                                </div>
+                                            </details>
+                                        </span>
+                                        <span
+                                            v-else
+                                            :class="[
+                                                column.cellClass,
+                                                column.inverted && 'dark-inverted',
+                                                !column.inverted &&
+                                                    (column.bold
+                                                        ? 'dark-text'
+                                                        : 'light-text'),
+                                            ]"
+                                        >
+                                            {{
+                                                column.format(
+                                                    getValueByPath(row, column.key),
+                                                    row,
+                                                    index
+                                                )
+                                            }}
+                                        </span>
+                                    </slot>
+                                </VFlexTableCell>
+                            </Transition>
                         </template>
                     </slot>
                 </div>

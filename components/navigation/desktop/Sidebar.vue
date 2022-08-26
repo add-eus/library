@@ -273,6 +273,8 @@ const themeClasses = computed(() => {
         height: calc(100% - 60px);
         width: 100%;
         position: relative;
+        display: flex;
+        flex-direction: column;
 
         .naver {
             position: absolute;
@@ -298,6 +300,10 @@ const themeClasses = computed(() => {
         .icon-menu {
             overflow-y: auto;
             overflow-x: hidden;
+
+            li {
+                margin: 20px 0;
+            }
         }
 
         .icon-menu,
@@ -310,9 +316,7 @@ const themeClasses = computed(() => {
                 align-items: center;
                 justify-content: center;
                 text-overflow: ellipsis;
-                overflow: hidden;
                 white-space: nowrap;
-                margin: 20px 0;
 
                 &.is-active,
                 &.router-link-active {
@@ -391,8 +395,6 @@ const themeClasses = computed(() => {
         }
 
         .bottom-menu {
-            position: absolute;
-            bottom: 0;
             padding: 0;
             width: 100%;
 

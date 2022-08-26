@@ -463,13 +463,14 @@ export default defineComponent({
             }
             scrollElement.removeEventListener("scroll", this.onScroll);
             scrollElement.removeEventListener("resize", this.onScroll);
+            this.scrollableParent = null;
         }
     },
     methods: {
         onVisible() {
-            console.log("visible");
             this.onScroll();
             waitForElementHidden(this.$el).then(() => {
+                if (!this.scrollableParent) return;
                 waitForElementVisible(this.$el).then(this.onVisible);
             });
         },

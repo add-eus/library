@@ -89,6 +89,10 @@ label[for] {
             border-color: var(--danger) !important;
         }
     }
+
+    &[type="time"]::-webkit-calendar-picker-indicator {
+        display: none;
+      }
 }
 
 .textarea {
@@ -988,7 +992,45 @@ select {
 }
 
 .vue-tel-input {
-    .vti__dropdown-list {
-        z-index: 3;
+    border-color: var(--border) !important;
+    position: relative;
+
+    > .vti__input {
+        padding-left: 55px;
+    }
+
+    > .vti__dropdown {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 1;
+        padding: 10px 7px;
+
+        .vti__dropdown-list {
+            
+            z-index: 3;
+        }
+    }
+
+
+}
+
+.vc-container {
+    .vc-pane-container {
+        .vc-pane-layout {
+            .vc-pane {
+                .vc-weeks {
+                    .vc-day {
+                        .vc-day-layer {
+                            .vc-day-layer {
+                                .vc-highlight {
+                                    background-color: var(--primary) !important;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

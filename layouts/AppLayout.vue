@@ -84,7 +84,10 @@ watch(
 );
 
 watch(selectedChildrenTab, () => {
-    router.push({ name: selectedChildrenTab.value });
+    if (route.name != selectedChildrenTab.value) {
+        router.push({ name: selectedChildrenTab.value });
+    }
+
     fetchChildrenRoutes();
 });
 selectedChildrenTab.value = route.name;
@@ -92,7 +95,9 @@ selectedChildrenTab.value = route.name;
 fetchChildrenRoutes();
 
 function isRootRouteActive(rootRoute: any) {
+    if (!route.name) return false;
     const match = route.name.match(/^(dashboard-[a-z]+)/);
+    if (!match) return false;
     return rootRoute.name.startsWith(match[1]);
 }
 </script>

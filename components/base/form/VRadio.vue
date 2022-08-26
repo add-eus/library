@@ -262,7 +262,7 @@ function change() {
         &::after {
             background-size: contain;
             position: absolute;
-            top: 49%;
+            top: 55%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0);
             content: "\f111";

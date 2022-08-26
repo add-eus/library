@@ -271,6 +271,14 @@ const props = withDefaults(defineProps<VFlexTableCellProps>(), {
             }
         }
     }
+
+    &.text-ellipsis {
+        max-width: 120px;
+    }
+
+    > .field {
+        width: 100%;
+    }
 }
 
 .is-dark {

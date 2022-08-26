@@ -3,13 +3,13 @@ import { computed } from "vue";
 
 export type VCheckboxColor = "primary" | "info" | "success" | "warning" | "danger";
 export interface VCheckboxEmits {
-    (e: "update:modelValue", value: (string | number)[]): void;
+    (e: "update:modelValue", value: boolean): void;
 }
 export interface VCheckboxProps {
     value?: string | number;
     label?: string;
     color?: VCheckboxColor;
-    modelValue?: (string | number)[];
+    modelValue?: boolean;
     circle?: boolean;
     solid?: boolean;
     paddingless?: boolean;
@@ -20,23 +20,16 @@ const props = withDefaults(defineProps<VCheckboxProps>(), {
     value: undefined,
     label: undefined,
     color: undefined,
-    modelValue: () => [],
+    modelValue: () => false,
     circle: false,
     solid: false,
     paddingless: false,
 });
 
-const checked = computed(() => props.modelValue.includes(props.value));
+const checked = computed(() => props.modelValue);
 
 function change() {
-    const values = [...props.modelValue];
-
-    if (checked.value) {
-        values.splice(values.indexOf(props.value), 1);
-    } else {
-        values.push(props.value);
-    }
-    emit("update:modelValue", values);
+    emit("update:modelValue", checked.value);
 }
 </script>
 

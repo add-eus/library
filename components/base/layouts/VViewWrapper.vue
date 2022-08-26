@@ -204,8 +204,8 @@ const props = defineProps<VViewWrapperProps>();
 }
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) {
     .view-wrapper {
-        width: 100%;
-        margin-left: 0;
+        width: calc(100% - 100px);
+        margin-left: 100px;
 
         &.is-pushed-messages {
             margin-left: 140px !important;

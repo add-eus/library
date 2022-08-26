@@ -17,6 +17,7 @@
     font-family: var(--font);
     min-width: initial;
     width: 100%;
+    min-width: 100px;
     max-width: 100%;
 
     input:focus-visible,

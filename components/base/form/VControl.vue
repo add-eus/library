@@ -129,12 +129,43 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.is-nogrow {
-    flex-grow: 0 !important;
-}
+<style lang="scss">
+.control {
+    &.is-nogrow {
+        flex-grow: 0 !important;
+    }
 
-.is-fullwidth {
-    width: 100%;
+    &.is-fullwidth {
+        width: 100%;
+    }
+
+    &.has-icon {
+        > .vue-tel-input {
+            > .vti__input {
+                padding-left: 93px;
+                //padding-left: 7px;
+            }
+
+            > .vti__dropdown {
+                left: 38px;
+            }
+        }
+
+        > .multiselect {
+            padding-left: 38px;
+
+            > .multiselect-single-label {
+                left: 25px;
+            }
+        }
+
+        > .checkbox {
+            padding-left: 38px;
+        }
+
+        > .textarea {
+            padding-left: 38px;
+        }
+    }
 }
 </style>

@@ -14,6 +14,10 @@ export interface VSnackProps {
     white?: boolean;
 }
 
+export interface VSnackEmits {
+    (event: "action", value?: any): void;
+}
+
 const props = withDefaults(defineProps<VSnackProps>(), {
     icon: undefined,
     image: undefined,
@@ -21,6 +25,8 @@ const props = withDefaults(defineProps<VSnackProps>(), {
     size: undefined,
     placeholder: "https://via.placeholder.com/50x50",
 });
+
+const emits = defineEmits<VSnackEmits>();
 
 function placeholderHandler(event: Event) {
     const target = event.target as HTMLImageElement;
@@ -61,7 +67,7 @@ const isIconify = computed(() => {
         <span class="snack-text">
             <slot name="title">{{ props.title }}</slot>
         </span>
-        <span class="snack-action">
+        <span class="snack-action" @click="emits('action')" @keydown.d="emits('action')">
             <slot></slot>
         </span>
     </div>

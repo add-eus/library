@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, reactive, computed } from "vue";
-import { useVFieldContext } from "/@src/composable/useVFieldContext";
+import { useVField } from "../../composable/useVField";
 
 export interface VTextareaEmits {
     (event: "update:modelValue", value?: any): void;
@@ -9,16 +9,10 @@ export interface VTextareaProps {
     raw?: boolean;
     modelValue?: any;
 }
-const vFieldContext = reactive(
-    useVFieldContext({
-        create: false,
-        help: "VTextarea",
-    })
-);
 
 const emits = defineEmits<VTextareaEmits>();
 const props = withDefaults(defineProps<VTextareaProps>(), { modelValue: "" });
-const value = ref(vFieldContext?.field?.value ?? props.modelValue);
+const value = ref(props.modelValue);
 
 watch(value, () => {
     emits("update:modelValue", value.value);
@@ -38,12 +32,5 @@ const classes = computed(() => {
 </script>
 
 <template>
-    <textarea
-        :id="vFieldContext.id"
-        v-model="value"
-        :class="classes"
-        :name="vFieldContext.id"
-        @change="vFieldContext.field?.handleChange"
-        @blur="vFieldContext.field?.handleBlur"
-    ></textarea>
+    <textarea v-model="value" :class="classes"></textarea>
 </template>
