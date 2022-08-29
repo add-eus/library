@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, inject } from "vue";
+
 import { tabletLayoutWrapperSymbol } from "./TabletLayout.vue";
 
 export interface TabletLayoutPageProps {
@@ -12,7 +13,8 @@ const tabletLayout = inject(tabletLayoutWrapperSymbol, null);
 
 const isOpen = ref(false);
 const flexGrow = ref(0);
-const page = { isOpen, flexGrow };
+const $el = ref(null);
+const page = { isOpen, flexGrow, $el };
 tabletLayout.addPage(props.name, page);
 
 function close(name?: string) {
@@ -25,7 +27,7 @@ function closeOther() {
 </script>
 
 <template>
-    <VFlexItem class="tablet-layout-page">
+    <VFlexItem ref="$el" class="tablet-layout-page">
         <slot :open="tabletLayout.open" :close="close" :close-other="closeOther"></slot>
     </VFlexItem>
 </template>
@@ -38,6 +40,20 @@ function closeOther() {
 
     > div {
         min-width: v-bind("tabletLayout.minFlexGrow.value + 'vw'");
+    }
+}
+
+@media (max-width: 1280px) {
+    .tablet-layout-page {
+        width: initial;
+        //height: v-bind("flexGrow + '%'");
+        height: v-bind("flexGrow > 0 ? 'initial' : '0px'");
+        overflow-y: hidden;
+        transition: height 0.5s ease;
+
+        > div {
+            min-width: 100%;
+        }
     }
 }
 </style>

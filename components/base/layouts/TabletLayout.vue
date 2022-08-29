@@ -1,12 +1,17 @@
 <script lang="ts">
-import { ref, h, InjectionKey, defineComponent, provide, computed } from "vue";
+import { ref, h, InjectionKey, defineComponent, provide, computed, watch } from "vue";
+import { breakpointsTailwind, useBreakpoints } from "@vueuse/core";
 import VFlex from "../flex/VFlex.vue";
+import VueScrollTo from "vue-scrollto";
+
+console.log(breakpointsTailwind);
 
 export interface TabletLayoutWrapperInjection {
     pages?: [];
 }
 
-export const tabletLayoutWrapperSymbol: InjectionKey<TabletLayoutInjection> = Symbol();
+export const tabletLayoutWrapperSymbol: InjectionKey<TabletLayoutWrapperInjection> =
+    Symbol();
 
 export default defineComponent({
     props: {
@@ -15,19 +20,23 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const breakpoints = useBreakpoints(breakpointsTailwind);
+        const isSmallerLG = breakpoints.smaller("xl");
         const pages: { [key: string]: any } = {};
         const minFlexGrow = ref(100);
 
         function fillGrow() {
             const valuePages = Object.values(pages);
             const openPages = valuePages.filter((page) => {
-                console.log(page);
                 return page.isOpen.value;
             });
             const grow = 100 / openPages.length;
 
-            openPages.forEach((page) => {
+            openPages.forEach((page, index) => {
                 page.flexGrow.value = grow;
+                if (page.$el.value && openPages.length - 1 == index) {
+                    VueScrollTo.scrollTo(page.$el.value.$el, 300);
+                }
             });
             valuePages.forEach((page) => {
                 if (openPages.indexOf(page) < 0) page.flexGrow.value = 0;
@@ -65,11 +74,22 @@ export default defineComponent({
             fillGrow,
             minFlexGrow,
         });
+        const flexDirection = computed(() => {
+            return isSmallerLG.value ? "column" : "row";
+        });
+
+        watch(flexDirection, fillGrow);
 
         return () => {
-            const slotContent = context.slots.default?.({ open: () => {} });
+            const slotContent = context.slots.default?.();
 
-            return h(VFlex, { flexDirection: "row" }, slotContent);
+            return h(
+                VFlex,
+                {
+                    flexDirection: flexDirection.value,
+                },
+                slotContent
+            );
         };
     },
 });
