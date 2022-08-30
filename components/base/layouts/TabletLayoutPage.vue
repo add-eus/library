@@ -43,7 +43,7 @@ function closeOther() {
     }
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 1024px) {
     .tablet-layout-page {
         width: initial;
         //height: v-bind("flexGrow + '%'");

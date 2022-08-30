@@ -21,7 +21,7 @@ export default defineComponent({
     },
     setup(props, context) {
         const breakpoints = useBreakpoints(breakpointsTailwind);
-        const isSmallerLG = breakpoints.smaller("xl");
+        const isSmallerLG = breakpoints.smaller("lg");
         const pages: { [key: string]: any } = {};
         const minFlexGrow = ref(100);
 
