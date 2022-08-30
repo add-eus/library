@@ -9,7 +9,7 @@ let instances = 0;
 import { ref, onMounted } from "vue";
 import PhotoSwipe from "photoswipe";
 import PhotoSwipeUI_Default from "photoswipe/dist/photoswipe-ui-default";
-import { onceImageErrored } from "/@global/utils/via-placeholder";
+import { onceImageErrored } from "/@src/lib/utils/via-placeholder";
 import { getStorage, ref as refStorage, getDownloadURL } from "firebase/storage";
 
 const storage = getStorage();
