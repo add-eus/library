@@ -14,7 +14,7 @@ import { useFirebase } from "./firebase";
 export const useDatabase = (path: string, options = {}) => {
     const firebase = useFirebase();
 
-    const dataRef = refDatabase(toRaw(firebase.liveDatabase), path);
+    const dataRef = refDatabase(toRaw(firebase.database), path);
     const cible = options.toArray ? [] : {};
     const data = ref(cible);
 
@@ -42,13 +42,13 @@ export const useDatabase = (path: string, options = {}) => {
 
 export async function setFromPath(path, value) {
     const firebase = useFirebase();
-    const ref = refDatabase(toRaw(firebase.liveDatabase), path);
+    const ref = refDatabase(toRaw(firebase.database), path);
     await setDatabase(ref, value);
 }
 
 export async function pushFromPath(path, value) {
     const firebase = useFirebase();
-    const ref = refDatabase(toRaw(firebase.liveDatabase), path);
+    const ref = refDatabase(toRaw(firebase.database), path);
     await pushDatabase(ref, value);
     const r = await getDatabase(ref);
     return r.val();
@@ -56,7 +56,7 @@ export async function pushFromPath(path, value) {
 
 export async function removeFromPath(path) {
     const firebase = useFirebase();
-    const ref = refDatabase(toRaw(firebase.liveDatabase), path);
+    const ref = refDatabase(toRaw(firebase.database), path);
     await removeDatabase(ref);
     const r = await getDatabase(ref.parent);
     return r.val();

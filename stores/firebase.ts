@@ -3,16 +3,12 @@ import { acceptHMRUpdate, defineStore } from "pinia";
 // Import the functions you need from the SDKs you need
 import { getAuth, connectAuthEmulator } from "firebase/auth";
 import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
-import {
-    getFunctions,
-    connectFunctionsEmulator,
-    httpsCallable as firebaseHttpsCallable,
-} from "firebase/functions";
+import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 import { getStorage, connectStorageEmulator } from "firebase/storage";
 import { getAnalytics } from "firebase/analytics";
 import { getPerformance } from "firebase/performance";
 import { getDatabase, connectDatabaseEmulator } from "firebase/database";
-import { initializeApp} from "firebase/app";
+import { initializeApp } from "firebase/app";
 import { getRemoteConfig, fetchAndActivate } from "firebase/remote-config";
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 
@@ -28,19 +24,19 @@ export const useFirebase = defineStore("firebase", () => {
     };
 
     // Initialize Firebase
-    const firebaseApp = initializeApp(firebaseConfig);
+    const app = initializeApp(firebaseConfig);
 
     const auth = getAuth();
-    const database = getFirestore();
-    const functions = getFunctions(firebaseApp, "europe-west1");
-    const liveDatabase = getDatabase(
-        firebaseApp,
+    const firestore = getFirestore();
+    const functions = getFunctions(app, "europe-west1");
+    const database = getDatabase(
+        app,
         "https://jarveat-default-rtdb.europe-west1.firebasedatabase.app"
     );
     const storage = getStorage();
-    const analytics = getAnalytics(firebaseApp);
-    const performance = getPerformance(firebaseApp);
-    const remoteConfig = getRemoteConfig(firebaseApp);
+    const analytics = getAnalytics(app);
+    const performance = getPerformance(app);
+    const remoteConfig = getRemoteConfig(app);
 
     fetchAndActivate(remoteConfig);
     let recaptchaApiKey = "6LcNhKIgAAAAAIbK7Z0I7ccYD9bj-Gw0idx58C4N";
@@ -50,11 +46,11 @@ export const useFirebase = defineStore("firebase", () => {
 
         connectAuthEmulator(auth, "http://allanic.me:8012");
 
-        connectFirestoreEmulator(database, "allanic.me", 8014);
+        connectFirestoreEmulator(firestore, "allanic.me", 8014);
 
         connectFunctionsEmulator(functions, "allanic.me", 8013);
 
-        connectDatabaseEmulator(liveDatabase, "allanic.me", 8015);
+        connectDatabaseEmulator(database, "allanic.me", 8015);
 
         connectStorageEmulator(storage, "allanic.me", 8016);
 
@@ -62,7 +58,7 @@ export const useFirebase = defineStore("firebase", () => {
         recaptchaApiKey = "6LfXcS0hAAAAAByH_tVnK9GNlF0aIiY-q2bBsxoc";
     }
 
-    const check = initializeAppCheck(firebaseApp, {
+    const check = initializeAppCheck(app, {
         provider: new ReCaptchaV3Provider(recaptchaApiKey),
 
         // Optional argument. If true, the SDK automatically refreshes App Check
@@ -71,11 +67,11 @@ export const useFirebase = defineStore("firebase", () => {
     });
 
     return {
-        app: firebaseApp,
+        app,
         remoteConfig,
         auth,
-        liveDatabase,
         database,
+        firestore,
         functions,
         storage,
         analytics,
@@ -83,40 +79,6 @@ export const useFirebase = defineStore("firebase", () => {
         check,
     };
 });
-
-export const httpsCallable = new Proxy(
-    {},
-    {
-        get(object: {[key: string]: Function}, name: string) {
-            if (!object[name]) {
-                const callableFunction = firebaseHttpsCallable(
-                    useFirebase().functions,
-                    name
-                );
-                object[name] = async function (...args: any[]) {
-                    const result = await callableFunction(...args, navigator?.language);
-                    return result.data;
-                };
-            }
-            return object[name];
-        },
-    }
-);
-
-export const httpsOpen = async function (path: string, args: any) {
-    const { functions } = useFirebase();
-    const url = (<any>functions)._url(path);
-    const encodedArgs = encodeURIComponent(JSON.stringify(args));
-    const page = <Window>window.open(`${url}?args=${encodedArgs}`);
-    await new Promise((resolve) => {
-        const i = setInterval(() => {
-            if (page.closed) {
-                clearInterval(i);
-                resolve(page);
-            }
-        }, 100);
-    });
-};
 
 /**
  * Pinia supports Hot Module replacement so you can edit your stores and

@@ -16,14 +16,14 @@ SCSS Imports
 @import "./abstracts/variables";
 @import "./abstracts/mixins";
 
-@import "./node_modules/bulma-css-vars/bulma-cv-lib";
-@import "./node_modules/bulma/sass/base/_all.sass";
-@import "./node_modules/bulma/sass/elements/_all.sass";
-@import "./node_modules/bulma/sass/form/_all.sass";
-@import "./node_modules/bulma/sass/components/_all.sass";
-@import "./node_modules/bulma/sass/grid/_all.sass";
-@import "./node_modules/bulma/sass/helpers/_all.sass";
-@import "./node_modules/bulma/sass/layout/_all.sass";
+@import "../../../../node_modules/bulma-css-vars/bulma-cv-lib";
+@import "../../../../node_modules/bulma/sass/base/_all.sass";
+@import "../../../../node_modules/bulma/sass/elements/_all.sass";
+@import "../../../../node_modules/bulma/sass/form/_all.sass";
+@import "../../../../node_modules/bulma/sass/components/_all.sass";
+@import "../../../../node_modules/bulma/sass/grid/_all.sass";
+@import "../../../../node_modules/bulma/sass/helpers/_all.sass";
+@import "../../../../node_modules/bulma/sass/layout/_all.sass";
 
 @import "./abstracts/typography";
 @import "./abstracts/animations";

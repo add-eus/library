@@ -1,0 +1,114 @@
+import moment from "moment-with-locales-es6";
+import { doc } from "firebase/firestore";
+import { useFirebase } from "/@src/lib/stores/firebase";
+import { onInitialize, EntityORM, isEntityClass } from "./entity";
+import { EntityMetaData } from "./entityMetadata";
+import { watch } from "vue";
+
+function parseData(toTransform: any | any[], type: any): any {
+    if (!toTransform) return undefined;
+    if (Array.isArray(type)) {
+        if (!Array.isArray(toTransform)) return [];
+        return toTransform.map((data) => {
+            return parseData(data, type[0]);
+        });
+    } else if (type == moment && !moment.isMoment(toTransform)) {
+        return moment.unix(toTransform.seconds);
+    } else if (isEntityClass(type)) {
+        const firebase = useFirebase();
+
+        const documentReference = doc(
+            firebase.firestore,
+            `${type.collectionName}/${toTransform}`
+        );
+        const model = new type(documentReference);
+        const childMetadata = model.$metadata;
+        childMetadata.on("get", (name: string) => {
+            if (
+                !childMetadata.isFullfilled &&
+                !name.startsWith("$") &&
+                name != "constructor"
+            ) {
+                childMetadata.refresh();
+            }
+        });
+        //model.$assign();
+        return model;
+    }
+    return toTransform;
+}
+
+function formatData(toTransform: any | any[], type: any): any {
+    if (!toTransform) return undefined;
+    if (Array.isArray(type)) {
+        if (!Array.isArray(toTransform)) return [];
+        return toTransform.map((data) => {
+            return formatData(data, type[0]);
+        });
+    } else if (type == moment) {
+        return toTransform.toDate();
+    } else if (isEntityClass(type)) {
+        return toTransform.$getId();
+    }
+    return toTransform;
+}
+
+function isEqual(a: any, b: any, type: any): boolean {
+    if (Array.isArray(type)) {
+        return a.every((row: any, index: number) => {
+            return isEqual(row, b[index], type[0]);
+        });
+    } else if (type == moment) {
+        return a.isSame(b);
+    } else if (isEntityClass(type)) {
+        return a && b && a.$getID() == b.$getID() && a.constructor == b.constructor;
+    }
+    return a == b;
+}
+
+export function Var(type: any) {
+    return function (target: any, name: string) {
+        onInitialize(target, function (this: any, metadata: EntityMetaData) {
+            metadata.properties[name] = {
+                isChanged: false,
+                isInitialized: false,
+            };
+
+            this[name] = parseData(this[name], type);
+            let originalPropertyValue: any = this[name];
+
+            const unwatch = watch(
+                () => this[name],
+                () => {
+                    metadata.properties[name].isChanged = !isEqual(
+                        this[name],
+                        originalPropertyValue,
+                        type
+                    );
+                }
+            );
+
+            metadata.on("parse", (raw: any) => {
+                if (metadata.properties[name].isChanged) return;
+                this[name] = parseData(raw[name], type);
+                originalPropertyValue = this[name];
+                metadata.properties[name].isInitialized = true;
+                metadata.properties[name].isChanged = false;
+            });
+
+            metadata.on("format", (raw: any) => {
+                raw[name] = formatData(this[name], type);
+            });
+
+            metadata.on("saved", () => {
+                Object.values(metadata.properties).forEach((property) => {
+                    property.isChanged = false;
+                });
+            });
+
+            metadata.on("destroy", () => {
+                unwatch();
+            });
+        });
+    };
+}

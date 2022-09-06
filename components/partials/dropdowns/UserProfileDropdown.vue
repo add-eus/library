@@ -5,7 +5,8 @@ import { useUserSession } from "/@src/lib/stores/userSession";
 import { usePlaceManager } from "/@src/stores/placeManager";
 import { useRouter } from "vue-router";
 import { useDarkmode } from "/@src/lib/stores/darkmode";
-import * as Place from "/@src/components/models/place.vue";
+import { Place } from "/@src/models/place";
+import PlaceModel from "/@src/components/models/place.vue";
 
 const { t } = useI18n();
 const userSession = useUserSession();
@@ -49,7 +50,7 @@ const placeColumns = {
 </script>
 
 <template>
-    <VDropdown right spaced class="user-dropdown profile-dropdown">
+    <!--VDropdown right spaced class="user-dropdown profile-dropdown">
         <template #button="{ toggle }">
             <a
                 tabindex="0"
@@ -187,7 +188,7 @@ const placeColumns = {
                     ></VIconButton>
                 </template>
             </VCollection>
-            <!--VFlexTableWrapper :columns="columns" :data="availablePlaces">
+            --VFlexTableWrapper :columns="columns" :data="availablePlaces">
                 <-- 
       Here we retrieve the internal wrapperState. 
       Note that we can not destructure it 
@@ -247,8 +248,8 @@ const placeColumns = {
                         </div>
                     </div>
                 </template>
-            </!VFlexTableWrapper-->
+            </!VFlexTableWrapper>
         </template>
         <template #action></template>
-    </VModal>
+    </VModal-->
 </template>

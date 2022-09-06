@@ -1,7 +1,6 @@
 import type { Directive, DirectiveHook } from "vue";
 
-const onUpdate: DirectiveHook = (el: HTMLElement, bindings) => {
-    bindings.prev;
+const onUpdate: DirectiveHook = (el: HTMLElement) => {
     el.focus();
 };
 

@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
+import moment from "moment-with-locales-es6";
 
 export interface VInputEmits {
-    (event: "update:modelValue", value?: any): void;
+    (event: "update:modelValue", value?: moment): void;
 }
 export interface VInputProps {
-    modelValue?: any;
+    modelValue: moment;
     hourStep?: number;
     minuteStep?: number;
 }
 
 const emits = defineEmits<VInputEmits>();
 const props = withDefaults(defineProps<VInputProps>(), {
-    modelValue: "",
     hourStep: 1,
     minuteStep: 1,
 });
@@ -21,24 +21,25 @@ let day = 0,
     month = 0,
     year = 0;
 
-function parseValue(modelValue: Date) {
-    day = modelValue.getDate();
-    month = modelValue.getMonth();
-    year = modelValue.getFullYear();
-    return [modelValue.getHours(), modelValue.getMinutes()];
+function parseValue(modelValue: moment) {
+    console.log(modelValue);
+    day = modelValue.dates();
+    month = modelValue.months();
+    year = modelValue.years();
+    return [modelValue.hours(), modelValue.minutes()];
 }
 
 function format(hour: number, minute: number) {
-    const date = new Date();
-    date.setFullYear(year);
-    date.setMonth(month);
-    date.setDate(day);
-    date.setHours(hour);
-    date.setMinutes(minute);
+    const date = moment();
+    date.years(year);
+    date.months(month);
+    date.dates(day);
+    date.hours(hour);
+    date.minutes(minute);
     return date;
 }
 
-const parsed = parseValue(props.modelValue);
+const parsed = parseValue(props.modelValue || moment());
 const hour = ref(parsed[0]);
 const minute = ref(parsed[1]);
 
