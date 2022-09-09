@@ -103,6 +103,10 @@ export default defineComponent({
             >,
             default: undefined,
         },
+        loading: {
+            type: Boolean,
+            default: undefined,
+        },
         sort: {
             type: String,
             default: undefined,
@@ -141,7 +145,17 @@ export default defineComponent({
     ],
     setup(props, context) {
         const rawData = ref<any[]>();
-        const loading = ref(false);
+
+        const defaultLoading = ref<boolean>(false);
+        const loading = computed({
+            get() {
+                return props.loading == undefined ? defaultLoading.value : props.loading;
+            },
+            set(value) {
+                if (props.loading == undefined) defaultLoading.value = value;
+                else context.emit("update:loading", value);
+            },
+        });
 
         const defaultSort = ref("");
         const sort = computed({
@@ -236,7 +250,10 @@ export default defineComponent({
                             acc[key].renderHeader = () => {
                                 return h(VFlexTableSortColumn, {
                                     id: key,
-                                    label: value.label ?? key,
+                                    label:
+                                        (value.label && value.label.value) ??
+                                        value.label ??
+                                        key,
                                     noRouter: true,
                                     modelValue: sort.value,
                                     "onUpdate:modelValue": (value) =>

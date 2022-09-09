@@ -1,5 +1,5 @@
 import moment from "moment-with-locales-es6";
-import { doc } from "firebase/firestore";
+import { doc, GeoPoint } from "firebase/firestore";
 import { useFirebase } from "/@src/lib/stores/firebase";
 import { onInitialize, EntityORM, isEntityClass } from "./entity";
 import { EntityMetaData } from "./entityMetadata";
@@ -14,6 +14,8 @@ function parseData(toTransform: any | any[], type: any): any {
         });
     } else if (type == moment && !moment.isMoment(toTransform)) {
         return moment.unix(toTransform.seconds);
+    } else if (type == GeoPoint) {
+        return new GeoPoint(toTransform._lat, toTransform._long);
     } else if (isEntityClass(type)) {
         const firebase = useFirebase();
 
@@ -39,7 +41,7 @@ function parseData(toTransform: any | any[], type: any): any {
 }
 
 function formatData(toTransform: any | any[], type: any): any {
-    if (!toTransform) return undefined;
+    if (typeof toTransform == "undefined") return undefined;
     if (Array.isArray(type)) {
         if (!Array.isArray(toTransform)) return [];
         return toTransform.map((data) => {
@@ -48,7 +50,13 @@ function formatData(toTransform: any | any[], type: any): any {
     } else if (type == moment) {
         return toTransform.toDate();
     } else if (isEntityClass(type)) {
-        return toTransform.$getId();
+        return toTransform.$getID();
+    } else if (typeof type == "function" && /^\s*class\s+/.test(type.toString())) {
+        const raw: { [key: string]: any } = {};
+        Object.getOwnPropertyNames(toTransform).forEach((key) => {
+            raw[key] = formatData(toTransform[key], toTransform[key].constructor);
+        });
+        return raw;
     }
     return toTransform;
 }
@@ -97,7 +105,8 @@ export function Var(type: any) {
             });
 
             metadata.on("format", (raw: any) => {
-                raw[name] = formatData(this[name], type);
+                const rawValue = formatData(this[name], type);
+                if (typeof rawValue !== "undefined") raw[name] = rawValue;
             });
 
             metadata.on("saved", () => {

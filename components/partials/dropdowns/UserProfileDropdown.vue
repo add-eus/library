@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useI18n } from "vue-i18n";
 import { useUserSession } from "/@src/lib/stores/userSession";
 import { usePlaceManager } from "/@src/stores/placeManager";
 import { useRouter } from "vue-router";
 import { useDarkmode } from "/@src/lib/stores/darkmode";
 import { Place } from "/@src/models/place";
 import PlaceModel from "/@src/components/models/place.vue";
+import { useTranslate } from "/@src/lib/stores/translate";
 
-const { t } = useI18n();
+const { translate, setTranslateNamespace } = useTranslate();
 const userSession = useUserSession();
 const router = useRouter();
 const placeManager = usePlaceManager();
@@ -16,6 +16,8 @@ const darkmode = useDarkmode();
 const showMorePlace = ref(false);
 const model = ref(null);
 const isPlaceSelectionOpen = ref(false);
+
+setTranslateNamespace(".userDropdown");
 
 async function logout() {
     await userSession.logoutUser();
@@ -31,15 +33,12 @@ async function editPlace() {
 }
 
 function showMore() {
-    if (placeManager.availables.length <= 5) showMorePlace.value = !showMorePlace.value;
-    else {
-        isPlaceSelectionOpen.value = !isPlaceSelectionOpen.value;
-    }
+    isPlaceSelectionOpen.value = !isPlaceSelectionOpen.value;
 }
 
 const placeColumns = {
     name: {
-        label: t("backoffice.place.name"),
+        label: translate(".place.modal.name"),
         key: "name",
         media: true,
         grow: true,
@@ -50,7 +49,7 @@ const placeColumns = {
 </script>
 
 <template>
-    <!--VDropdown right spaced class="user-dropdown profile-dropdown">
+    <VDropdown right spaced class="profile-dropdown">
         <template #button="{ toggle }">
             <a
                 tabindex="0"
@@ -69,26 +68,8 @@ const placeColumns = {
                 href="#"
                 role="menuitem"
                 class="dropdown-item is-media"
-                @click.space.prevent="showMore()"
-            >
-                <div class="icon">
-                    <VIcon icon="lnir lnir-map-marker" />
-                </div>
-                <div class="meta">
-                    <span>{{ t("place.choice") }}</span>
-                    <span>{{ placeManager.current.data().name }}</span>
-                </div>
-            </a>
-
-            <a
-                v-for="place in showMorePlace ? placeManager.availables : []"
-                :key="place.id"
-                href="#"
-                role="menuitem"
-                class="dropdown-item is-media pl-5"
-                @click="
-                    placeManager.current = place;
-                    showMorePlace = false;
+                @click.space.prevent="
+                    showMore();
                     close();
                 "
             >
@@ -96,8 +77,8 @@ const placeColumns = {
                     <VIcon icon="lnir lnir-map-marker" />
                 </div>
                 <div class="meta">
-                    <span>{{ place.data().name }}</span>
-                    <span>{{ t("place.select") }}</span>
+                    <span><Translate>.place.choose</Translate></span>
+                    <span>{{ placeManager.current.name }}</span>
                 </div>
             </a>
 
@@ -105,13 +86,16 @@ const placeColumns = {
                 href="#"
                 role="menuitem"
                 class="dropdown-item is-media"
-                @click="editPlace()"
+                @click="
+                    placeManager.current.$edit();
+                    close();
+                "
             >
                 <div class="icon">
                     <VIcon icon="lnir lnir-pencil" />
                 </div>
                 <div class="meta">
-                    <span>{{ t("user.dropdown.edit") }}</span>
+                    <span><Translate>.place.edit</Translate></span>
                 </div>
             </a>
 
@@ -133,9 +117,11 @@ const placeColumns = {
                     </label>
                 </div>
                 <div class="meta">
-                    <span>{{ t("darkmode.helper") }}</span>
+                    <span><Translate>.darkmode.helper</Translate></span>
                     <span>
-                        {{ darkmode.isDark ? t("darkmode.dark") : t("darkmode.light") }}
+                        <Translate>{{
+                            darkmode.isDark ? ".darkmode.dark" : ".darkmode.light"
+                        }}</Translate>
                     </span>
                 </div>
             </a>
@@ -151,105 +137,45 @@ const placeColumns = {
                     raised
                     fullwidth
                     @click="logout()"
-                    >{{ t("user.dropdown.logout") }}</VButton
+                    ><Translate>.logout</Translate></VButton
                 >
             </div>
         </template>
     </VDropdown>
-    <VModel ref="model" :model="Place"></VModel>
-    <VModal
-        :open="isPlaceSelectionOpen"
-        :title="t('user.dropdown.place.title')"
-        size="medium"
-        actions="right"
-        @close="isPlaceSelectionOpen = !isPlaceSelectionOpen"
-    >
-        <template #content>
-            <VCollection
-                :hide-add="true"
-                :model="Place"
-                :columns="placeColumns"
-                :filters="{
-                    owners: {
-                        comparator: 'array-contains',
-                        value: userSession.getUser().value.uid,
-                    },
-                }"
-            >
-                <template #action="{ row }">
-                    <VIconButton
-                        color="primary"
-                        circle
-                        icon="feather:arrow-right"
-                        @click="
-                            placeManager.current = row;
-                            isPlaceSelectionOpen = false;
-                        "
-                    ></VIconButton>
-                </template>
-            </VCollection>
-            --VFlexTableWrapper :columns="columns" :data="availablePlaces">
-                <-- 
-      Here we retrieve the internal wrapperState. 
-      Note that we can not destructure it 
-    --
-                <template #default="wrapperState">
-                    <div>
-                        <div class="list-flex-toolbar flex-list-v1">
-                            <VField>
-                                <VControl icon="feather:search">
-                                    <input
-                                        v-model="wrapperState.searchInput"
-                                        class="input custom-text-filter"
-                                        :placeholder="t('user.dropdown.place.search')"
-                                    />
-                                </VControl>
-                            </VField>
-                        </div>
-
-                        <div class="page-content-inner">
-                            <div class="flex-list-wrapper flex-list-v1">
-                                <--List Empty Search Placeholder --
-
-                                <VFlexTable compact>
-                                    <-- Custom "name" cell content --
-                                    <template #body-cell="{ row, column }">
-                                        <template v-if="column.key === 'name'">
-                                            <VFlexTableCell>
-                                                <span class="light-text">{{
-                                                    row.name
-                                                }}</span>
-                                            </VFlexTableCell>
-                                        </template>
-                                        <template v-else-if="column.key === 'action'">
-                                            <VIconButton
-                                                color="primary"
-                                                circle
-                                                icon="feather:arrow-right"
-                                                @click="
-                                                    placeManager.select(row);
-                                                    isPlaceSelectionOpen = false;
-                                                "
-                                            ></VIconButton>
-                                        </template>
-                                    </template>
-                                </VFlexTable>
-
-                                <--Table Pagination--
-                                <VFlexPagination
-                                    v-model:current-page="wrapperState.page"
-                                    class="mt-6"
-                                    :item-per-page="wrapperState.limit"
-                                    :total-items="wrapperState.total"
-                                    :max-links-displayed="5"
-                                    no-router
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </template>
-            </!VFlexTableWrapper>
-        </template>
-        <template #action></template>
-    </VModal-->
+    <TranslateNamespace path=".place.modal">
+        <VModal
+            v-t.title="'.title'"
+            :open="isPlaceSelectionOpen"
+            size="medium"
+            actions="right"
+            @close="isPlaceSelectionOpen = !isPlaceSelectionOpen"
+        >
+            <template #content>
+                <VCollection
+                    :hide-add="true"
+                    :model="Place"
+                    :columns="placeColumns"
+                    :filters="{
+                        owners: {
+                            comparator: 'array-contains',
+                            value: userSession.getUser().value.uid,
+                        },
+                    }"
+                >
+                    <template #action="{ row }">
+                        <VIconButton
+                            color="primary"
+                            circle
+                            icon="feather:arrow-right"
+                            @click="
+                                placeManager.current = row;
+                                isPlaceSelectionOpen = false;
+                            "
+                        ></VIconButton>
+                    </template>
+                </VCollection>
+            </template>
+            <template #action></template>
+        </VModal>
+    </TranslateNamespace>
 </template>

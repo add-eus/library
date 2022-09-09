@@ -1,42 +1,30 @@
 <script setup lang="ts">
-import { watch, getCurrentInstance } from "vue";
-import { useI18n } from "vue-i18n";
+import { getCurrentInstance, computed, useSlots, Ref } from "vue";
+import { translate } from "../../../stores/translate";
 
-const { t } = useI18n();
 const instance: any = getCurrentInstance();
 
 export type TranslateNamespaceProps = {
-    name: string;
+    path?: string;
 };
 
 const props = defineProps<TranslateNamespaceProps>();
 
-const namespaces: string[] = [];
-function updateTranslation() {
-    const key = namespaces.reverse().join("") + props.name;
-    console.log(props.name, key);
+const slots = useSlots();
+
+let path: Ref;
+if (slots.default) {
+    path = computed(() => {
+        const compiledSlots = slots.default();
+        if (!compiledSlots || compiledSlots.length == 0) return "";
+        return (compiledSlots[0].children || "").trim();
+    });
+} else {
+    path = computed(() => props.path);
 }
-
-let parentInstance = instance;
-let index = 0;
-
-while ((parentInstance = parentInstance.parent)) {
-    if (parentInstance.translateNamespace) {
-        const currentIndex = index;
-        watch(parentInstance.translateNamespace, () => {
-            namespaces[currentIndex] = parentInstance.translateNamespace.value;
-            updateTranslation();
-        });
-        namespaces[currentIndex] = parentInstance.translateNamespace.value;
-        index++;
-    }
-    console.log(parentInstance.translateNamespace);
-}
-
-watch(() => props.name, updateTranslation);
-updateTranslation();
+const translated = translate(path, instance);
 </script>
 
 <template>
-    <slot></slot>
+    {{ translated || undefined }}
 </template>

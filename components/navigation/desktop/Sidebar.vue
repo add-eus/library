@@ -275,6 +275,7 @@ const themeClasses = computed(() => {
         position: relative;
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
 
         .naver {
             position: absolute;
@@ -306,8 +307,7 @@ const themeClasses = computed(() => {
             }
         }
 
-        .icon-menu,
-        .bottom-menu {
+        .icon-menu {
             margin: 10px 0;
             li {
                 position: relative;

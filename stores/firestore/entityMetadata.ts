@@ -5,35 +5,25 @@ import {
     getDoc,
     onSnapshot,
 } from "firebase/firestore";
+import EventEmitter from "events";
 
-export class EntityMetaData {
+export class EntityMetaData extends EventEmitter {
     reference: DocumentReference | null = null;
     isFullfilled: boolean = false;
     origin: any = {};
     properties: { [key: string]: any } = {};
-    events: { [key: string]: Function[] } = {};
     entity: EntityORM;
     unsuscribeSnapshot: Function | null = null;
 
     constructor(entity: any) {
+        super();
         this.entity = entity;
-    }
-
-    on(eventName: string, callback: Function) {
-        if (!this.events[eventName]) this.events[eventName] = [];
-        this.events[eventName].push(callback);
+        this.setMaxListeners(30);
     }
 
     destroy() {
         this.emit("destroy");
         if (this.unsuscribeSnapshot) this.unsuscribeSnapshot();
-    }
-
-    emit(eventName: string, ...args: any[]) {
-        if (!this.events[eventName]) return;
-        this.events[eventName].map((callback: Function) => {
-            callback.call(this.entity, ...args);
-        });
     }
 
     async refresh() {

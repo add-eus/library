@@ -1,7 +1,7 @@
 import { useFirebase } from "./firebase";
 import { httpsCallable as firebaseHttpsCallable } from "firebase/functions";
 
-export const httpsOpen = async function (path: string, args: any) {
+export async function httpsOpen(path: string, args: any) {
     const { functions } = useFirebase();
     const url = (<any>functions)._url(path);
     const encodedArgs = encodeURIComponent(JSON.stringify(args));
@@ -14,7 +14,7 @@ export const httpsOpen = async function (path: string, args: any) {
             }
         }, 100);
     });
-};
+}
 
 export default new Proxy(
     {},

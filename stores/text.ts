@@ -4,3 +4,7 @@ export function removeTag(html) {
     const text = div.textContent || div.innerText || "";
     return text;
 }
+
+export function lowerCaseFirst(text: string): string {
+    return text.charAt(0).toLowerCase() + text.slice(1);
+}

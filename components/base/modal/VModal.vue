@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect, onUnmounted } from "vue";
-import { useI18n } from "vue-i18n";
+import { ref, watchEffect, onUnmounted } from "vue";
 
 export type VModalSize = "small" | "medium" | "large" | "big";
 export type VModalAction = "center" | "right";
@@ -27,9 +26,7 @@ const props = withDefaults(defineProps<VModalProps>(), {
     cancelLabel: undefined,
 });
 
-const { t } = useI18n();
 const wasOpen = ref(false);
-const cancelLabel = computed(() => props.cancelLabel || t("cancel-label"));
 
 const checkScroll = () => {
     if (props.noscroll && props.open) {
@@ -47,21 +44,6 @@ onUnmounted(() => {
 });
 </script>
 
-<i18n lang="yaml">
-de:
-    cancel-label: "Abbrechen"
-en:
-    cancel-label: "Cancel"
-es-MX:
-    cancel-label: "Cancelar"
-es:
-    cancel-label: "Cancelar"
-fr:
-    cancel-label: "Annuler"
-zh-CN:
-    cancel-label: "取消"
-</i18n>
-
 <template>
     <Teleport to="body">
         <div :class="[open && 'is-active', size && `is-${size}`]" class="modal v-modal">
@@ -74,7 +56,9 @@ zh-CN:
             <div class="modal-content">
                 <div class="modal-card">
                     <header class="modal-card-head">
-                        <h3>{{ title }}</h3>
+                        <h3>
+                            <slot name="title">{{ title }}</slot>
+                        </h3>
                         <button
                             class="v-modal-close ml-auto"
                             aria-label="close"
@@ -101,17 +85,6 @@ zh-CN:
                             actions === 'right' && 'is-end',
                         ]"
                     >
-                        <slot name="cancel" :close="() => emit('close')">
-                            <a
-                                tabindex="0"
-                                class="button v-button v-modal-close"
-                                :class="[rounded && 'is-rounded']"
-                                @keydown.space.prevent="emit('close')"
-                                @click="emit('close')"
-                            >
-                                {{ cancelLabel }}
-                            </a>
-                        </slot>
                         <slot name="action" :close="() => emit('close')"></slot>
                     </div>
                 </div>

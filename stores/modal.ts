@@ -1,56 +1,114 @@
-import { ref } from "vue";
+import { ref, createVNode, render, VNode, getCurrentInstance } from "vue";
+import { until } from "@vueuse/core";
 import { acceptHMRUpdate, defineStore } from "pinia";
+import ModalComponent from "../components/modal/Modal.vue";
+import PromptComponent from "../components/modal/Prompt.vue";
+import VButton from "../components/base/button/VButton.vue";
+
+export class Modal {
+    isClosed = ref(false);
+    component: any = null;
+    props: any = {};
+    actions: any[] = [];
+    events: any = {};
+    title: string = "";
+
+    constructor(component: any, options: any) {
+        this.component = component;
+        this.title = options.title || "";
+        this.actions = options.actions || [];
+        this.props = options.props || {};
+        this.events = options.events || {};
+    }
+
+    close() {
+        this.isClosed.value = true;
+    }
+}
 
 export const useModal = defineStore("modal", function () {
-    const isOpen = ref(false);
-    const title = ref("");
-    const subTitle = ref("");
-    const message = ref("");
-    const confirm = ref("");
-    const cancel = ref("");
-
-    let waitClose: {
-        resolve: (value?: any) => void;
-        reject: (reason?: any) => void;
-    } | null = null;
+    const instance = getCurrentInstance();
 
     async function prompt(
         titleArg: string,
         subTitleArg: string,
         messageArg: string,
         cancelArg: string,
-        confirmArg: string
+        confirmArg: string,
+        confirmColorArg: string = "primary"
     ) {
-        if (waitClose) throw new Error("already active");
+        const cancelReason = ref<any>(null);
+        const successReason = ref<any>(null);
 
-        title.value = titleArg;
-        subTitle.value = subTitleArg;
-        message.value = messageArg;
-        cancel.value = cancelArg;
-        confirm.value = confirmArg;
-        isOpen.value = true;
+        const modal = createModal(PromptComponent, {
+            title: titleArg,
+            props: {
+                subTitle: subTitleArg,
+                message: messageArg,
+            },
+            actions: [
+                {
+                    component: VButton,
+                    content: cancelArg,
+                    props: {},
+                    events: {
+                        click() {
+                            cancelReason.value = "closed";
+                            modal.close();
+                        },
+                    },
+                },
+                {
+                    component: VButton,
+                    content: confirmArg,
+                    props: {
+                        color: confirmColorArg,
+                    },
+                    events: {
+                        click() {
+                            successReason.value = "success";
+                            modal.close();
+                        },
+                    },
+                },
+            ],
+        });
 
-        await new Promise((resolve, reject) => {
-            waitClose = { resolve, reject };
+        return new Promise(async (resolve, reject) => {
+            until(cancelReason)
+                .not.toBeNull()
+                .then(() => {
+                    reject(cancelReason.value);
+                });
+
+            until(successReason)
+                .not.toBeNull()
+                .then(() => {
+                    resolve(successReason.value);
+                });
         });
     }
 
-    async function close(toResolve?: boolean) {
-        if (!waitClose) throw new Error("already closed");
-        if (toResolve) waitClose.resolve();
-        else waitClose.reject();
-        waitClose = null;
-        isOpen.value = false;
+    function createModal(component: any, options: any) {
+        const modal = new Modal(component, options);
+        const vnode: VNode = createVNode(ModalComponent, {
+            modal: modal,
+        });
+
+        vnode.appContext = { ...instance.appContext };
+        render(vnode, document.body);
+        until(modal.isClosed)
+            .toBe(true)
+            .then(() => {
+                render(null, document.body);
+            });
+        return modal;
     }
 
     return {
-        title,
-        subTitle,
-        message,
         confirm,
-        cancel,
+        createModal,
         prompt,
-        isOpen,
         close,
     };
 });

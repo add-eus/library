@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { VNode } from "vue";
-import { toRaw, computed, reactive, isReactive, inject } from "vue";
+import { toRaw, computed, reactive, isReactive, inject, isRef } from "vue";
 import { flewTableWrapperSymbol } from "./VFlexTableWrapper.vue";
 
 export interface VFlexTableColumn {
@@ -30,6 +30,7 @@ export interface VFlexTableProps {
     clickable?: boolean;
     subtable?: boolean;
     noHeader?: boolean;
+    key?: Function;
 }
 
 const emits = defineEmits<{
@@ -132,14 +133,16 @@ function getValueByPath(row: any, key: any) {
                                 column.align === 'end' && 'cell-end',
                                 column.align === 'center' && 'cell-center',
                             ]"
-                            >{{ column.label }}</span
+                            >{{
+                                isRef(column.label) ? column.label.value : column.label
+                            }}</span
                         >
                     </slot>
                 </template>
             </div>
         </slot>
         <slot name="body">
-            <template v-for="(row, index) in data" :key="index">
+            <template v-for="(row, index) in data" :key="key ? key(row) : index">
                 <slot
                     name="body-row-pre"
                     :row="row"

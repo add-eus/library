@@ -6,23 +6,26 @@ import {
     doc,
     setDoc,
 } from "firebase/firestore";
-import { shallowReactive } from "vue";
+import { reactive, markRaw } from "vue";
 import { useFirebase } from "../firebase";
 import { EntityMetaData } from "./entityMetadata";
+import { lowerCaseFirst } from "../text";
 
 function Entity(options?: { collection?: string }) {
     return function (target: any) {
         target.collectionName =
-            (options && options.collection) || target.name.toLowerCase() + "s";
+            (options && options.collection) || lowerCaseFirst(target.name) + "s";
+        console.log(target.collectionName);
 
         //target.prototype = EntityORM.prototype;
         let classDeclaration;
         const EntityMetaDataClass = EntityMetaData,
             DocumentReferenceClass = DocumentReference,
             DocumentSnapshotClass = DocumentSnapshot,
-            reactiveInitiator = shallowReactive;
+            reactiveInitiator = reactive,
+            markRawInitiator = markRaw;
         eval(`classDeclaration = class ${target.name} extends target {
-            $metadata = new EntityMetaDataClass(this);
+            $metadata = markRawInitiator(new EntityMetaDataClass(this));
             constructor(querySnapshot) {
                 super();
 
@@ -52,7 +55,6 @@ function Entity(options?: { collection?: string }) {
                     this.$metadata.emit('parse', this.$metadata.origin);
                     this.$metadata.isFullfilled = true;
                 }
-                console.log(reactivity);
                 return reactivity;
             }
         }`);
@@ -64,6 +66,10 @@ function Entity(options?: { collection?: string }) {
             }
             classDeclaration.prototype[key] = EntityORM.prototype[key];
         });
+
+        target.addMethod = function (name, callback) {
+            classDeclaration.prototype["$" + name] = callback;
+        };
 
         return classDeclaration;
     };
@@ -80,19 +86,32 @@ class EntityORM {
     async $save() {
         const raw = {};
         this.$metadata.emit("format", raw);
+
         if (!this.$metadata.reference) {
             const firebase = useFirebase();
             this.$metadata.setReference(
                 doc(collection(firebase.firestore, this.constructor.collectionName))
             );
         }
+
+        console.log(raw);
         await setDoc(this.$metadata.reference, raw);
+
         this.$metadata.emit("saved");
     }
 
     async $delete() {
         if (this.$metadata.reference) await deleteDoc(this.$metadata.reference);
-        this.$metadata.$destroy();
+        this.$metadata.destroy();
+    }
+
+    $reset() {
+        if (!this.$metadata.reference) throw new Error("No original data to reset");
+        Object.values(this.$metadata.properties).forEach(
+            (property: any) => (property.isChanged = false)
+        );
+        this.$metadata.emit("parse", this.$metadata.origin);
+        this.$metadata.isFullfilled = true;
     }
 }
 

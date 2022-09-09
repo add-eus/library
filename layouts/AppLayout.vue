@@ -57,7 +57,7 @@ function fetchChildrenRoutes() {
         })
         .map((route: any) => {
             return {
-                label: t(route.meta.subtitle),
+                label: t("toolbar" + route.meta.subtitle),
                 value: route.name,
                 icon: route.meta.icon,
             };
@@ -106,66 +106,75 @@ function isRootRouteActive(rootRoute: any) {
     <div class="sidebar-layout">
         <div class="app-overlay"></div>
 
-        <!-- Mobile navigation -->
-        <MobileNavbar
-            :is-open="isMobileSidebarOpen"
-            @toggle="isMobileSidebarOpen = !isMobileSidebarOpen"
-        >
-            <template #brand>
-                <RouterLink :to="{ name: 'dashboard' }" class="navbar-item is-brand">
-                    <img src="/logo.svg" alt="" width="38" height="38" />
-                </RouterLink>
-
-                <div class="brand-end">
-                    <UserProfileDropdown />
-                </div>
-            </template>
-        </MobileNavbar>
-
-        <!-- Mobile sidebar links -->
-        <MobileSidebar
-            :is-open="isMobileSidebarOpen"
-            @toggle="isMobileSidebarOpen = !isMobileSidebarOpen"
-        >
-            <template #links>
-                <li v-for="rootRoute in rootRoutes" :key="rootRoute.name">
-                    <RouterLink
-                        :to="{ name: rootRoute.name }"
-                        :class="{ 'router-link-active': isRootRouteActive(rootRoute) }"
-                    >
-                        <i :class="rootRoute.meta.icon"></i>
-                        <span>{{ t(rootRoute.meta.title) }}</span>
+        <TranslateNamespace path="sidebar">
+            <!-- Mobile navigation -->
+            <MobileNavbar
+                :is-open="isMobileSidebarOpen"
+                @toggle="isMobileSidebarOpen = !isMobileSidebarOpen"
+            >
+                <template #brand>
+                    <RouterLink :to="{ name: 'dashboard' }" class="navbar-item is-brand">
+                        <img src="/logo.svg" alt="" width="38" height="38" />
                     </RouterLink>
-                </li>
-            </template>
-        </MobileSidebar>
 
-        <Sidebar :theme="props.theme" :is-open="isDesktopSidebarOpen">
-            <template #links>
-                <li v-for="rootRoute in rootRoutes" :key="rootRoute.name">
-                    <RouterLink
-                        :to="{ name: rootRoute.name }"
-                        :class="{ 'router-link-active': isRootRouteActive(rootRoute) }"
-                    >
-                        <i :class="rootRoute.meta.icon"></i>
-                        <span>{{ t(rootRoute.meta.title) }}</span>
-                    </RouterLink>
-                </li>
-            </template>
-            <template #bottom-links>
-                <li>
-                    <UserProfileDropdown />
-                </li>
-            </template>
-        </Sidebar>
+                    <div class="brand-end">
+                        <UserProfileDropdown />
+                    </div>
+                </template>
+            </MobileNavbar>
+
+            <!-- Mobile sidebar links -->
+            <MobileSidebar
+                :is-open="isMobileSidebarOpen"
+                @toggle="isMobileSidebarOpen = !isMobileSidebarOpen"
+            >
+                <template #links>
+                    <li v-for="rootRoute in rootRoutes" :key="rootRoute.name">
+                        <RouterLink
+                            :to="{ name: rootRoute.name }"
+                            :class="{
+                                'router-link-active': isRootRouteActive(rootRoute),
+                            }"
+                        >
+                            <i :class="rootRoute.meta.icon"></i>
+                            <Translate :path="rootRoute.meta.title"></Translate>
+                        </RouterLink>
+                    </li>
+                </template>
+            </MobileSidebar>
+
+            <Sidebar :theme="props.theme" :is-open="isDesktopSidebarOpen">
+                <template #links>
+                    <li v-for="rootRoute in rootRoutes" :key="rootRoute.name">
+                        <RouterLink
+                            :to="{ name: rootRoute.name }"
+                            :class="{
+                                'router-link-active': isRootRouteActive(rootRoute),
+                            }"
+                        >
+                            <i :class="rootRoute.meta.icon"></i>
+                            <Translate :path="rootRoute.meta.title"></Translate>
+                        </RouterLink>
+                    </li>
+                </template>
+                <template #bottom-links>
+                    <li>
+                        <UserProfileDropdown />
+                    </li>
+                </template>
+            </Sidebar>
+        </TranslateNamespace>
+
         <LanguagesPanel />
 
         <VViewWrapper>
-            <CollapseTransition>
-                <Toolbar v-if="childrenTabs.length > 0">
-                    <VTabs v-model="selectedChildrenTab" :tabs="childrenTabs"></VTabs>
-                </Toolbar>
-            </CollapseTransition>
+            <TranslateNamespace path="toolbar">
+                <CollapseTransition>
+                    <Toolbar v-if="childrenTabs.length > 0">
+                        <VTabs v-model="selectedChildrenTab" :tabs="childrenTabs"></VTabs>
+                    </Toolbar>
+                </CollapseTransition>
+            </TranslateNamespace>
 
             <VPageContentWrapper class="pt-5">
                 <template v-if="props.nowrap">
@@ -173,25 +182,6 @@ function isRootRouteActive(rootRoute: any) {
                 </template>
 
                 <VPageContent v-else class="is-relative">
-                    <VModal
-                        :open="modal.isOpen"
-                        :title="modal.title"
-                        actions="center"
-                        :cancel-label="modal.cancel"
-                        @close="modal.close()"
-                    >
-                        <template #content>
-                            <VPlaceholderSection
-                                :title="modal.subTitle"
-                                :subtitle="modal.message"
-                            />
-                        </template>
-                        <template #action>
-                            <VButton color="primary" raised @click="modal.close(true)">{{
-                                modal.confirm
-                            }}</VButton>
-                        </template>
-                    </VModal>
                     <slot></slot>
                 </VPageContent>
             </VPageContentWrapper>

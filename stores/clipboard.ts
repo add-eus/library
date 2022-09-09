@@ -23,10 +23,10 @@ export const useClipboard = defineStore("clipboard", () => {
                 document.body.appendChild(textarea);
                 textarea.select();
                 try {
-                    return document.execCommand("copy"); // Security exception may be thrown by some browsers.
+                    document.execCommand("copy"); // Security exception may be thrown by some browsers.
                 } catch (ex) {
                     console.warn("Copy to clipboard failed.", ex);
-                    return prompt("Copy to clipboard: Ctrl+C, Enter", text);
+                    prompt("Copy to clipboard: Ctrl+C, Enter", text);
                 } finally {
                     document.body.removeChild(textarea);
                 }

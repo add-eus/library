@@ -10,6 +10,7 @@ export interface VInputProps {
     raw?: boolean;
     modelValue?: any;
     type: String;
+    rounded?: boolean;
 }
 const vFieldContext = useVField();
 
@@ -21,7 +22,6 @@ const value = ref(parseValue(props.modelValue));
 
 watch(value, () => {
     let v = value.value;
-    console.log(value, v, [moment]);
     if (props.type == "date") {
         const matched = v.match(/([0-9]+)-([0-9]+)-([0-9]+)/);
         tempValue.years(parseInt(matched[1]));
@@ -44,9 +44,13 @@ watch(
 );
 
 const classes = computed(() => {
-    if (props.raw) return [];
+    const classes = [];
+    if (props.raw) return classes;
 
-    return ["input"];
+    if (props.rounded) classes.push("is-rounded");
+
+    classes.push("input");
+    return classes;
 });
 
 function parseValue(modelValue: any) {

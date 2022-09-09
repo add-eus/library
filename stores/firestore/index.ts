@@ -1,10 +1,13 @@
-import { ref, watch, isRef } from "vue";
+import { ref, watch, isRef, shallowReactive } from "vue";
+import algoliasearch from "algoliasearch";
 import {
     getDocs,
     deleteDoc,
     limit,
     where,
     startAfter,
+    startAt,
+    endAt,
     orderBy,
     query,
     collection,
@@ -15,12 +18,18 @@ import {
     QueryConstraint,
     OrderByDirection,
     onSnapshot,
+    documentId,
+    DocumentSnapshot,
 } from "firebase/firestore";
 import { useFirestore as useInternalFirestore } from "@vueuse/firebase/useFirestore";
 import { useFirebase } from "../firebase";
 import { EntityORM } from "./entity";
+import { until } from "@vueuse/core";
+import { Query } from "./query";
+import { QuerySearch } from "./querySearch";
 
 const cachedEntities: { [key: string]: EntityORM } = {};
+const algoliaClient = algoliasearch("LW0XGG82D8", "e211be2453d31f5d8968da9bd5b49fee");
 
 function transformWheres(whereOptions: [] = []): QueryConstraint[] {
     return whereOptions.map((whereOption: [string, WhereFilterOp, any]) => {
@@ -34,29 +43,6 @@ function transformOrders(orderOptions: [] = []): QueryConstraint[] {
     });
 }
 
-function transformLimits(limitOptions: number[] | number | undefined): QueryConstraint[] {
-    if (!limitOptions) return [];
-    if (!Array.isArray(limitOptions)) {
-        limitOptions = [limitOptions];
-    }
-    return limitOptions.map((limitOption: number) => {
-        return limit(limitOption);
-    });
-}
-
-function transformStartAfters(
-    startAfterOptions: any[] | any | undefined
-): QueryConstraint[] {
-    if (!startAfterOptions) return [];
-
-    if (!Array.isArray(startAfterOptions)) {
-        startAfterOptions = [startAfterOptions];
-    }
-    return startAfterOptions.map((startAfterOption: any) => {
-        return startAfter(startAfterOption);
-    });
-}
-
 /**
  * Get an updated collection from firestore
  *
@@ -65,10 +51,12 @@ function transformStartAfters(
  * @returns ref<any[]>
  */
 export function useCollection(collectionModel: any, options: any) {
-    const entities = ref(<any[]>[]);
+    const entities = shallowReactive<any>([]);
     const firebase = useFirebase();
-    console.log([collectionModel]);
+    const algoliaIndex = algoliaClient.initIndex(collectionModel.collectionName);
     const collectionRef = collection(firebase.firestore, collectionModel.collectionName);
+
+    entities.isUpdating = true;
 
     let wheres: QueryConstraint[] = transformWheres(
         isRef(options.wheres) ? options.wheres.value : options.wheres
@@ -76,31 +64,45 @@ export function useCollection(collectionModel: any, options: any) {
     let orders: QueryConstraint[] = transformOrders(
         isRef(options.orders) ? options.orders.value : options.orders
     );
-    let limits: QueryConstraint[] = transformLimits(
-        isRef(options.limit) ? options.limit.value : options.limit
-    );
-    let startAfters: QueryConstraint[] = transformStartAfters(
-        isRef(options.startAfter) ? options.startAfter.value : options.startAfter
-    );
+    let search: string = isRef(options.search) ? options.search.value : options.search;
 
-    let unsuscribeOnSnapshot: Function | undefined;
+    let query: Query | QuerySearch | null;
+
+    async function clear() {
+        entities.splice(0, entities.length);
+    }
+
     async function fetch() {
-        const constraints = [
-            ...wheres,
-            ...orders,
-            ...limits,
-            ...startAfters,
-        ] as QueryConstraint[];
-        const q = query(collectionRef, ...constraints);
+        clear();
+        if (query) query.destroy();
 
-        if (unsuscribeOnSnapshot) unsuscribeOnSnapshot();
-        unsuscribeOnSnapshot = onSnapshot(q, async (snapshot) => {
-            entities.value = await Promise.all(
-                snapshot.docs.map(async (doc) => {
+        if (search && search.length > 0) {
+            query = new QuerySearch(
+                [...wheres, ...orders],
+                entities,
+                (doc: DocumentSnapshot) => {
                     return transform(doc, collectionModel);
-                })
+                },
+                collectionRef,
+                search,
+                algoliaIndex
             );
-        });
+        } else {
+            query = new Query(
+                [...wheres, ...orders],
+                entities,
+                (doc: DocumentSnapshot) => {
+                    return transform(doc, collectionModel);
+                },
+                collectionRef
+            );
+        }
+
+        entities.isUpdating = true;
+        await query.next(
+            options.limit ? options.limit.value || options.limit : undefined
+        );
+        entities.isUpdating = false;
     }
 
     if (isRef(options.wheres))
@@ -115,16 +117,20 @@ export function useCollection(collectionModel: any, options: any) {
             fetch();
         });
 
-    if (isRef(options.startAfter))
-        watch(options.startAfter, () => {
-            startAfters = transformStartAfters(options.startAfter.value);
-            fetch();
+    if (isRef(options.limit))
+        watch(options.limit, async (newLimit: number, oldLimit: number) => {
+            if (!query) return;
+            const limit = newLimit - oldLimit;
+            if (limit <= 0) return;
+            entities.isUpdating = true;
+            await query.next(limit);
+            entities.isUpdating = false;
         });
 
-    if (isRef(options.limit))
-        watch(options.limit, () => {
-            limits = transformLimits(options.limit.value);
-            fetch();
+    if (isRef(options.search))
+        watch(options.search, async () => {
+            search = options.search.value;
+            await fetch();
         });
 
     fetch();
