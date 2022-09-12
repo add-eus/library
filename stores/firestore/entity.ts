@@ -15,12 +15,12 @@ function initClassDeclaration(
     target: any,
     markRaw: any,
     reactive: any,
-    DocumentReference: DocumentReference,
-    EntityMetaData: EntityMetaData,
-    DocumentSnapshot: DocumentSnapshot
+    DocumentReference: any,
+    EntityMetaData: any,
+    DocumentSnapshot: any
 ) {
     // eslint-disable-next-line prefer-const
-    let init: Function = () => {};
+    /*let init: Function = () => {};
     eval(`init = function (target, markRaw, reactive, DocumentReference, EntityMetaData, DocumentSnapshot) {
             return class ${target.name} extends target {
                 $metadata = markRaw(new EntityMetaData(this));
@@ -64,7 +64,41 @@ function initClassDeclaration(
         DocumentReference,
         EntityMetaData,
         DocumentSnapshot
-    );
+    );*/
+    return class extends target {
+        $metadata = markRaw(new EntityMetaData(this));
+        constructor(querySnapshot?: DocumentSnapshot | DocumentReference) {
+            super();
+
+            const reactivity = new Proxy(reactive(this), {
+                get(obj, key) {
+                    obj.$metadata.emit("get", key);
+                    return obj[key];
+                },
+                set(obj, key, value) {
+                    obj[key] = value;
+                    obj.$metadata.emit("set", key, value);
+                    return true;
+                },
+            });
+
+            if (Array.isArray(this.constructor.onInitialize)) {
+                this.constructor.onInitialize.map((callback) => {
+                    return callback.call(reactivity, this.$metadata);
+                });
+            }
+
+            if (querySnapshot instanceof DocumentReference) {
+                this.$metadata.setReference(querySnapshot);
+            } else if (querySnapshot instanceof DocumentSnapshot) {
+                this.$metadata.setReference(querySnapshot.ref);
+                this.$metadata.origin = querySnapshot.data();
+                this.$metadata.emit("parse", this.$metadata.origin);
+                this.$metadata.isFullfilled = true;
+            }
+            return reactivity;
+        }
+    };
 }
 function Entity(options?: { collection?: string }) {
     return function (target: any) {
