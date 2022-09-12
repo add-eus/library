@@ -22,20 +22,19 @@ let day = 0,
     year = 0;
 
 function parseValue(modelValue: moment) {
-    console.log(modelValue);
-    day = modelValue.dates();
-    month = modelValue.months();
-    year = modelValue.years();
-    return [modelValue.hours(), modelValue.minutes()];
+    day = modelValue.date();
+    month = modelValue.month();
+    year = modelValue.year();
+    return [modelValue.hour(), modelValue.minute()];
 }
 
 function format(hour: number, minute: number) {
     const date = moment();
-    date.years(year);
-    date.months(month);
-    date.dates(day);
-    date.hours(hour);
-    date.minutes(minute);
+    date.year(year);
+    date.month(month);
+    date.date(day);
+    date.hour(hour);
+    date.minute(minute);
     return date;
 }
 

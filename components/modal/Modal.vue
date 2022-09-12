@@ -11,10 +11,16 @@ defineProps<ModalProps>();
         :open="modal.isClosed"
         :title="modal.title"
         actions="center"
+        :noclose="modal.isCloseDisabled"
         @close="modal.close()"
     >
         <template #content>
-            <component v-bind="modal.props" :is="modal.component" v-on="modal.events" />
+            <component
+                v-bind="modal.props"
+                :is="modal.component"
+                :ref="(ref) => (modal.reference = ref)"
+                v-on="modal.events"
+            />
         </template>
         <template #action>
             <component

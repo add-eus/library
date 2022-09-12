@@ -28,13 +28,12 @@ export class EntityMetaData extends EventEmitter {
 
     async refresh() {
         if (!this.reference) return;
+        this.isFullfilled = true;
         const querySnapshot = await getDoc(this.reference);
 
         this.origin = querySnapshot.data();
 
         this.emit("parse", this.origin);
-
-        this.isFullfilled = true;
     }
 
     setReference(reference: DocumentReference) {
@@ -48,6 +47,7 @@ export class EntityMetaData extends EventEmitter {
                     isFirstFetch = false;
                     return;
                 }
+                console.log("onSnapshot", document.ref.path);
                 this.emit("parse", document.data());
             }
         );

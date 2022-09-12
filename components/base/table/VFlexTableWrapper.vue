@@ -142,6 +142,7 @@ export default defineComponent({
         "update:limit",
         "update:searchTerm",
         "update:infiniteScroll",
+        "update:loading",
     ],
     setup(props, context) {
         const rawData = ref<any[]>();
@@ -507,7 +508,7 @@ export default defineComponent({
                         this.onScroll();
                 });
             }
-        }, 100),
+        }, 300),
     },
 });
 </script>

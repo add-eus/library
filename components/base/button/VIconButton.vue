@@ -152,7 +152,9 @@ export default defineComponent({
                         class: ["button", ...classes.value],
                         onClick: () => haptic.vibrate(),
                     },
-                    iconWrapper
+                    {
+                        default: () => [iconWrapper]
+                    }
                 );
             } else if (props.href) {
                 return h(
@@ -163,7 +165,9 @@ export default defineComponent({
                         class: classes.value,
                         onClick: () => haptic.vibrate(),
                     },
-                    iconWrapper
+                    {
+                        default: () => [iconWrapper]
+                    }
                 );
             }
 
@@ -176,7 +180,9 @@ export default defineComponent({
                     class: ["button", ...classes.value],
                     onClick: () => haptic.vibrate(),
                 },
-                iconWrapper
+                {
+                    default: () => [iconWrapper]
+                }
             );
         };
     },

@@ -63,6 +63,7 @@ onUnmounted(() => {
                             class="v-modal-close ml-auto"
                             aria-label="close"
                             tabindex="0"
+                            :disabled="noclose"
                             @keydown.space.prevent="emit('close')"
                             @click="emit('close')"
                         >

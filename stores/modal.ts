@@ -1,4 +1,12 @@
-import { ref, createVNode, render, VNode, getCurrentInstance } from "vue";
+import {
+    ref,
+    createVNode,
+    render,
+    VNode,
+    getCurrentInstance,
+    reactive,
+    shallowReactive,
+} from "vue";
 import { until } from "@vueuse/core";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import ModalComponent from "../components/modal/Modal.vue";
@@ -12,17 +20,28 @@ export class Modal {
     actions: any[] = [];
     events: any = {};
     title: string = "";
+    reference: any = null;
+    isCloseDisabled: boolean = false;
 
     constructor(component: any, options: any) {
         this.component = component;
         this.title = options.title || "";
         this.actions = options.actions || [];
+        this.isCloseDisabled = options.isCloseDisabled || false;
         this.props = options.props || {};
         this.events = options.events || {};
     }
 
     close() {
         this.isClosed.value = true;
+    }
+
+    disableClose() {
+        this.isCloseDisabled = true;
+    }
+
+    enableClose() {
+        this.isCloseDisabled = false;
     }
 }
 

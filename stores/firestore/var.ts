@@ -1,9 +1,9 @@
 import moment from "moment-with-locales-es6";
 import { doc, GeoPoint } from "firebase/firestore";
-import { useFirebase } from "/@src/lib/stores/firebase";
+import { useFirebase, useDoc } from "./index";
 import { onInitialize, EntityORM, isEntityClass } from "./entity";
 import { EntityMetaData } from "./entityMetadata";
-import { watch } from "vue";
+import { reactive, watch } from "vue";
 
 function parseData(toTransform: any | any[], type: any): any {
     if (!toTransform) return undefined;
@@ -17,7 +17,21 @@ function parseData(toTransform: any | any[], type: any): any {
     } else if (type == GeoPoint) {
         return new GeoPoint(toTransform._lat, toTransform._long);
     } else if (isEntityClass(type)) {
+        const model = useDoc(type, toTransform);
+        const childMetadata = model.$metadata;
+        childMetadata.on("get", (name: string) => {
+            if (
+                !childMetadata.isFullfilled &&
+                typeof name == "string" &&
+                !name.startsWith("$") &&
+                name != "constructor"
+            ) {
+                childMetadata.refresh();
+            }
+        });
+        /*
         const firebase = useFirebase();
+
 
         const documentReference = doc(
             firebase.firestore,
@@ -28,13 +42,14 @@ function parseData(toTransform: any | any[], type: any): any {
         childMetadata.on("get", (name: string) => {
             if (
                 !childMetadata.isFullfilled &&
+                typeof name == "string" &&
                 !name.startsWith("$") &&
                 name != "constructor"
             ) {
                 childMetadata.refresh();
             }
         });
-        //model.$assign();
+        //model.$assign();*/
         return model;
     }
     return toTransform;
@@ -77,10 +92,10 @@ function isEqual(a: any, b: any, type: any): boolean {
 export function Var(type: any) {
     return function (target: any, name: string) {
         onInitialize(target, function (this: any, metadata: EntityMetaData) {
-            metadata.properties[name] = {
-                isChanged: false,
-                isInitialized: false,
-            };
+            if (!metadata.properties[name]) metadata.properties[name] = reactive({});
+
+            metadata.properties[name].isChanged = false;
+            metadata.properties[name].isInitialized = false;
 
             this[name] = parseData(this[name], type);
             let originalPropertyValue: any = this[name];
@@ -98,7 +113,8 @@ export function Var(type: any) {
 
             metadata.on("parse", (raw: any) => {
                 if (metadata.properties[name].isChanged) return;
-                this[name] = parseData(raw[name], type);
+                const parsed = parseData(raw[name], type);
+                if (parsed != this[name]) this[name] = parsed;
                 originalPropertyValue = this[name];
                 metadata.properties[name].isInitialized = true;
                 metadata.properties[name].isChanged = false;
@@ -110,9 +126,7 @@ export function Var(type: any) {
             });
 
             metadata.on("saved", () => {
-                Object.values(metadata.properties).forEach((property) => {
-                    property.isChanged = false;
-                });
+                metadata.properties[name].isChanged = false;
             });
 
             metadata.on("destroy", () => {

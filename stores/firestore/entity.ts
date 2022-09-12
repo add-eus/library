@@ -94,7 +94,6 @@ class EntityORM {
             );
         }
 
-        console.log(raw);
         await setDoc(this.$metadata.reference, raw);
 
         this.$metadata.emit("saved");

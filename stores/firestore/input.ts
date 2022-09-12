@@ -1,7 +1,18 @@
-import {} from "./entity";
+import { reactive } from "vue";
+import { onInitialize } from "./entity";
+import { EntityMetaData } from "./entityMetadata";
 
 export function Input(type: string, options: any = {}) {
     return function (target: any, name: string) {
+        onInitialize(target, function (this: any, metadata: EntityMetaData) {
+            if (!metadata.properties[name]) metadata.properties[name] = reactive({});
+            metadata.properties[name].input = {
+                type,
+                validation: [],
+                attrs: options,
+                errors: [],
+            };
+        });
         /*setPropertyMetadata(target, name, "input", {
             type,
             options,

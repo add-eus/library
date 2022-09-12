@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isRef } from "vue";
 import { VFlexTableColumn } from "./VFlexTable.vue";
 
 export interface VFlexTableCellProps {
@@ -26,7 +27,7 @@ const props = withDefaults(defineProps<VFlexTableCellProps>(), {
             props.column.align === 'center' && 'cell-center',
             props.column.cellClass,
         ]"
-        :data-th="props.column.label || undefined"
+        :data-th="isRef(column.label) ? column.label.value : column.label || undefined"
     >
         <slot></slot>
     </div>

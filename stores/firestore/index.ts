@@ -43,6 +43,10 @@ function transformOrders(orderOptions: [] = []): QueryConstraint[] {
     });
 }
 
+export class Collection extends Array {
+    isUpdating: boolean = false;
+}
+
 /**
  * Get an updated collection from firestore
  *
@@ -51,10 +55,11 @@ function transformOrders(orderOptions: [] = []): QueryConstraint[] {
  * @returns ref<any[]>
  */
 export function useCollection(collectionModel: any, options: any) {
-    const entities = shallowReactive<any>([]);
+    const entities = shallowReactive<any>(new Collection());
     const firebase = useFirebase();
     const algoliaIndex = algoliaClient.initIndex(collectionModel.collectionName);
     const collectionRef = collection(firebase.firestore, collectionModel.collectionName);
+    console.log(entities);
 
     entities.isUpdating = true;
 
@@ -142,10 +147,7 @@ export function useDoc(collectionModel: any, id?: string) {
     if (!id) return newDoc(collectionModel);
     const { firestore } = useFirebase();
     const reference = doc(collection(firestore, collectionModel.collectionName), id);
-    const model = new collectionModel(reference);
-    model.$metadata.refresh();
-    const entity = ref(<EntityORM>model);
-    return entity;
+    return transform(reference, collectionModel);
 }
 
 export function newDoc(collectionModel: any) {
