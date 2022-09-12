@@ -36,9 +36,9 @@ const onMounted: DirectiveHook = (el: any, bindings) => {
 };
 
 const onUpdated: DirectiveHook = (el: any, bindings) => {
-    const component = el.__vueParentComponent;
-    const translated = translate(bindings.value, component);
-    if (component.translationUnwatch) component.translationUnwatch();
+    const component = el;
+    const translated = translate(bindings.value, el);
+    if (el.translationUnwatch) el.translationUnwatch();
     component.translationUnwatch = watch(translated, () => {
         updateTranslation(translated.value, el, component, bindings.modifiers);
     });

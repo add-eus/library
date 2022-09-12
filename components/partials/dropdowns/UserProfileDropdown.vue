@@ -144,7 +144,7 @@ const placeColumns = {
     </VDropdown>
     <TranslateNamespace path=".place.modal">
         <VModal
-            v-t.title="'.title'"
+            :title="translate('.title').value"
             :open="isPlaceSelectionOpen"
             size="medium"
             actions="right"

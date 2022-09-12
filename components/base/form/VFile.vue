@@ -89,6 +89,7 @@ async function process(fieldName, file, metadata, load, error, progress) {
     }
 }
 async function remove(url, load) {
+    console.log("remove", url);
     try {
         await storage.remove(url);
         load();
@@ -152,7 +153,7 @@ function emitChangedEvent() {
                 ? '<span class=&quot;icon&quot;><i aria-hidden=&quot;true&quot; class=&quot;fas fa-file-upload&quot;></i></span><span>' +
                   label +
                   '</span>'
-                : '<i class=&quot;&quot;lnil&quot; lnil-cloud-upload&quot;></i>'
+                : '<i class=&quot;lnil lnil-cloud-upload&quot;></i>'
         "
         :accepted-file-types="accepts"
         :image-preview-height="300"
