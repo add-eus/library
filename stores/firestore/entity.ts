@@ -16,19 +16,19 @@ function Entity(options?: { collection?: string }) {
         target.collectionName =
             (options && options.collection) || lowerCaseFirst(target.name) + "s";
 
-        //target.prototype = EntityORM.prototype;
         let classDeclaration: any;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const EntityMetaDataClass = EntityMetaData,
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             DocumentReferenceClass = DocumentReference,
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             DocumentSnapshotClass = DocumentSnapshot,
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             reactiveInitiator = reactive,
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             markRawInitiator = markRaw;
-        eval(`classDeclaration = class ${target.name} extends target {
+
+        EntityMetaDataClass;
+        DocumentReferenceClass;
+        DocumentSnapshotClass;
+        reactiveInitiator;
+        markRawInitiator;
+        (0, eval)(`classDeclaration = class ${target.name} extends target {
             $metadata = markRawInitiator(new EntityMetaDataClass(this));
             constructor(querySnapshot) {
                 super();
