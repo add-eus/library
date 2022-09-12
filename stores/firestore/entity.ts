@@ -11,57 +11,74 @@ import { useFirebase } from "../firebase";
 import { EntityMetaData } from "./entityMetadata";
 import { lowerCaseFirst } from "../text";
 
+function initClassDeclaration(
+    target: any,
+    markRaw: any,
+    reactive: any,
+    DocumentReference: DocumentReference,
+    EntityMetaData: EntityMetaData,
+    DocumentSnapshot: DocumentSnapshot
+) {
+    // eslint-disable-next-line prefer-const
+    let init: Function = () => {};
+    eval(`init = function (target, markRaw, reactive, DocumentReference, EntityMetaData, DocumentSnapshot) {
+            return class ${target.name} extends target {
+                $metadata = markRaw(new EntityMetaData(this));
+                constructor(querySnapshot) {
+                    super();
+
+                    const reactivity = new Proxy(reactive(this), {
+                        get(obj, key) {
+                            obj.$metadata.emit('get', key);
+                            return obj[key];
+                        },
+                        set(obj, key, value) {
+                            obj[key] = value;
+                            obj.$metadata.emit('set', key, value);
+                            return true;
+                        }
+                    });
+
+                    if (Array.isArray(this.constructor.onInitialize)) {
+                        this.constructor.onInitialize.map((callback) => {
+                            return callback.call(reactivity, this.$metadata);
+                        });
+                    }
+            
+                    if (querySnapshot instanceof DocumentReference) {
+                        this.$metadata.setReference(querySnapshot);
+                    } else if (querySnapshot instanceof DocumentSnapshot) {
+                        this.$metadata.setReference(querySnapshot.ref);
+                        this.$metadata.origin = querySnapshot.data();
+                        this.$metadata.emit('parse', this.$metadata.origin);
+                        this.$metadata.isFullfilled = true;
+                    }
+                    return reactivity;
+                }
+            }
+        }`);
+    return init(
+        target,
+        markRaw,
+        reactive,
+        DocumentReference,
+        EntityMetaData,
+        DocumentSnapshot
+    );
+}
 function Entity(options?: { collection?: string }) {
     return function (target: any) {
         target.collectionName =
             (options && options.collection) || lowerCaseFirst(target.name) + "s";
 
-        let classDeclaration: any;
-        const EntityMetaDataClass = EntityMetaData,
-            DocumentReferenceClass = DocumentReference,
-            DocumentSnapshotClass = DocumentSnapshot,
-            reactiveInitiator = reactive,
-            markRawInitiator = markRaw;
-
-        EntityMetaDataClass;
-        DocumentReferenceClass;
-        DocumentSnapshotClass;
-        reactiveInitiator;
-        markRawInitiator;
-        (0, eval)(`classDeclaration = class ${target.name} extends target {
-            $metadata = markRawInitiator(new EntityMetaDataClass(this));
-            constructor(querySnapshot) {
-                super();
-
-                const reactivity = new Proxy(reactiveInitiator(this), {
-                    get(obj, key) {
-                        obj.$metadata.emit('get', key);
-                        return obj[key];
-                    },
-                    set(obj, key, value) {
-                        obj[key] = value;
-                        obj.$metadata.emit('set', key, value);
-                        return true;
-                    }
-                });
-
-                if (Array.isArray(this.constructor.onInitialize)) {
-                    this.constructor.onInitialize.map((callback) => {
-                        return callback.call(reactivity, this.$metadata);
-                    });
-                }
-        
-                if (querySnapshot instanceof DocumentReferenceClass) {
-                    this.$metadata.setReference(querySnapshot);
-                } else if (querySnapshot instanceof DocumentSnapshotClass) {
-                    this.$metadata.setReference(querySnapshot.ref);
-                    this.$metadata.origin = querySnapshot.data();
-                    this.$metadata.emit('parse', this.$metadata.origin);
-                    this.$metadata.isFullfilled = true;
-                }
-                return reactivity;
-            }
-        }`);
+        const classDeclaration = initClassDeclaration(
+            target,
+            markRaw,
+            reactive,
+            DocumentReference,
+            EntityMetaData,
+            DocumentSnapshot
+        );
 
         const prototypeKeys: string[] = Object.getOwnPropertyNames(EntityORM.prototype);
         prototypeKeys.forEach((key) => {
