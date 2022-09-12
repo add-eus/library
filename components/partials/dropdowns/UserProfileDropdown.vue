@@ -155,6 +155,7 @@ const placeColumns = {
                     :hide-add="true"
                     :model="Place"
                     :columns="placeColumns"
+                    search
                     :filters="{
                         owners: {
                             comparator: 'array-contains',

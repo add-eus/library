@@ -12,6 +12,7 @@ import { acceptHMRUpdate, defineStore } from "pinia";
 import ModalComponent from "../components/modal/Modal.vue";
 import PromptComponent from "../components/modal/Prompt.vue";
 import VButton from "../components/base/button/VButton.vue";
+import { getApp } from "/@src/entry-client";
 
 export class Modal {
     isClosed = ref(false);
@@ -45,8 +46,9 @@ export class Modal {
     }
 }
 
-export const useModal = defineStore("modal", function () {
-    const instance = getCurrentInstance();
+export const useModal = function () {
+    const { app } = getApp();
+    console.log(app);
 
     async function prompt(
         titleArg: string,
@@ -114,7 +116,7 @@ export const useModal = defineStore("modal", function () {
             modal: modal,
         });
 
-        vnode.appContext = { ...instance.appContext };
+        vnode.appContext = { ...app._context };
         render(vnode, document.body);
         until(modal.isClosed)
             .toBe(true)
@@ -130,7 +132,7 @@ export const useModal = defineStore("modal", function () {
         prompt,
         close,
     };
-});
+};
 
 /**
  * Pinia supports Hot Module replacement so you can edit your stores and

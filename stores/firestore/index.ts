@@ -59,7 +59,6 @@ export function useCollection(collectionModel: any, options: any) {
     const firebase = useFirebase();
     const algoliaIndex = algoliaClient.initIndex(collectionModel.collectionName);
     const collectionRef = collection(firebase.firestore, collectionModel.collectionName);
-    console.log(entities);
 
     entities.isUpdating = true;
 

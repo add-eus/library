@@ -11,7 +11,7 @@ import {
     deleteUser,
     signOut,
     ConfirmationResult,
-    ApplicationVerifier
+    ApplicationVerifier,
 } from "firebase/auth";
 
 import { collection, addDoc } from "firebase/firestore";
@@ -20,7 +20,7 @@ import { useStorage } from "@vueuse/core";
 
 import { useFirebase } from "/@src/lib/stores/firebase";
 
-import {Visit} from "/@src/lib/models/visit";
+import { Visit } from "/@src/lib/models/visit";
 
 export type UserData = Record<string, any> | null;
 
@@ -85,25 +85,22 @@ export const useUserSession = defineStore("userSession", () => {
         return user;
     }
 
-    function updateUser(data: {displayName?: string, photoUrl?: string}) {
+    function updateUser(data: { displayName?: string; photoUrl?: string }) {
         const user = getUser();
-        if (!user.value)
-            throw new Error("No user");
+        if (!user.value) throw new Error("No user");
 
         return updateProfile(user.value, data);
     }
 
-    async function hasRole(role: string) {
-        if (!(await isLoggedIn())) return false;
-
+    function hasRole(role: string) {
         if (!user.value) return false;
         const customAttributes = JSON.parse(user.value.reloadUserInfo.customAttributes);
         return customAttributes.roles.indexOf(role) >= 0;
     }
 
-    async function hasOneRole(roles: string[]) {
+    function hasOneRole(roles: string[]) {
         if (typeof roles === "string") return hasRole(roles);
-        for (let i = 0; i < roles.length; i++) if (await hasRole(roles[i])) return true;
+        for (let i = 0; i < roles.length; i++) if (hasRole(roles[i])) return true;
         return false;
     }
 
@@ -126,13 +123,15 @@ export const useUserSession = defineStore("userSession", () => {
     }
 
     async function registerVisit(visit: Visit) {
-        if (!user.value)
-            throw new Error("No User");
+        if (!user.value) throw new Error("No User");
         visit.customer = user.value.uid;
         await addDoc(collection(database, "visits"), visit);
     }
 
-    async function loginOrRegisterWithPhoneNumber(phoneNumber: string, recaptchaVerifier: ApplicationVerifier): Promise<ConfirmationResult> {
+    async function loginOrRegisterWithPhoneNumber(
+        phoneNumber: string,
+        recaptchaVerifier: ApplicationVerifier
+    ): Promise<ConfirmationResult> {
         return await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
     }
 
@@ -141,14 +140,13 @@ export const useUserSession = defineStore("userSession", () => {
     }
 
     async function deleteAccount() {
-        if (!user.value)
-            throw new Error("No User");
+        if (!user.value) throw new Error("No User");
         return deleteUser(user.value);
     }
 
     let isLoaded = false;
 
-    const callbacks: {[key: string]: Function[]} = {};
+    const callbacks: { [key: string]: Function[] } = {};
 
     function on(name: string, callback: Function) {
         if (!callbacks[name]) callbacks[name] = [];

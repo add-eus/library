@@ -4,9 +4,9 @@ import { useRoute } from "vue-router";
 
 import type { SidebarTheme } from "/@src/lib/components/navigation/desktop/Sidebar.vue";
 import { useViewWrapper } from "/@src/lib/stores/viewWrapper";
-import { useModal } from "/@src/lib/stores/modal";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
+import { useUserSession } from "/@src/lib/stores/userSession";
 
 const props = withDefaults(
     defineProps<{
@@ -22,8 +22,8 @@ const props = withDefaults(
     }
 );
 
+const userSession = useUserSession();
 const viewWrapper = useViewWrapper();
-const modal = useModal();
 const route = useRoute();
 const { t } = useI18n();
 const isMobileSidebarOpen = ref(false);
@@ -35,7 +35,8 @@ const rootRoutes = router.getRoutes().filter((route) => {
         route.meta.icon &&
         route.meta.title &&
         route.name &&
-        route.name.match(/^dashboard-[a-z]+$/)
+        route.name.match(/^dashboard-[a-z]+$/) &&
+        (!route.meta.roles || hasRole(route))
     );
 });
 
@@ -53,7 +54,7 @@ function fetchChildrenRoutes() {
             )
                 return false;
 
-            return isRootRouteActive(childRoute);
+            return isRootRouteActive(childRoute) && hasRole(childRoute);
         })
         .map((route: any) => {
             return {
@@ -99,6 +100,12 @@ function isRootRouteActive(rootRoute: any) {
     const match = route.name.match(/^(dashboard-[a-z]+)/);
     if (!match) return false;
     return rootRoute.name.startsWith(match[1]);
+}
+
+function hasRole(route) {
+    if (route.meta.roles) return userSession.hasOneRole(route.meta.roles);
+    console.log(route);
+    return true;
 }
 </script>
 
