@@ -11,14 +11,7 @@ import { useFirebase } from "../firebase";
 import { EntityMetaData } from "./entityMetadata";
 import { lowerCaseFirst } from "../text";
 
-function initClassDeclaration(
-    target: any,
-    markRaw: any,
-    reactive: any,
-    DocumentReference: any,
-    EntityMetaData: any,
-    DocumentSnapshot: any
-) {
+function initClassDeclaration(target: any) {
     // eslint-disable-next-line prefer-const
     /*let init: Function = () => {};
     eval(`init = function (target, markRaw, reactive, DocumentReference, EntityMetaData, DocumentSnapshot) {
@@ -71,11 +64,11 @@ function initClassDeclaration(
             super();
 
             const reactivity = new Proxy(reactive(this), {
-                get(obj, key) {
+                get(obj, key: string) {
                     obj.$metadata.emit("get", key);
                     return obj[key];
                 },
-                set(obj, key, value) {
+                set(obj: { [key: string]: any }, key: string, value: any) {
                     obj[key] = value;
                     obj.$metadata.emit("set", key, value);
                     return true;
@@ -83,7 +76,7 @@ function initClassDeclaration(
             });
 
             if (Array.isArray(this.constructor.onInitialize)) {
-                this.constructor.onInitialize.map((callback) => {
+                this.constructor.onInitialize.map((callback: Function) => {
                     return callback.call(reactivity, this.$metadata);
                 });
             }
@@ -105,14 +98,7 @@ function Entity(options?: { collection?: string }) {
         target.collectionName =
             (options && options.collection) || lowerCaseFirst(target.name) + "s";
 
-        const classDeclaration = initClassDeclaration(
-            target,
-            markRaw,
-            reactive,
-            DocumentReference,
-            EntityMetaData,
-            DocumentSnapshot
-        );
+        const classDeclaration = initClassDeclaration(target);
 
         const prototypeKeys: string[] = Object.getOwnPropertyNames(EntityORM.prototype);
         prototypeKeys.forEach((key) => {
