@@ -51,7 +51,7 @@ function change() {
             @change="change"
         />
         <span></span>
-        <slot>{{ props.label }}</slot>
+        <slot><Translate>props.label</Translate></slot>
     </label>
 </template>
 

@@ -78,6 +78,7 @@ export class Query extends EventEmitter {
             const q = query(this.reference, ...constraints);
 
             return new Promise((resolve, reject) => {
+                console.log(this.reference, constraints);
                 this.on(
                     "destroy",
                     onSnapshot(

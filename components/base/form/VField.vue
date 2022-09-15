@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<VFieldProps>(), {
     label: undefined,
 });
 
-const vField = useVField(props.id);
+const vField = useVField();
 const slots = useSlots();
 const hasLabel = computed(() => Boolean(slots?.label?.() || props.label));
 
@@ -39,7 +39,9 @@ provide(useVFieldSymbol, vField);
         <template v-if="hasLabel && props.horizontal">
             <div class="field-label is-normal">
                 <label class="label" :for="vField.id">
-                    <slot name="label">{{ props.label }}</slot>
+                    <slot name="label"
+                        ><Translate>{{ props.label }}</Translate></slot
+                    >
                 </label>
             </div>
             <div class="field-body">
@@ -48,7 +50,9 @@ provide(useVFieldSymbol, vField);
         </template>
         <template v-else-if="hasLabel">
             <label class="label" :for="vField.id">
-                <slot name="label">{{ props.label }}</slot>
+                <slot name="label"
+                    ><Translate>{{ props.label }}</Translate></slot
+                >
             </label>
 
             <slot></slot>

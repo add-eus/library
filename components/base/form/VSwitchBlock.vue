@@ -72,7 +72,9 @@ const blockSwitchId = `block-switch-${++instances}`;
 
         <div v-if="props.label" class="text">
             <label :for="blockSwitchId">
-                <span>{{ props.label }}</span>
+                <span
+                    ><Translate>{{ props.label }}</Translate></span
+                >
             </label>
         </div>
     </div>

@@ -38,7 +38,7 @@ function showMore() {
 
 const placeColumns = {
     name: {
-        label: translate(".place.modal.name"),
+        label: ".place.modal.name",
         key: "name",
         media: true,
         grow: true,
@@ -144,7 +144,7 @@ const placeColumns = {
     </VDropdown>
     <TranslateNamespace path=".place.modal">
         <VModal
-            :title="translate('.title').value"
+            title=".title"
             :open="isPlaceSelectionOpen"
             size="medium"
             actions="right"

@@ -38,6 +38,8 @@ export const useUserSession = defineStore("userSession", () => {
     const user = ref<User | null>(auth.currentUser);
     const visits = useStorage("visits", <Visit[]>[]);
 
+    console.log(user);
+
     const loading = ref(true);
 
     const isAdmin = computed(() => {

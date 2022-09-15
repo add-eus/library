@@ -57,7 +57,7 @@ onUnmounted(() => {
                 <div class="modal-card">
                     <header class="modal-card-head">
                         <h3>
-                            <slot name="title">{{ title }}</slot>
+                            <slot name="title"><Translate>title</Translate></slot>
                         </h3>
                         <button
                             class="v-modal-close ml-auto"
