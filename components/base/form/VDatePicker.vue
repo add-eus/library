@@ -37,7 +37,7 @@ watch(
 
 watch(vModel, () => {
     const value = formatMoment(vModel.value);
-    if (!value.isSame(props.modelValue)) emit("update:modelValue", value);
+    if (isDate || !value.isSame(props.modelValue)) emit("update:modelValue", value);
 });
 </script>
 
