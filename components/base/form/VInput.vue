@@ -25,10 +25,10 @@ const props = withDefaults(defineProps<VInputProps>(), {
 });
 
 let tempValue: moment;
-const value = ref(parseValue(props.modelValue));
+const modelValue = ref(parseValue(props.modelValue));
 
-watch(value, () => {
-    let v = value.value;
+watch(modelValue, () => {
+    let v = modelValue.value;
     if (props.type == "date") {
         const matched = v.match(/([0-9]+)-([0-9]+)-([0-9]+)/);
         tempValue.year(parseInt(matched[1]));
@@ -46,7 +46,8 @@ watch(value, () => {
 watch(
     () => props.modelValue,
     () => {
-        value.value = parseValue(props.modelValue);
+        const parsedValue = parseValue(props.modelValue);
+        modelValue.value = parsedValue;
     }
 );
 
@@ -70,7 +71,10 @@ function parseValue(modelValue: any) {
 function parseDate(date: moment = moment()) {
     if (props.type == "date") {
         tempValue = props.modelValue;
-        return `${date.year()}-${date.month() + 1}-${date.date()}`;
+        return `${date.year()}-${(date.month() + 1).toString().padStart(2, "0")}-${date
+            .date()
+            .toString()
+            .padStart(2, "0")}`;
     } else if (props.type == "time") {
         tempValue = props.modelValue;
         return `${date.hour()}:${(date.minute() + "").padStart(2, "0")}`;
@@ -78,13 +82,13 @@ function parseDate(date: moment = moment()) {
     return date;
 }
 
-const placeHolderTranslated = translate(props.placeholder);
+const placeHolderTranslated = translate(props.placeholder || "");
 </script>
 
 <template>
     <input
         :id="vFieldContext.id"
-        v-model="value"
+        v-model="modelValue"
         :class="classes"
         :name="vFieldContext.id"
         :placeholder="placeHolderTranslated"

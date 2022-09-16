@@ -17,25 +17,17 @@ const props = withDefaults(defineProps<VInputProps>(), {
     minuteStep: 1,
 });
 
-let day = 0,
-    month = 0,
-    year = 0;
-
+let tempValue: moment | undefined;
 function parseValue(modelValue: moment) {
-    day = modelValue.date();
-    month = modelValue.month();
-    year = modelValue.year();
+    tempValue = modelValue;
     return [modelValue.hour(), modelValue.minute()];
 }
 
 function format(hour: number, minute: number) {
-    const date = moment();
-    date.year(year);
-    date.month(month);
-    date.date(day);
-    date.hour(hour);
-    date.minute(minute);
-    return date;
+    const value = tempValue.clone();
+    value.hour(hour);
+    value.minute(minute);
+    return value;
 }
 
 const parsed = parseValue(props.modelValue || moment());

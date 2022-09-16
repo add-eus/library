@@ -152,6 +152,7 @@ const placeColumns = {
         >
             <template #content>
                 <VCollection
+                    v-if="userSession.getUser().value"
                     :hide-add="true"
                     :model="Place"
                     :columns="placeColumns"
