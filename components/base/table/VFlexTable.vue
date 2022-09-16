@@ -73,7 +73,7 @@ const columns = computed(() => {
             } else {
                 columns.push({
                     format: defaultFormatter,
-                    label: key,
+                    label: "." + key,
                     key,
                     ...(label as any),
                 });
@@ -83,7 +83,7 @@ const columns = computed(() => {
         for (const [key] of Object.entries(data.value[0])) {
             columns.push({
                 format: defaultFormatter,
-                label: key,
+                label: "." + key,
                 key,
             });
         }
@@ -91,6 +91,7 @@ const columns = computed(() => {
 
     return columns;
 });
+console.log(columns);
 
 function getValueByPath(row: any, key: any) {
     return eval(`row.${key}`);
@@ -133,10 +134,9 @@ function getValueByPath(row: any, key: any) {
                                 column.align === 'end' && 'cell-end',
                                 column.align === 'center' && 'cell-center',
                             ]"
-                            >{{
-                                isRef(column.label) ? column.label.value : column.label
-                            }}</span
                         >
+                            <Translate>{{ column.label }}</Translate>
+                        </span>
                     </slot>
                 </template>
             </div>
@@ -511,14 +511,12 @@ function getValueByPath(row: any, key: any) {
                         }
                     }
 
-                    &[data-th] {
-                        &::before {
-                            content: attr(data-th);
-                            font-size: 0.9rem;
-                            text-transform: uppercase;
-                            font-weight: 500;
-                            color: var(--muted-grey);
-                        }
+                    > .cell-title {
+                        font-size: 0.9rem;
+                        text-transform: uppercase;
+                        font-weight: 500;
+                        color: var(--muted-grey);
+                        margin-left: 0;
                     }
                 }
             }

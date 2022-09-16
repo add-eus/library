@@ -27,8 +27,10 @@ const props = withDefaults(defineProps<VFlexTableCellProps>(), {
             props.column.align === 'center' && 'cell-center',
             props.column.cellClass,
         ]"
-        :data-th="isRef(column.label) ? column.label.value : column.label || undefined"
     >
+        <span class="cell-title"
+            ><Translate>{{ column.label }}</Translate></span
+        >
         <slot></slot>
     </div>
 </template>
@@ -206,7 +208,7 @@ const props = withDefaults(defineProps<VFlexTableCellProps>(), {
             }
         }
 
-        &::before {
+        > .cell-title {
             display: none;
         }
     }
@@ -280,6 +282,10 @@ const props = withDefaults(defineProps<VFlexTableCellProps>(), {
     > .field {
         width: 100%;
     }
+
+    > .cell-title {
+        display: none;
+    }
 }
 
 .is-dark {
@@ -339,7 +345,7 @@ const props = withDefaults(defineProps<VFlexTableCellProps>(), {
         margin-bottom: 12px;
 
         &.no-label-mobile {
-            &::before {
+            > .cell-title {
                 display: none !important;
             }
         }
@@ -360,6 +366,10 @@ const props = withDefaults(defineProps<VFlexTableCellProps>(), {
             .text {
                 font-size: 1.2rem;
             }
+        }
+
+        > .cell-title {
+            display: initial;
         }
     }
 }

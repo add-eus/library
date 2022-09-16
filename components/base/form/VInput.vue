@@ -10,9 +10,9 @@ export interface VInputEmits {
 export interface VInputProps {
     raw?: boolean;
     modelValue?: any;
-    type: String;
+    type?: string;
     rounded?: boolean;
-    placeholder?: String | null;
+    placeholder?: string | null;
 }
 const vFieldContext = useVField();
 const { translate } = useTranslate();
@@ -21,6 +21,7 @@ const emits = defineEmits<VInputEmits>();
 const props = withDefaults(defineProps<VInputProps>(), {
     modelValue: "",
     placeholder: null,
+    type: "text",
 });
 
 let tempValue: moment;
@@ -87,5 +88,6 @@ const placeHolderTranslated = translate(props.placeholder);
         :class="classes"
         :name="vFieldContext.id"
         :placeholder="placeHolderTranslated"
+        :type="type"
     />
 </template>

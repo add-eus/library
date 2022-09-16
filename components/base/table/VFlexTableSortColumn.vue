@@ -1,6 +1,7 @@
 <script lang="ts">
 import { h, defineComponent, computed } from "vue";
 import { RouterLink, useRoute, RouteLocationOptions } from "vue-router";
+import Translate from "../translation/Translate.vue";
 
 export default defineComponent({
     props: {
@@ -112,8 +113,12 @@ export default defineComponent({
                                     : "fa:sort",
                             })
                         );
+                        let content: any = slotContent;
+                        if (!content) {
+                            content = h(Translate, {}, props.label);
+                        }
 
-                        return [slotContent ?? props.label, icon];
+                        return [content, icon];
                     },
                 }
             );
