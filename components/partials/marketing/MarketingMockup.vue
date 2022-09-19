@@ -42,7 +42,7 @@
                     />
 
                     <!--Mockup-->
-                    <img
+                    <!--img
                         class="light-image-l centered-mockup"
                         src="/@src/assets/illustrations/landing/app-1.png"
                         alt=""
@@ -51,7 +51,7 @@
                         class="dark-image-l centered-mockup"
                         src="/@src/assets/illustrations/landing/app-1-dark.png"
                         alt=""
-                    />
+                    /-->
                 </div>
                 <div class="columns">
                     <div class="column is-4">

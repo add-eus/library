@@ -185,7 +185,7 @@ watch(locale, () => {
                 </div>
 
                 <div class="img-wrap has-text-centered">
-                    <img
+                    <!--img
                         class="light-image"
                         src="/@src/assets/illustrations/right-panel/languages.svg"
                         alt
@@ -194,7 +194,7 @@ watch(locale, () => {
                         class="dark-image"
                         src="/@src/assets/illustrations/right-panel/languages-dark.svg"
                         alt
-                    />
+                    /-->
                 </div>
             </div>
         </div>

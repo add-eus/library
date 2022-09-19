@@ -10,7 +10,7 @@
             <!-- Feature -->
             <div class="columns is-vcentered side-feature">
                 <div class="column is-6 has-text-centered">
-                    <img
+                    <!--img
                         class="light-image-l featured-image"
                         src="/@src/assets/illustrations/landing/feature-1.png"
                         alt=""
@@ -19,7 +19,7 @@
                         class="dark-image-l featured-image"
                         src="/@src/assets/illustrations/landing/feature-1-dark.png"
                         alt=""
-                    />
+                    /-->
                 </div>
                 <div class="column is-5">
                     <h2 class="title m-b-10 is-centered-tablet-portrait">
@@ -37,7 +37,7 @@
                 <div
                     class="column is-6 has-text-centered h-hidden-desktop h-hidden-tablet-p h-hidden-tablet-l"
                 >
-                    <img
+                    <!--img
                         class="light-image-l featured-image"
                         src="/@src/assets/illustrations/landing/feature-2.svg"
                         alt=""
@@ -46,7 +46,7 @@
                         class="dark-image-l featured-image"
                         src="/@src/assets/illustrations/landing/feature-2-dark.svg"
                         alt=""
-                    />
+                    /-->
                 </div>
                 <div class="column is-5 is-offset-1">
                     <h2 class="title m-b-10 is-centered-tablet-portrait">
@@ -59,7 +59,7 @@
                     </p>
                 </div>
                 <div class="column is-6 has-text-centered h-hidden-mobile">
-                    <img
+                    <!--img
                         class="light-image-l featured-image"
                         src="/@src/assets/illustrations/landing/feature-2.svg"
                         alt=""
@@ -68,13 +68,13 @@
                         class="dark-image-l featured-image"
                         src="/@src/assets/illustrations/landing/feature-2-dark.svg"
                         alt=""
-                    />
+                    /-->
                 </div>
             </div>
             <!-- Feature -->
             <div class="columns is-vcentered side-feature">
                 <div class="column is-6 has-text-centered">
-                    <img
+                    <!--img
                         class="light-image-l featured-image"
                         src="/@src/assets/illustrations/landing/feature-3.svg"
                         alt=""
@@ -83,7 +83,7 @@
                         class="dark-image-l featured-image"
                         src="/@src/assets/illustrations/landing/feature-3-dark.svg"
                         alt=""
-                    />
+                    /-->
                 </div>
                 <div class="column is-5">
                     <h2 class="title m-b-10 is-centered-tablet-portrait">

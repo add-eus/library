@@ -15,7 +15,7 @@ const options = ref(["All Flights"]);
             <div class="column is-9">
                 <!--Booking bar-->
                 <div class="booking-bar-wrapper">
-                    <img
+                    <!--img
                         class="travel-illustration light-image"
                         src="/@src/assets/illustrations/dashboards/flights/travel.svg"
                         alt=""
@@ -24,7 +24,7 @@ const options = ref(["All Flights"]);
                         class="travel-illustration dark-image"
                         src="/@src/assets/illustrations/dashboards/flights/travel-dark.svg"
                         alt=""
-                    />
+                    /-->
                     <div class="booking-bar-info">
                         <i aria-hidden="true" class="lnil lnil-plane-alt"></i>
                         <div class="inner">
@@ -104,10 +104,10 @@ const options = ref(["All Flights"]);
                 <div class="flights">
                     <!--Flight-->
                     <a class="flight-card">
-                        <img
+                        <!--img
                             src="/@src/assets/illustrations/dashboards/flights/company1.svg"
                             alt=""
-                        />
+                        /-->
                         <div class="start">
                             <span>11:30 am</span>
                             <span>Paris ORLY</span>
@@ -130,10 +130,10 @@ const options = ref(["All Flights"]);
 
                     <!--Flight-->
                     <a class="flight-card">
-                        <img
+                        <!--img
                             src="/@src/assets/illustrations/dashboards/flights/company2.svg"
                             alt=""
-                        />
+                        /-->
                         <div class="start">
                             <span>09:30 am</span>
                             <span>Paris ORLY</span>
@@ -156,10 +156,10 @@ const options = ref(["All Flights"]);
 
                     <!--Flight-->
                     <a class="flight-card">
-                        <img
+                        <!--img
                             src="/@src/assets/illustrations/dashboards/flights/company1.svg"
                             alt=""
-                        />
+                        /-->
                         <div class="start">
                             <span>06:42 am</span>
                             <span>Paris ORLY</span>
@@ -182,10 +182,10 @@ const options = ref(["All Flights"]);
 
                     <!--Flight-->
                     <a class="flight-card">
-                        <img
+                        <!--img
                             src="/@src/assets/illustrations/dashboards/flights/company3.svg"
                             alt=""
-                        />
+                        /-->
                         <div class="start">
                             <span>07:23 am</span>
                             <span>Paris ORLY</span>
@@ -208,10 +208,10 @@ const options = ref(["All Flights"]);
 
                     <!--Flight-->
                     <a class="flight-card">
-                        <img
+                        <!--img
                             src="/@src/assets/illustrations/dashboards/flights/company1.svg"
                             alt=""
-                        />
+                        /-->
                         <div class="start">
                             <span>10:12 am</span>
                             <span>Paris ORLY</span>
