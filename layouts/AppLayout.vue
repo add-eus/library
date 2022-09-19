@@ -121,7 +121,7 @@ function hasRole(route) {
             >
                 <template #brand>
                     <RouterLink :to="{ name: 'dashboard' }" class="navbar-item is-brand">
-                        <img src="/logo.svg" alt="" width="38" height="38" />
+                        <!--img src="/logo.svg" alt="" width="38" height="38" /-->
                     </RouterLink>
 
                     <div class="brand-end">
