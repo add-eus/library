@@ -44,15 +44,15 @@ export const useFirebase = defineStore("firebase", () => {
     if (import.meta.env.DEV) {
         console.log("Development mode");
 
-        connectAuthEmulator(auth, "http://allanic.me:8012");
+        connectAuthEmulator(auth, `http://${import.meta.env.HOST || 'localhost'}:${import.meta.env.AUTH_PORT || 8012}`);
 
-        connectFirestoreEmulator(firestore, "allanic.me", 8014);
+        connectFirestoreEmulator(firestore, import.meta.env.HOST  || 'localhost', import.meta.env.FIRESTORE_PORT || 8014);
 
-        connectFunctionsEmulator(functions, "allanic.me", 8013);
+        connectFunctionsEmulator(functions, import.meta.env.HOST  || 'localhost', import.meta.env.FUNCTION_PORT || 8013);
 
-        connectDatabaseEmulator(database, "allanic.me", 8015);
+        connectDatabaseEmulator(database, import.meta.env.HOST  || 'localhost', import.meta.env.DATABASE_PORT || 8015);
 
-        connectStorageEmulator(storage, "allanic.me", 8016);
+        connectStorageEmulator(storage, import.meta.env.HOST  || 'localhost', import.meta.env.STORAGE_PORT || 8016);
 
         //self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
         recaptchaApiKey = "6LfXcS0hAAAAAByH_tVnK9GNlF0aIiY-q2bBsxoc";
