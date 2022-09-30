@@ -32,6 +32,10 @@
         box-shadow: none;
     }
 
+    .multiselect-tags-search {
+        box-shadow: none !important;
+    }
+
     .multiselect-caret {
         margin-right: 0.85rem;
     }
@@ -163,6 +167,14 @@
             font-family: var(--font);
             font-size: 0.95rem;
             color: var(--light-text);
+        }
+    }
+}
+
+.control {
+    &.has-validation {
+        .multiselect {
+            padding-right: 25px;
         }
     }
 }

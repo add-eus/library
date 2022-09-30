@@ -44,6 +44,7 @@ const themeClasses = computed(() => {
     <div class="main-sidebar" :class="[themeClasses]">
         <div class="sidebar-brand">
             <RouterLink :to="{ name: 'dashboard' }">
+                <slot name="logo"></slot>
                 <!--img src="/logo.svg" alt="" width="36px" /-->
             </RouterLink>
         </div>

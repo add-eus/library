@@ -13,6 +13,29 @@ import FilePondPluginImageResize from "filepond-plugin-image-resize";
 import FilePondPluginImageTransform from "filepond-plugin-image-transform";
 import { useStorage } from "/@src/lib/stores/storage";
 
+export type VFileProps = {
+    multiple?: boolean;
+    storagePath?: string;
+    modelValue: any;
+    button?: boolean;
+    accepts?: string[];
+    label?: string;
+};
+
+export interface VFileEmits {
+    (event: "update:modelValue", value: any): void;
+    (event: "processing", value: any): void;
+    (event: "endProcessing", value: any): void;
+}
+
+const props = withDefaults(defineProps<VFileProps>(), {
+    multiple: false,
+    storagePath: "",
+    button: false,
+    accepts: () => ["image/png", "image/jpeg", "image/gif"],
+    label: "",
+});
+
 const Filepond = vueFilePond(
     FilePondPluginImagePreview,
     FilePondPluginFileValidateSize,
@@ -25,27 +48,6 @@ const Filepond = vueFilePond(
 );
 
 const storage = useStorage();
-
-export type VFileProps = {
-    multiple?: boolean;
-    storagePath?: string;
-    modelValue: any;
-    button?: boolean;
-    accepts?: string[];
-    label?: string;
-};
-
-const props = withDefaults(defineProps<VFileProps>(), {
-    multiple: false,
-    storagePath: null,
-    button: false,
-    accepts: () => ["image/png", "image/jpeg", "image/gif"],
-    label: null,
-});
-
-export interface VFileEmits {
-    (event: "update:modelValue", value: any): void;
-}
 
 const emit = defineEmits<VFileEmits>();
 const pond = ref(null);
@@ -72,7 +74,6 @@ const uploadedImages = computed(() => {
 
 async function load(url, load) {
     if (url.constructor == File) return load(url);
-    console.log(url, url.constructor);
     try {
         const blob = await storage.fetch(url);
         load(blob);
@@ -84,12 +85,14 @@ async function process(fieldName, file, metadata, load, error, progress) {
     if (!props.storagePath) {
         load(file);
     } else {
+        emit("processing");
         const path = await storage.upload(file, props.storagePath, progress);
         load(path);
+        emit("endProcessing");
     }
 }
 async function remove(url, load) {
-    console.log("remove", url);
+    emit("processing");
     try {
         await storage.remove(url);
         load();
@@ -97,19 +100,22 @@ async function remove(url, load) {
         console.log(error);
         load();
     }
+    emit("endProcessing");
 }
 function fileUploaded() {
-    console.log("file Uploaded");
     emitChangedEvent();
 }
 function fileReverted(error, file) {
     if (file.status == 5) return;
-    console.log("file Reverted");
     emitChangedEvent();
 }
 function reorderFiles() {
-    console.log("reorderFiles");
     emitChangedEvent();
+}
+
+function fileAdd(error, file) {
+    console.log(file.status);
+    if (file.status != 2) emit("processing");
 }
 function emitChangedEvent() {
     if (!pond.value) return;
@@ -118,7 +124,6 @@ function emitChangedEvent() {
             (file) => file.status === 5 || file.status === 2
         );
 
-    console.log(isFilesUploaded, processingFiles);
     if (isFilesUploaded) {
         if (props.multiple == true && processingFiles.length >= 1) {
             emit(
@@ -128,7 +133,6 @@ function emitChangedEvent() {
                 )
             );
         } else if (processingFiles.length == 1) {
-            console.log(processingFiles[0].source);
             emit(
                 "update:modelValue",
                 props.storagePath
@@ -136,7 +140,7 @@ function emitChangedEvent() {
                     : processingFiles[0].source
             );
         } else {
-            emit("update:modelValue", null);
+            emit("update:modelValue", undefined);
         }
     }
 }
@@ -172,5 +176,6 @@ function emitChangedEvent() {
         @processfile="fileUploaded"
         @removefile="fileReverted"
         @reorderfiles="reorderFiles"
+        @addfile="fileAdd"
     />
 </template>

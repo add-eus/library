@@ -30,6 +30,10 @@ export function enumToArray<T>(enumeration: T): T[] {
         .filter((val) => typeof val === "number" || typeof val === "string");
 }
 
+export function isEnum(enumeration: any) {
+    return typeof enumeration === "object" && [enumeration[0]] != undefined;
+}
+
 export function enumToObject<T>(enumeration: T, callback: (val: T) => void): T {
     const keys = enumToArray(enumeration);
     const output = {};

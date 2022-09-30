@@ -2,7 +2,7 @@ import { reactive } from "vue";
 import { onInitialize } from "./entity";
 import { EntityMetaData } from "./entityMetadata";
 
-export function Input(type: string, options: any = {}) {
+export function Input(type: any, options: any = {}) {
     return function (target: any, name: string) {
         onInitialize(target, function (this: any, metadata: EntityMetaData) {
             if (!metadata.properties[name]) metadata.properties[name] = reactive({});

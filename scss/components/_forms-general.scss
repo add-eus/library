@@ -507,9 +507,10 @@ select {
 
     &.has-validation {
         &.has-success {
-            input {
+            input,
+            .multiselect {
                 border-color: var(--success) !important;
-                box-shadow: var(--light-box-shadow);
+                //box-shadow: var(--light-box-shadow);
                 transition: all 0.3s; // transition-all test
             }
 
@@ -525,7 +526,8 @@ select {
         }
 
         &.has-error {
-            input {
+            input,
+            .multiselect {
                 border-color: var(--danger) !important;
                 box-shadow: var(--light-box-shadow);
             }

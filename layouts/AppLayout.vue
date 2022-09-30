@@ -121,6 +121,7 @@ function hasRole(route) {
             >
                 <template #brand>
                     <RouterLink :to="{ name: 'dashboard' }" class="navbar-item is-brand">
+                        <slot name="logo"></slot>
                         <!--img src="/logo.svg" alt="" width="38" height="38" /-->
                     </RouterLink>
 
@@ -151,6 +152,9 @@ function hasRole(route) {
             </MobileSidebar>
 
             <Sidebar :theme="props.theme" :is-open="isDesktopSidebarOpen">
+                <template #logo>
+                    <slot name="logo"></slot>
+                </template>
                 <template #links>
                     <li v-for="rootRoute in rootRoutes" :key="rootRoute.name">
                         <RouterLink
