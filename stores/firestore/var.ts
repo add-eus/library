@@ -64,6 +64,8 @@ function formatData(toTransform: any | any[], type: any): any {
         });
     } else if (type == moment) {
         return toTransform.toDate();
+    } else if (type == GeoPoint) {
+        return toTransform;
     } else if (isEntityClass(type)) {
         return toTransform.$getID();
     } else if (typeof type == "function" && /^\s*class\s+/.test(type.toString())) {
