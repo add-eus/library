@@ -61,10 +61,6 @@ export const useUserSession = defineStore("userSession", () => {
         return !!auth.currentUser;
     }
 
-    function isLoggedInSync() {
-        return !!user.value;
-    }
-
     function setLoading(newLoading: boolean) {
         loading.value = newLoading;
     }
@@ -94,6 +90,10 @@ export const useUserSession = defineStore("userSession", () => {
         return updateProfile(user.value, data);
     }
 
+    function hasPermission(permission: string): boolean {
+
+    }
+
     function hasRole(role: string) {
         if (!user.value) return false;
         const customAttributes = JSON.parse(user.value.reloadUserInfo.customAttributes);
@@ -110,24 +110,6 @@ export const useUserSession = defineStore("userSession", () => {
         return {
             visits: 2,
         };
-    }
-
-    async function addVisit(place: string) {
-        const visit = <Visit>{
-            place,
-            date: new Date(),
-        };
-        if (await isLoggedIn()) {
-            await registerVisit(visit);
-        } else {
-            visits.value.push(visit);
-        }
-    }
-
-    async function registerVisit(visit: Visit) {
-        if (!user.value) throw new Error("No User");
-        visit.customer = user.value.uid;
-        await addDoc(collection(database, "visits"), visit);
     }
 
     async function loginOrRegisterWithPhoneNumber(
@@ -182,16 +164,11 @@ export const useUserSession = defineStore("userSession", () => {
         isLoggedIn,
         loading,
         on,
-        isAdmin,
         loginUser,
-        hasRole,
-        hasOneRole,
         logoutUser,
         getStats,
-        addVisit,
         loginOrRegisterWithPhoneNumber,
         setLoading,
-        isLoggedInSync,
         signout,
         deleteAccount,
     } as const;

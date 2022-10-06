@@ -158,6 +158,48 @@ export function newDoc(collectionModel: any) {
     return entity;
 }
 
+export async function findDoc(collectionModel: any, options: any): Promise<any> {
+    let wheres: QueryConstraint[] = transformWheres(
+        isRef(options.wheres) ? options.wheres.value : options.wheres
+    );
+    let orders: QueryConstraint[] = transformOrders(
+        isRef(options.orders) ? options.orders.value : options.orders
+    );
+    let search: string = isRef(options.search) ? options.search.value : options.search;
+
+    let query: Query | QuerySearch | null;
+
+    const entities: any[] = [];
+    const firebase = useFirebase();
+
+    const collectionRef = collection(firebase.firestore, collectionModel.collectionName);
+
+    if (search && search.length > 0) {
+        const algoliaIndex = algoliaClient.initIndex(collectionModel.collectionName);
+        query = new QuerySearch(
+            [...wheres, ...orders],
+            entities,
+            (doc: DocumentSnapshot) => {
+                return transform(doc, collectionModel);
+            },
+            collectionRef,
+            search,
+            algoliaIndex
+        );
+    } else {
+        query = new Query(
+            [...wheres, ...orders],
+            entities,
+            (doc: DocumentSnapshot) => {
+                return transform(doc, collectionModel);
+            },
+            collectionRef
+        );
+    }
+    const docs = await query.next(1);
+    return transform(docs[0], collectionModel);
+}
+
 function transform(doc: any, Model: any) {
     const cachedIdEntity = `${Model.collectionName}/${doc.id}`;
     if (!cachedEntities[cachedIdEntity]) cachedEntities[cachedIdEntity] = new Model(doc);
