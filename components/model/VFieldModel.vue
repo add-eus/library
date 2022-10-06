@@ -16,7 +16,7 @@ const { translate } = useTranslate();
 
 const props = defineProps<VFieldModelProps>();
 
-console.log(props, props.modelValue);
+console.log(props.property, [...props.modelValue.owners]);
 const input = computed(() => props.modelValue.$metadata.properties[props.property].input);
 const isProcessing = ref(false);
 
