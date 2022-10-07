@@ -15,6 +15,8 @@ export interface VFieldModelProps {
 const { translate } = useTranslate();
 
 const props = defineProps<VFieldModelProps>();
+
+console.log(props.property, props.modelValue.$metadata.properties[props.property]);
 const input = computed(() => props.modelValue.$metadata.properties[props.property].input);
 const isProcessing = ref(false);
 
@@ -66,11 +68,11 @@ if (input.value.type == "select") {
     }
 }
 
-const { value, errors, meta, setValue, validate } = useField(props.property, schema);
-
-console.log(props.property, schema, value, meta, props.modelValue, errors);
-
-setValue(props.modelValue[props.property]);
+const { value, errors, meta, setValue, validate } = useField(props.property, schema, {
+    initialValue: props.modelValue[props.property],
+    standalone: true,
+    modelPropName: props.property,
+});
 
 watch(value, () => {
     props.modelValue[props.property] = value.value;
