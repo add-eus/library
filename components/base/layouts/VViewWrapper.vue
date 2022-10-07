@@ -96,9 +96,9 @@ const props = defineProps<VViewWrapperProps>();
     position: relative;
     height: 100%;
     min-height: 100vh;
-    width: calc(100% - 100px);
+    width: calc(100% - 240px);
     padding: 0 0 60px;
-    margin-left: 100px;
+    margin-left: 240px;
     background: var(--background-grey);
     transition: all 0.3s; // transition-all test
 
@@ -166,8 +166,8 @@ const props = defineProps<VViewWrapperProps>();
 
 @media (min-width: 768px) and (max-width: 1024px) {
     .view-wrapper {
-        width: 100%;
-        margin-left: 0;
+        width: calc(100% - 100px);
+        margin-left: 100px;
         margin-top: 60px;
 
         &.is-pushed-full {
@@ -205,7 +205,7 @@ const props = defineProps<VViewWrapperProps>();
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) {
     .view-wrapper {
         width: calc(100% - 100px);
-        margin-left: 100px;
+        margin-left: 100px !important;
 
         &.is-pushed-messages {
             margin-left: 140px !important;

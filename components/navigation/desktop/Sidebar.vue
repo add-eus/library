@@ -70,7 +70,7 @@ const themeClasses = computed(() => {
     left: 0;
     margin-left: 0;
     height: 100vh;
-    width: 100px;
+    width: 240px;
     background-color: var(--body-color);
     box-shadow: none;
     z-index: 35;

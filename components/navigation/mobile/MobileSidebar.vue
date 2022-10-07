@@ -80,7 +80,9 @@ const props = defineProps<{
                 height: 60px;
                 display: flex;
                 align-items: center;
-                justify-content: start;
+                justify-content: center;
+                text-overflow: ellipsis;
+                white-space: nowrap;
 
                 a {
                     display: block;
@@ -91,24 +93,26 @@ const props = defineProps<{
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
+                    text-transform: uppercase;
                     color: var(--title-grey);
-                    padding: 10px;
 
                     &:hover,
                     &.router-link-active {
                         color: var(--primary);
 
                         > svg,
-                        > i {
+                        i {
                             color: var(--primary);
                         }
                     }
 
                     > svg,
-                    > i {
+                    i {
                         color: var(--title-grey);
                         height: 20px;
                         width: 20px;
+                        margin: 5px;
+                        transition: all 0.3s;
                         stroke-width: 1.6px;
                     }
 

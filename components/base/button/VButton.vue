@@ -4,6 +4,7 @@ import type { RouteLocationRaw } from "vue-router";
 import { CssUnitRe } from "/@src/lib/utils/regex";
 import { computed, defineComponent, h } from "vue";
 import { RouterLink } from "vue-router";
+import VIcon from "../icon/VIcon.vue";
 
 import { useHaptic } from "/@src/lib/stores/haptic";
 
@@ -187,16 +188,8 @@ export default defineComponent({
             const childrens = [];
 
             let iconWrapper;
-            if (isIconify.value) {
-                const icon = h("i", {
-                    "aria-hidden": true,
-                    class: "iconify",
-                    "data-icon": props.icon,
-                });
-                iconWrapper = h("span", { class: "icon" }, icon);
-            } else if (props.icon) {
-                const icon = h("i", { "aria-hidden": true, class: props.icon });
-                iconWrapper = h("span", { class: "icon" }, icon);
+            if (props.icon) {
+                iconWrapper = h(VIcon, { icon: props.icon, class: "icon" });
             }
 
             let caretWrapper;
