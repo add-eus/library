@@ -79,11 +79,12 @@ function formatData(toTransform: any | any[], type: any): any {
 }
 
 function isEqual(a: any, b: any, type: any): boolean {
+    
     if (Array.isArray(type)) {
         return a.every((row: any, index: number) => {
             return isEqual(row, b[index], type[0]);
         });
-    } else if (type == moment) {
+    } else if (type == moment && a && b) {
         return a.isSame(b);
     } else if (isEntityClass(type)) {
         return a && b && a.$getID() == b.$getID() && a.constructor == b.constructor;

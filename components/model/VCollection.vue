@@ -43,7 +43,7 @@ async function fetch() {
     const wheresValue = [];
 
     Object.keys(props.filters).forEach((filterKey) => {
-        if (props.filters[filterKey] && props.filters[filterKey].value) {
+        if (props.filters[filterKey] && props.filters[filterKey].hasOwnProperty('value')) {
             if (Array.isArray(props.filters[filterKey].comparator)) {
                 for (var i = 0; i < props.filters[filterKey].comparator.length; i++) {
                     if (!props.filters[filterKey].value[i]) return;
@@ -54,7 +54,6 @@ async function fetch() {
                     ]);
                 }
             } else {
-                if (!props.filters[filterKey].value) return;
                 wheresValue.push([
                     filterKey,
                     props.filters[filterKey].comparator,
@@ -70,9 +69,8 @@ async function fetch() {
     if (sortKey.value) {
         orders.value.push([sortKey.value, sortAscending.value ? "asc" : "desc"]);
     }
-    console.log(wheresValue);
     wheres.value = wheresValue;
-
+    console.log(wheresValue);
     limit.value = 10;
 }
 fetch();

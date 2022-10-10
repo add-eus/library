@@ -91,7 +91,6 @@ const columns = computed(() => {
 
     return columns;
 });
-console.log(columns);
 
 function getValueByPath(row: any, key: any) {
     return eval(`row.${key}`);
