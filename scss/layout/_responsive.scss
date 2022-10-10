@@ -27,7 +27,14 @@ Responsive styles
         align-items: center;
     }
 
+    .main-sidebar,
+    .sidebar {
+        display: none;
+    }
+
+    /*
     .main-sidebar {
+        display: none;
         width: 100px !important;
 
         &.has-labels {
@@ -132,7 +139,7 @@ Responsive styles
                 }
             }
         }
-    }
+    } */
 
     .mobile-main-sidebar,
     .mobile-overlay,
@@ -596,13 +603,13 @@ Responsive styles
     }
 }
 
-@media only screen and (max-width: 1024px) and (orientation: portrait) {
-    .mobile-navbar .navbar-item.is-notification {
-        display: flex !important;
-    }
-
+@media only screen and (max-width: 1024px) {
     .mobile-navbar {
         display: flex !important;
+        
+        .navbar-item.is-notification {
+            display: flex !important;
+        }
 
         > .container {
             margin: 0;
