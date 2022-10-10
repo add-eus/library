@@ -8462,7 +8462,7 @@ body.opened {
 }
 
 .layout-selector .layout-item .indicator svg,
-.layout-selector .layout-item .indicator .iconify {
+.layout-selector .layout-item .indicator .icon {
   color: rgb(255, 255, 255);
 }
 

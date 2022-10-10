@@ -466,7 +466,7 @@ if (isReactive(props.options)) {
             }
 
             .positive-icon {
-                .iconify {
+                .icon {
                     color: var(--success);
 
                     * {
@@ -477,12 +477,12 @@ if (isReactive(props.options)) {
 
             .negative-icon {
                 &.is-danger {
-                    .iconify {
+                    .icon {
                         color: var(--danger) !important;
                     }
                 }
 
-                .iconify {
+                .icon {
                     color: var(--light-text);
 
                     * {

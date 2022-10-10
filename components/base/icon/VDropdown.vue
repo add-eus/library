@@ -40,16 +40,16 @@ defineExpose({
         class="dropdown"
     >
         <slot name="button" v-bind="dropdown">
-            <a
+            <VButtonIcon
                 v-if="props.icon"
+                :icon="props.icon"
                 tabindex="0"
                 class="is-trigger dropdown-trigger"
                 aria-label="View more actions"
                 @keydown.space.prevent="dropdown.toggle"
                 @click="dropdown.toggle"
             >
-                <VIcon :icon="props.icon" />
-            </a>
+            </VButtonIcon>
 
             <a
                 v-else
@@ -97,7 +97,6 @@ defineExpose({
             align-items: center;
             height: 30px;
             width: 30px;
-            font-size: 20px;
             border-radius: var(--radius-rounded);
             cursor: pointer;
             transition: all 0.3s; // transition-all test
@@ -214,12 +213,9 @@ defineExpose({
                 }
 
                 .icon {
-                    justify-content: center;
-                    align-items: center;
                     height: 28px;
                     width: 28px;
                     font-size: 20px;
-                    padding: 4px 0;
 
                     svg {
                         height: 18px;

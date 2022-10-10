@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<VDropdownItemProps>(), {
         :class="{ 'is-media': !!props.icon }"
     >
         <div v-if="icon" class="icon">
-            <i :class="icon" aria-hidden="true"></i>
+            <VIcon :icon="icon"/>
         </div>
         <div class="meta">
             <slot></slot>

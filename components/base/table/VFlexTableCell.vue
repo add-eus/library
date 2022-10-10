@@ -260,7 +260,7 @@ const props = withDefaults(defineProps<VFlexTableCellProps>(), {
     .edit-icon-link {
         color: var(--light-text);
 
-        .iconify {
+        .icon {
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -269,7 +269,7 @@ const props = withDefaults(defineProps<VFlexTableCellProps>(), {
         &:focus-within {
             color: var(--primary);
 
-            .iconify {
+            .icon {
                 opacity: 1;
             }
         }

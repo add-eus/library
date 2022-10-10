@@ -230,7 +230,7 @@ defineExpose({
                             <TranslateNamespace path=".action">
                                 <slot name="action" :row="row">
                                     <VDropdown
-                                        icon="feather:more-vertical"
+                                        icon="more_vert"
                                         class="is-pushed-mobile"
                                         spaced
                                         right
@@ -249,11 +249,7 @@ defineExpose({
                                                 "
                                             >
                                                 <div class="icon">
-                                                    <i
-                                                        class="iconify"
-                                                        data-icon="feather:edit-2"
-                                                        aria-hidden="true"
-                                                    ></i>
+                                                    <VIcon icon="edit"></VIcon>
                                                 </div>
                                                 <div class="meta">
                                                     <Translate path=".edit"></Translate>
@@ -272,11 +268,7 @@ defineExpose({
                                                 "
                                             >
                                                 <div class="icon">
-                                                    <i
-                                                        class="iconify"
-                                                        data-icon="feather:trash"
-                                                        aria-hidden="true"
-                                                    ></i>
+                                                    <VIcon icon="delete"></VIcon>
                                                 </div>
                                                 <div class="meta">
                                                     <Translate path=".remove"></Translate>

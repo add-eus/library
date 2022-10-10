@@ -8,7 +8,7 @@ const props = defineProps<VIconProps>();
 
 <template>
     <span :key="props.icon">
-        <i class="material-icons-outlined">{{ props.icon }}</i>
+        <i class="material-icons-outlined icon">{{ props.icon }}</i>
     </span>
 </template>
 
