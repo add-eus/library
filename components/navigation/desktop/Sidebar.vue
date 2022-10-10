@@ -302,16 +302,11 @@ const themeClasses = computed(() => {
         .icon-menu {
             overflow-y: auto;
             overflow-x: hidden;
-
-            li {
-                margin: 20px 0;
-            }
-        }
-
-        .icon-menu {
             margin: 10px 0;
+
             li {
                 position: relative;
+                margin: 20px 0;
                 width: 100%;
                 display: flex;
                 align-items: center;
@@ -352,7 +347,7 @@ const themeClasses = computed(() => {
                     transition: all 0.3s; // transition-all test
                     color: var(--title-grey);
                     text-transform: uppercase;
-                    font-size: 10px;
+                    font-size: 14px;
 
                     &:hover,
                     &.is-selected,

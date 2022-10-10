@@ -94,6 +94,7 @@ const props = defineProps<{
                     overflow: hidden;
                     text-overflow: ellipsis;
                     text-transform: uppercase;
+                    font-size: 14px;
                     color: var(--title-grey);
 
                     &:hover,
@@ -112,7 +113,7 @@ const props = defineProps<{
                         height: 20px;
                         width: 20px;
                         margin: 5px;
-                        transition: all 0.3s;
+                        transition: all 0.6s;
                         stroke-width: 1.6px;
                     }
 

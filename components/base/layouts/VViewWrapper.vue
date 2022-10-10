@@ -134,7 +134,7 @@ const props = defineProps<VViewWrapperProps>();
     }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1024px) {
     .view-wrapper {
         width: 100%;
         margin-left: 0;
@@ -164,6 +164,32 @@ const props = defineProps<VViewWrapperProps>();
     }
 }
 
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) {
+    .view-wrapper {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-top: 60px !important;
+        padding-left: 40px;
+        padding-right: 40px;
+
+        &.is-explore {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+
+        &.is-pushed-full {
+            margin-left: 0;
+            width: 100%;
+
+            .is-stuck {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    }
+}
+
+/*
 @media (min-width: 768px) and (max-width: 1024px) {
     .view-wrapper {
         width: calc(100% - 100px);
@@ -223,36 +249,11 @@ const props = defineProps<VViewWrapperProps>();
         }
     }
 }
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) {
-    // Layout
-    .view-wrapper {
-        width: 100% !important;
-        margin-left: 0 !important;
-        margin-top: 60px !important;
-        padding-left: 40px;
-        padding-right: 40px;
-
-        &.is-explore {
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-        }
-
-        &.is-pushed-full {
-            margin-left: 0;
-            width: 100%;
-
-            .is-stuck {
-                margin-left: 0;
-                width: 100%;
-            }
-        }
-    }
-}
 @media (max-width: 767px) {
     // Layout
     .view-wrapper {
         width: 100%;
         margin-left: 0;
     }
-}
+}*/
 </style>
