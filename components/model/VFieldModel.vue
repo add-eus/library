@@ -4,6 +4,7 @@ import { useField } from "vee-validate";
 import * as yup from "yup";
 import { enumToArray, isEnum } from "/@src/lib/utils/array";
 import { useTranslate } from "/@src/lib/stores/translate";
+import { useCollection } from "/@src/lib/stores/firestore";
 
 export interface VFieldModelProps {
     modelValue: any;
@@ -16,11 +17,35 @@ const { translate } = useTranslate();
 
 const props = defineProps<VFieldModelProps>();
 
-console.log(props.property, props.modelValue.$metadata.properties[props.property]);
 const input = computed(() => props.modelValue.$metadata.properties[props.property].input);
 const isProcessing = ref(false);
 
 let schema = yup.string(`.${props.property}.validation.string`);
+
+
+let selectOptions: any[] = props.options || [];
+if (input.value.attrs.options) {
+    if (input.value.attrs.options.entity) {
+        const options = useCollection(input.value.attrs.options.entity, input.value.attrs.options.where());
+        schema = yup.object();
+        selectOptions = computed(() => {
+            return [...options].map(option => {
+                return {
+                    label: option.toString(),
+                    value: option
+                };
+            })
+        });
+    }
+    else if (isEnum(input.value.attrs.options)) {
+        selectOptions = enumToArray(input.value.attrs.options).map((row) => {
+            return {
+                label: translate(`.${props.property}.options.${row}`),
+                value: row,
+            };
+        });
+    }
+}
 
 if (input.value.type == "checkbox") {
     schema = yup.boolean(`.${props.property}.validation.boolean`);
@@ -46,17 +71,6 @@ if (input.value.attrs.required) {
     schema = schema.required(`.${props.property}.validation.required`);
 }
 
-let selectOptions: any[] = [];
-if (input.value.attrs.options) {
-    if (isEnum(input.value.attrs.options)) {
-        selectOptions = enumToArray(input.value.attrs.options).map((row) => {
-            return {
-                label: translate(`.${props.property}.options.${row}`),
-                value: row,
-            };
-        });
-    }
-}
 
 if (input.value.type == "select") {
     schema = schema.nullable();
@@ -73,7 +87,6 @@ const { value, errors, meta, setValue, validate } = useField(props.property, sch
     standalone: true,
     modelPropName: props.property,
 });
-
 watch(value, () => {
     props.modelValue[props.property] = value.value;
 });
@@ -81,6 +94,7 @@ watch(value, () => {
 const dirty = computed(() => meta.dirty);
 
 const addField = inject("addField");
+
 if (typeof addField == "function")
     addField(props.property, {
         errors,
@@ -94,6 +108,9 @@ if (typeof addField == "function")
 function isArray(value: any) {
     return Array.isArray(value);
 }
+
+const multiselect = ref(null);
+console.log(input, props.modelValue, multiselect);
 </script>
 
 <template>
@@ -108,7 +125,8 @@ function isArray(value: any) {
                     v-if="
                         input.type == 'text' ||
                         input.type == 'number' ||
-                        input.type == 'email'
+                        input.type == 'email' ||
+                        input.type == 'password'
                     "
                     v-model="value"
                     :type="input.type"
@@ -136,9 +154,12 @@ function isArray(value: any) {
 
                 <Multiselect
                     v-else-if="input.type == 'select'"
+                    ref="multiselect"
                     v-model="value"
                     :required="input.attrs.required"
+                    :mode="input.attrs.multiple ? 'multiple': 'single'"
                     :options="selectOptions"
+                    
                     v-bind="options"
                 >
                     <template #tag="tag">

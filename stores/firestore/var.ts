@@ -6,7 +6,9 @@ import { EntityMetaData } from "./entityMetadata";
 import { reactive, watch } from "vue";
 
 function parseData(toTransform: any | any[], type: any): any {
-    if (!toTransform) return undefined;
+    if (typeof toTransform == 'undefined') return undefined;
+    if (toTransform == null)
+        return null;
     if (Array.isArray(type)) {
         if (!Array.isArray(toTransform)) return [];
         return toTransform.map((data) => {
@@ -57,6 +59,7 @@ function parseData(toTransform: any | any[], type: any): any {
 
 function formatData(toTransform: any | any[], type: any): any {
     if (typeof toTransform == "undefined") return undefined;
+    if (toTransform == null) return null;
     if (Array.isArray(type)) {
         if (!Array.isArray(toTransform)) return [];
         return toTransform.map((data) => {
@@ -80,7 +83,7 @@ function formatData(toTransform: any | any[], type: any): any {
 
 function isEqual(a: any, b: any, type: any): boolean {
     
-    if (Array.isArray(type)) {
+    if (Array.isArray(type) && Array.isArray(a)) {
         return a.every((row: any, index: number) => {
             return isEqual(row, b[index], type[0]);
         });

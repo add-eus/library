@@ -56,13 +56,11 @@ provide("addField", function (name: string, field: any) {
         if (!fields[field.updateOn]) watchers[field.updateOn].push(field);
         else {
             watch(fields[field.updateOn].value, () => {
-                console.log("watch ", name, field.updateOn, field);
                 return field.validate({
                     mode: "force",
                 });
             });
         }
-        console.log(field.updateOn, fields[field.updateOn]);
     }
 });
 
