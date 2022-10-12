@@ -12,6 +12,7 @@ export interface VCollectionProps {
     hideToolbar?: boolean;
     hideAdd?: boolean;
     search?: boolean;
+    permissionEdit?: boolean;
 }
 
 const { setTranslateNamespace } = useTranslate();
@@ -175,9 +176,12 @@ defineExpose({
                             <!-- We can also bind wrapperState.limit -->
                             <VField>
                                 <VControl>
-                                    <VButton color="primary" light @click="create()">
-                                        <Translate path=".add"></Translate>
-                                    </VButton>
+                                    <VPermission :permission="permissionEdit">
+                                        <VButton color="primary" light @click="create()">
+                                            <Translate path=".add"></Translate>
+                                        </VButton>
+                                    </VPermission>
+                                    
                                 </VControl>
                             </VField>
                         </slot>
@@ -227,53 +231,55 @@ defineExpose({
                         <template v-else-if="column.key === 'action'">
                             <TranslateNamespace path=".action">
                                 <slot name="action" :row="row">
-                                    <VDropdown
-                                        icon="more_vert"
-                                        class="is-pushed-mobile"
-                                        spaced
-                                        right
-                                    >
-                                        <template #content="{ close }">
-                                            <slot name="actionButtons" :row="row"></slot>
-                                            <a
-                                                role="menuitem"
-                                                href="#"
-                                                class="dropdown-item is-media"
-                                                @click.prevent="
-                                                    () => {
-                                                        row.$edit();
-                                                        close();
-                                                    }
-                                                "
-                                            >
-                                                <div class="icon">
-                                                    <VIcon icon="edit"></VIcon>
-                                                </div>
-                                                <div class="meta">
-                                                    <Translate path=".edit"></Translate>
-                                                </div>
-                                            </a>
+                                    <VPermission :permission="permissionEdit">
+                                        <VDropdown
+                                            icon="more_vert"
+                                            class="is-pushed-mobile"
+                                            spaced
+                                            right
+                                        >
+                                            <template #content="{ close }">
+                                                <slot name="actionButtons" :row="row"></slot>
+                                                <a
+                                                    role="menuitem"
+                                                    href="#"
+                                                    class="dropdown-item is-media"
+                                                    @click.prevent="
+                                                        () => {
+                                                            row.$edit();
+                                                            close();
+                                                        }
+                                                    "
+                                                >
+                                                    <div class="icon">
+                                                        <VIcon icon="edit"></VIcon>
+                                                    </div>
+                                                    <div class="meta">
+                                                        <Translate path=".edit"></Translate>
+                                                    </div>
+                                                </a>
 
-                                            <a
-                                                role="menuitem"
-                                                href="#"
-                                                class="dropdown-item is-media danger-bg"
-                                                @click.prevent="
-                                                    () => {
-                                                        row.$promptAndDelete();
-                                                        close();
-                                                    }
-                                                "
-                                            >
-                                                <div class="icon">
-                                                    <VIcon icon="delete"></VIcon>
-                                                </div>
-                                                <div class="meta">
-                                                    <Translate path=".remove"></Translate>
-                                                </div>
-                                            </a>
-                                        </template>
-                                    </VDropdown>
+                                                <a
+                                                    role="menuitem"
+                                                    href="#"
+                                                    class="dropdown-item is-media danger-bg"
+                                                    @click.prevent="
+                                                        () => {
+                                                            row.$promptAndDelete();
+                                                            close();
+                                                        }
+                                                    "
+                                                >
+                                                    <div class="icon">
+                                                        <VIcon icon="delete"></VIcon>
+                                                    </div>
+                                                    <div class="meta">
+                                                        <Translate path=".remove"></Translate>
+                                                    </div>
+                                                </a>
+                                            </template>
+                                        </VDropdown>
+                                    </VPermission>
                                 </slot>
                             </TranslateNamespace>
                         </template>
