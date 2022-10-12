@@ -55,6 +55,7 @@ export class Collection extends Array {
  * @returns ref<any[]>
  */
 export function useCollection(collectionModel: any, options: any) {
+    console.log([collectionModel], collectionModel.collectionName);
     const entities = shallowReactive<any>(new Collection());
     const firebase = useFirebase();
     const algoliaIndex = algoliaClient.initIndex(collectionModel.collectionName);

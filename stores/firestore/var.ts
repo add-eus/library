@@ -1,7 +1,7 @@
 import moment from "moment-with-locales-es6";
 import { doc, GeoPoint } from "firebase/firestore";
 import { useFirebase, useDoc } from "./index";
-import { onInitialize, EntityORM, isEntityClass } from "./entity";
+import { onInitialize, EntityORM, isEntityClass, isEntityStandaloneClass } from "./entity";
 import { EntityMetaData } from "./entityMetadata";
 import { reactive, watch } from "vue";
 
@@ -18,7 +18,7 @@ function parseData(toTransform: any | any[], type: any): any {
         return moment.unix(toTransform.seconds);
     } else if (type == GeoPoint) {
         return new GeoPoint(toTransform._lat, toTransform._long);
-    } else if (isEntityClass(type)) {
+    } else if (isEntityStandaloneClass(type)) {
         const model = useDoc(type, toTransform);
         const childMetadata = model.$metadata;
         childMetadata.on("get", (name: string) => {
@@ -31,28 +31,11 @@ function parseData(toTransform: any | any[], type: any): any {
                 childMetadata.refresh();
             }
         });
-        /*
-        const firebase = useFirebase();
-
-
-        const documentReference = doc(
-            firebase.firestore,
-            `${type.collectionName}/${toTransform}`
-        );
-        const model = new type(documentReference);
-        const childMetadata = model.$metadata;
-        childMetadata.on("get", (name: string) => {
-            if (
-                !childMetadata.isFullfilled &&
-                typeof name == "string" &&
-                !name.startsWith("$") &&
-                name != "constructor"
-            ) {
-                childMetadata.refresh();
-            }
-        });
-        //model.$assign();*/
         return model;
+    } else if (isEntityClass(type)) {
+        const o = new type();
+        o.$metadata.emit('parse', toTransform);
+        return o;
     }
     return toTransform;
 }
@@ -69,8 +52,12 @@ function formatData(toTransform: any | any[], type: any): any {
         return toTransform.toDate();
     } else if (type == GeoPoint) {
         return toTransform;
-    } else if (isEntityClass(type)) {
+    } else if (isEntityStandaloneClass(type)) {
         return toTransform.$getID();
+    } else if (isEntityClass(type)) {
+        const raw = {};
+        toTransform.$metadata.emit("format", raw);
+        return raw;
     } else if (typeof type == "function" && /^\s*class\s+/.test(type.toString())) {
         const raw: { [key: string]: any } = {};
         Object.getOwnPropertyNames(toTransform).forEach((key) => {
@@ -104,6 +91,8 @@ export function Var(type: any) {
             metadata.properties[name].isInitialized = false;
 
             this[name] = parseData(this[name], type);
+  
+            
             let originalPropertyValue: any = this[name];
 
             const unwatch = watch(
@@ -120,6 +109,7 @@ export function Var(type: any) {
             metadata.on("parse", (raw: any) => {
                 if (metadata.properties[name].isChanged) return;
                 const parsed = parseData(raw[name], type);
+                
                 if (parsed != this[name]) this[name] = parsed;
                 originalPropertyValue = this[name];
                 metadata.properties[name].isInitialized = true;

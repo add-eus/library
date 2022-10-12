@@ -93,10 +93,9 @@ function initClassDeclaration(target: any) {
         }
     };
 }
-function Entity(options?: { collection?: string }) {
+function Entity(options: { collection?: string } = {}) {
     return function (target: any) {
-        target.collectionName =
-            (options && options.collection) || lowerCaseFirst(target.name) + "s";
+        target.collectionName = options.collection;
 
         const classDeclaration = initClassDeclaration(target);
 
@@ -170,4 +169,12 @@ function isEntityClass(entityClass: any) {
     );
 }
 
-export { Entity, EntityORM, onInitialize, isEntityClass };
+function isEntityStandaloneClass(entityClass: any) {
+    return (
+        entityClass &&
+        entityClass.prototype &&
+        typeof entityClass.collectionName == 'string'
+    );
+}
+
+export { Entity, EntityORM, onInitialize, isEntityClass, isEntityStandaloneClass };
