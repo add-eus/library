@@ -6,10 +6,12 @@ import {
     onSnapshot,
 } from "firebase/firestore";
 import EventEmitter from "events";
+import { until } from "@vueuse/core";
 
 export class EntityMetaData extends EventEmitter {
     reference: DocumentReference | null = null;
     isFullfilled: boolean = false;
+    isFullfilling: null | Promise<any> = null;
     origin: any = {};
     properties: { [key: string]: any } = {};
     entity: EntityORM;
@@ -28,12 +30,23 @@ export class EntityMetaData extends EventEmitter {
 
     async refresh() {
         if (!this.reference) return;
-        this.isFullfilled = true;
-        const querySnapshot = await getDoc(this.reference);
+        if (!this.isFullfilling) {
+            this.isFullfilling = getDoc(this.reference)
+                .then(async (querySnapshot) => {
+                    this.origin = querySnapshot.data();
+            
+                    this.emit("parse", this.origin);
+                    this.isFullfilled = true;
+            });
+        }
+        
+        await this.isFullfilling;
+        
+        
+    }
 
-        this.origin = querySnapshot.data();
-
-        this.emit("parse", this.origin);
+    async waitFullfilled() {
+        return this.isFullfilling;
     }
 
     setReference(reference: DocumentReference) {
@@ -47,7 +60,6 @@ export class EntityMetaData extends EventEmitter {
                     isFirstFetch = false;
                     return;
                 }
-                console.log("onSnapshot", document.ref.path);
                 this.emit("parse", document.data());
             }
         );

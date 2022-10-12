@@ -11,9 +11,7 @@ const props = defineProps<VPermissionProps>();
 const userSession = useUserSession();
 
 function hasPermission(permission: string) {
-    const result = userSession.hasPermission(permission);
-    console.log(permission, result);
-    return result;
+    return userSession.hasPermission(permission);
 }
 </script>
 
