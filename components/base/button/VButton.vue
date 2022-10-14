@@ -413,17 +413,15 @@ export default defineComponent({
             color: var(--primary);
         }
 
-        svg {
+        .icon {
             height: 18px;
             width: 18px;
         }
     }
 
     .icon {
-        svg {
-            height: 14px;
-            width: 14px;
-        }
+        height: 14px;
+        width: 14px;
     }
 }
 

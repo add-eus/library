@@ -110,7 +110,6 @@ function isArray(value: any) {
 }
 
 const multiselect = ref(null);
-console.log(input, props.modelValue, multiselect);
 </script>
 
 <template>

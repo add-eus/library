@@ -7,13 +7,18 @@ const props = defineProps<VIconProps>();
 </script>
 
 <template>
-    <span :key="props.icon">
-        <i class="material-icons-outlined icon">{{ props.icon }}</i>
-    </span>
+    <i class="material-icons-outlined icon">{{ props.icon }}</i>
 </template>
 
 <style lang="scss">
 .material-icons-outlined {
-    font-size: inherit !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: inherit;
+}
+
+.icon {
+    font-size: 1.5rem;
 }
 </style>

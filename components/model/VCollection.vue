@@ -71,7 +71,6 @@ async function fetch() {
         orders.value.push([sortKey.value, sortAscending.value ? "asc" : "desc"]);
     }
     wheres.value = wheresValue;
-    console.log(wheresValue);
     limit.value = 10;
 }
 fetch();
@@ -177,7 +176,7 @@ defineExpose({
                             <VField>
                                 <VControl>
                                     <VPermission :permission="permissionEdit">
-                                        <VButton color="primary" light @click="create()">
+                                        <VButton color="primary" icon="add" light @click="create()">
                                             <Translate path=".add"></Translate>
                                         </VButton>
                                     </VPermission>
