@@ -22,7 +22,10 @@ const { translate } = useTranslate();
 
 const props = defineProps<VFieldModelProps>();
 
-const input = computed(() => props.modelValue.$metadata.properties[props.property].input);
+
+const input = computed(() => {
+    return props.modelValue.$metadata.properties[props.property].input
+});
 const isProcessing = ref(false);
 
 let schema = yup.string(`.${props.property}.validation.string`);
@@ -181,6 +184,11 @@ const multiselect = ref(null);
                         <slot name="option" v-bind="option"></slot>
                     </template>
                 </Multiselect>
+                <VInputDate v-else-if="input.type == 'date'"
+                    v-model="value"
+                    :required="input.attrs.required"
+                    v-bind="options"
+                    is-expanded></VInputDate>
                 <VCheckbox
                     v-else-if="input.type == 'checkbox'"
                     v-model="value"
