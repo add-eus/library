@@ -12,7 +12,7 @@ export interface VCollectionProps {
     hideToolbar?: boolean;
     hideAdd?: boolean;
     search?: boolean;
-    permissionEdit?: boolean;
+    permissionEdit?: string;
 }
 
 const { setTranslateNamespace } = useTranslate();

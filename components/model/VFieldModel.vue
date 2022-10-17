@@ -5,6 +5,11 @@ import * as yup from "yup";
 import { enumToArray, isEnum } from "/@src/lib/utils/array";
 import { useTranslate } from "/@src/lib/stores/translate";
 import { useCollection } from "/@src/lib/stores/firestore";
+import {
+  isPossiblePhoneNumber,
+  isValidPhoneNumber,
+  validatePhoneNumberLength
+} from 'libphonenumber-js';
 
 export interface VFieldModelProps {
     modelValue: any;
@@ -49,6 +54,14 @@ if (input.value.attrs.options) {
 
 if (input.value.type == "checkbox") {
     schema = yup.boolean(`.${props.property}.validation.boolean`);
+}
+
+if (input.value.type == "phone") {
+    schema = schema.test(
+        'phone',
+        `.${props.property}.validation.phone`,
+        (value, context) => !value || isValidPhoneNumber(value),
+    );
 }
 
 if (input.value.attrs.validate) {

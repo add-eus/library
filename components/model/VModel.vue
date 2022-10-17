@@ -24,6 +24,8 @@ const translateNamespace = computed(() => {
 });
 
 async function submit() {
+    if (hasError() || isProcessing() || !hasChanged())
+        return;
     emits("update:isSaving", true);
     const isEdit = !!props.model.$metadata.reference;
     if (isEdit) emits("beforeUpdate", props.model);
