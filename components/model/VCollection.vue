@@ -68,7 +68,7 @@ async function fetch() {
     });
 
     if (sortKey.value) {
-        orders.value.push([sortKey.value, sortAscending.value ? "asc" : "desc"]);
+        orders.value = [[sortKey.value, sortAscending.value ? "asc" : "desc"]];
     }
     wheres.value = wheresValue;
     limit.value = 10;
@@ -110,6 +110,7 @@ async function onInfiniteScroll(done: Function) {
 }
 
 async function onSort(sort) {
+    
     if (!sort) {
         sortKey.value = null;
         sortAscending.value = false;
@@ -118,24 +119,12 @@ async function onSort(sort) {
         sortKey.value = splitted[0];
         sortAscending.value = splitted[1] == "asc";
     }
-    resetAndFetch();
+    fetch();
 }
 
-async function resetAndFetch() {
-    console.log("resetAndFetch");
-    limit.value = 10;
-}
-
-watch(searchInput, resetAndFetch);
+watch(searchInput, fetch);
 
 watch(() => props.filters, fetch);
-
-/*
-defineExpose({
-    fetch,
-    resetAndFetch,
-    entities,
-});*/
 </script>
 <template>
     <VFlexTableWrapper
