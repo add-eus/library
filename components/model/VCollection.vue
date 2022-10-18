@@ -238,30 +238,18 @@ defineExpose({
                                             right
                                         >
                                             <template #content="{ close }">
-                                                <slot name="actionButtons" :row="row"></slot>
-                                                <a
-                                                    role="menuitem"
-                                                    href="#"
-                                                    class="dropdown-item is-media"
-                                                    @click.prevent="
+                                                <slot name="actionButtons" :row="row" :close="close"></slot>
+                                                <VDropdownItem icon="edit" @click.prevent="
                                                         () => {
                                                             row.$edit();
                                                             close();
                                                         }
                                                     "
                                                 >
-                                                    <div class="icon">
-                                                        <VIcon icon="edit"></VIcon>
-                                                    </div>
-                                                    <div class="meta">
-                                                        <Translate path=".edit"></Translate>
-                                                    </div>
-                                                </a>
+                                                    <Translate path=".edit"></Translate>
+                                                </VDropdownItem>
 
-                                                <a
-                                                    role="menuitem"
-                                                    href="#"
-                                                    class="dropdown-item is-media danger-bg"
+                                                <VDropdownItem icon="delete"
                                                     @click.prevent="
                                                         () => {
                                                             row.$promptAndDelete();
@@ -269,13 +257,8 @@ defineExpose({
                                                         }
                                                     "
                                                 >
-                                                    <div class="icon">
-                                                        <VIcon icon="delete"></VIcon>
-                                                    </div>
-                                                    <div class="meta">
-                                                        <Translate path=".remove"></Translate>
-                                                    </div>
-                                                </a>
+                                                    <Translate path=".remove"></Translate>
+                                                </VDropdownItem>
                                             </template>
                                         </VDropdown>
                                     </VPermission>

@@ -990,7 +990,7 @@ select {
 }
 
 .vue-tel-input {
-    border-color: var(--border) !important;
+    border: none !important;
     position: relative;
 
     > .vti__input {

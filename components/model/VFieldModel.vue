@@ -53,6 +53,9 @@ if (input.value.attrs.options) {
             };
         });
     }
+    else {
+        selectOptions = input.value.attrs.options;
+    }
 }
 
 if (input.value.type == "checkbox") {
@@ -60,11 +63,15 @@ if (input.value.type == "checkbox") {
 }
 
 if (input.value.type == "phone") {
-    schema = schema.test(
-        'phone',
-        `.${props.property}.validation.phone`,
-        (value, context) => !value || isValidPhoneNumber(value),
-    );
+    schema = schema.test({
+        name: 'phone',
+        message: `.${props.property}.validation.phone`,
+        exclusive: true,
+
+        test(value, context) {
+            return !value || isValidPhoneNumber(value)
+        }
+    });
 }
 
 if (input.value.attrs.validate) {
@@ -131,7 +138,6 @@ const multiselect = ref(null);
 <template>
     <VField :id="property" :label="'.' + property + '.label'">
         <VControl
-            :is-valid="errors.length <= 0 && dirty"
             :has-error="errors.length > 0"
             :icon="icon"
         >

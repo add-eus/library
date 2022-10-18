@@ -32,7 +32,7 @@ function formatModelValue() {
     currentDate.date(date.value);
     currentDate.month(month.value - 1);
     currentDate.year(year.value);
-    emits("update:modelValue", currentDate);
+    emits("update:modelValue", currentDate.clone());
 }
 
 function getMaxMonth() {
@@ -49,21 +49,25 @@ const year = ref(null);
 
 watch(() => props.modelValue, parseModelValue);
 
+watch(date, formatModelValue);
+watch(month, formatModelValue);
+watch(year, formatModelValue)
+
 parseModelValue(props.modelValue || moment());
 </script>
 
 <template>
     <VFlex flex-direction="row" justify-content="center" align-items="center">
         <VFlexItem flex-grow="33" style="max-width: 100px">
-            <VInputNumber v-model="date" :max="getMaxMonth()" :min="1" />
+            <VInputNumber v-model="date" :max="getMaxMonth()" :min="1"/>
         </VFlexItem>
         /
         <VFlexItem flex-grow="33" style="max-width: 100px">
-            <VInputNumber v-model="month" :max="12" :min="1" :format="formatMonth" />
+            <VInputNumber v-model="month" :max="12" :min="1" :format="formatMonth"/>
         </VFlexItem>
         /
         <VFlexItem flex-grow="33" style="max-width: 100px">
-            <VInputNumber v-model="year" :max="maxYear" :min="maxYear - 130" />
+            <VInputNumber v-model="year" :max="maxYear" :min="maxYear - 130"/>
         </VFlexItem>
     </VFlex>
 </template>

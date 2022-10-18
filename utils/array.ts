@@ -31,7 +31,7 @@ export function enumToArray<T>(enumeration: T): T[] {
 }
 
 export function isEnum(enumeration: any) {
-    return typeof enumeration === "object" && [enumeration[0]] != undefined;
+    return typeof enumeration === "object" && enumeration[enumeration[0]] != undefined;
 }
 
 export function enumToObject<T>(enumeration: T, callback: (val: T) => void): T {
