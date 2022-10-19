@@ -53,20 +53,8 @@ export default defineComponent({
             },
         },
         dark: {
-            type: String as PropType<VIconButtonDark>,
-            default: undefined,
-            validator: (value: VIconButtonDark) => {
-                if (!value) return true;
-                // The value must match one of these strings
-                if (["1", "2", "3", "4", "5", "6"].indexOf(value) === -1) {
-                    console.warn(
-                        `VIconButton: invalid "${value}" dark. Should be 1, 2, 3, 4, 5, 6 or undefined`
-                    );
-                    return false;
-                }
-
-                return true;
-            },
+            type: Boolean,
+            default: false,
         },
         circle: {
             type: Boolean,
@@ -116,7 +104,7 @@ export default defineComponent({
                 props.bold && "is-bold",
                 props.outlined && "is-outlined",
                 props.raised && "is-raised",
-                props.dark && `is-dark-bg-${props.dark}`,
+                props.dark && `is-dark`,
                 props.darkOutlined && "is-dark-outlined",
                 props.elevated && "is-elevated",
                 props.loading && "is-loading",

@@ -280,6 +280,71 @@ export default defineComponent({
         border-radius: var(--radius-rounded);
     }
 
+    &.is-primary {
+        &.is-raised:hover {
+            opacity: 0.9;
+            box-shadow: var(--primary-box-shadow);
+        }
+
+        &.is-elevated {
+            box-shadow: var(--primary-box-shadow);
+        }
+
+        &.is-light {
+            background: var(--primary--light-color) !important;
+            color: var(--primary--dark-color);
+        }
+
+        &.is-dark {
+            background: var(--primary--dark-color) !important;
+            color: var(--primary--light-color);
+        }
+    }
+
+    &.is-success {
+        &.is-raised:hover {
+            opacity: 0.9;
+            box-shadow: var(--success-box-shadow);
+        }
+
+        &.is-elevated {
+            box-shadow: var(--success-box-shadow);
+        }
+    }
+
+    &.is-info {
+        &.is-raised:hover {
+            opacity: 0.9;
+            box-shadow: var(--info-box-shadow);
+        }
+
+        &.is-elevated {
+            box-shadow: var(--info-box-shadow);
+        }
+    }
+
+    &.is-warning {
+        &.is-raised:hover {
+            opacity: 0.9;
+            box-shadow: var(--warning-box-shadow);
+        }
+
+        &.is-elevated {
+            box-shadow: var(--warning-box-shadow);
+        }
+    }
+
+    &.is-danger {
+        &.is-raised:hover {
+            opacity: 0.9;
+            box-shadow: var(--danger-box-shadow);
+        }
+
+        &.is-elevated {
+            box-shadow: var(--danger-box-shadow);
+        }
+    }
+
     &.v-button {
         padding: 8px 22px;
         height: 38px;
@@ -309,60 +374,7 @@ export default defineComponent({
             font-weight: 500;
         }
 
-        &.is-primary {
-            &.is-raised:hover {
-                opacity: 0.9;
-                box-shadow: var(--primary-box-shadow);
-            }
-
-            &.is-elevated {
-                box-shadow: var(--primary-box-shadow);
-            }
-        }
-
-        &.is-success {
-            &.is-raised:hover {
-                opacity: 0.9;
-                box-shadow: var(--success-box-shadow);
-            }
-
-            &.is-elevated {
-                box-shadow: var(--success-box-shadow);
-            }
-        }
-
-        &.is-info {
-            &.is-raised:hover {
-                opacity: 0.9;
-                box-shadow: var(--info-box-shadow);
-            }
-
-            &.is-elevated {
-                box-shadow: var(--info-box-shadow);
-            }
-        }
-
-        &.is-warning {
-            &.is-raised:hover {
-                opacity: 0.9;
-                box-shadow: var(--warning-box-shadow);
-            }
-
-            &.is-elevated {
-                box-shadow: var(--warning-box-shadow);
-            }
-        }
-
-        &.is-danger {
-            &.is-raised:hover {
-                opacity: 0.9;
-                box-shadow: var(--danger-box-shadow);
-            }
-
-            &.is-elevated {
-                box-shadow: var(--danger-box-shadow);
-            }
-        }
+        
 
         &.is-lower {
             text-transform: none !important;
@@ -422,6 +434,13 @@ export default defineComponent({
     .icon {
         height: 14px;
         width: 14px;
+
+        &:first-child {
+            &:last-child {
+                margin-left: -4px;
+                margin-right: -4px;
+            }
+        }
     }
 }
 
@@ -463,10 +482,7 @@ export default defineComponent({
                 }
             }
 
-            &.is-light {
-                background: var(--primary-light-25) !important;
-                color: var(--primary-dark-15);
-            }
+            
         }
 
         &.is-white {
