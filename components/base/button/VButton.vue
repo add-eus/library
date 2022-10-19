@@ -441,6 +441,23 @@ export default defineComponent({
                 margin-right: -4px;
             }
         }
+
+        &.v-avatar {
+            height: 24px;
+            width: 24px;
+
+            > .avatar {
+                width: 24px;
+                height: 24px;
+                min-width: 24px;
+                min-height: 24px;
+
+                > img {
+                    width: 24px;
+                    height: 24px;
+                }
+            }
+        }
     }
 }
 

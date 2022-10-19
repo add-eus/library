@@ -71,7 +71,7 @@ const props = withDefaults(defineProps<VAvatarProps>(), {
                     props.color && `is-${props.color}`,
                 ]"
             >
-                <span>{{ props.initials }}</span>
+                <img src="/images/avatars/placeholder.jpg"/>
             </span>
             <ImageFirestore
                 v-if="props.picture && props.pictureDark"
