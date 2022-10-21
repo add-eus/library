@@ -6,56 +6,70 @@ import { enumToArray, isEnum } from "/@src/lib/utils/array";
 import { useTranslate } from "/@src/lib/stores/translate";
 import { useCollection } from "/@src/lib/stores/firestore";
 import {
-  isPossiblePhoneNumber,
-  isValidPhoneNumber,
-  validatePhoneNumberLength
-} from 'libphonenumber-js';
+    isPossiblePhoneNumber,
+    isValidPhoneNumber,
+    validatePhoneNumberLength,
+} from "libphonenumber-js";
 
 export interface VFieldModelProps {
     modelValue: any;
     property: string;
     icon?: string;
     options?: any;
+    canAdd?: Boolean;
+    addModel?: any;
 }
 
 const { translate } = useTranslate();
 
 const props = defineProps<VFieldModelProps>();
 
-
 const input = computed(() => {
-    return props.modelValue.$metadata.properties[props.property].input
+    return props.modelValue.$metadata.properties[props.property].input;
 });
 const isProcessing = ref(false);
 
 let schema = yup.string(`.${props.property}.validation.string`);
 
-
+const addOption = {
+    label: translate(`.${props.property}.options.add`),
+    value: "",
+    disabled: false,
+};
 let selectOptions: any[] = props.options || [];
 if (input.value.attrs.options) {
     if (input.value.attrs.options.entity) {
-        const options = useCollection(input.value.attrs.options.entity, input.value.attrs.options.where());
+        const options = useCollection(
+            input.value.attrs.options.entity,
+            input.value.attrs.options.where()
+        );
         schema = yup.object();
         selectOptions = computed(() => {
-            return [...options].map(option => {
+            return [...options].map((option) => {
                 return {
                     label: option.toString(),
-                    value: option
+                    value: option,
                 };
-            })
+            });
         });
-    }
-    else if (isEnum(input.value.attrs.options)) {
+    } else if (isEnum(input.value.attrs.options)) {
         selectOptions = enumToArray(input.value.attrs.options).map((row) => {
             return {
                 label: translate(`.${props.property}.options.${row}`),
                 value: row,
             };
         });
-    }
-    else {
+    } else {
         selectOptions = input.value.attrs.options;
     }
+}
+
+if (props.canAdd) {
+    let select = [addOption];
+    selectOptions.forEach((val) => {
+        select.push(val);
+    });
+    selectOptions = select;
 }
 
 if (input.value.type == "checkbox") {
@@ -64,13 +78,13 @@ if (input.value.type == "checkbox") {
 
 if (input.value.type == "phone") {
     schema = schema.test({
-        name: 'phone',
+        name: "phone",
         message: `.${props.property}.validation.phone`,
         exclusive: true,
 
         test(value, context) {
-            return !value || isValidPhoneNumber(value)
-        }
+            return !value || isValidPhoneNumber(value);
+        },
     });
 }
 
@@ -93,7 +107,6 @@ if (input.value.attrs.validate) {
 if (input.value.attrs.required) {
     schema = schema.required(`.${props.property}.validation.required`);
 }
-
 
 if (input.value.type == "select") {
     schema = schema.nullable();
@@ -132,15 +145,20 @@ function isArray(value: any) {
     return Array.isArray(value);
 }
 
+function onSelect(option: string, select$: any) {
+    console.log(select$, addOption);
+    if (select$.value === addOption.value) {
+        const entity = new props.addModel();
+        entity.$edit();
+    }
+}
+
 const multiselect = ref(null);
 </script>
 
 <template>
     <VField :id="property" :label="'.' + property + '.label'">
-        <VControl
-            :has-error="errors.length > 0"
-            :icon="icon"
-        >
+        <VControl :has-error="errors.length > 0" :icon="icon">
             <slot :value="value">
                 <VInput
                     v-if="
@@ -178,10 +196,10 @@ const multiselect = ref(null);
                     ref="multiselect"
                     v-model="value"
                     :required="input.attrs.required"
-                    :mode="input.attrs.multiple ? 'multiple': 'single'"
+                    :mode="input.attrs.multiple ? 'multiple' : 'single'"
                     :options="selectOptions"
-                    
                     v-bind="options"
+                    @select="onSelect"
                 >
                     <template #tag="tag">
                         <slot name="tag" v-bind="tag"></slot>
@@ -190,11 +208,13 @@ const multiselect = ref(null);
                         <slot name="option" v-bind="option"></slot>
                     </template>
                 </Multiselect>
-                <VInputDate v-else-if="input.type == 'date'"
+                <VInputDate
+                    v-else-if="input.type == 'date'"
                     v-model="value"
                     :required="input.attrs.required"
                     v-bind="options"
-                    is-expanded></VInputDate>
+                    is-expanded
+                ></VInputDate>
                 <VCheckbox
                     v-else-if="input.type == 'checkbox'"
                     v-model="value"
