@@ -39,9 +39,12 @@ const addOption = {
 let selectOptions: any[] = props.options || [];
 if (input.value.attrs.options) {
     if (input.value.attrs.options.entity) {
+        const wheres = input.value.attrs.options.where();
         const options = useCollection(
             input.value.attrs.options.entity,
-            input.value.attrs.options.where()
+            {
+                wheres
+            }
         );
         schema = yup.object();
         selectOptions = computed(() => {
