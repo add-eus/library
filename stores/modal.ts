@@ -1,4 +1,4 @@
-import { ref, createVNode, render, VNode } from "vue";
+import { ref, createVNode, render, VNode, h } from "vue";
 import { until } from "@vueuse/core";
 import ModalComponent from "../components/modal/Modal.vue";
 import PromptComponent from "../components/modal/Prompt.vue";
@@ -25,6 +25,7 @@ export class Modal {
     }
 
     close() {
+        console.log("Closing", this);
         this.isClosed.value = true;
     }
 
@@ -105,13 +106,17 @@ export const useModal = function () {
             const vnode: VNode = createVNode(ModalComponent, {
                 modal: modal,
             });
-
+            console.log(modal);
+            console.log(vnode);
             vnode.appContext = { ...app._context };
-            render(vnode, document.body);
+            const addEdelement = document.body.appendChild(document.createElement("div"));
+            console.log(addEdelement);
+            render(vnode, addEdelement);
             until(modal.isClosed)
                 .toBe(true)
                 .then(() => {
-                    render(null, document.body);
+                    render(null, addEdelement);
+                    document.body.removeChild(addEdelement);
                 });
             return modal;
         },
