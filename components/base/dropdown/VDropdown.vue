@@ -40,21 +40,17 @@ defineExpose({
         class="dropdown"
     >
         <slot name="button" v-bind="dropdown">
-            <a
-                v-if="props.icon"
-                tabindex="0"
-                class="is-trigger dropdown-trigger"
-                aria-label="View more actions"
-                @keydown.space.prevent="dropdown.toggle"
-                @click="dropdown.toggle"
-            >
-                <VIcon :icon="props.icon" />
-            </a>
+            <VIconButton v-if="props.icon" 
+                        :icon="props.icon" 
+                        circle color="white" 
+                        class="dropdown-trigger" 
+                        @keydown.space.prevent="dropdown.toggle"
+                        @click="dropdown.toggle"></VIconButton>
 
-            <a
+            <VButton
                 v-else
                 tabindex="0"
-                class="is-trigger button dropdown-trigger"
+                class="dropdown-trigger"
                 :class="[props.color && `is-${props.color}`]"
                 @keydown.space.prevent="dropdown.toggle"
                 @click="dropdown.toggle"
@@ -66,7 +62,7 @@ defineExpose({
                     <VIcon v-if="!dropdown.isOpen" icon="fa:angle-down" />
                     <VIcon v-else icon="fa:angle-up" />
                 </span>
-            </a>
+            </VButton>
         </slot>
 
         <div class="dropdown-menu" role="menu">
