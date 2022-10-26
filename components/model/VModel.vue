@@ -7,6 +7,7 @@ export interface VModelEmits {
     (e: "beforeUpdate", value: void): void;
     (e: "beforeCreate", value: void): void;
     (e: "update:isSaving", value: boolean): void;
+    (e: "cancel", value: void): void;
 }
 
 export interface VModelProps {
@@ -90,6 +91,10 @@ function onChange(callback) {
     watch(() => fields, callback, { deep: true });
 }
 
+function cancel() {
+    emits('cancel');
+}
+
 defineExpose({
     submit,
     hasError,
@@ -103,7 +108,7 @@ defineExpose({
 <template>
     <TranslateNamespace :path="translateNamespace">
         <form @action.prevent="submit()">
-            <component :is="props.component" :form="props.model"></component>
+            <component :is="props.component" :form="props.model" @cancel="cancel()"></component>
         </form>
     </TranslateNamespace>
 </template>
