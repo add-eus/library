@@ -12,7 +12,6 @@ const props = withDefaults(defineProps<VDropdownItemProps>(), {
 <template>
     <a
         role="menuitem"
-        href="#"
         class="dropdown-item is-media"
         :class="{ 'is-media': !!props.icon }"
     >

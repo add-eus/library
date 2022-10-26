@@ -29,7 +29,7 @@ import { Query } from "./query";
 import { QuerySearch } from "./querySearch";
 
 const cachedEntities: { [key: string]: EntityORM } = {};
-const algoliaClient = algoliasearch("LW0XGG82D8", "e211be2453d31f5d8968da9bd5b49fee");
+const algoliaClient = algoliasearch(import.meta.env.VITE_ALGOLIA_APPLICATION_ID, import.meta.env.VITE_ALGOLIA_API_KEY);
 
 function transformWheres(whereOptions: [] = []): QueryConstraint[] {
     return whereOptions.map((whereOption: [string, WhereFilterOp, any]) => {
@@ -103,9 +103,16 @@ export function useCollection(collectionModel: any, options: any) {
         }
 
         entities.isUpdating = true;
-        await query.next(
-            options.limit ? options.limit.value || options.limit : undefined
-        );
+
+        let limit = 10;
+        if (isRef(options.limit) && typeof options.limit.value === 'number') 
+            limit = options.limit.value;
+        else if (typeof options.limit === 'number')
+            limit = options.limit;
+        if (limit == 0)
+            return 
+            
+        await query.next(limit);
         entities.isUpdating = false;
     }
 

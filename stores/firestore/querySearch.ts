@@ -12,6 +12,8 @@ export class QuerySearch extends Query {
     private algoliaIndex;
     private hits: any[] | null = null;
     private currentHitIndex = 0;
+    private constraints: QueryConstraint[];
+
     constructor(
         constraints: QueryConstraint[],
         list: any[],
@@ -21,6 +23,7 @@ export class QuerySearch extends Query {
         algoliaIndex: any
     ) {
         super(constraints, list, transform, reference);
+        this.constraints = constraints;
         this.searchText = searchText;
         this.algoliaIndex = algoliaIndex;
     }
@@ -30,8 +33,17 @@ export class QuerySearch extends Query {
         additionalConstraints: QueryConstraint[] = []
     ): Promise<DocumentSnapshot[]> {
         if (!this.hits) {
-            const { hits } = await this.algoliaIndex.search(this.searchText);
-
+            const filters = this.constraints
+                .filter((constraint) => {
+                    return constraint.type == 'where';
+                })
+                .map((constraint) => {
+                    const key = constraint.wa.segments.join('.');
+                    if (constraint.ma == 'array-contains')
+                        return `${key}:"${constraint.ga}"`;
+                })
+                .join(' AND ');
+            const { hits } = await this.algoliaIndex.search(this.searchText, { filters } );
             this.hits = hits;
         }
         if (!this.hits || this.hits.length === 0) return [];

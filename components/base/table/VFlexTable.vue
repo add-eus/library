@@ -149,7 +149,7 @@ function getValueByPath(row: any, key: any) {
                     :index="index"
                 ></slot>
                 <div
-                    vHideOnHidden="wrapper.useInfiniteScroll"
+                    v-hide-on-hidden="wrapper.useInfiniteScroll"
                     class="flex-table-item"
                     :class="[props.clickable && 'is-clickable']"
                     :tabindex="props.clickable ? 0 : undefined"

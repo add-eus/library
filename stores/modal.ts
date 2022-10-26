@@ -25,7 +25,6 @@ export class Modal {
     }
 
     close() {
-        console.log("Closing", this);
         this.isClosed.value = true;
     }
 
@@ -106,11 +105,9 @@ export const useModal = function () {
             const vnode: VNode = createVNode(ModalComponent, {
                 modal: modal,
             });
-            console.log(modal);
-            console.log(vnode);
             vnode.appContext = { ...app._context };
             const addEdelement = document.body.appendChild(document.createElement("div"));
-            console.log(addEdelement);
+
             render(vnode, addEdelement);
             until(modal.isClosed)
                 .toBe(true)

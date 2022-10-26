@@ -20,8 +20,13 @@ export interface VFieldModelProps {
     addModel?: any;
 }
 
+export interface VFieldModelEmits {
+    (e: "update", value: void): void;
+}
+
 const { translate } = useTranslate();
 
+const emits = defineEmits<VFieldModelEmits>();
 const props = defineProps<VFieldModelProps>();
 
 const input = computed(() => {
@@ -128,6 +133,7 @@ const { value, errors, meta, setValue, validate } = useField(props.property, sch
 });
 watch(value, () => {
     props.modelValue[props.property] = value.value;
+    emits('update', value.value);
 });
 
 const dirty = computed(() => meta.dirty);

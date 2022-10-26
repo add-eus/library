@@ -3,6 +3,7 @@ import { waitForElementHidden, waitForElementVisible } from "/@src/lib/utils/obs
 import { isVisible } from "/@src/lib/utils/element";
 
 function onVisible(el, vNode, removedNodes = []) {
+    console.log('sthdo');
     el.childNodes.forEach((child) => {
         const removedNode = removedNodes.find(
             (rNode) => rNode[1] == child || rNode[0] == child
