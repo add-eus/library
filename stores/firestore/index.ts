@@ -28,8 +28,6 @@ import { until } from "@vueuse/core";
 import { Query } from "./query";
 import { QuerySearch } from "./querySearch";
 
-console.log(import.meta.env);
-
 const cachedEntities: { [key: string]: EntityORM } = {};
 const algoliaClient = algoliasearch(import.meta.env.VITE_ALGOLIA_APPLICATION_ID, import.meta.env.VITE_ALGOLIA_API_KEY);
 
