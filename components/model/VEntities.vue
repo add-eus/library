@@ -73,8 +73,15 @@ function deleteEntity(index?: number) {
                     <!-- Slot -->
                     <slot :entity="props.modelValue"></slot>
                 </VFlex>
-                <VFlex flex-direction="column" class="btn-container">
+                <VFlex flex-direction="column" row-gap="0.75rem" class="btn-container">
                     <!-- Buttons -->
+                    <VIconButton
+                        v-if="props.onlyIds"
+                        icon="save"
+                        color="primary"
+                        light
+                        circle
+                    ></VIconButton>
                     <VIconButton
                         :icon="collapsed ? 'arrow_drop_down' : 'arrow_drop_up'"
                         color="info"
@@ -107,8 +114,15 @@ function deleteEntity(index?: number) {
                     <!-- Slot -->
                     <slot :entity="entity"></slot>
                 </VFlex>
-                <VFlex flex-direction="column" row-gap="5px" class="btn-container">
+                <VFlex flex-direction="column" row-gap="0.75rem" class="btn-container">
                     <!-- Buttons -->
+                    <VIconButton
+                        v-if="props.onlyIds"
+                        icon="save"
+                        color="primary"
+                        light
+                        circle
+                    ></VIconButton>
                     <VIconButton
                         icon="delete"
                         color="danger"
