@@ -7,8 +7,14 @@ export interface VEntitiesProps {
     onlyIds: boolean;
     multiple: boolean;
 }
-let collapsed: Ref<Boolean | Boolean[]>;
 const props = defineProps<VEntitiesProps>();
+let collapsed: Ref<Boolean | Boolean[]>;
+let entities: Ref<any> = !props.onlyIds
+    ? ref(props.modelValue)
+    : props.multiple
+    ? ref(new Array())
+    : ref(new props.model());
+// Définition du/des valeurs gérants le status d'affichage
 if (props.multiple) {
     collapsed = ref(new Array());
     (props.modelValue as any[]).forEach((value, index) => {
@@ -18,9 +24,16 @@ if (props.multiple) {
 } else {
     collapsed = ref(true);
 }
+
+/**
+ * Add an entity to the managed collection
+ */
 function addEntity() {
     if (props.multiple) {
-        (props.modelValue as any[]).push(new props.model());
+        if (!props.onlyIds) {
+            (props.modelValue as any[]).push(new props.model());
+        } else {
+        }
         (collapsed as Ref<Boolean[]>).value.push(true);
     }
 }
