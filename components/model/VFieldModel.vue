@@ -16,8 +16,6 @@ export interface VFieldModelProps {
     property: string;
     icon?: string;
     options?: any;
-    canAdd?: Boolean;
-    addModel?: any;
 }
 
 export interface VFieldModelEmits {
@@ -45,12 +43,9 @@ let selectOptions: any[] = props.options || [];
 if (input.value.attrs.options) {
     if (input.value.attrs.options.entity) {
         const wheres = input.value.attrs.options.where();
-        const options = useCollection(
-            input.value.attrs.options.entity,
-            {
-                wheres
-            }
-        );
+        const options = useCollection(input.value.attrs.options.entity, {
+            wheres,
+        });
         schema = yup.object();
         selectOptions = computed(() => {
             return [...options].map((option) => {
@@ -70,14 +65,6 @@ if (input.value.attrs.options) {
     } else {
         selectOptions = input.value.attrs.options;
     }
-}
-
-if (props.canAdd) {
-    let select = [addOption];
-    selectOptions.forEach((val) => {
-        select.push(val);
-    });
-    selectOptions = select;
 }
 
 if (input.value.type == "checkbox") {
@@ -133,7 +120,7 @@ const { value, errors, meta, setValue, validate } = useField(props.property, sch
 });
 watch(value, () => {
     props.modelValue[props.property] = value.value;
-    emits('update', value.value);
+    emits("update", value.value);
 });
 
 const dirty = computed(() => meta.dirty);
@@ -152,14 +139,6 @@ if (typeof addField == "function")
 
 function isArray(value: any) {
     return Array.isArray(value);
-}
-
-function onSelect(option: string, select$: any) {
-    console.log(select$, addOption);
-    if (select$.value === addOption.value) {
-        const entity = new props.addModel();
-        entity.$edit();
-    }
 }
 
 const multiselect = ref(null);
@@ -208,7 +187,6 @@ const multiselect = ref(null);
                     :mode="input.attrs.multiple ? 'multiple' : 'single'"
                     :options="selectOptions"
                     v-bind="options"
-                    @select="onSelect"
                 >
                     <template #tag="tag">
                         <slot name="tag" v-bind="tag"></slot>
