@@ -37,23 +37,21 @@ provide(useVFieldSymbol, vField);
         ]"
     >
         <template v-if="hasLabel && props.horizontal">
-            <div class="field-label is-normal">
-                <label class="label" :for="vField.id">
-                    <slot name="label"
-                        ><Translate>{{ props.label }}</Translate></slot
-                    >
-                </label>
-            </div>
+            <VLabel :for="vField.id">
+                <slot name="label"
+                    ><Translate>{{ props.label }}</Translate></slot
+                >
+            </VLabel>
             <div class="field-body">
                 <slot></slot>
             </div>
         </template>
         <template v-else-if="hasLabel">
-            <label class="label" :for="vField.id">
+            <VLabel :for="vField.id">
                 <slot name="label"
                     ><Translate>{{ props.label }}</Translate></slot
                 >
-            </label>
+            </VLabel>
 
             <slot></slot>
         </template>

@@ -1,35 +1,15 @@
 <script setup lang="ts">
-import { computed, reactive } from "vue";
-import { useVFieldContext } from "/@src/composable/useVFieldContext";
-
 export interface VLabelProps {
-    raw?: boolean;
+    for?: any;
 }
 
-const props = defineProps<VLabelProps>();
-
-const vFieldContext = reactive(
-    useVFieldContext({
-        create: false,
-        help: "VLabel",
-    })
-);
-
-const classes = computed(() => {
-    if (props.raw) return [];
-
-    return ["label"];
-});
-
-const onEnter = () => {
-    if (vFieldContext.id) {
-        document.getElementById(vFieldContext.id)?.click();
-    }
-};
+defineProps<VLabelProps>();
 </script>
 
 <template>
-    <label :class="classes" :for="vFieldContext.id" @keydown.enter.prevent="onEnter">
-        <slot v-bind="vFieldContext" />
-    </label>
+    <div class="field-label is-normal">
+        <label class="label" :for="for">
+            <slot></slot>
+        </label>
+    </div>
 </template>

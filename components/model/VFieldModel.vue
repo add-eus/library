@@ -26,7 +26,6 @@ const { translate } = useTranslate();
 
 const emits = defineEmits<VFieldModelEmits>();
 const props = defineProps<VFieldModelProps>();
-
 const input = computed(() => {
     return props.modelValue.$metadata.properties[props.property].input;
 });
