@@ -62,8 +62,8 @@
     // info HSL (#039be5) // hsl(200, 97%, 45%)
     @include colorHsl("info", 200, 97%, 45%);
 
-    // success HSL (#06d6a0) // hsl(164, 95%, 43%)
-    @include colorHsl("success", 164, 95%, 43%);
+    // success HSL (#06d6a0) // hsl(153, 53%, 53%)
+    @include colorHsl("success", 142, 52%, 53%);
 
     // warning HSL (#faae42) // hsl(35, 95%, 62%)
     @include colorHsl("warning", 35, 95%, 62%);

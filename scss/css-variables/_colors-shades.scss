@@ -88,7 +88,7 @@ $shade-variants: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 
    * success colors
    */
     // success - light shades
-    @each $shade in 20, 24, 40, 45, 48 {
+    @each $shade in 20, 24, 40, 44 {
         --success-light-#{$shade}: hsl(
             var(--success-h) var(--success-s) calc(var(--success-l) + #{$shade}%)
         );
