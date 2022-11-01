@@ -1,0 +1,48 @@
+{
+    "name": "library",
+    "displayName": "Jarveat Library",
+    "version": "0.0.1",
+    "description": "",
+    "private": true,
+    "license": "SEE LICENSE IN LICENSE.md",
+    "author": {
+        "name": "Maxime Allanic <maxime@allanic.me> (https://jarveat.com)"
+    },
+    "engines": {
+        "node": ">=14.17.0",
+        "npm": ">=7"
+    },
+    "keywords": [
+    ],
+    "gitHooks": {
+        "pre-commit": "NODE_ENV=production lint-staged --no-stash ",
+        "commit-msg": "commitlint -e -V "
+    },
+    "lint-staged": {
+        "*.ts": [
+            "eslint --fix",
+            "prettier --write"
+        ],
+        "*.scss": [
+            "stylelint",
+            "prettier --write"
+        ],
+        "*.md": [
+            "eslint --fix",
+            "prettier --write"
+        ],
+        "*.vue": [
+            "eslint --fix",
+            "prettier --write"
+        ]
+    },
+    "scripts": {
+        
+    },
+    "dependencies": {
+        
+    },
+    "devDependencies": {
+        
+    }
+}
