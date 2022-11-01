@@ -33,11 +33,6 @@ const isProcessing = ref(false);
 
 let schema = yup.string(`.${props.property}.validation.string`);
 
-const addOption = {
-    label: translate(`.${props.property}.options.add`),
-    value: "",
-    disabled: false,
-};
 let selectOptions: any[] = props.options || [];
 if (input.value.attrs.options) {
     if (input.value.attrs.options.entity) {
@@ -117,12 +112,11 @@ const { value, errors, meta, setValue, validate } = useField(props.property, sch
     standalone: true,
     modelPropName: props.property,
 });
+
 watch(value, () => {
     props.modelValue[props.property] = value.value;
     emits("update", value.value);
 });
-
-const dirty = computed(() => meta.dirty);
 
 const addField = inject("addField");
 

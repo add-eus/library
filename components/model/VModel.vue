@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, provide, watch } from "vue";
+import { computed, inject, provide, watch } from "vue";
 
 export interface VModelEmits {
     (e: "created", value: void): void;
@@ -14,6 +14,7 @@ export interface VModelProps {
     model: any;
     component: any;
     isSaving: boolean;
+    options: any;
 }
 
 const emits = defineEmits<VModelEmits>();
@@ -24,14 +25,18 @@ const translateNamespace = computed(() => {
     return `model.${modelName}`;
 });
 
+const addField = inject("addField");
+
 async function submit() {
-    if (hasError() || isProcessing() || !hasChanged())
+    if (hasError() || isProcessing() || !hasChanged() || typeof addField == "function")
         return;
     emits("update:isSaving", true);
+    await Promise.all(onSavedCallbacks.map((onSavedCallback) => onSavedCallback()));
     const isEdit = !!props.model.$metadata.reference;
     if (isEdit) emits("beforeUpdate", props.model);
     else emits("beforeCreate", props.model);
     await props.model.$save();
+
     if (isEdit) emits("updated", props.model);
     else emits("created", props.model);
     emits("update:isSaving", false);
@@ -39,6 +44,7 @@ async function submit() {
 
 const fields = {};
 const watchers: { [key: string]: Function[] } = {};
+
 provide("addField", function (name: string, field: any) {
     fields[name] = field;
 
@@ -65,6 +71,17 @@ provide("addField", function (name: string, field: any) {
             });
         }
     }
+
+    if (typeof addField === "function") {
+        addField(name, field);
+    }
+});
+
+const onSaved = inject("onSaved");
+const onSavedCallbacks: Function[] = [];
+provide("onSaved", (callback) => {
+    if (typeof onSaved === "function") onSaved(callback);
+    onSavedCallbacks.push(callback);
 });
 
 function getFields() {
@@ -92,7 +109,7 @@ function onChange(callback) {
 }
 
 function cancel() {
-    emits('cancel');
+    emits("cancel");
 }
 
 defineExpose({
@@ -108,7 +125,12 @@ defineExpose({
 <template>
     <TranslateNamespace :path="translateNamespace">
         <form @action.prevent="submit()">
-            <component :is="props.component" :form="props.model" @cancel="cancel()"></component>
+            <component
+                :is="props.component"
+                :form="props.model"
+                v-bind="props.options"
+                @cancel="cancel()"
+            ></component>
         </form>
     </TranslateNamespace>
 </template>
