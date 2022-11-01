@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, Ref, watch } from "vue";
 import { watchArray } from "@vueuse/core";
-import { useDoc } from "/@src/lib/stores/firestore";
+import { newDoc, useDoc } from "/@src/lib/stores/firestore";
 
 export interface VEntitiesEmits {
     (event: "update:modelValue", value?: any): void;
@@ -23,15 +23,14 @@ let entities: Ref<any> = !props.onlyIds
     ? ref(props.modelValue)
     : props.multiple
     ? ref(new Array())
-    : ref(new props.model());
+    : ref(newDoc(props.model));
 
 async function getEntity(componentModel, uid: String): Promise<any> {
     const doc = useDoc(componentModel, uid);
-    await doc.$metadata.waitFullfilled();
+    await doc.$metadata.refresh();
     return doc;
 }
-// const doc = useDoc('ejrghdekejhrht-ej4rh'/* uid */);
-// await doc.$metadata.isFullfilling;
+
 if (props.onlyIds) {
     if (props.multiple) {
         (props.modelValue as Array<String>).forEach((uid, index) => {
@@ -39,8 +38,8 @@ if (props.onlyIds) {
             if (uid == undefined || uid == null) {
                 return;
             }
+            entities.value.push({});
             getEntity(props.model, uid).then((value) => {
-                console.log(value);
                 (entities as Ref<Array<any>>).value[index] = value;
             });
         });
@@ -71,7 +70,7 @@ if (props.multiple) {
 function addEntity() {
     if (props.multiple) {
         if (!props.onlyIds) {
-            (props.modelValue as any[]).push(new props.model());
+            (props.modelValue as any[]).push(newDoc(props.model));
         } else {
             (props.modelValue as any[]).push("");
         }
