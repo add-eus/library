@@ -31,7 +31,8 @@ let entities: Ref<any> = !props.onlyIds
 
 async function getEntity(componentModel, uid: String): Promise<any> {
     const doc = useDoc(componentModel, uid);
-    await doc.$metadata.waitFullfilled;
+    await doc.$metadata.refresh();
+    await doc.$metadata.waitFullfilled();
     return doc;
 }
 
@@ -60,10 +61,11 @@ if (props.onlyIds) {
     } else {
         if (props.modelValue) {
             getEntity(props.model, props.modelValue).then((value) => {
-                console.log(value);
                 entities.value = value;
+                console.log(entities.value);
             });
         } else {
+            entities.value = newDoc(props.model);
         }
         if (typeof onSaved === "function")
             onSaved(async () => {
