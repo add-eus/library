@@ -188,7 +188,7 @@ provide("addField", function (name: string, field: any) {
                     <Label>{{ entity?.toString() }}</Label>
                 </VFlex>
                 <VFlex
-                    v-show="!collapsed"
+                    v-show="!collapsed[index]"
                     flex-direction="column"
                     class="entity-container content-container"
                 >
