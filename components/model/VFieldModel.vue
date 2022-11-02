@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch, inject, ref } from "vue";
+import { computed, watch, inject, ref, onUnmounted } from "vue";
 import { useField } from "vee-validate";
 import * as yup from "yup";
 import { enumToArray, isEnum } from "/@src/lib/utils/array";
@@ -135,6 +135,11 @@ function isArray(value: any) {
 }
 
 const multiselect = ref(null);
+
+onUnmounted(() => {
+    const removeField = inject("removeField");
+    if (typeof removeField == "function") removeField(props.property);
+});
 </script>
 
 <template>

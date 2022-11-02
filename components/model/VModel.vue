@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, provide, watch } from "vue";
+import { computed, getCurrentInstance, inject, provide, watch, ref } from "vue";
 
 export interface VModelEmits {
     (e: "created", value: void): void;
@@ -26,6 +26,7 @@ const translateNamespace = computed(() => {
 });
 
 const addField = inject("addField");
+const removeField = inject("removeField");
 
 async function submit() {
     if (hasError() || isProcessing() || !hasChanged() || typeof addField == "function")
@@ -42,11 +43,12 @@ async function submit() {
     emits("update:isSaving", false);
 }
 
-const fields = {};
+const fields = ref({});
 const watchers: { [key: string]: Function[] } = {};
 
 provide("addField", function (name: string, field: any) {
-    fields[name] = field;
+    console.log("add", name, addField, fields);
+    fields.value[name] = field;
 
     field.validate();
 
@@ -62,9 +64,9 @@ provide("addField", function (name: string, field: any) {
 
     if (field.updateOn) {
         if (!watchers[field.updateOn]) watchers[field.updateOn] = [];
-        if (!fields[field.updateOn]) watchers[field.updateOn].push(field);
+        if (!fields.value[field.updateOn]) watchers[field.updateOn].push(field);
         else {
-            watch(fields[field.updateOn].value, () => {
+            watch(fields.value[field.updateOn].value, () => {
                 return field.validate({
                     mode: "force",
                 });
@@ -77,6 +79,12 @@ provide("addField", function (name: string, field: any) {
     }
 });
 
+provide("removeField", function (name: string) {
+    console.log("remove", name, addField);
+    delete fields.value[name];
+    if (typeof removeField === "function") removeField(name);
+});
+
 const onSaved = inject("onSaved");
 const onSavedCallbacks: Function[] = [];
 provide("onSaved", (callback) => {
@@ -85,27 +93,29 @@ provide("onSaved", (callback) => {
 });
 
 function getFields() {
-    return fields;
+    return fields.value;
 }
 
 function hasError() {
-    return Object.values(fields).some((field) => field.errors.value.length > 0);
+    return Object.values(fields.value).some((field) => {
+        return field.errors.length > 0;
+    });
 }
 
 function hasChanged() {
-    return Object.values(fields).some((field) => {
+    return Object.values(fields.value).some((field) => {
         return field.meta.dirty;
     });
 }
 
 function isProcessing() {
-    return Object.values(fields).some((field) => {
-        return field.isProcessing.value;
+    return Object.values(fields.value).some((field) => {
+        return field.isProcessing;
     });
 }
 
 function onChange(callback) {
-    watch(() => fields, callback, { deep: true });
+    watch(fields, callback, { deep: true });
 }
 
 function cancel() {

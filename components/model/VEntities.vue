@@ -36,8 +36,9 @@ async function getEntity(componentModel, uid: String): Promise<any> {
     return doc;
 }
 
+const onSaved = inject("onSaved");
+
 if (props.onlyIds) {
-    const onSaved = inject("onSaved");
     if (props.multiple) {
         (props.modelValue as Array<String>).forEach((uid, index) => {
             if (uid == undefined || uid == null) {
@@ -72,6 +73,20 @@ if (props.onlyIds) {
                 await entities.value.$save();
                 emits("update:modelValue", entities.value.$getID());
             });
+    }
+} else if (typeof onSaved === "function") {
+    if (props.multiple) {
+        onSaved(async () => {
+            await Promise.all(
+                entities.value.map(async (entity) => {
+                    return entity.$save();
+                })
+            );
+        });
+    } else {
+        onSaved(async () => {
+            return entities.value.$save();
+        });
     }
 }
 
@@ -124,23 +139,31 @@ provide("addField", function (name: string, field: any) {
     if (typeof addField === "function") {
         let property = props.property + "." + name;
         if (props.multiple) {
-            fields.push(field);
-            property = `${props.property}[${fields.length}].${name}`;
+            fields.push(name);
+            property = `${props.property}[${fields.length - 1}].${name}`;
         }
         addField(property, field);
+    }
+});
+
+const removeField = inject("removeField");
+provide("removeField", function (name: string, field: any) {
+    if (typeof removeField === "function") {
+        let property = props.property + "." + name;
+        if (props.multiple) {
+            const index = fields.indexOf(name);
+            property = `${props.property}[${index}].${name}`;
+        }
+        removeField(property);
     }
 });
 </script>
 
 <template>
     <TranslateNamespace :path="'.' + property">
-        <div class="field-label is-normal">
-            <label class="label">
-                <slot name="label"
-                    ><Translate>{{ ".label" }}</Translate></slot
-                >
-            </label>
-        </div>
+        <VLabel>
+            <Translate>{{ ".label" }}</Translate>
+        </VLabel>
         <VCard v-if="!props.multiple">
             <VFlex justify-content="space-between">
                 <!-- Solo -->
@@ -188,7 +211,7 @@ provide("addField", function (name: string, field: any) {
                     <Label>{{ entity?.toString() }}</Label>
                 </VFlex>
                 <VFlex
-                    v-show="!collapsed"
+                    v-show="!collapsed[index]"
                     flex-direction="column"
                     class="entity-container content-container"
                 >
