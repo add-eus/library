@@ -107,11 +107,12 @@ if (input.value.type == "select") {
     }
 }
 
-const { value, errors, meta, setValue, validate } = useField(props.property, schema, {
+const field = useField(props.property, schema, {
     initialValue: props.modelValue[props.property],
     standalone: true,
     modelPropName: props.property,
 });
+const { value, errors, meta, setValue, validate } = field;
 
 watch(value, () => {
     props.modelValue[props.property] = value.value;
@@ -145,7 +146,7 @@ onUnmounted(() => {
 <template>
     <VField :id="property" :label="'.' + property + '.label'">
         <VControl :has-error="errors.length > 0" :icon="icon">
-            <slot :value="value">
+            <slot :field="field">
                 <VInput
                     v-if="
                         input.type == 'text' ||

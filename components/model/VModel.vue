@@ -31,15 +31,21 @@ const removeField = inject("removeField");
 async function submit() {
     if (hasError() || isProcessing() || !hasChanged() || typeof addField == "function")
         return;
+
     emits("update:isSaving", true);
+    console.log("update:isSaving", props.model);
     await Promise.all(onSavedCallbacks.map((onSavedCallback) => onSavedCallback()));
     const isEdit = !!props.model.$metadata.reference;
+    console.log("before", props.model);
     if (isEdit) emits("beforeUpdate", props.model);
     else emits("beforeCreate", props.model);
+    console.log("save", props.model);
     await props.model.$save();
 
+    console.log("emits", props.model);
     if (isEdit) emits("updated", props.model);
     else emits("created", props.model);
+    console.log("isSaving", props.model);
     emits("update:isSaving", false);
 }
 
@@ -47,7 +53,6 @@ const fields = ref({});
 const watchers: { [key: string]: Function[] } = {};
 
 provide("addField", function (name: string, field: any) {
-    console.log("add", name, addField, fields);
     fields.value[name] = field;
 
     field.validate();
@@ -80,7 +85,6 @@ provide("addField", function (name: string, field: any) {
 });
 
 provide("removeField", function (name: string) {
-    console.log("remove", name, addField);
     delete fields.value[name];
     if (typeof removeField === "function") removeField(name);
 });

@@ -124,6 +124,7 @@ class EntityORM {
     }
 
     async $save() {
+        if (!this.constructor.collectionName) return;
         const raw = {};
         this.$metadata.emit("format", raw);
 
@@ -134,7 +135,6 @@ class EntityORM {
             );
         }
 
-        console.log(raw);
         await setDoc(this.$metadata.reference, raw);
 
         this.$metadata.emit("saved");
@@ -173,7 +173,7 @@ function isEntityStandaloneClass(entityClass: any) {
     return (
         entityClass &&
         entityClass.prototype &&
-        typeof entityClass.collectionName == 'string'
+        typeof entityClass.collectionName == "string"
     );
 }
 
