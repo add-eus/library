@@ -6,7 +6,6 @@ import {
     onSnapshot,
 } from "firebase/firestore";
 import EventEmitter from "events";
-import { until } from "@vueuse/core";
 
 export class EntityMetaData extends EventEmitter {
     reference: DocumentReference | null = null;
@@ -31,18 +30,17 @@ export class EntityMetaData extends EventEmitter {
     async refresh() {
         if (!this.reference) return;
         if (!this.isFullfilling) {
-            this.isFullfilling = getDoc(this.reference)
-                .then(async (querySnapshot) => {
-                    this.origin = querySnapshot.data();
-            
-                    this.emit("parse", this.origin);
-                    this.isFullfilled = true;
+            this.isFullfilling = getDoc(this.reference).then(async (querySnapshot) => {
+                this.origin = querySnapshot.data();
+                if (!this.origin)
+                    throw new Error(`${this.reference.path} does not exist`);
+
+                this.emit("parse", this.origin);
+                this.isFullfilled = true;
             });
         }
-        
+
         await this.isFullfilling;
-        
-        
     }
 
     async waitFullfilled() {

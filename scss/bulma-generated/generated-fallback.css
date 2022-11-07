@@ -836,7 +836,7 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-info.is-inve
 
 .button.is-success,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.fc-button {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -845,7 +845,7 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-info.is-inve
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.fc-button:hover,
 .button.is-success.is-hovered,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-hovered.fc-button {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -861,7 +861,7 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-info.is-inve
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.fc-button:active,
 .button.is-success.is-active,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-active.fc-button {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -870,14 +870,14 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-info.is-inve
 fieldset[disabled] .button.is-success,
 fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.fc-button,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk fieldset[disabled] .is-success.fc-button {
-  background-color: rgb(6, 214, 158);
-  border-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
+  border-color: rgb(72, 199, 142);
 }
 
 .button.is-success.is-inverted,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-inverted.fc-button {
   background-color: rgb(255, 255, 255);
-  color: rgb(6, 214, 158);
+  color: rgb(72, 199, 142);
 }
 
 .button.is-success.is-inverted:hover,
@@ -894,13 +894,13 @@ fieldset[disabled] .button.is-success.is-inverted,
 fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-inverted.fc-button,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk fieldset[disabled] .is-success.is-inverted.fc-button {
   background-color: rgb(255, 255, 255);
-  color: rgb(6, 214, 158);
+  color: rgb(72, 199, 142);
 }
 
 .button.is-success.is-outlined,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-outlined.fc-button {
-  border-color: rgb(6, 214, 158);
-  color: rgb(6, 214, 158);
+  border-color: rgb(72, 199, 142);
+  color: rgb(72, 199, 142);
 }
 
 .button.is-success.is-outlined:hover,
@@ -912,8 +912,8 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-i
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-outlined.fc-button:focus,
 .button.is-success.is-outlined.is-focused,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-outlined.is-focused.fc-button {
-  background-color: rgb(6, 214, 158);
-  border-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
+  border-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -922,8 +922,8 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-i
 fieldset[disabled] .button.is-success.is-outlined,
 fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-outlined.fc-button,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk fieldset[disabled] .is-success.is-outlined.fc-button {
-  border-color: rgb(6, 214, 158);
-  color: rgb(6, 214, 158);
+  border-color: rgb(72, 199, 142);
+  color: rgb(72, 199, 142);
 }
 
 .button.is-success.is-inverted.is-outlined,
@@ -941,7 +941,7 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-o
 .button.is-success.is-inverted.is-outlined.is-focused,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-inverted.is-outlined.is-focused.fc-button {
   background-color: rgb(255, 255, 255);
-  color: rgb(6, 214, 158);
+  color: rgb(72, 199, 142);
 }
 
 .button.is-success.is-inverted.is-outlined[disabled],
@@ -955,8 +955,8 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-i
 
 .button.is-success.is-light,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-light.fc-button {
-  background-color: rgb(235, 254, 249);
-  color: rgb(4, 144, 106);
+  background-color: rgb(239, 250, 245);
+  color: rgb(37, 121, 83);
 }
 
 .button.is-success.is-light:hover,
@@ -964,8 +964,8 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-i
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-light.fc-button:hover,
 .button.is-success.is-light.is-hovered,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-light.is-hovered.fc-button {
-  background-color: rgb(235, 254, 249);
-  color: rgb(4, 144, 106);
+  background-color: rgb(239, 250, 245);
+  color: rgb(37, 121, 83);
 }
 
 .button.is-success.is-light:active,
@@ -973,8 +973,8 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-i
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-light.fc-button:active,
 .button.is-success.is-light.is-active,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-light.is-active.fc-button {
-  background-color: rgb(235, 254, 249);
-  color: rgb(4, 144, 106);
+  background-color: rgb(239, 250, 245);
+  color: rgb(37, 121, 83);
 }
 
 .button.is-warning,
@@ -1323,13 +1323,13 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 }
 
 .notification.is-success {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
 .notification.is-success.is-light {
-  background-color: rgb(235, 254, 249);
-  color: rgb(4, 144, 106);
+  background-color: rgb(239, 250, 245);
+  color: rgb(37, 121, 83);
 }
 
 .notification.is-warning {
@@ -1419,15 +1419,15 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 }
 
 .progress.is-success::-webkit-progress-value {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
 }
 
 .progress.is-success::-moz-progress-bar {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
 }
 
 .progress.is-success::-ms-fill {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
 }
 
 .progress.is-warning::-webkit-progress-value {
@@ -1507,8 +1507,8 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 
 .table td.is-success,
 .table th.is-success {
-  background-color: rgb(6, 214, 158);
-  border-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
+  border-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -1589,13 +1589,13 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 }
 
 .tag:not(body).is-success {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
 .tag:not(body).is-success.is-light {
-  background-color: rgb(235, 254, 249);
-  color: rgb(4, 144, 106);
+  background-color: rgb(239, 250, 245);
+  color: rgb(37, 121, 83);
 }
 
 .tag:not(body).is-warning {
@@ -1621,18 +1621,18 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 .select select,
 .textarea,
 .input,
-.vti__input {
+.vue-tel-input > .vti__input {
   background-color: rgb(255, 255, 255);
 }
 
 .select select:focus,
 .textarea:focus,
 .input:focus,
-.vti__input:focus,
+.vue-tel-input > .vti__input:focus,
 .select select.is-focused,
 .is-focused.textarea,
 .is-focused.input,
-.is-focused.vti__input,
+.vue-tel-input > .is-focused.vti__input,
 .select select:active,
 .select .fc > .fc-header-toolbar > .fc-toolbar-chunk select.fc-button-primary:active,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .select select.fc-button-primary:active,
@@ -1640,12 +1640,12 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .textarea.fc-button-primary:active,
 .input:active,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .input.fc-button-primary:active,
-.vti__input:active,
-.fc > .fc-header-toolbar > .fc-toolbar-chunk .vti__input.fc-button-primary:active,
+.vue-tel-input > .vti__input:active,
+.fc > .fc-header-toolbar > .fc-toolbar-chunk .vue-tel-input > .vti__input.fc-button-primary:active,
 .select select.is-active,
 .is-active.textarea,
 .is-active.input,
-.is-active.vti__input {
+.vue-tel-input > .is-active.vti__input {
   border-color: rgb(72, 95, 199);
 }
 
@@ -1653,14 +1653,14 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .textarea.fc-button:hover,
 .is-white.input,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .input.fc-button:hover,
-.is-white.vti__input,
-.fc > .fc-header-toolbar > .fc-toolbar-chunk .vti__input.fc-button:hover {
+.vue-tel-input > .is-white.vti__input,
+.fc > .fc-header-toolbar > .fc-toolbar-chunk .vue-tel-input > .vti__input.fc-button:hover {
   border-color: rgb(255, 255, 255);
 }
 
 .is-dark.textarea,
 .is-dark.input,
-.is-dark.vti__input {
+.vue-tel-input > .is-dark.vti__input {
   border-color: rgb(40, 50, 82);
 }
 
@@ -1668,38 +1668,38 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .textarea.fc-button-primary,
 .is-primary.input,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .input.fc-button-primary,
-.is-primary.vti__input,
-.fc > .fc-header-toolbar > .fc-toolbar-chunk .vti__input.fc-button-primary {
+.vue-tel-input > .is-primary.vti__input,
+.fc > .fc-header-toolbar > .fc-toolbar-chunk .vue-tel-input > .vti__input.fc-button-primary {
   border-color: rgb(42, 176, 229);
 }
 
 .is-link.textarea,
 .is-link.input,
-.is-link.vti__input {
+.vue-tel-input > .is-link.vti__input {
   border-color: rgb(72, 95, 199);
 }
 
 .is-info.textarea,
 .is-info.input,
-.is-info.vti__input {
+.vue-tel-input > .is-info.vti__input {
   border-color: rgb(3, 152, 226);
 }
 
 .is-success.textarea,
 .is-success.input,
-.is-success.vti__input {
-  border-color: rgb(6, 214, 158);
+.vue-tel-input > .is-success.vti__input {
+  border-color: rgb(72, 199, 142);
 }
 
 .is-warning.textarea,
 .is-warning.input,
-.is-warning.vti__input {
+.vue-tel-input > .is-warning.vti__input {
   border-color: rgb(250, 173, 66);
 }
 
 .is-danger.textarea,
 .is-danger.input,
-.is-danger.vti__input {
+.vue-tel-input > .is-danger.vti__input {
   border-color: rgb(230, 41, 100);
 }
 
@@ -1801,11 +1801,11 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 }
 
 .select.is-success:not(:hover)::after {
-  border-color: rgb(6, 214, 158);
+  border-color: rgb(72, 199, 142);
 }
 
 .select.is-success select {
-  border-color: rgb(6, 214, 158);
+  border-color: rgb(72, 199, 142);
 }
 
 .select.is-success select:hover,
@@ -1814,7 +1814,7 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 .select.is-success .fc > .fc-header-toolbar > .fc-toolbar-chunk select.fc-button:hover,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .select.is-success select.fc-button:hover,
 .select.is-success select.is-hovered {
-  border-color: rgb(6, 214, 158);
+  border-color: rgb(72, 199, 142);
 }
 
 .select.is-warning:not(:hover)::after {
@@ -1999,7 +1999,7 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 }
 
 .file.is-success .file-cta {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -2007,7 +2007,7 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .file.is-success.fc-button-primary:hover .file-cta,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .file.is-success.fc-button:hover .file-cta,
 .file.is-success.is-hovered .file-cta {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -2019,7 +2019,7 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 .file.is-success:active .file-cta,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .file.is-success.fc-button-primary:active .file-cta,
 .file.is-success.is-active .file-cta {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -2096,7 +2096,7 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 }
 
 .help.is-success {
-  color: rgb(6, 214, 158);
+  color: rgb(72, 199, 142);
 }
 
 .help.is-warning {
@@ -2208,17 +2208,17 @@ button.dropdown-item.is-active {
 }
 
 .message.is-success {
-  background-color: rgb(235, 254, 249);
+  background-color: rgb(239, 250, 245);
 }
 
 .message.is-success .message-header {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
 .message.is-success .message-body {
-  border-color: rgb(6, 214, 158);
-  color: rgb(4, 144, 106);
+  border-color: rgb(72, 199, 142);
+  color: rgb(37, 121, 83);
 }
 
 .message.is-warning {
@@ -2746,7 +2746,7 @@ button.dropdown-item.is-active {
 }
 
 .navbar.is-success {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -2763,7 +2763,7 @@ button.dropdown-item.is-active {
 .navbar.is-success .navbar-brand .navbar-link:focus,
 .navbar.is-success .navbar-brand .navbar-link:hover,
 .navbar.is-success .navbar-brand .navbar-link.is-active {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -2799,7 +2799,7 @@ button.dropdown-item.is-active {
   .navbar.is-success .navbar-end .navbar-link:focus,
   .navbar.is-success .navbar-end .navbar-link:hover,
   .navbar.is-success .navbar-end .navbar-link.is-active {
-    background-color: rgb(6, 214, 158);
+    background-color: rgb(72, 199, 142);
     color: rgb(255, 255, 255);
   }
 
@@ -2811,12 +2811,12 @@ button.dropdown-item.is-active {
   .navbar.is-success .navbar-item.has-dropdown:focus .navbar-link,
   .navbar.is-success .navbar-item.has-dropdown:hover .navbar-link,
   .navbar.is-success .navbar-item.has-dropdown.is-active .navbar-link {
-    background-color: rgb(6, 214, 158);
+    background-color: rgb(72, 199, 142);
     color: rgb(255, 255, 255);
   }
 
   .navbar.is-success .navbar-dropdown a.navbar-item.is-active {
-    background-color: rgb(6, 214, 158);
+    background-color: rgb(72, 199, 142);
     color: rgb(255, 255, 255);
   }
 }
@@ -3105,16 +3105,16 @@ a.navbar-item.is-active,
 }
 
 .panel.is-success .panel-heading {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
 .panel.is-success .panel-tabs a.is-active {
-  border-bottom-color: rgb(6, 214, 158);
+  border-bottom-color: rgb(72, 199, 142);
 }
 
 .panel.is-success .panel-block.is-active .panel-icon {
-  color: rgb(6, 214, 158);
+  color: rgb(72, 199, 142);
 }
 
 .panel.is-warning .panel-heading {
@@ -3538,7 +3538,7 @@ a.navbar-item.is-active,
 }
 
 .hero.is-success {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -3557,7 +3557,7 @@ a.navbar-item.is-active,
 
 @media screen and (max-width: 1023px) {
   .hero.is-success .navbar-menu {
-    background-color: rgb(6, 214, 158);
+    background-color: rgb(72, 199, 142);
   }
 }
 
@@ -3578,7 +3578,7 @@ a.navbar-item.is-active,
 .hero.is-success .fc > .fc-header-toolbar > .fc-toolbar-chunk .navbar-link.fc-button:hover,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .hero.is-success .navbar-link.fc-button:hover,
 .hero.is-success .navbar-link.is-active {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -3597,7 +3597,7 @@ a.navbar-item.is-active,
 .hero.is-success .tabs.is-toggle li.is-active a:hover {
   background-color: rgb(255, 255, 255);
   border-color: rgb(255, 255, 255);
-  color: rgb(6, 214, 158);
+  color: rgb(72, 199, 142);
 }
 
 .hero.is-warning {
@@ -4557,7 +4557,7 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-info.is-inve
 
 .button.is-success,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.fc-button {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -4566,7 +4566,7 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-info.is-inve
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.fc-button:hover,
 .button.is-success.is-hovered,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-hovered.fc-button {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -4582,7 +4582,7 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-info.is-inve
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.fc-button:active,
 .button.is-success.is-active,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-active.fc-button {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -4591,14 +4591,14 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-info.is-inve
 fieldset[disabled] .button.is-success,
 fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.fc-button,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk fieldset[disabled] .is-success.fc-button {
-  background-color: rgb(6, 214, 158);
-  border-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
+  border-color: rgb(72, 199, 142);
 }
 
 .button.is-success.is-inverted,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-inverted.fc-button {
   background-color: rgb(255, 255, 255);
-  color: rgb(6, 214, 158);
+  color: rgb(72, 199, 142);
 }
 
 .button.is-success.is-inverted:hover,
@@ -4615,13 +4615,13 @@ fieldset[disabled] .button.is-success.is-inverted,
 fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-inverted.fc-button,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk fieldset[disabled] .is-success.is-inverted.fc-button {
   background-color: rgb(255, 255, 255);
-  color: rgb(6, 214, 158);
+  color: rgb(72, 199, 142);
 }
 
 .button.is-success.is-outlined,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-outlined.fc-button {
-  border-color: rgb(6, 214, 158);
-  color: rgb(6, 214, 158);
+  border-color: rgb(72, 199, 142);
+  color: rgb(72, 199, 142);
 }
 
 .button.is-success.is-outlined:hover,
@@ -4633,8 +4633,8 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-i
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-outlined.fc-button:focus,
 .button.is-success.is-outlined.is-focused,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-outlined.is-focused.fc-button {
-  background-color: rgb(6, 214, 158);
-  border-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
+  border-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -4643,8 +4643,8 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-i
 fieldset[disabled] .button.is-success.is-outlined,
 fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-outlined.fc-button,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk fieldset[disabled] .is-success.is-outlined.fc-button {
-  border-color: rgb(6, 214, 158);
-  color: rgb(6, 214, 158);
+  border-color: rgb(72, 199, 142);
+  color: rgb(72, 199, 142);
 }
 
 .button.is-success.is-inverted.is-outlined,
@@ -4662,7 +4662,7 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-o
 .button.is-success.is-inverted.is-outlined.is-focused,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-inverted.is-outlined.is-focused.fc-button {
   background-color: rgb(255, 255, 255);
-  color: rgb(6, 214, 158);
+  color: rgb(72, 199, 142);
 }
 
 .button.is-success.is-inverted.is-outlined[disabled],
@@ -4676,8 +4676,8 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-i
 
 .button.is-success.is-light,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-light.fc-button {
-  background-color: rgb(235, 254, 249);
-  color: rgb(4, 144, 106);
+  background-color: rgb(239, 250, 245);
+  color: rgb(37, 121, 83);
 }
 
 .button.is-success.is-light:hover,
@@ -4685,8 +4685,8 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-i
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-light.fc-button:hover,
 .button.is-success.is-light.is-hovered,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-light.is-hovered.fc-button {
-  background-color: rgb(235, 254, 249);
-  color: rgb(4, 144, 106);
+  background-color: rgb(239, 250, 245);
+  color: rgb(37, 121, 83);
 }
 
 .button.is-success.is-light:active,
@@ -4694,8 +4694,8 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-i
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-light.fc-button:active,
 .button.is-success.is-light.is-active,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .is-success.is-light.is-active.fc-button {
-  background-color: rgb(235, 254, 249);
-  color: rgb(4, 144, 106);
+  background-color: rgb(239, 250, 245);
+  color: rgb(37, 121, 83);
 }
 
 .button.is-warning,
@@ -5044,13 +5044,13 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 }
 
 .notification.is-success {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
 .notification.is-success.is-light {
-  background-color: rgb(235, 254, 249);
-  color: rgb(4, 144, 106);
+  background-color: rgb(239, 250, 245);
+  color: rgb(37, 121, 83);
 }
 
 .notification.is-warning {
@@ -5140,15 +5140,15 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 }
 
 .progress.is-success::-webkit-progress-value {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
 }
 
 .progress.is-success::-moz-progress-bar {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
 }
 
 .progress.is-success::-ms-fill {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
 }
 
 .progress.is-warning::-webkit-progress-value {
@@ -5228,8 +5228,8 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 
 .table td.is-success,
 .table th.is-success {
-  background-color: rgb(6, 214, 158);
-  border-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
+  border-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -5310,13 +5310,13 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 }
 
 .tag:not(body).is-success {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
 .tag:not(body).is-success.is-light {
-  background-color: rgb(235, 254, 249);
-  color: rgb(4, 144, 106);
+  background-color: rgb(239, 250, 245);
+  color: rgb(37, 121, 83);
 }
 
 .tag:not(body).is-warning {
@@ -5340,31 +5340,31 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 }
 
 .input,
-.vti__input,
+.vue-tel-input > .vti__input,
 .textarea,
 .select select {
   background-color: rgb(255, 255, 255);
 }
 
 .input:focus,
-.vti__input:focus,
+.vue-tel-input > .vti__input:focus,
 .textarea:focus,
 .select select:focus,
 .is-focused.input,
-.is-focused.vti__input,
+.vue-tel-input > .is-focused.vti__input,
 .is-focused.textarea,
 .select select.is-focused,
 .input:active,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .input.fc-button-primary:active,
-.vti__input:active,
-.fc > .fc-header-toolbar > .fc-toolbar-chunk .vti__input.fc-button-primary:active,
+.vue-tel-input > .vti__input:active,
+.fc > .fc-header-toolbar > .fc-toolbar-chunk .vue-tel-input > .vti__input.fc-button-primary:active,
 .textarea:active,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .textarea.fc-button-primary:active,
 .select select:active,
 .select .fc > .fc-header-toolbar > .fc-toolbar-chunk select.fc-button-primary:active,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .select select.fc-button-primary:active,
 .is-active.input,
-.is-active.vti__input,
+.vue-tel-input > .is-active.vti__input,
 .is-active.textarea,
 .select select.is-active {
   border-color: rgb(72, 95, 199);
@@ -5372,54 +5372,54 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 
 .is-white.input,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .input.fc-button:hover,
-.is-white.vti__input,
-.fc > .fc-header-toolbar > .fc-toolbar-chunk .vti__input.fc-button:hover,
+.vue-tel-input > .is-white.vti__input,
+.fc > .fc-header-toolbar > .fc-toolbar-chunk .vue-tel-input > .vti__input.fc-button:hover,
 .is-white.textarea,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .textarea.fc-button:hover {
   border-color: rgb(255, 255, 255);
 }
 
 .is-dark.input,
-.is-dark.vti__input,
+.vue-tel-input > .is-dark.vti__input,
 .is-dark.textarea {
   border-color: rgb(40, 50, 82);
 }
 
 .is-primary.input,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .input.fc-button-primary,
-.is-primary.vti__input,
-.fc > .fc-header-toolbar > .fc-toolbar-chunk .vti__input.fc-button-primary,
+.vue-tel-input > .is-primary.vti__input,
+.fc > .fc-header-toolbar > .fc-toolbar-chunk .vue-tel-input > .vti__input.fc-button-primary,
 .is-primary.textarea,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .textarea.fc-button-primary {
   border-color: rgb(42, 176, 229);
 }
 
 .is-link.input,
-.is-link.vti__input,
+.vue-tel-input > .is-link.vti__input,
 .is-link.textarea {
   border-color: rgb(72, 95, 199);
 }
 
 .is-info.input,
-.is-info.vti__input,
+.vue-tel-input > .is-info.vti__input,
 .is-info.textarea {
   border-color: rgb(3, 152, 226);
 }
 
 .is-success.input,
-.is-success.vti__input,
+.vue-tel-input > .is-success.vti__input,
 .is-success.textarea {
-  border-color: rgb(6, 214, 158);
+  border-color: rgb(72, 199, 142);
 }
 
 .is-warning.input,
-.is-warning.vti__input,
+.vue-tel-input > .is-warning.vti__input,
 .is-warning.textarea {
   border-color: rgb(250, 173, 66);
 }
 
 .is-danger.input,
-.is-danger.vti__input,
+.vue-tel-input > .is-danger.vti__input,
 .is-danger.textarea {
   border-color: rgb(230, 41, 100);
 }
@@ -5522,11 +5522,11 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 }
 
 .select.is-success:not(:hover)::after {
-  border-color: rgb(6, 214, 158);
+  border-color: rgb(72, 199, 142);
 }
 
 .select.is-success select {
-  border-color: rgb(6, 214, 158);
+  border-color: rgb(72, 199, 142);
 }
 
 .select.is-success select:hover,
@@ -5535,7 +5535,7 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 .select.is-success .fc > .fc-header-toolbar > .fc-toolbar-chunk select.fc-button:hover,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .select.is-success select.fc-button:hover,
 .select.is-success select.is-hovered {
-  border-color: rgb(6, 214, 158);
+  border-color: rgb(72, 199, 142);
 }
 
 .select.is-warning:not(:hover)::after {
@@ -5720,7 +5720,7 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 }
 
 .file.is-success .file-cta {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -5728,7 +5728,7 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .file.is-success.fc-button-primary:hover .file-cta,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .file.is-success.fc-button:hover .file-cta,
 .file.is-success.is-hovered .file-cta {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -5740,7 +5740,7 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 .file.is-success:active .file-cta,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .file.is-success.fc-button-primary:active .file-cta,
 .file.is-success.is-active .file-cta {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -5817,7 +5817,7 @@ fieldset[disabled] .fc > .fc-header-toolbar > .fc-toolbar-chunk .fc-button,
 }
 
 .help.is-success {
-  color: rgb(6, 214, 158);
+  color: rgb(72, 199, 142);
 }
 
 .help.is-warning {
@@ -5929,17 +5929,17 @@ button.dropdown-item.is-active {
 }
 
 .message.is-success {
-  background-color: rgb(235, 254, 249);
+  background-color: rgb(239, 250, 245);
 }
 
 .message.is-success .message-header {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
 .message.is-success .message-body {
-  border-color: rgb(6, 214, 158);
-  color: rgb(4, 144, 106);
+  border-color: rgb(72, 199, 142);
+  color: rgb(37, 121, 83);
 }
 
 .message.is-warning {
@@ -6467,7 +6467,7 @@ button.dropdown-item.is-active {
 }
 
 .navbar.is-success {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -6484,7 +6484,7 @@ button.dropdown-item.is-active {
 .navbar.is-success .navbar-brand .navbar-link:focus,
 .navbar.is-success .navbar-brand .navbar-link:hover,
 .navbar.is-success .navbar-brand .navbar-link.is-active {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -6520,7 +6520,7 @@ button.dropdown-item.is-active {
   .navbar.is-success .navbar-end .navbar-link:focus,
   .navbar.is-success .navbar-end .navbar-link:hover,
   .navbar.is-success .navbar-end .navbar-link.is-active {
-    background-color: rgb(6, 214, 158);
+    background-color: rgb(72, 199, 142);
     color: rgb(255, 255, 255);
   }
 
@@ -6532,12 +6532,12 @@ button.dropdown-item.is-active {
   .navbar.is-success .navbar-item.has-dropdown:focus .navbar-link,
   .navbar.is-success .navbar-item.has-dropdown:hover .navbar-link,
   .navbar.is-success .navbar-item.has-dropdown.is-active .navbar-link {
-    background-color: rgb(6, 214, 158);
+    background-color: rgb(72, 199, 142);
     color: rgb(255, 255, 255);
   }
 
   .navbar.is-success .navbar-dropdown a.navbar-item.is-active {
-    background-color: rgb(6, 214, 158);
+    background-color: rgb(72, 199, 142);
     color: rgb(255, 255, 255);
   }
 }
@@ -6826,16 +6826,16 @@ a.navbar-item.is-active,
 }
 
 .panel.is-success .panel-heading {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
 .panel.is-success .panel-tabs a.is-active {
-  border-bottom-color: rgb(6, 214, 158);
+  border-bottom-color: rgb(72, 199, 142);
 }
 
 .panel.is-success .panel-block.is-active .panel-icon {
-  color: rgb(6, 214, 158);
+  color: rgb(72, 199, 142);
 }
 
 .panel.is-warning .panel-heading {
@@ -7259,7 +7259,7 @@ a.navbar-item.is-active,
 }
 
 .hero.is-success {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -7278,7 +7278,7 @@ a.navbar-item.is-active,
 
 @media screen and (max-width: 1023px) {
   .hero.is-success .navbar-menu {
-    background-color: rgb(6, 214, 158);
+    background-color: rgb(72, 199, 142);
   }
 }
 
@@ -7299,7 +7299,7 @@ a.navbar-item.is-active,
 .hero.is-success .fc > .fc-header-toolbar > .fc-toolbar-chunk .navbar-link.fc-button:hover,
 .fc > .fc-header-toolbar > .fc-toolbar-chunk .hero.is-success .navbar-link.fc-button:hover,
 .hero.is-success .navbar-link.is-active {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
   color: rgb(255, 255, 255);
 }
 
@@ -7318,7 +7318,7 @@ a.navbar-item.is-active,
 .hero.is-success .tabs.is-toggle li.is-active a:hover {
   background-color: rgb(255, 255, 255);
   border-color: rgb(255, 255, 255);
-  color: rgb(6, 214, 158);
+  color: rgb(72, 199, 142);
 }
 
 .hero.is-warning {
@@ -7518,7 +7518,7 @@ body.opened {
 }
 
 .is-green {
-  color: rgb(6, 214, 158);
+  color: rgb(72, 199, 142);
 }
 
 .is-purple {
@@ -7526,7 +7526,7 @@ body.opened {
 }
 
 .success-text {
-  color: rgb(6, 214, 158);
+  color: rgb(72, 199, 142);
 }
 
 .info-text {
@@ -7628,7 +7628,7 @@ body.opened {
 }
 
 .content blockquote.is-success {
-  border-color: rgb(6, 214, 158);
+  border-color: rgb(72, 199, 142);
 }
 
 .content blockquote.is-info {
@@ -7662,25 +7662,25 @@ body.opened {
 }
 
 .control.has-icon .input:focus + .form-icon svg,
-.control.has-icon .vti__input:focus + .form-icon svg {
+.control.has-icon .vue-tel-input > .vti__input:focus + .form-icon svg {
   color: rgb(42, 176, 229);
 }
 
 .control.has-icon .input:focus + .form-icon .fas,
-.control.has-icon .vti__input:focus + .form-icon .fas,
+.control.has-icon .vue-tel-input > .vti__input:focus + .form-icon .fas,
 .control.has-icon .input:focus + .form-icon .far,
-.control.has-icon .vti__input:focus + .form-icon .far,
+.control.has-icon .vue-tel-input > .vti__input:focus + .form-icon .far,
 .control.has-icon .input:focus + .form-icon .fal,
-.control.has-icon .vti__input:focus + .form-icon .fal,
+.control.has-icon .vue-tel-input > .vti__input:focus + .form-icon .fal,
 .control.has-icon .input:focus + .form-icon .fab,
-.control.has-icon .vti__input:focus + .form-icon .fab {
+.control.has-icon .vue-tel-input > .vti__input:focus + .form-icon .fab {
   color: rgb(42, 176, 229);
 }
 
 .control.has-icon .input:focus + .form-icon .lnil,
-.control.has-icon .vti__input:focus + .form-icon .lnil,
+.control.has-icon .vue-tel-input > .vti__input:focus + .form-icon .lnil,
 .control.has-icon .input:focus + .form-icon .lnir,
-.control.has-icon .vti__input:focus + .form-icon .lnir {
+.control.has-icon .vue-tel-input > .vti__input:focus + .form-icon .lnir {
   color: rgb(42, 176, 229);
 }
 
@@ -7693,22 +7693,22 @@ body.opened {
 }
 
 .is-dark .control.has-icon .input:focus ~ .form-icon svg,
-.is-dark .control.has-icon .vti__input:focus ~ .form-icon svg {
+.is-dark .control.has-icon .vue-tel-input > .vti__input:focus ~ .form-icon svg {
   color: rgb(42, 176, 229);
 }
 
 .is-dark .control.has-icon .input:focus ~ .form-icon .fas,
-.is-dark .control.has-icon .vti__input:focus ~ .form-icon .fas,
+.is-dark .control.has-icon .vue-tel-input > .vti__input:focus ~ .form-icon .fas,
 .is-dark .control.has-icon .input:focus ~ .form-icon .fal,
-.is-dark .control.has-icon .vti__input:focus ~ .form-icon .fal,
+.is-dark .control.has-icon .vue-tel-input > .vti__input:focus ~ .form-icon .fal,
 .is-dark .control.has-icon .input:focus ~ .form-icon .far,
-.is-dark .control.has-icon .vti__input:focus ~ .form-icon .far,
+.is-dark .control.has-icon .vue-tel-input > .vti__input:focus ~ .form-icon .far,
 .is-dark .control.has-icon .input:focus ~ .form-icon .fab,
-.is-dark .control.has-icon .vti__input:focus ~ .form-icon .fab,
+.is-dark .control.has-icon .vue-tel-input > .vti__input:focus ~ .form-icon .fab,
 .is-dark .control.has-icon .input:focus ~ .form-icon .lnir,
-.is-dark .control.has-icon .vti__input:focus ~ .form-icon .lnir,
+.is-dark .control.has-icon .vue-tel-input > .vti__input:focus ~ .form-icon .lnir,
 .is-dark .control.has-icon .input:focus ~ .form-icon .lnil,
-.is-dark .control.has-icon .vti__input:focus ~ .form-icon .lnil {
+.is-dark .control.has-icon .vue-tel-input > .vti__input:focus ~ .form-icon .lnil {
   color: rgb(42, 176, 229);
 }
 
@@ -7755,8 +7755,8 @@ body.opened {
 
 .h-toggle .toggler .inactive {
   background: rgb(255, 255, 255);
-  border-color: rgb(6, 214, 158);
-  color: rgb(6, 214, 158);
+  border-color: rgb(72, 199, 142);
+  color: rgb(72, 199, 142);
 }
 
 .h-toggle .toggler .active {
@@ -7780,11 +7780,11 @@ body.opened {
 }
 
 .is-slider-success .slider-target .slider-base .slider-connects .slider-connect {
-  background: rgb(6, 214, 158);
+  background: rgb(72, 199, 142);
 }
 
 .is-slider-success .slider-target .slider-base .slider-tooltip {
-  background: rgb(6, 214, 158);
+  background: rgb(72, 199, 142);
 }
 
 .is-slider-warning .slider-target .slider-base .slider-connects .slider-connect {
@@ -7868,7 +7868,7 @@ body.opened {
 }
 
 .user-list .user-list-status.is-online {
-  background: rgb(6, 214, 158);
+  background: rgb(72, 199, 142);
 }
 
 .user-list .user-list-status.is-busy {
@@ -7966,7 +7966,7 @@ body.opened {
 .v-popover-profile .profile-popover-block .skill-popover-wrapper .popover-fake-avatar.is-success span,
 .v-popover-profile .skill-popover-block .profile-popover-wrapper .popover-fake-avatar.is-success span,
 .v-popover-profile .skill-popover-block .skill-popover-wrapper .popover-fake-avatar.is-success span {
-  color: rgb(6, 214, 158);
+  color: rgb(72, 199, 142);
 }
 
 .v-popover-profile .profile-popover-block .profile-popover-wrapper .popover-fake-avatar.is-info span,
@@ -8284,39 +8284,39 @@ body.opened {
 }
 
 .hint--success::after {
-  background-color: rgb(6, 214, 158);
+  background-color: rgb(72, 199, 142);
 }
 
 .hint--success.hint--top-left::before {
-  border-top-color: rgb(6, 214, 158);
+  border-top-color: rgb(72, 199, 142);
 }
 
 .hint--success.hint--top-right::before {
-  border-top-color: rgb(6, 214, 158);
+  border-top-color: rgb(72, 199, 142);
 }
 
 .hint--success.hint--top::before {
-  border-top-color: rgb(6, 214, 158);
+  border-top-color: rgb(72, 199, 142);
 }
 
 .hint--success.hint--bottom-left::before {
-  border-bottom-color: rgb(6, 214, 158);
+  border-bottom-color: rgb(72, 199, 142);
 }
 
 .hint--success.hint--bottom-right::before {
-  border-bottom-color: rgb(6, 214, 158);
+  border-bottom-color: rgb(72, 199, 142);
 }
 
 .hint--success.hint--bottom::before {
-  border-bottom-color: rgb(6, 214, 158);
+  border-bottom-color: rgb(72, 199, 142);
 }
 
 .hint--success.hint--left::before {
-  border-left-color: rgb(6, 214, 158);
+  border-left-color: rgb(72, 199, 142);
 }
 
 .hint--success.hint--right::before {
-  border-right-color: rgb(6, 214, 158);
+  border-right-color: rgb(72, 199, 142);
 }
 
 .hint--light::after {

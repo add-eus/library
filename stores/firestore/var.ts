@@ -1,14 +1,18 @@
 import moment from "moment-with-locales-es6";
 import { doc, GeoPoint } from "firebase/firestore";
 import { useFirebase, useDoc } from "./index";
-import { onInitialize, EntityORM, isEntityClass, isEntityStandaloneClass } from "./entity";
+import {
+    onInitialize,
+    EntityORM,
+    isEntityClass,
+    isEntityStandaloneClass,
+} from "./entity";
 import { EntityMetaData } from "./entityMetadata";
 import { reactive, watch } from "vue";
 
 function parseData(toTransform: any | any[], type: any): any {
-    if (typeof toTransform == 'undefined') return undefined;
-    if (toTransform == null)
-        return null;
+    if (typeof toTransform == "undefined") return undefined;
+    if (toTransform == null) return null;
     if (Array.isArray(type)) {
         if (!Array.isArray(toTransform)) return [];
         return toTransform.map((data) => {
@@ -34,7 +38,7 @@ function parseData(toTransform: any | any[], type: any): any {
         return model;
     } else if (isEntityClass(type)) {
         const o = new type();
-        o.$metadata.emit('parse', toTransform);
+        o.$metadata.emit("parse", toTransform);
         return o;
     }
     return toTransform;
@@ -69,7 +73,6 @@ function formatData(toTransform: any | any[], type: any): any {
 }
 
 function isEqual(a: any, b: any, type: any): boolean {
-    
     if (Array.isArray(type) && Array.isArray(a)) {
         return a.every((row: any, index: number) => {
             return isEqual(row, b[index], type[0]);
@@ -91,8 +94,7 @@ export function Var(type: any) {
             metadata.properties[name].isInitialized = false;
 
             this[name] = parseData(this[name], type);
-  
-            
+
             let originalPropertyValue: any = this[name];
 
             const unwatch = watch(
@@ -109,7 +111,7 @@ export function Var(type: any) {
             metadata.on("parse", (raw: any) => {
                 if (metadata.properties[name].isChanged) return;
                 const parsed = parseData(raw[name], type);
-                
+
                 if (parsed != this[name]) this[name] = parsed;
                 originalPropertyValue = this[name];
                 metadata.properties[name].isInitialized = true;

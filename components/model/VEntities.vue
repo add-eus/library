@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { inject, provide, ref, Ref, watch } from "vue";
-import { watchArray } from "@vueuse/core";
+import { inject, provide, ref, Ref } from "vue";
+import Draggable from "vuedraggable";
 import { newDoc, useDoc } from "/@src/lib/stores/firestore";
-import { emit } from "process";
+import { useField } from "vee-validate";
+import { v4 as uuid } from "uuid";
+import * as yup from "yup";
 
 export interface VEntitiesEmits {
     (event: "update:modelValue", value?: any): void;
@@ -14,20 +16,38 @@ export interface VEntitiesProps {
     component?: any;
     onlyIds: boolean;
     multiple: boolean;
+    sortable: boolean;
     opened: boolean;
     property: string;
 }
 const props = defineProps<VEntitiesProps>();
 const emits = defineEmits<VEntitiesEmits>();
 
-let collapsed: Ref<Boolean | Boolean[]>;
+let collapsed: Ref<Boolean | { [id: string]: Boolean }>;
 
-// Define container
-let entities: Ref<any> = !props.onlyIds
-    ? ref(props.modelValue)
-    : props.multiple
-    ? ref(new Array())
-    : ref(null);
+// Define field
+const schema = props.multiple ? yup.array() : yup.object();
+const {
+    value: entities,
+    errors,
+    meta,
+    validate,
+} = useField(props.property, schema, {
+    initialValue: props.onlyIds ? (props.multiple ? [] : null) : props.modelValue,
+    standalone: true,
+    modelPropName: props.property,
+});
+console.log(props.property, entities);
+
+const addField = inject("addField");
+if (typeof addField === "function")
+    addField(props.property, {
+        errors,
+        entities,
+        meta,
+        validate,
+        isProcessing: ref(false),
+    });
 
 async function getEntity(componentModel, uid: String): Promise<any> {
     const doc = useDoc(componentModel, uid);
@@ -63,7 +83,6 @@ if (props.onlyIds) {
         if (props.modelValue) {
             getEntity(props.model, props.modelValue).then((value) => {
                 entities.value = value;
-                console.log(entities.value);
             });
         } else {
             entities.value = newDoc(props.model);
@@ -94,7 +113,8 @@ if (props.onlyIds) {
 if (props.multiple) {
     collapsed = ref(new Array());
     (props.modelValue as any[]).forEach((value, index) => {
-        (collapsed as Ref<Boolean[]>).value[index] = !props.opened;
+        value._id = uuid();
+        (collapsed as Ref<Boolean[]>).value[value._id] = !props.opened;
     });
 } else {
     collapsed = ref(!props.opened);
@@ -105,16 +125,19 @@ if (props.multiple) {
  */
 function addEntity() {
     if (props.multiple) {
+        let value;
         if (!props.onlyIds) {
-            (props.modelValue as any[]).push(newDoc(props.model));
+            value = newDoc(props.model);
         } else {
-            (props.modelValue as any[]).push("");
+            value = "";
         }
+        value._id = uuid();
+        (props.modelValue as any[]).push(value);
         (collapsed as Ref<Boolean[]>).value.push(false);
     }
 }
 
-function collapse(index?: number) {
+function collapse(index?: string) {
     let temp: Boolean;
     if (props.multiple && index != undefined) {
         temp = !collapsed.value[index];
@@ -125,15 +148,44 @@ function collapse(index?: number) {
     }
 }
 
-function deleteEntity(index?: number) {
-    if (props.multiple && index != undefined) {
-        console.log((props.modelValue as any[])[index]);
-        (props.modelValue as any[]).splice(index, 1);
-        (collapsed as Ref<Boolean[]>).value.splice(index, 1);
+function deleteEntity(entity: any) {
+    if (props.multiple) {
+        const pos = (props.modelValue as any[]).indexOf(entity);
+        (props.modelValue as any[]).splice(pos, 1);
+        delete collapsed.value[entity._id];
     }
 }
 
-const addField = inject("addField");
+function moveUp(entity) {
+    const pos = entities.value.indexOf(entity);
+    entities.value.splice(pos - 1, 0, entities.value.splice(pos, 1)[0]);
+    updateOnSort();
+}
+
+function moveDown(entity) {
+    const pos = entities.value.indexOf(entity);
+    entities.value.splice(pos + 1, 0, entities.value.splice(pos, 1)[0]);
+    updateOnSort();
+}
+
+function updateOnSort() {
+    if (props.onlyIds) {
+        if (props.multiple) {
+            emits(
+                "update:modelValue",
+                entities.value.map((entity) => {
+                    return entity.$getID();
+                })
+            );
+        } else {
+            emits("update:modelValue", entities.value.$getID());
+        }
+    } else {
+        emits("update:modelValue", entities.value);
+    }
+    return true;
+}
+
 const fields: any[] = [];
 provide("addField", function (name: string, field: any) {
     if (typeof addField === "function") {
@@ -147,7 +199,7 @@ provide("addField", function (name: string, field: any) {
 });
 
 const removeField = inject("removeField");
-provide("removeField", function (name: string, field: any) {
+provide("removeField", function (name: string) {
     if (typeof removeField === "function") {
         let property = props.property + "." + name;
         if (props.multiple) {
@@ -188,7 +240,7 @@ provide("removeField", function (name: string, field: any) {
                 </VFlex>
                 <VFlex flex-direction="column" row-gap="0.75rem" class="btn-container">
                     <VIconButton
-                        :icon="collapsed ? 'arrow_drop_down' : 'arrow_drop_up'"
+                        :icon="collapsed ? 'unfold_more' : 'unfold_less'"
                         color="info"
                         light
                         circle
@@ -197,47 +249,87 @@ provide("removeField", function (name: string, field: any) {
                 </VFlex>
             </VFlex>
         </VCard>
-        <VCard v-for="(entity, index) in entities" v-else :key="index">
-            <VFlex>
-                <!-- Multi -->
-                <VFlex
-                    v-show="collapsed[index]"
-                    flex-direction="column"
-                    justify-content="center"
-                    align-items="center"
-                    class="entity-container content-container"
-                >
-                    <!-- collapsed -->
-                    <Label>{{ entity?.toString() }}</Label>
-                </VFlex>
-                <VFlex
-                    v-show="!collapsed[index]"
-                    flex-direction="column"
-                    class="entity-container content-container"
-                >
-                    <!-- Not Collapsed -->
-                    <!-- Slot -->
-                    <slot :entity="entity"></slot>
-                </VFlex>
-                <VFlex flex-direction="column" row-gap="0.75rem" class="btn-container">
-                    <!-- Buttons -->
-                    <VIconButton
-                        icon="delete"
-                        color="danger"
-                        light
-                        circle
-                        @click="deleteEntity(index)"
-                    ></VIconButton>
-                    <VIconButton
-                        :icon="collapsed[index] ? 'arrow_drop_down' : 'arrow_drop_up'"
-                        color="info"
-                        light
-                        circle
-                        @click="collapse(index)"
-                    ></VIconButton>
-                </VFlex>
-            </VFlex>
-        </VCard>
+        <Draggable
+            v-else
+            v-model="entities"
+            item-key="_id"
+            class="list-group"
+            :animation="200"
+            :disabled="!sortable"
+            ghost-class="ghost"
+            @sort="updateOnSort()"
+        >
+            <template #item="{ element: entity, index }">
+                <VCard>
+                    <VFlex>
+                        <!-- Multi -->
+                        <VFlex
+                            v-show="collapsed[entity._id]"
+                            flex-direction="column"
+                            justify-content="center"
+                            align-items="center"
+                            class="entity-container content-container"
+                        >
+                            <!-- collapsed -->
+                            <Label>{{ entity?.toString() }}</Label>
+                        </VFlex>
+                        <VFlex
+                            v-show="!collapsed[entity._id]"
+                            flex-direction="column"
+                            class="entity-container content-container"
+                        >
+                            <!-- Not Collapsed -->
+                            <!-- Slot -->
+                            <slot :entity="entity"></slot>
+                        </VFlex>
+                        <VFlex
+                            flex-direction="column"
+                            row-gap="0.75rem"
+                            class="btn-container"
+                        >
+                            <!-- Buttons -->
+                            <VIconButton
+                                icon="delete"
+                                color="danger"
+                                light
+                                circle
+                                @click="deleteEntity(entity)"
+                            ></VIconButton>
+                            <VIconButton
+                                :icon="
+                                    collapsed[entity._id] ? 'unfold_more' : 'unfold_less'
+                                "
+                                color="info"
+                                light
+                                circle
+                                @click="collapse(entity._id)"
+                            ></VIconButton>
+                            <VIconButton
+                                v-if="sortable"
+                                icon="arrow_drop_up"
+                                color="white"
+                                class="draggable"
+                                light
+                                circle
+                                :disabled="index == 0"
+                                @click="moveUp(entity)"
+                            ></VIconButton>
+                            <VIconButton
+                                v-if="sortable"
+                                icon="arrow_drop_down"
+                                color="white"
+                                class="draggable"
+                                light
+                                circle
+                                :disabled="index >= entities.length - 1"
+                                @click="moveDown(entity)"
+                            ></VIconButton>
+                        </VFlex>
+                    </VFlex>
+                </VCard>
+            </template>
+        </Draggable>
+
         <VFlex v-if="props.multiple" class="entity-container">
             <!-- Add -->
             <VButton icon="add" class="btn-add" @click="addEntity"></VButton>
@@ -253,6 +345,7 @@ provide("removeField", function (name: string, field: any) {
 
 .entity-container {
     margin-bottom: 0.75rem;
+    cursor: pointer;
 
     &.btn-container {
         flex: initial;
@@ -261,10 +354,33 @@ provide("removeField", function (name: string, field: any) {
     &.content-container {
         flex: auto;
         margin-right: 0.75rem;
+
+        .draggable {
+            cursor: move;
+        }
     }
 }
 
 .btn-add {
     flex: auto;
+}
+
+.flip-list-move {
+    transition: transform 0.5s;
+}
+.no-move {
+    transition: transform 0s;
+}
+.ghost {
+    opacity: 0.5;
+}
+.list-group {
+    min-height: 20px;
+}
+.list-group-item {
+    cursor: move;
+}
+.list-group-item i {
+    cursor: pointer;
 }
 </style>
