@@ -603,26 +603,30 @@ Responsive styles
     }
 }
 
+.mobile-navbar {
+    display: flex !important;
+    
+    .navbar-item.is-notification {
+        display: flex !important;
+    }
+
+    > .container {
+        margin: 0;
+        max-width: 100%;
+    }
+
+    .navbar-brand {
+        align-items: center;
+        justify-content: space-between;
+        height: 60px;
+        width: 100%;
+        margin-left: 0 !important;
+    }
+}
+
 @media only screen and (max-width: 1024px) {
     .mobile-navbar {
-        display: flex !important;
-        
-        .navbar-item.is-notification {
-            display: flex !important;
-        }
-
-        > .container {
-            margin: 0;
-            max-width: 100%;
-        }
-
         .navbar-brand {
-            align-items: center;
-            justify-content: space-between;
-            height: 60px;
-            width: 100%;
-            margin-left: 0 !important;
-
             .navbar-burger {
                 display: flex !important;
             }

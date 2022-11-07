@@ -374,8 +374,6 @@ export default defineComponent({
             font-weight: 500;
         }
 
-        
-
         &.is-lower {
             text-transform: none !important;
             font-size: 0.9rem;
@@ -498,8 +496,6 @@ export default defineComponent({
                     color: var(--white) !important;
                 }
             }
-
-            
         }
 
         &.is-white {

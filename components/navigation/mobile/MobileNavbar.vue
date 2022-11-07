@@ -4,12 +4,20 @@ const emit = defineEmits<{
 }>();
 const props = defineProps<{
     isOpen?: boolean;
+    isShownDesktop?: boolean;
+    isShownTablet?: boolean;
+    isAlwaysShown?: boolean;
 }>();
 </script>
 
 <template>
     <nav
-        class="navbar mobile-navbar is-hidden-desktop is-hidden-tablet"
+        class="navbar mobile-navbar"
+        :class="{
+            'is-hidden-desktop': !isShownDesktop ^ !isAlwaysShown,
+            'is-hidden-tablet': !isShownTablet ^ !isAlwaysShown,
+        }"
+        :style="{ display: isAlwaysShown ? 'flex !important' : 'none' }"
         aria-label="main navigation"
     >
         <div class="container">
