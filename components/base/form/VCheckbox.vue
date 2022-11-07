@@ -6,30 +6,53 @@ export interface VCheckboxEmits {
     (e: "update:modelValue", value: boolean): void;
 }
 export interface VCheckboxProps {
-    value?: string | number;
+    value?: string | number | boolean;
+    falseValue?: string | number | boolean;
     label?: string;
     color?: VCheckboxColor;
-    modelValue?: boolean;
+    modelValue?: boolean | string | number | [];
     circle?: boolean;
     solid?: boolean;
     paddingless?: boolean;
+    multiple?: boolean;
 }
 
 const emit = defineEmits<VCheckboxEmits>();
 const props = withDefaults(defineProps<VCheckboxProps>(), {
-    value: undefined,
+    value: true,
+    falseValue: false,
     label: undefined,
     color: undefined,
     modelValue: () => false,
     circle: false,
     solid: false,
     paddingless: false,
+    multiple: false,
 });
 
-const checked = computed(() => props.modelValue);
+const checked = computed(() => {
+    if (props.multiple) return props.modelValue.indexOf(props.value) >= 0;
+    return props.modelValue == props.value;
+});
 
-function change() {
-    emit("update:modelValue", checked.value);
+function change(event) {
+    const checked = event.target.checked;
+    let value = checked;
+    if (props.multiple) {
+        value = [...props.modelValue];
+        if (checked) value.push(props.value);
+        else {
+            const pos = value.indexOf(props.value);
+            value.splice(pos, 1);
+        }
+    } else {
+        if (checked) {
+            value = props.value;
+        } else {
+            value = props.falseValue || false;
+        }
+    }
+    emit("update:modelValue", value);
 }
 </script>
 
@@ -51,9 +74,6 @@ function change() {
             @change="change"
         />
         <span></span>
-        <slot
-            ><Translate>{{ props.label }}</Translate></slot
-        >
     </label>
 </template>
 

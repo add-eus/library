@@ -302,7 +302,7 @@ provide("removeField", function (name: string) {
                                 color="info"
                                 light
                                 circle
-                                @click="collapse(entity)"
+                                @click="collapse(entity._id)"
                             ></VIconButton>
                             <VIconButton
                                 v-if="sortable"
