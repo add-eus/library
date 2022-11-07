@@ -40,12 +40,15 @@ defineExpose({
         class="dropdown"
     >
         <slot name="button" v-bind="dropdown">
-            <VIconButton v-if="props.icon" 
-                        :icon="props.icon" 
-                        circle color="white" 
-                        class="dropdown-trigger" 
-                        @keydown.space.prevent="dropdown.toggle"
-                        @click="dropdown.toggle"></VIconButton>
+            <VIconButton
+                v-if="props.icon"
+                :icon="props.icon"
+                circle
+                color="white"
+                class="dropdown-trigger"
+                @keydown.space.prevent="dropdown.toggle"
+                @click="dropdown.toggle"
+            ></VIconButton>
 
             <VButton
                 v-else
@@ -175,39 +178,11 @@ defineExpose({
         .dropdown-item {
             padding: 0.5rem 1rem;
             font-size: 0.95rem;
-            color: var(--light-text);
             transition: all 0.3s; // transition-all test
-
-            &:not(.is-button):hover,
-            &:not(.is-button).is-active {
-                background: var(--fade-grey-light-3);
-                color: var(--dark-text);
-            }
-
-            &.no-hover {
-                &:hover {
-                    background: var(--white);
-                }
-            }
 
             &.is-media {
                 display: flex;
                 align-items: center;
-
-                &:hover,
-                &:focus,
-                &.is-active {
-                    .icon {
-                        svg {
-                            color: var(--primary);
-                        }
-
-                        .lnir,
-                        .lnil {
-                            color: var(--primary);
-                        }
-                    }
-                }
 
                 .icon {
                     justify-content: center;
@@ -295,19 +270,8 @@ defineExpose({
     // Dropdown menu
     .dropdown-menu {
         .dropdown-item {
-            color: var(--light-text);
             font-family: var(--font);
-
-            &:hover,
-            &:focus {
-                color: var(--dark-text);
-            }
-
-            &.is-active {
-                background: var(--fade-grey-light-3);
-
-                // color: var(--white);
-            }
+            border: none;
 
             // Child dropdown parent
             &.has-child {
@@ -320,7 +284,6 @@ defineExpose({
                 svg {
                     height: 16px;
                     width: 16px;
-                    color: var(--muted-grey);
                 }
 
                 // Child hover dropdown
@@ -339,7 +302,6 @@ defineExpose({
                         position: relative;
                         height: 100%;
                         width: 100%;
-                        background: var(--white);
                         border: 1px solid var(--primary-grey);
                         border-radius: var(--radius-large);
                         padding: 8px 0;

@@ -30,6 +30,8 @@ const props = defineProps<VViewWrapperProps>();
 ========================================================================== */
 
 .view-wrapper {
+    margin-top: 60px;
+
     &.has-top-nav {
         margin-left: 0 !important;
         width: 100% !important;
