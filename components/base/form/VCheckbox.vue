@@ -13,7 +13,6 @@ export interface VCheckboxProps {
     modelValue?: boolean | string | number | [];
     circle?: boolean;
     solid?: boolean;
-    paddingless?: boolean;
     multiple?: boolean;
 }
 
@@ -26,7 +25,6 @@ const props = withDefaults(defineProps<VCheckboxProps>(), {
     modelValue: () => false,
     circle: false,
     solid: false,
-    paddingless: false,
     multiple: false,
 });
 
@@ -63,7 +61,6 @@ function change(event) {
             props.solid ? 'is-solid' : 'is-outlined',
             props.circle && 'is-circle',
             props.color && `is-${props.color}`,
-            props.paddingless && 'is-paddingless',
         ]"
     >
         <input
@@ -137,14 +134,11 @@ function change(event) {
     @extend %controller;
 
     color: var(--light-text);
+    padding: 0 !important;
 
     &:hover,
     &:focus {
         color: var(--light-text);
-    }
-
-    &.is-paddingless {
-        padding: 0 !important;
     }
 
     &.is-circle {
