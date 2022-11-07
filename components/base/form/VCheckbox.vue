@@ -71,6 +71,7 @@ function change(event) {
             @change="change"
         />
         <span></span>
+        <slot></slot>
     </label>
 </template>
 
