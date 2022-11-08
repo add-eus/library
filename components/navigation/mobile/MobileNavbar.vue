@@ -24,7 +24,7 @@ const props = defineProps<{
             <!-- Brand -->
             <div class="navbar-brand">
                 <!-- Mobile menu toggler icon -->
-                <div class="brand-start is-hidden-desktop-only">
+                <div class="brand-start is-hidden-desktop">
                     <VIconButton
                         tabindex="0"
                         :icon="props.isOpen ? 'arrow_back' : 'dehaze'"
@@ -74,7 +74,7 @@ const props = defineProps<{
         }
 
         .brand-start {
-            margin: 0 5px;
+            margin: 0 0 0 10px;
         }
 
         .user-dropdown {
