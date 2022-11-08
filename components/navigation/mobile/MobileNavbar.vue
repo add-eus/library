@@ -24,18 +24,16 @@ const props = defineProps<{
             <!-- Brand -->
             <div class="navbar-brand">
                 <!-- Mobile menu toggler icon -->
-                <div class="brand-start">
-                    <div
-                        class="navbar-burger"
-                        :class="[props.isOpen && 'is-active']"
+                <div class="brand-start is-hidden-desktop-only">
+                    <VIconButton
                         tabindex="0"
+                        :icon="props.isOpen ? 'arrow_back' : 'dehaze'"
+                        circle
+                        color="primary"
+                        light
                         @keydown.space.prevent="emit('toggle')"
                         @click="emit('toggle')"
-                    >
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
+                    ></VIconButton>
                 </div>
 
                 <slot name="brand"></slot>
@@ -65,6 +63,8 @@ const props = defineProps<{
     }
 
     .navbar-brand {
+        background-color: var(--primary);
+
         .is-brand {
             img {
                 position: relative;
@@ -73,13 +73,8 @@ const props = defineProps<{
             }
         }
 
-        .navbar-burger {
-            background: transparent !important;
-
-            &.is-active,
-            &:hover {
-                background: transparent !important;
-            }
+        .brand-start {
+            margin: 0 5px;
         }
 
         .user-dropdown {
@@ -181,10 +176,6 @@ const props = defineProps<{
                             color: var(--smoke-white) !important;
                         }
                     }
-                }
-
-                .dropdown-item {
-                    font-size: 0.9rem;
                 }
             }
 

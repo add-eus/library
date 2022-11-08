@@ -490,18 +490,6 @@ const themeClasses = computed(() => {
                         }
                     }
 
-                    .dropdown-item {
-                        display: flex;
-                        justify-content: flex-start;
-                        align-items: center;
-                        width: 100% !important;
-
-                        &:hover,
-                        &:focus:not(.is-button) {
-                            background: var(--fade-grey-light-3);
-                        }
-                    }
-
                     .flex-item {
                         display: flex;
                         justify-content: space-between;
@@ -607,20 +595,6 @@ const themeClasses = computed(() => {
                             &:first-child {
                                 color: var(--dark-dark-text) !important;
                             }
-                        }
-                    }
-                }
-
-                .dropdown-item {
-                    color: var(--white);
-
-                    &:not(.is-button):hover {
-                        background: var(--dark-sidebar-light-5);
-                    }
-
-                    &.is-button {
-                        &:hover {
-                            background: var(--dark-sidebar-light-2) !important;
                         }
                     }
                 }
