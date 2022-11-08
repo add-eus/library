@@ -26,6 +26,7 @@ const props = defineProps<{
                 <!-- Mobile menu toggler icon -->
                 <div class="brand-start is-hidden-desktop">
                     <VIconButton
+                        v-if="isAlwaysShown"
                         tabindex="0"
                         :icon="props.isOpen ? 'arrow_back' : 'dehaze'"
                         circle
