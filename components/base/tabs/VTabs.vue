@@ -129,7 +129,7 @@ function toggle(value: string) {
 </template>
 
 <style lang="scss">
-@import "bulma/sass/utilities/_all.scss";
+@import "bulma/sass/utilities/all";
 
 /*! _tabs.scss | Jarveat | Css ninja 2020-2021 */
 

@@ -41,7 +41,7 @@ onMounted(() => {
 </template>
 
 <style lang="scss">
-@import "bulma/sass/utilities/_all.scss";
+@import "bulma/sass/utilities/all";
 
 .button {
     font-family: $family-sans-serif;

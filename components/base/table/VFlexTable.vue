@@ -254,7 +254,7 @@ function getValueByPath(row: any, key: any) {
 </template>
 
 <style lang="scss">
-@import "bulma/sass/utilities/_all.scss";
+@import "bulma/sass/utilities/all";
 
 .flex-table {
     .flex-table-header {
