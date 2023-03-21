@@ -1,0 +1,32 @@
+{
+    "files.eol": "\n",
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "[markdown]": {
+        "editor.rulers": [80]
+    },
+    "[javacript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "eslint.validate": ["javascript", "javascriptreact", "markdown", "vue"],
+    "i18n-ally.localesPaths": "src/*/locales",
+    "stylelint.validate": ["scss", "vue"],
+    "eslint.format.enable": true,
+    "conventionalCommits.gitmoji": false,
+    "conventionalCommits.lineBreak": "\\n",
+    "conventionalCommits.scopes": [
+        "internal",
+        "setting",
+        "track",
+        "planning",
+        "model",
+        "display",
+        "checkout"
+    ]
+}

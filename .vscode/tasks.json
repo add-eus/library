@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "dev:partner",
+			"problemMatcher": [],
+			"label": "npm: dev:partner",
+			"isBackground": true,
+			"detail": "concurrently --names 'partner,firebase' -c 'green.bold,magenta.bold' npm:dev:vite:partner npm:dev:firebase"
+		}
+	]
+}
