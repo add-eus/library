@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useViewWrapper } from "/@src/lib/stores/viewWrapper";
+import { useViewWrapper } from "../../../stores/viewWrapper";
 
 export interface VViewWrapperProps {
     topNav?: boolean;

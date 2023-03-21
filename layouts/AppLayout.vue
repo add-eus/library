@@ -2,11 +2,11 @@
 import { ref, watchPostEffect, watch } from "vue";
 import { useRoute } from "vue-router";
 
-import type { SidebarTheme } from "/@src/lib/components/navigation/desktop/Sidebar.vue";
-import { useViewWrapper } from "/@src/lib/stores/viewWrapper";
+import type { SidebarTheme } from "../components/navigation/desktop/Sidebar.vue";
+import { useViewWrapper } from "../stores/viewWrapper";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
-import { useUserSession } from "/@src/lib/stores/userSession";
+import { useUserSession } from "../stores/userSession";
 
 const props = withDefaults(
     defineProps<{

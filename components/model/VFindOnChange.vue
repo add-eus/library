@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { refDebounced } from "@vueuse/core";
 import { ref, watch } from "vue";
-import { useDropdown } from "/@src/lib/composable/useDropdown";
-import { useCollection } from "/@src/lib/stores/firestore";
+import { useDropdown } from "../../composable/useDropdown";
+import { useCollection } from "../../stores/firestore";
 
 export interface VFindOnChangeEmits {
     (e: "select", value: any): void;

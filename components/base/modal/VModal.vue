@@ -102,7 +102,7 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss">
-@import "../../../../scss/color";
+@import "bulma/sass/utilities/_all";
 
 .modal {
     transition: all 0.5s;

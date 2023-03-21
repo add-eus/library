@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import {} from "/@src/lib/stores/firebase";
+import {} from "../../../stores/firebase";
 
 export type VGalleryProps = {
     pictures: string[];

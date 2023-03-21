@@ -4,8 +4,8 @@ import { computed, ref, watchEffect } from "vue";
 import VueScrollTo from "vue-scrollto";
 import { useI18n } from "vue-i18n";
 
-import { isLargeScreen } from "/@src/lib/utils/responsive";
-import { useDarkmode } from "/@src/lib/stores/darkmode";
+import { isLargeScreen } from "../../../utils/responsive";
+import { useDarkmode } from "../../../stores/darkmode";
 
 const { t } = useI18n();
 const darkmode = useDarkmode();

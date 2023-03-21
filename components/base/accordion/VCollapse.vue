@@ -71,7 +71,7 @@ const toggle = (key: number) => {
 
 <style lang="scss">
 @import "../../../scss/abstracts/mixins";
-@import "../../../../scss/color.scss";
+@import "bulma/sass/utilities/_all.scss";
 
 .collapse {
     @include vuero-s-card;

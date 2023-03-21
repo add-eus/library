@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { PropType } from "vue";
 import { computed, defineComponent, h, resolveComponent } from "vue";
-import { useHaptic } from "/@src/lib/stores/haptic";
+import { useHaptic } from "../../../stores/haptic";
 import VAvatar from "../avatar/VAvatar.vue";
 
 export type VIconButtonDark = "1" | "2" | "3" | "4" | "5" | "6";

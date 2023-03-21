@@ -2,7 +2,7 @@
 import type { Ref } from "vue";
 import { inject, ref } from "vue";
 
-import { newDoc, useDoc } from "/@src/lib/stores/firestore";
+import { newDoc, useDoc } from "../../stores/firestore";
 
 import * as yup from "yup";
 

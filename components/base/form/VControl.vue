@@ -3,7 +3,7 @@ import type { VNode } from "vue";
 import { inject, computed, h, defineComponent } from "vue";
 import VIcon from "../icon/VIcon.vue";
 
-import { useVFieldSymbol } from "/@src/lib/composable/useVField";
+import { useVFieldSymbol } from "../../../composable/useVField";
 
 export default defineComponent({
     name: "VControl",

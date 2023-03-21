@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CssUnitRe } from "/@src/lib/utils/regex";
+import { CssUnitRe } from "../../../utils/regex";
 
 export type VPlaceloadProps = {
     width?: string;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { padNumber } from "/@src/lib/utils/string";
+import { padNumber } from "../../../utils/string";
 import type moment from "moment-with-locales-es6";
 import { useVModel } from "@vueuse/core";
 

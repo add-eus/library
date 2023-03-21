@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useDropdown } from "/@src/lib/composable/useDropdown";
-import { onceImageErrored } from "/@src/lib/utils/via-placeholder";
+import { useDropdown } from "../../../composable/useDropdown";
+import { onceImageErrored } from "../../../utils/via-placeholder";
 
 const dropdownElement = ref<HTMLElement>();
 const dropdown = useDropdown(dropdownElement);

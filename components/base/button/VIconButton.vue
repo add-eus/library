@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { PropType } from "vue";
 import { computed, defineComponent, h, resolveComponent } from "vue";
-import { useHaptic } from "/@src/lib/stores/haptic";
+import { useHaptic } from "../../../stores/haptic";
 import VIcon from "../icon/VIcon.vue";
 import type { VButtonSize } from "./VButton.vue";
 

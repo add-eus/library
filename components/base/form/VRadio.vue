@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { isEntity } from "/@src/lib/stores/firestore/entity";
+import { isEntity } from "../../../stores/firestore/entity";
 
 export type VRadioColor = "primary" | "info" | "success" | "warning" | "danger";
 export interface VRadioEmits {

@@ -1,0 +1,50 @@
+{
+    "tsCheckerConfig": {
+        "eslint": {
+            "enabled": true,
+            "files": "./**.{ts,tsx,js,jsx,vue}",
+            "memoryLimit": 8192 // previously 4096
+        },
+        "typescript": {
+            "memoryLimit": 8192 // previously the default, 2048
+        }
+    },
+    "compilerOptions": {
+        "baseUrl": ".",
+        "target": "esnext",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "strict": true,
+        "strictNullChecks": true,
+        "jsx": "preserve",
+        "sourceMap": true,
+
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "removeComments": true,
+        "importHelpers": true,
+        "forceConsistentCasingInFileNames": true,
+        "allowSyntheticDefaultImports": true,
+        "skipLibCheck": true,
+        "lib": ["esnext", "dom", "dom.iterable", "scripthost", "WebWorker"],
+        "types": [
+            "vite",
+            "vite/client",
+            "vite-plugin-pwa/client",
+            "vite-plugin-pages/client",
+            "@intlify/unplugin-vue-i18n/messages"
+        ]
+    },
+    "include": [
+        "composable/**.ts",
+        "stores/**.ts",
+        "components/**/*.ts",
+        "components/**/*.vue",
+        "layouts/**/*.vue",
+        "commitlint.config.ts",
+        "vite.*.ts"
+    ],
+    "exclude": ["bulma-colors.ts", "node_modules/**/*.ts", "functions/**.ts"]
+}

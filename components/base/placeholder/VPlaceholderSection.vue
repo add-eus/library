@@ -16,7 +16,7 @@
 </template>
 
 <style lang="scss">
-@import "../../../../scss/color.scss";
+@import "bulma/sass/utilities/_all";
 
 .section-placeholder {
     width: 100%;

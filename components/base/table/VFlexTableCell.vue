@@ -35,7 +35,7 @@ const props = withDefaults(defineProps<VFlexTableCellProps>(), {
 </template>
 
 <style lang="scss">
-@import "../../../../scss/color.scss";
+@import "bulma/sass/utilities/_all.scss";
 
 .flex-table-cell {
     flex: 1 1 0;

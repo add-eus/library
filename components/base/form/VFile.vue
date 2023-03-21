@@ -6,8 +6,8 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
-import { useStorage } from "/@src/lib/stores/storage";
-import { useCropModal } from "/@src/lib/stores/cropModal";
+import { useStorage } from "../../../stores/storage";
+import { useCropModal } from "../../../stores/cropModal";
 
 export type VFileProps = {
     multiple?: boolean;

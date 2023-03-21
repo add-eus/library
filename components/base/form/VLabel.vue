@@ -16,7 +16,7 @@ const forInput = computed(() => props.for);
 </template>
 
 <style lang="scss">
-@import "../../../../scss/color.scss";
+@import "bulma/sass/utilities/all";
 
 .label {
     display: flex;

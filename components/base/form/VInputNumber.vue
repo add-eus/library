@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useVModel, watchOnce } from "@vueuse/core";
 import { ref, watch } from "vue";
-import { waitForElementVisible } from "/@src/lib/utils/observer";
+import { waitForElementVisible } from "../../../utils/observer";
 
 export interface VInputEmits {
     (event: "update:modelValue", value?: any): void;

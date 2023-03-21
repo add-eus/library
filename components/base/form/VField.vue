@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { provide, useSlots, computed } from "vue";
 
-import { useVField, useVFieldSymbol } from "/@src/lib/composable/useVField";
+import { useVField, useVFieldSymbol } from "../../../composable/useVField";
 
 export type VFieldProps = {
     id?: string;
@@ -68,7 +68,7 @@ provide(useVFieldSymbol, vField);
 </template>
 
 <style lang="scss">
-@import "../../../../scss/color.scss";
+@import "bulma/sass/utilities/all";
 .field {
     &.is-vertical {
         flex-direction: column;

@@ -3,9 +3,9 @@
 import { computed, ref } from "vue";
 import { VueTelInput } from "vue-tel-input";
 import * as yup from "yup";
-import { enumToObject, isEnum } from "/@src/lib/utils/array";
-import { useTranslate } from "/@src/lib/stores/translate";
-import { useCollection } from "/@src/lib/stores/firestore";
+import { enumToObject, isEnum } from "../../utils/array";
+import { useTranslate } from "../../stores/translate";
+import { useCollection } from "../../stores/firestore";
 import { isValidPhoneNumber } from "libphonenumber-js";
 import { resolveUnref, until } from "@vueuse/core";
 

@@ -1,5 +1,3 @@
-import { acceptHMRUpdate, defineStore } from "pinia";
-
 // Import the functions you need from the SDKs you need
 import type { Auth } from "firebase/auth";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
@@ -24,6 +22,7 @@ function connectToEmulator(
     database: Database,
     storage: FirebaseStorage
 ) {
+    
     if (import.meta.env.DEV && (<any>window).emulatorLoaded !== true) {
         // eslint-disable-next-line no-console
         console.log("Development mode");
@@ -82,43 +81,47 @@ function connectToEmulator(
         (<any>window).emulatorLoaded = true;
     }
 }
-export const useFirebase = defineStore("firebase", () => {
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-        apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-        authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-        databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
-        projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-        storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-        messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-        appId: import.meta.env.VITE_FIREBASE_APP_ID,
-        measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
-    };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
+// Your web app's Firebase configuration
+const firebaseConfig = {
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+};
 
-    const auth = getAuth();
-    const firestore = getFirestore();
-    const functions = getFunctions(app, "europe-west1");
-    const database = getDatabase(app);
-    const storage = getStorage();
-    const analytics = getAnalytics(app);
-    const performance = getPerformance(app);
-    const remoteConfig = getRemoteConfig(app);
 
-    void fetchAndActivate(remoteConfig);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
-    void connectToEmulator(auth, firestore, functions, database, storage);
+const auth = getAuth(app);
+const firestore = getFirestore(app);
+const database = getDatabase(app);
+const storage = getStorage(app);
+const functions = getFunctions(app, "europe-west1");
 
-    const check = initializeAppCheck(app, {
-        provider: new ReCaptchaEnterpriseProvider(import.meta.env.VITE_RECAPTCHA_KEY),
 
-        // Optional argument. If true, the SDK automatically refreshes App Check
-        // tokens as needed.
-        isTokenAutoRefreshEnabled: true,
-    });
+const analytics = getAnalytics(app);
+const performance = getPerformance(app);
+const remoteConfig = getRemoteConfig(app);
 
+void fetchAndActivate(remoteConfig);
+
+void connectToEmulator(auth, firestore, functions, database, storage);
+
+const check = initializeAppCheck(app, {
+    provider: new ReCaptchaEnterpriseProvider(import.meta.env.VITE_RECAPTCHA_KEY),
+
+    // Optional argument. If true, the SDK automatically refreshes App Check
+    // tokens as needed.
+    isTokenAutoRefreshEnabled: true,
+});
+
+export function useFirebase() {
     return {
         app,
         remoteConfig,
@@ -131,15 +134,4 @@ export const useFirebase = defineStore("firebase", () => {
         performance,
         check,
     };
-});
-
-/**
- * Pinia supports Hot Module replacement so you can edit your stores and
- * interact with them directly in your app without reloading the page.
- *
- * @see https://pinia.esm.dev/cookbook/hot-module-replacement.html
- * @see https://vitejs.dev/guide/api-hmr.html
- */
-if (import.meta.hot) {
-    import.meta.hot.accept(acceptHMRUpdate(useFirebase, import.meta.hot));
 }

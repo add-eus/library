@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed, useAttrs, reactive } from "vue";
-import { useVField } from "/@src/lib/composable/useVField";
+import { useVField } from "../../../composable/useVField";
 
 export interface VSelectEmits {
     (event: "update:modelValue", value?: any): void;

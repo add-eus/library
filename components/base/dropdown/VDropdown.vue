@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
 import { useElementBounding, useElementSize, useWindowScroll } from "@vueuse/core";
-import { useDropdown } from "/@src/lib/composable/useDropdown";
+import { useDropdown } from "../../../composable/useDropdown";
 import { useScrollableParent, useVisibleElement } from "../../../utils/element";
 import { useEventListener } from "@vueuse/core";
 

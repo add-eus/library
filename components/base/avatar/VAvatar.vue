@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onceImageErrored } from "/@src/lib/utils/via-placeholder";
+import { onceImageErrored } from "../../../utils/via-placeholder";
 
 export type VAvatarSize = "small" | "medium" | "large" | "big" | "xl";
 export type VAvatarColor =
@@ -97,7 +97,7 @@ const props = withDefaults(defineProps<VAvatarProps>(), {
 </template>
 
 <style lang="scss">
-@import "../../../../scss/color.scss";
+@import "bulma/sass/utilities/_all";
 
 .v-avatar {
     position: relative;

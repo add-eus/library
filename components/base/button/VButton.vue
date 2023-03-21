@@ -1,12 +1,12 @@
 <script lang="ts">
 import type { PropType } from "vue";
 import type { RouteLocationRaw } from "vue-router";
-import { CssUnitRe } from "/@src/lib/utils/regex";
+import { CssUnitRe } from "../../../utils/regex";
 import { computed, defineComponent, h } from "vue";
 import { RouterLink } from "vue-router";
 import VIcon from "../icon/VIcon.vue";
 
-import { useHaptic } from "/@src/lib/stores/haptic";
+import { useHaptic } from "../../../stores/haptic";
 
 import VPlaceload from "../loader/VPlaceload.vue";
 

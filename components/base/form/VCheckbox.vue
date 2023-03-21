@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { isEntity } from "/@src/lib/stores/firestore/entity";
+import { isEntity } from "../../../stores/firestore/entity";
 
 export type VCheckboxColor = "primary" | "info" | "success" | "warning" | "danger";
 export interface VCheckboxEmits {
@@ -79,7 +79,7 @@ function change(event) {
 </template>
 
 <style lang="scss">
-@import "../../../../scss/color.scss";
+@import "bulma/sass/utilities/_all";
 
 %controller {
     position: relative;

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { watch, ref, onUnmounted } from "vue";
-import {} from "/@src/lib/stores/firebase";
-import { useStorage } from "/@src/lib/stores/storage";
+import {} from "../../../stores/firebase";
+import { useStorage } from "../../../stores/storage";
 
 export type ImageFirestoreProps = {
     path?: string | null;

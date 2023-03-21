@@ -2,7 +2,7 @@
 import { ref, watch, computed } from "vue";
 import { useVField } from "../../../composable/useVField";
 import moment from "moment-with-locales-es6";
-import { useTranslate } from "/@src/lib/stores/translate";
+import { useTranslate } from "../../../stores/translate";
 
 export interface VInputEmits {
     (event: "update:modelValue", value?: any): void;

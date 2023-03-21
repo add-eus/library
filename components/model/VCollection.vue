@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { refDebounced } from "@vueuse/core";
-import type { VFlexTableColumn } from "/@src/lib/components/base/table/VFlexTable.vue";
-import { useCollection, newDoc } from "/@src/lib/stores/firestore";
-import { useTranslate } from "/@src/lib/stores/translate";
+import type { VFlexTableColumn } from "../../components/base/table/VFlexTable.vue";
+import { useCollection, newDoc } from "../../stores/firestore";
+import { useTranslate } from "../../stores/translate";
 
 export interface VCollectionProps {
     model: any;

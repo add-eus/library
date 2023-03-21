@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive } from "vue";
-import { useVField } from "/@src/lib/composable/useVField";
+import { useVField } from "../../../composable/useVField";
 
 const vFieldContext = reactive(
     useVField({

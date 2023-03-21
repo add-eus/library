@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { useHaptic } from "/@src/lib/stores/haptic";
+import { useHaptic } from "../../../stores/haptic";
 
 export type VActionDark = "1" | "2" | "3" | "4" | "5" | "6";
 export interface VActionProps {
@@ -41,7 +41,7 @@ onMounted(() => {
 </template>
 
 <style lang="scss">
-@import "../../../../scss/color.scss";
+@import "bulma/sass/utilities/_all.scss";
 
 .button {
     font-family: $family-sans-serif;

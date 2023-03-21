@@ -1,6 +1,6 @@
-import { useModal } from "/@src/lib/stores/modal";
-import VCropComponent from "/@src/lib/components/base/VCrop.vue";
-import VButton from "/@src/lib/components/base/button/VButton.vue";
+import { useModal } from "../stores/modal";
+import VCropComponent from "../components/base/VCrop.vue";
+import VButton from "../components/base/button/VButton.vue";
 import { useTranslate } from "./translate";
 
 export interface CropOptions {

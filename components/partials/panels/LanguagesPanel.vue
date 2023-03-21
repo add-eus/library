@@ -3,7 +3,7 @@ import { watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useStorage } from "@vueuse/core";
 
-import { usePanels } from "/@src/lib/stores/panels";
+import { usePanels } from "../../../stores/panels";
 
 const panels = usePanels();
 const { locale, t } = useI18n();

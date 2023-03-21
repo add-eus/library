@@ -12,8 +12,8 @@ import {
     watchEffect,
 } from "vue";
 import { useDebounce, useDebounceFn } from "@vueuse/core";
-import { waitForElementVisible, waitForElementHidden } from "/@src/lib/utils/observer";
-import { isVisible, getScrollableParent } from "/@src/lib/utils/element";
+import { waitForElementVisible, waitForElementHidden } from "../../../utils/observer";
+import { isVisible, getScrollableParent } from "../../../utils/element";
 
 import type { VFlexTableColumn } from "./VFlexTable.vue";
 import VFlexTableSortColumn from "./VFlexTableSortColumn.vue";

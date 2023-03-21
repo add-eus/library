@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useCollection } from "/@src/lib/stores/firestore";
+import { useCollection } from "../../stores/firestore";
 
 export interface VSelectModelProps {
     modelValue: any;
