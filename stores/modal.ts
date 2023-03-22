@@ -1,10 +1,9 @@
 import type { VNode } from "vue";
-import { ref, createVNode, render } from "vue";
+import { ref, createVNode, render, getCurrentInstance } from "vue";
 import { until } from "@vueuse/core";
 import ModalComponent from "../components/modal/Modal.vue";
 import PromptComponent from "../components/modal/Prompt.vue";
 import VButton from "../components/base/button/VButton.vue";
-import { getApp } from "/@src/entry-client";
 
 export class Modal {
     isClosed = ref(false);
@@ -45,6 +44,7 @@ export class Modal {
 }
 
 export const useModal = function () {
+    const instance = getCurrentInstance();
     return {
         async prompt(
             titleArg: string,
@@ -107,12 +107,15 @@ export const useModal = function () {
         },
 
         createModal(component: any, options: any) {
-            const { app } = getApp();
+            if (!instance)
+                throw new Error(
+                    "no instance found, useModal must be called from a component"
+                );
             const modal = new Modal(component, options);
             const vnode: VNode = createVNode(ModalComponent, {
                 modal: modal,
             });
-            vnode.appContext = { ...app._context };
+            vnode.appContext = instance.appContext;
             const addEdelement = document.body.appendChild(document.createElement("div"));
 
             render(vnode, addEdelement);

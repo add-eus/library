@@ -12,10 +12,11 @@ export interface CropOptions {
 }
 
 export const useCropModal = () => {
+    const modalManager = useModal();
     const { translate } = useTranslate();
     return async (src: string, cropOptions?: CropOptions): Promise<Blob> => {
         return new Promise((resolve, reject) => {
-            const modal = useModal().createModal(VCropComponent, {
+            const modal = modalManager.createModal(VCropComponent, {
                 title: translate("crop-modal.title").value,
                 props: { src, options: cropOptions },
                 actions: [
