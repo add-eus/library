@@ -17,8 +17,7 @@ const props = defineProps<{
                             <i
                                 aria-hidden="true"
                                 class="iconify"
-                                data-icon="feather:activity"
-                            ></i>
+                                data-icon="feather:activity"></i>
                         </a>
                     </li>
                 </slot>
@@ -35,12 +34,11 @@ const props = defineProps<{
         class="mobile-overlay"
         tabindex="0"
         @keydown.space.prevent="emit('toggle')"
-        @click="emit('toggle')"
-    ></button>
+        @click="emit('toggle')"></button>
 </template>
 
 <style lang="scss">
-@import "/@src/scss/color";
+@import "bulma/sass/utilities/all";
 
 .mobile-overlay {
     background: rgb(0 0 0 / 30%);

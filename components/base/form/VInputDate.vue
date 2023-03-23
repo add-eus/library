@@ -64,8 +64,7 @@ parseModelValue(props.modelValue || moment());
         flex-direction="row"
         justify-content="center"
         align-items="center"
-        class="v-input-date"
-    >
+        class="v-input-date">
         <VFlexItem flex-grow="33" style="max-width: 100px; min-width: 30px">
             <VInputNumber v-model="date" :max="getMaxMonth()" :min="1" />
         </VFlexItem>
@@ -81,7 +80,7 @@ parseModelValue(props.modelValue || moment());
 </template>
 
 <style lang="scss">
-@import "/@src/scss/color";
+@import "bulma/sass/utilities/all";
 
 .v-input-date {
     color: $grey;

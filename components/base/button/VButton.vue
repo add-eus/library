@@ -266,7 +266,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "/@src/scss/color";
+@import "bulma/sass/utilities/all";
 
 .button {
     padding: 7px 14px;

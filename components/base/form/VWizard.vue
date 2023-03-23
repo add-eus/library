@@ -86,7 +86,7 @@ defineExpose({ nextStep, previousStep });
 </template>
 
 <style lang="scss" scoped>
-@import "/@src/scss/color";
+@import "bulma/sass/utilities/all";
 
 .wizard {
     margin-left: 30px;

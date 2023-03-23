@@ -44,7 +44,7 @@ const props = withDefaults(defineProps<VBlockProps>(), {
 </template>
 
 <style lang="scss">
-@import "/@src/scss/color";
+@import "bulma/sass/utilities/all";
 
 .media-flex {
     display: flex;

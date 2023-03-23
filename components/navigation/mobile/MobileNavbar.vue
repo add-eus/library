@@ -18,8 +18,7 @@ const props = defineProps<{
             'is-hidden-tablet': !isShownTablet ^ !isAlwaysShown,
         }"
         :style="{ display: isAlwaysShown ? 'flex !important' : 'none' }"
-        aria-label="main navigation"
-    >
+        aria-label="main navigation">
         <div class="container">
             <!-- Brand -->
             <div class="navbar-brand">
@@ -33,8 +32,7 @@ const props = defineProps<{
                         color="primary"
                         dark
                         @keydown.space.prevent="emit('toggle')"
-                        @click="emit('toggle')"
-                    ></VIconButton>
+                        @click="emit('toggle')"></VIconButton>
                 </div>
 
                 <slot name="brand"></slot>
@@ -44,7 +42,7 @@ const props = defineProps<{
 </template>
 
 <style lang="scss">
-@import "/@src/scss/color";
+@import "bulma/sass/utilities/all";
 
 /* ==========================================================================
 1. Mobile Navbar

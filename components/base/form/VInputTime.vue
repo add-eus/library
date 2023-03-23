@@ -91,7 +91,7 @@ watch(
 </template>
 
 <style lang="scss">
-@import "/@src/scss/color";
+@import "bulma/sass/utilities/all";
 
 .v-input-time {
     color: $grey;

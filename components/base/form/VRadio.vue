@@ -55,8 +55,7 @@ const checked = computed({
             props.square && 'is-square',
             props.color && `is-${props.color}`,
             props.paddingless && 'is-paddingless',
-        ]"
-    >
+        ]">
         <input
             ref="element"
             type="radio"
@@ -64,8 +63,7 @@ const checked = computed({
             :checked="checked"
             :name="props.name"
             v-bind="$attrs"
-            @change="checked = !checked"
-        />
+            @change="checked = !checked" />
         <span></span>
         <slot
             ><Translate>{{ radioLabel }}</Translate></slot
@@ -74,7 +72,7 @@ const checked = computed({
 </template>
 
 <style lang="scss">
-@import "/@src/scss/color";
+@import "bulma/sass/utilities/all";
 
 %controller {
     position: relative;

@@ -137,7 +137,7 @@ onMounted(() => {
 </template>
 
 <style lang="scss">
-@import "/@src/scss/color";
+@import "bulma/sass/utilities/all";
 
 .dropdown-menu {
     display: block;

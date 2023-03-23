@@ -64,7 +64,7 @@ const themeClasses = computed(() => {
 </template>
 
 <style lang="scss">
-@import "/@src/scss/color";
+@import "bulma/sass/utilities/all";
 
 .main-sidebar {
     position: fixed;

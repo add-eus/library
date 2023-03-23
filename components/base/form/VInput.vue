@@ -92,12 +92,11 @@ const placeHolderTranslated = props.placeholder ? translate(props.placeholder) :
         :class="classes"
         :name="vFieldContext.id"
         :placeholder="placeHolderTranslated"
-        :type="type"
-    />
+        :type="type" />
 </template>
 
 <style lang="scss">
-@import "/@src/scss/color";
+@import "bulma/sass/utilities/all";
 
 input {
 }

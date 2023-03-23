@@ -72,7 +72,7 @@ watchOnce(el, () => {
 </template>
 
 <style lang="scss">
-@import "/@src/scss/color";
+@import "bulma/sass/utilities/all";
 
 .vue-scroll-picker {
     > .vue-scroll-picker-rotator {
