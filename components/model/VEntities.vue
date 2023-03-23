@@ -43,7 +43,7 @@ const entities = ref(
 const schema = props.schema !== undefined ? props.schema : yup.object();
 let rootSchema = props.multiple ? yup.array().of(schema) : schema;
 
-if (props.required) rootSchema = rootSchema.min(1);
+if (props.required) rootSchema = rootSchema.min(1, "validation.required");
 
 async function getEntity(componentModel, uid: string): Promise<any> {
     const doc = useDoc(componentModel, uid);
@@ -158,6 +158,9 @@ function update() {
                         <slot :field="multiple ? fieldArray : field"></slot>
                     </template>
                 </VArray>
+                <p v-for="error in field.errors" :key="error" class="help is-danger">
+                    <Translate>.{{ error }}</Translate>
+                </p>
             </TranslateNamespace>
         </VValidation>
     </div>
