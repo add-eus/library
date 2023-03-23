@@ -140,7 +140,7 @@ onMounted(() => {
 @import "bulma/sass/utilities/all";
 
 .dropdown-menu {
-    display: block;
+    display: block !important;
     position: absolute;
     z-index: 100;
 
