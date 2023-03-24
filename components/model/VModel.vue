@@ -2,10 +2,34 @@
 import { computed, inject, provide, ref } from "vue";
 
 export interface VModelEmits {
-    (e: "created", value: void): void;
-    (e: "updated", value: void): void;
-    (e: "beforeUpdate", value: void): void;
-    (e: "beforeCreate", value: void): void;
+    (
+        e: "created",
+        value: {
+            model: any;
+            onEnd: Function;
+        }
+    ): void;
+    (
+        e: "updated",
+        value: {
+            model: any;
+            onEnd: Function;
+        }
+    ): void;
+    (
+        e: "beforeUpdate",
+        value: {
+            model: any;
+            onEnd: Function;
+        }
+    ): void;
+    (
+        e: "beforeCreate",
+        value: {
+            model: any;
+            onEnd: Function;
+        }
+    ): void;
     (e: "update:isSaving", value: boolean): void;
     (e: "cancel", value: void): void;
 }

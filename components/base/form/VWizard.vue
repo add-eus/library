@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { useVModel } from "@vueuse/core";
+import { inject, ref, watch } from "vue";
+import { useDebounceFn, useVModel } from "@vueuse/core";
 import * as yup from "yup";
+import { useTranslate } from "../../../stores/translate";
 
 interface WizardProps {
     modelValue: any;
@@ -17,6 +18,7 @@ const props = defineProps<WizardProps>();
 const emits = defineEmits<WizardEmits>();
 const currentStep = ref(1);
 const modelValue = useVModel(props, "modelValue", emits);
+const { translate } = useTranslate();
 const nextStep = () => {
     if (currentStep.value >= props.steps.length) return;
     currentStep.value++;
@@ -27,6 +29,26 @@ const previousStep = () => {
 };
 
 const validations = ref<any[]>([]);
+
+const setSubmitButton = inject("setSubmitButton");
+
+const updateFormButton = useDebounceFn(function () {
+    if (typeof setSubmitButton === "function") {
+        setSubmitButton(
+            translate(".wizard.next").value,
+            validations.value[currentStep.value] === undefined ||
+                validations.value[currentStep.value].field.hasChildErrors() === false,
+            () => {
+                nextStep();
+            }
+        );
+    }
+}, 200);
+void updateFormButton();
+
+watch(validations, updateFormButton, { deep: true });
+
+watch(currentStep, updateFormButton);
 
 defineExpose({ nextStep, previousStep });
 </script>
@@ -42,6 +64,7 @@ defineExpose({ nextStep, previousStep });
                     :ref="
                         (element) => {
                             validations[i] = element;
+                            element.field.onChange(updateFormButton);
                         }
                     "
                     v-slot="{ field }"
@@ -66,7 +89,7 @@ defineExpose({ nextStep, previousStep });
             </div>
         </VFlexItem>
     </VFlex>
-    <VFlex v-if="!props.hideActions" justify-content="center">
+    <VFlex v-if="!props.hideActions && !setSubmitButton" justify-content="center">
         <TranslateNamespace path=".wizard">
             <VButton class="m-1" :disabled="currentStep <= 1" @click="previousStep">
                 <Translate>.previous</Translate>
