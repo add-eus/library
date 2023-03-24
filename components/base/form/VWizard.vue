@@ -8,10 +8,12 @@ interface WizardProps {
     modelValue: any;
     steps: string[];
     hideActions: boolean;
+    hideSteps: boolean;
 }
 
 interface WizardEmits {
     (event: "update:modelValue", value?: any): void;
+    (event: "update:currentStep", value?: any): void;
 }
 
 const props = defineProps<WizardProps>();
@@ -27,6 +29,24 @@ const previousStep = () => {
     if (currentStep.value <= 1) return;
     currentStep.value--;
 };
+const setStep = (value: number) => {
+    if (value <= currentStep.value) {
+        currentStep.value = value;
+        return;
+    }
+
+    let lastValidStep = currentStep.value;
+    while (
+        validations.value[lastValidStep].field.hasChildErrors() === false &&
+        lastValidStep < value
+    ) {
+        lastValidStep++;
+    }
+    currentStep.value = lastValidStep;
+};
+watch(currentStep, () => {
+    emits("update:currentStep", currentStep.value);
+});
 
 const validations = ref<any[]>([]);
 
@@ -50,7 +70,7 @@ watch(validations, updateFormButton, { deep: true });
 
 watch(currentStep, updateFormButton);
 
-defineExpose({ nextStep, previousStep });
+defineExpose({ nextStep, previousStep, setStep });
 </script>
 
 <template>
@@ -75,15 +95,15 @@ defineExpose({ nextStep, previousStep });
                 </VValidation>
             </div>
         </VFlexItem>
-        <VFlexItem>
+        <VFlexItem v-if="!props.hideSteps">
             <div class="wizard">
-                <div class="v-line"></div>
                 <div
                     v-for="i in props.steps.length"
                     :key="i"
-                    :onclick="() => (currentStep = i)"
+                    :onclick="() => setStep(i)"
                     class="step"
                     :class="{ done: currentStep >= i }">
+                    <div v-if="i < props.steps.length" class="v-line"></div>
                     <span>{{ props.steps[i - 1] }}</span>
                 </div>
             </div>
@@ -120,8 +140,8 @@ defineExpose({ nextStep, previousStep });
         background-color: #ccc;
         position: absolute;
         margin-left: -15px;
-        margin-top: 20px;
-        height: 150px;
+        margin-top: 11px;
+        height: 50px;
     }
 
     .done {

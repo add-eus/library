@@ -21,9 +21,9 @@ module.exports = {
     ],
     plugins: ["@typescript-eslint", "prettier-vue"],
     rules: {
-        "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
-        "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
-        "no-unused-vars": process.env.NODE_ENV === "production" ? "error" : "off",
+        "no-console": process.env.NODE_ENV === "production" ? "error" : "warn",
+        "no-debugger": process.env.NODE_ENV === "production" ? "error" : "warn",
+        "no-unused-vars": process.env.NODE_ENV === "production" ? "error" : "warn",
         "@typescript-eslint/no-unused-vars": ["error"],
         quotes: ["error", "double"],
         "@typescript-eslint/consistent-type-imports": [
@@ -64,8 +64,8 @@ module.exports = {
                 "prettier",
             ],
             rules: {
-                "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
-                "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
+                "no-console": process.env.NODE_ENV === "production" ? "error" : "warn",
+                "no-debugger": process.env.NODE_ENV === "production" ? "error" : "warn",
                 eqeqeq: ["error", "always"],
                 "no-unused-vars": "off",
                 "no-warning-comments": [
