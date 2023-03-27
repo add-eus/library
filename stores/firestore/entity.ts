@@ -38,13 +38,14 @@ export class EntityBase {
     constructor() {
         const constructor = this.constructor as typeof EntityBase;
 
-        const reactivity = new Proxy(reactive(this), {
+        const proxied = new Proxy(this, {
             get(obj, key: string) {
                 obj.$getMetadata().emit("get", key);
                 return (obj as any)[key];
             },
             set(obj: { [key: string]: any }, key: string, value: any) {
                 obj[key] = value;
+
                 obj.$getMetadata().emit("set", key, value);
                 return true;
             },
@@ -61,11 +62,11 @@ export class EntityBase {
 
         if (Array.isArray((constructor as any).onInitialize)) {
             (constructor as any).onInitialize.map((callback: Function) => {
-                return callback.call(reactivity, this.$getMetadata());
+                return callback.call(proxied, this.$getMetadata());
             });
         }
 
-        return reactivity;
+        return reactive(proxied);
     }
 
     static addMethod(name: string, callback: Function) {

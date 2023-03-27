@@ -89,7 +89,8 @@ defineExpose({ nextStep, previousStep, setStep });
                     :ref="
                         (element) => {
                             validations[i] = element;
-                            element.field.onChange(updateFormButton);
+                            if (element !== null)
+                                element.field.onChange(updateFormButton);
                         }
                     "
                     v-slot="{ field }"
@@ -124,7 +125,8 @@ defineExpose({ nextStep, previousStep, setStep });
                 color="primary"
                 :disabled="
                     currentStep >= props.steps.length ||
-                    validations[currentStep].field.hasChildErrors()
+                    (validations[currentStep] !== null &&
+                        validations[currentStep].field.hasChildErrors())
                 "
                 @click="nextStep">
                 <Translate>.next</Translate>
