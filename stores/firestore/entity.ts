@@ -191,7 +191,7 @@ export class Entity extends EntityBase {
 
     $getPlainForLogs() {
         return {
-            docName: (this.constructor as typeof Entity).collectionName.replace(/s$/, ""),
+            docName: this.$getModelName(),
             uid: this.$getID(),
             ...this.$getPlain(),
         };

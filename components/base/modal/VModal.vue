@@ -42,17 +42,26 @@ watchEffect(checkScroll);
 onUnmounted(() => {
     document.documentElement.classList.remove("no-scroll");
 });
+
+defineExpose({
+    close: () => {
+        wasOpen.value = false;
+        emit("close");
+    },
+    open: () => {
+        wasOpen.value = true;
+    },
+});
 </script>
 
 <template>
     <Teleport to="body">
         <div :class="[open && 'is-active', size && `is-${size}`]" class="modal v-modal">
-            <div
+            <button
                 class="modal-background v-modal-close"
                 tabindex="0"
                 @keydown.space.prevent="() => noclose === false && emit('close')"
-                @click="() => noclose === false && emit('close')"
-            ></div>
+                @click="() => noclose === false && emit('close')"></button>
             <div class="modal-content">
                 <div class="modal-card">
                     <header class="modal-card-head">
@@ -67,8 +76,7 @@ onUnmounted(() => {
                             circle
                             :disabled="noclose"
                             @keydown.space.prevent="emit('close')"
-                            @click="emit('close')"
-                        ></VIconButton>
+                            @click="emit('close')"></VIconButton>
                     </header>
                     <div class="modal-card-body" :class="[props.tabs && 'has-tabs']">
                         <div class="inner-content">
@@ -80,8 +88,7 @@ onUnmounted(() => {
                                     <VPlaceload
                                         height="100px"
                                         width="100%"
-                                        class="mx-2"
-                                    />
+                                        class="mx-2" />
                                 </template>
                             </Suspense>
                         </div>
@@ -91,8 +98,7 @@ onUnmounted(() => {
                         :class="[
                             actions === 'center' && 'is-centered',
                             actions === 'right' && 'is-end',
-                        ]"
-                    >
+                        ]">
                         <slot name="action" :close="() => emit('close')"></slot>
                     </div>
                 </div>
