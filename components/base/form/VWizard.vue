@@ -54,13 +54,18 @@ const setSubmitButton = inject("setSubmitButton");
 
 const updateFormButton = useDebounceFn(function () {
     if (typeof setSubmitButton === "function") {
+        const isLastStep = currentStep.value === props.steps.length;
         setSubmitButton(
-            translate(".wizard.next").value,
+            isLastStep
+                ? translate(".wizard.submit").value
+                : translate(".wizard.next").value,
             validations.value[currentStep.value] === undefined ||
                 validations.value[currentStep.value].field.hasChildErrors() === false,
-            () => {
-                nextStep();
-            }
+            isLastStep
+                ? undefined
+                : () => {
+                      nextStep();
+                  }
         );
     }
 }, 200);
