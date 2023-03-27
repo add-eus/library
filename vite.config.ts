@@ -448,3 +448,7 @@ export function define(config: any = {}) {
         };
     });
 }
+
+export default define({
+    path: ".",
+});

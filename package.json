@@ -18,7 +18,7 @@
         "dev:vite:speed2max": "NODE_ENV=development vite --config vite.speed2max.config.ts",
         "dev:functions": "npm --prefix functions run serve",
         "dev:firebase": "FUNCTIONS_EMULATOR_TIMEOUT_SECONDS=520 concurrently --raw npm:dev:functions 'firebase emulators:start --import $(pwd)/../firebaseExport --export-on-exit $(pwd)/../firebaseExport --only functions,auth,firestore,storage,database,eventarc,pubsub --inspect-functions &'",
-        "build": "run-p build:*",
+        "build": "vite build",
         "build:vite": "run-p build:vite:*",
         "build:vite:track2max": "vite build -c vite.track2max.config.ts",
         "build:vite:speed2max": "vite build -c vite.speed2max.config.ts",
