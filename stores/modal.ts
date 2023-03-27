@@ -1,9 +1,10 @@
-import type { VNode } from "vue";
-import { ref, createVNode, render, getCurrentInstance } from "vue";
+import { ref } from "vue";
 import { until } from "@vueuse/core";
 import ModalComponent from "../components/modal/Modal.vue";
 import PromptComponent from "../components/modal/Prompt.vue";
 import VButton from "../components/base/button/VButton.vue";
+import { useComponent } from "./component";
+import { acceptHMRUpdate, defineStore } from "pinia";
 
 export class Modal {
     isClosed = ref(false);
@@ -43,8 +44,8 @@ export class Modal {
     }
 }
 
-export const useModal = function () {
-    const instance = getCurrentInstance();
+export const useModal = defineStore("modal", () => {
+    const { initialize, destroy } = useComponent();
     return {
         async prompt(
             titleArg: string,
@@ -93,7 +94,7 @@ export const useModal = function () {
 
             return new Promise((resolve, reject) => {
                 until(cancelReason)
-                    .not.toBeNull()
+                    .not.toBe(null)
                     .then(() => {
                         reject(cancelReason.value);
                     });
@@ -107,25 +108,26 @@ export const useModal = function () {
         },
 
         createModal(component: any, options: any) {
-            if (!instance)
-                throw new Error(
-                    "no instance found, useModal must be called from a component"
-                );
             const modal = new Modal(component, options);
-            const vnode: VNode = createVNode(ModalComponent, {
-                modal: modal,
-            });
-            vnode.appContext = instance.appContext;
-            const addEdelement = document.body.appendChild(document.createElement("div"));
+            const vNode = initialize(ModalComponent, { modal: modal });
 
-            render(vnode, addEdelement);
             void until(modal.isClosed)
                 .toBe(true)
                 .then(() => {
-                    render(null, addEdelement);
-                    document.body.removeChild(addEdelement);
+                    destroy(vNode);
                 });
             return modal;
         },
     };
-};
+});
+
+/**
+ * Pinia supports Hot Module replacement so you can edit your stores and
+ * interact with them directly in your app without reloading the page.
+ *
+ * @see https://pinia.esm.dev/cookbook/hot-module-replacement.html
+ * @see https://vitejs.dev/guide/api-hmr.html
+ */
+if (import.meta.hot) {
+    import.meta.hot.accept(acceptHMRUpdate(useModal, import.meta.hot));
+}
