@@ -23,7 +23,7 @@ export interface VEntitiesProps {
     required: boolean;
     schema: any;
     save: boolean;
-    newValueFunction?: () => any;
+    defaultNewValue?: () => any;
 }
 const props = withDefaults(defineProps<VEntitiesProps>(), {
     modelValue: undefined,
@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<VEntitiesProps>(), {
     component: undefined,
     labelAttr: undefined,
     save: true,
-    newValueFunction: undefined,
+    defaultNewValue: undefined,
 });
 const emits = defineEmits<VEntitiesEmits>();
 
@@ -112,7 +112,8 @@ if (props.onlyIds) {
 function newValue() {
     if (props.multiple) {
         if (!props.onlyIds && props.model !== undefined) {
-            if (props.newValueFunction !== undefined) return props.newValueFunction();
+            if (typeof props.defaultNewValue === "function")
+                return props.defaultNewValue();
             else return newDoc(props.model);
         } else {
             return "";
