@@ -48,11 +48,7 @@
         ".eslintrc.cjs",
         "index.ts",
         "vite.config.cjs",
-        "default-style.ts"
+        "default-styles.ts"
     ],
-    "exclude": [
-        "../../bulma-colors.ts",
-        "../../node_modules/**/*.ts",
-        "../../functions/**.ts"
-    ]
+    "exclude": ["./node_modules/**/*.ts"]
 }
