@@ -13,34 +13,48 @@ import { v4 as uuid } from "uuid";
 export const useStorage = defineStore("Storage", () => {
     const storage = useFirebase().storage;
     const cached = {};
-    return {
-        async upload(file: File | Path | Blob, path: string) {
-            const pathName = path + "/" + uuid();
-            const refFile = refStorage(storage, pathName);
-            const arrayBuffer = await file.arrayBuffer();
 
-            cached[pathName] = file;
+    const upload = async (file: File | Path | Blob, path: string) => {
+        const pathName = path + "/" + uuid();
+        const refFile = refStorage(storage, pathName);
+        const arrayBuffer = await file.arrayBuffer();
 
-            await uploadBytes(refFile, arrayBuffer);
+        cached[pathName] = file;
 
-            await updateMetadata(refFile, {
-                contentType: file.type,
-            });
+        await uploadBytes(refFile, arrayBuffer);
 
-            return refFile.fullPath;
-        },
-        async remove(url: string) {
-            const ref = refStorage(storage, url);
-            await deleteObject(ref);
-        },
-        async fetch(url: string) {
-            if (cached[url] !== undefined) return cached[url];
-            const refFile = refStorage(storage, url);
-            const blob = await getBlob(refFile);
-            cached[url] = blob;
-            return blob;
-        },
+        await updateMetadata(refFile, {
+            contentType: file.type,
+        });
+
+        return refFile.fullPath;
     };
+    const remove = async (url: string) => {
+        const ref = refStorage(storage, url);
+        await deleteObject(ref);
+    };
+    const fetch = async (url: string) => {
+        if (cached[url] !== undefined) return cached[url];
+        const refFile = refStorage(storage, url);
+        const blob = await getBlob(refFile);
+        cached[url] = blob;
+        return blob;
+    };
+    const fetchAsDataUrl = async (url: string): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            fetch(url)
+                .then((blob) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(blob);
+                    reader.onload = () => {
+                        resolve(reader.result as string);
+                    };
+                })
+                .catch(reject);
+        });
+    };
+
+    return { upload, remove, fetch, fetchAsDataUrl };
 });
 
 /**
