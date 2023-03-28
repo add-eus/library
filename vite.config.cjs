@@ -1,23 +1,22 @@
-import { defineConfig, loadEnv } from "vite";
-import path from "path";
-import fs from "fs";
-import Vue from "@vitejs/plugin-vue";
-import Pages from "vite-plugin-pages";
-import Components from "unplugin-vue-components/vite";
-import ViteFonts from "vite-plugin-fonts";
-import dynamicImport from "vite-plugin-dynamic-import";
-import { imagetools } from "vite-imagetools";
-import ImageMin from "vite-plugin-imagemin";
-// import Firebase from "@mallanic/vite-plugin-firebase";
+const { defineConfig, loadEnv } = require("vite");
+const path = require("path");
+const Vue = require("@vitejs/plugin-vue");
+const { default: Pages } = require("vite-plugin-pages");
+const Components = require("unplugin-vue-components/vite");
+const { default: ViteFonts } = require("vite-plugin-fonts");
+const { default: dynamicImport } = require("vite-plugin-dynamic-import");
+const { imagetools } = require("vite-imagetools");
+const ImageMin = require("vite-plugin-imagemin");
+// const  Firebase  = require( "@mallanic/vite-plugin-firebase");
 // import Track2MaxDocumentation from './vite-plugin-vuero-doc/index'
-import vueI18n from "@intlify/unplugin-vue-i18n/vite";
-import { VitePWA } from "vite-plugin-pwa";
-import { createHtmlPlugin } from "vite-plugin-html";
-import purgecss from "rollup-plugin-purgecss";
-import {
+const vueI18n = require("@intlify/unplugin-vue-i18n/vite");
+const { VitePWA } = require("vite-plugin-pwa");
+const { createHtmlPlugin } = require("vite-plugin-html");
+const purgecss = require("rollup-plugin-purgecss");
+const {
     VueUseComponentsResolver,
     VueUseDirectiveResolver,
-} from "unplugin-vue-components/resolvers";
+} = require("unplugin-vue-components/resolvers");
 
 const SILENT = Boolean(process.env.SILENT) ?? false;
 const DEV = process.env.NODE_ENV === "development" || false;
@@ -27,15 +26,15 @@ const DEV = process.env.NODE_ENV === "development" || false;
  *
  * @see https://vitejs.dev/config
  */
-export function define(config: any = {}) {
-    const currentDir = __dirname;
+module.exports.define = function (config = {}) {
+    const currentDir = process.cwd();
     const outDir = path.join(
         currentDir,
-        config.output !== undefined ? config.output : `dist`
+        config.output !== undefined ? config.output : "dist"
     );
     const rootDir = path.join(currentDir, "src");
     const publicDir = path.join(currentDir, "public");
-    const cacheDir = `/tmp/.vite/`;
+    const cacheDir = "/tmp/.vite/";
 
     // Load app-level env vars to node-level env vars.
     process.env = {
@@ -84,11 +83,11 @@ export function define(config: any = {}) {
                 emptyOutDir: true,
                 chunkSizeWarningLimit: 3000,
                 rollupOptions: {
-                    manualChunks(id) {
-                        if (id.includes("node_modules")) {
-                            return "vendor";
-                        }
-                    },
+                    // manualChunks(id) {
+                    //     if (id.includes("node_modules")) {
+                    //         return "vendor";
+                    //     }
+                    // },
                     input: {
                         app: rootDir + "/index.html",
                         "service-worker": rootDir + "/workers/index.ts",
@@ -206,7 +205,7 @@ export function define(config: any = {}) {
                  */
                 vueI18n({
                     include: [
-                        path.resolve(rootDir, `locales/**`),
+                        path.resolve(rootDir, "locales/**"),
                         // path.resolve(__dirname, "./lib/locales/**"),
                     ],
                     defaultSFCLang: "json",
@@ -237,34 +236,40 @@ export function define(config: any = {}) {
                     resolvers: [
                         VueUseComponentsResolver(),
                         VueUseDirectiveResolver(),
-                        {
-                            type: "directive",
-                            resolve(name) {
-                                function lowerCamelCase(s) {
-                                    return s[0].toLowerCase() + s.slice(1);
-                                }
-                                const p = path.join(
-                                    rootDir,
-                                    `directives/${lowerCamelCase(name)}.ts`
-                                );
-                                if (fs.existsSync(p)) return p;
+                        // {
+                        //     type: "directive",
+                        //     resolve(name) {
+                        //         function lowerCamelCase(s) {
+                        //             return s[0].toLowerCase() + s.slice(1);
+                        //         }
+                        //         const p = path.join(
+                        //             rootDir,
+                        //             `directives/${lowerCamelCase(name)}.ts`
+                        //         );
+                        //         if (fs.existsSync(p)) return p;
 
-                                const libPath = path.join(
-                                    rootDir,
-                                    `./node_modules/addeus-common-library/directives/${lowerCamelCase(
-                                        name
-                                    )}.ts`
-                                );
-                                if (fs.existsSync(libPath)) return libPath;
-                            },
-                        },
+                        //         const libPath = path.join(
+                        //             rootDir,
+                        //             `./node_modules/addeus-common-library/directives/${lowerCamelCase(
+                        //                 name
+                        //             )}.ts`
+                        //         );
+                        //         if (fs.existsSync(libPath)) return libPath;
+
+                        //         const libPath = path.join(
+                        //             rootDir,
+                        //             `./library/directives/${lowerCamelCase(name)}.ts`
+                        //         );
+                        //         if (fs.existsSync(libPath)) return libPath;
+                        //     },
+                        // },
                     ],
                     dirs: [
                         "components",
                         "directives",
-                        "./node_modules/addeus-common-library/components",
-                        "./node_modules/addeus-common-library/layouts",
-                        "./node_modules/addeus-common-library/directives",
+                        path.join(__dirname, "components"),
+                        path.join(__dirname, "layouts"),
+                        path.join(__dirname, "directives"),
                     ],
                     extensions: ["vue", "ts"],
                     dts: "components.d.ts",
@@ -374,7 +379,7 @@ export function define(config: any = {}) {
                  */
                 !DEV &&
                     purgecss({
-                        content: [path.join(rootDir, `**.vue`)],
+                        content: [path.join(rootDir, "**.vue")],
                         variables: false,
                         safelist: {
                             standard: [
@@ -447,8 +452,4 @@ export function define(config: any = {}) {
             ],
         };
     });
-}
-
-export default define({
-    path: ".",
-});
+};

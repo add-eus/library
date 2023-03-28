@@ -2,7 +2,7 @@
     "tsCheckerConfig": {
         "eslint": {
             "enabled": true,
-            "files": "./**.{ts,tsx,js,jsx,vue}",
+            "files": "./**.{ts,tsx,js,cjs,jsx,vue}",
             "memoryLimit": 8192 // previously 4096
         },
         "typescript": {
@@ -17,7 +17,7 @@
         "strict": true,
         "strictNullChecks": true,
         "jsx": "preserve",
-        "sourceMap": true,
+        "sourceMap": false,
 
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
@@ -43,8 +43,15 @@
         "components/**/*.ts",
         "components/**/*.vue",
         "layouts/**/*.vue",
-        "commitlint.config.ts",
-        "vite.*.ts"
+        "commitlint.config.cjs",
+        "vite.*.ts",
+        ".eslintrc.cjs",
+        "index.ts",
+        "vite.config.cjs"
     ],
-    "exclude": ["bulma-colors.ts", "node_modules/**/*.ts", "functions/**.ts"]
+    "exclude": [
+        "../../bulma-colors.ts",
+        "../../node_modules/**/*.ts",
+        "../../functions/**.ts"
+    ]
 }
