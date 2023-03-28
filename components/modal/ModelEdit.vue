@@ -131,6 +131,7 @@ if (isEdit.value && typeof events.onNew === "function") events.onNew(this);
         :open="cancelReason === null && successReason === null"
         actions="right"
         :noclose="loading"
+        :size="options.size"
         @close="cancelReason = 'cancelled'">
         <template #title>
             <TranslateNamespace :path="translateNamespacePath">
