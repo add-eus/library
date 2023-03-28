@@ -15,4 +15,3 @@ import "floating-vue/dist/style.css";
 import "vue-tel-input/dist/vue-tel-input.css";
 import "v-calendar/dist/style.css";
 import "material-icons/iconfont/material-icons.css";
-import "/@src/scss/index.scss";
