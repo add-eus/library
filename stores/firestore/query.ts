@@ -1,5 +1,5 @@
 import { useDebounceFn } from "@vueuse/core";
-import { EventEmitter } from "events";
+import EventEmitter from "events";
 import type {
     CollectionReference,
     DocumentSnapshot,
