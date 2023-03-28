@@ -1,5 +1,5 @@
 import moment from "moment-with-locales-es6";
-import { GeoPoint } from "firebase/firestore";
+import { deleteField, GeoPoint } from "firebase/firestore";
 import { useDoc } from "./index";
 import { Entity, EntityBase, isEntity } from "./entity";
 import { onInitialize, isEntityClass, isEntityStandaloneClass } from "./entity";
@@ -161,6 +161,7 @@ export function Var(type: any) {
                 const rawValue = formatData(this[name], type, forceAll);
 
                 if (typeof rawValue !== "undefined") raw[name] = rawValue;
+                else raw[name] = deleteField();
             });
 
             metadata.on("saved", () => {
