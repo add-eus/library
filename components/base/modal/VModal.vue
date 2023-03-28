@@ -9,7 +9,7 @@ export interface VModalEmits {
 }
 export interface VModalProps {
     title: string;
-    size?: VModalSize;
+    size: VModalSize;
     actions?: VModalAction;
     open?: boolean;
     rounded?: boolean;
@@ -21,7 +21,7 @@ export interface VModalProps {
 
 const emit = defineEmits<VModalEmits>();
 const props = withDefaults(defineProps<VModalProps>(), {
-    size: undefined,
+    size: "medium",
     actions: undefined,
     cancelLabel: undefined,
 });
@@ -56,7 +56,7 @@ defineExpose({
 
 <template>
     <Teleport to="body">
-        <div :class="[open && 'is-active', size && `is-${size}`]" class="modal v-modal">
+        <div :class="[open && 'is-active', `is-${size}`]" class="modal v-modal">
             <button
                 class="modal-background v-modal-close"
                 tabindex="0"
