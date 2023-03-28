@@ -1,6 +1,6 @@
 const { RuleConfigSeverity } = require("@commitlint/types");
 
-module.exports = function (scopes) {
+function generateConfig(scopes) {
     return {
         extends: ["@commitlint/config-conventional"],
         ignores: [(commit) => commit.startsWith("WIP: ")],
@@ -9,4 +9,6 @@ module.exports = function (scopes) {
             "scope-enum": [RuleConfigSeverity.Error, "always", scopes],
         },
     };
-};
+}
+module.exports = generateConfig([]);
+module.exports.generateConfig = generateConfig;
