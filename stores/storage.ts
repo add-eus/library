@@ -40,7 +40,7 @@ export const useStorage = defineStore("Storage", () => {
         cached[url] = blob;
         return blob;
     };
-    const fetchImg = async (url: string): Promise<string> => {
+    const fetchAsDataUrl = async (url: string): Promise<string> => {
         return new Promise((resolve, reject) => {
             fetch(url)
                 .then((blob) => {
@@ -54,7 +54,7 @@ export const useStorage = defineStore("Storage", () => {
         });
     };
 
-    return { upload, remove, fetch, fetchImg };
+    return { upload, remove, fetch, fetchAsDataUrl };
 });
 
 /**
