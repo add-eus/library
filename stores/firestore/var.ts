@@ -161,7 +161,7 @@ export function Var(type: any) {
                 const rawValue = formatData(this[name], type, forceAll);
 
                 if (typeof rawValue !== "undefined") raw[name] = rawValue;
-                else raw[name] = deleteField();
+                else if (metadata.reference !== null) raw[name] = deleteField();
             });
 
             metadata.on("saved", () => {
