@@ -51,7 +51,7 @@ export class EntityBase {
             },
         });
 
-        const $metadata = markRaw(new EntityMetaData(this));
+        const $metadata = markRaw(new EntityMetaData(proxied));
 
         Object.defineProperty(this, "$metadata", {
             value: $metadata,
@@ -60,13 +60,15 @@ export class EntityBase {
             writable: false,
         });
 
+        const reactivity = reactive(proxied);
+
         if (Array.isArray((constructor as any).onInitialize)) {
             (constructor as any).onInitialize.map((callback: Function) => {
-                return callback.call(proxied, this.$getMetadata());
+                return callback.call(reactivity, this.$getMetadata());
             });
         }
 
-        return reactive(proxied);
+        return reactivity;
     }
 
     static addMethod(name: string, callback: Function) {
