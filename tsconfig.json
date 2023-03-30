@@ -38,6 +38,7 @@
         ]
     },
     "include": [
+        "node_modules/addeus-common-library/**/*.ts",
         "composable/**.ts",
         "stores/**.ts",
         "components/**/*.ts",
@@ -49,6 +50,5 @@
         "index.ts",
         "vite.config.cjs",
         "default-styles.ts"
-    ],
-    "exclude": ["./node_modules/**/*.ts"]
+    ]
 }
