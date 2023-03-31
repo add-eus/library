@@ -23,6 +23,7 @@ export interface VEntitiesProps {
     required: boolean;
     schema: any;
     save: boolean;
+    canOpen: boolean;
     defaultNewValue?: () => any;
 }
 const props = withDefaults(defineProps<VEntitiesProps>(), {
@@ -32,6 +33,7 @@ const props = withDefaults(defineProps<VEntitiesProps>(), {
     labelAttr: undefined,
     save: true,
     defaultNewValue: undefined,
+    canOpen: true,
 });
 const emits = defineEmits<VEntitiesEmits>();
 
@@ -158,6 +160,7 @@ function update() {
                     :schema="schema"
                     :opened="opened"
                     :new-value="newValue"
+                    :can-open="canOpen"
                     @update="update">
                     <template #collapsed="{ value }">
                         <slot name="collapsed" :value="value"></slot>

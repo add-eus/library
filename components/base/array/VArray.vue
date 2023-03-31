@@ -15,12 +15,14 @@ export interface VArrayProps {
     sortable: boolean;
     opened: boolean;
     schema: any;
+    canOpen: boolean;
 }
 
 const props = withDefaults(defineProps<VArrayProps>(), {
     modelValue: undefined,
     schema: object(),
     newValue: {},
+    canOpen: false,
 });
 const emits = defineEmits<VArrayEmits>();
 
@@ -78,7 +80,7 @@ function getKey(value) {
 </script>
 <template>
     <VFlex flex-direction="column" align-items="center" row-gap="10px">
-        <VArrayRow v-if="!multiple" :opened="opened" :value="model">
+        <VArrayRow v-if="!multiple" :opened="opened" :can-open="canOpen" :value="model">
             <slot :value="model" :index="0"></slot>
         </VArrayRow>
         <Draggable
@@ -98,7 +100,7 @@ function getKey(value) {
                     :property="'[' + getKey(model[index]) + ']'"
                     :schema="schema"
                     @update="emitUpdate()">
-                    <VArrayRow :opened="opened" :value="field.value">
+                    <VArrayRow :opened="opened" :can-open="canOpen" :value="field.value">
                         <template #collapsed="{ value }">
                             <slot name="collapsed" :value="value" :index="index"></slot>
                         </template>
