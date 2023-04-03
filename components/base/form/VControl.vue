@@ -47,7 +47,7 @@ export default defineComponent({
     },
     setup(props, { slots }) {
         const isIconify = computed(() => {
-            return props.icon && props.icon.indexOf(":") !== -1;
+            return props.icon !== undefined && props.icon.indexOf(":") !== -1;
         });
 
         const vField = inject(useVFieldSymbol, {
@@ -129,6 +129,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+@import "bulma/sass/utilities/_all";
+
 .control {
     &.is-nogrow {
         flex-grow: 0 !important;
@@ -164,6 +166,24 @@ export default defineComponent({
 
         > .textarea {
             padding-left: 38px;
+        }
+
+        > .form-icon {
+            > .icon {
+                color: $grey-dark;
+            }
+        }
+    }
+}
+
+.is-dark {
+    .control {
+        &.has-icon {
+            > .form-icon {
+                > .icon {
+                    color: $grey-light;
+                }
+            }
         }
     }
 }

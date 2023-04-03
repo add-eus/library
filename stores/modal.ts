@@ -106,7 +106,7 @@ export const useModal = defineStore("modal", () => {
         });
     }
 
-    async function createModal(component: any, options: any) {
+    function createModal(component: any, options: any) {
         const modal = new Modal(component, options);
         const vNode = initialize(ModalComponent, { modal: modal });
 

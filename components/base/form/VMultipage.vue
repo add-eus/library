@@ -28,7 +28,8 @@ watch(tabSelected, () => {
 </script>
 
 <template>
-    <VTabs v-if="props.mode === 'tabs'" v-model="tabSelected" :tabs="tabs"> </VTabs>
+    <VTabs v-if="props.mode === 'tabs'" v-model="tabSelected" :tabs="tabs" class="mb-4">
+    </VTabs>
     <VWizard
         :ref="(ref: any) => (wizardRef = ref)"
         :model-value="props.modelValue"
