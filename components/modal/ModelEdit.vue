@@ -82,16 +82,16 @@ async function beforeUpdate({ onEnd }: { onEnd: () => void }) {
 }
 
 async function created({ onEnd }: { onEnd: () => void }) {
-    if (typeof events.onBeforeCreate === "function") {
-        await events.onBeforeCreate(props.entity);
+    if (typeof events.onCreate === "function") {
+        await events.onCreate(props.entity);
     }
     onEnd();
     successReason.value = props.entity;
 }
 
 async function updated({ onEnd }: { onEnd: () => void }) {
-    if (typeof events.onBeforeCreate === "function") {
-        await events.onBeforeCreate(props.entity);
+    if (typeof events.onEdit === "function") {
+        await events.onEdit(props.entity);
     }
     onEnd();
     successReason.value = props.entity;

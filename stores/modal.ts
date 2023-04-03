@@ -46,78 +46,81 @@ export class Modal {
 
 export const useModal = defineStore("modal", () => {
     const { initialize, destroy } = useComponent();
-    return {
-        async prompt(
-            titleArg: string,
-            subTitleArg: string,
-            messageArg: string,
-            cancelArg: string,
-            confirmArg: string,
-            confirmColorArg: string = "primary"
-        ) {
-            const cancelReason = ref<any>(null);
-            const successReason = ref<any>(null);
+    async function prompt(
+        titleArg: string,
+        subTitleArg: string,
+        messageArg: string,
+        cancelArg: string,
+        confirmArg: string,
+        confirmColorArg: string = "primary"
+    ) {
+        const cancelReason = ref<any>(null);
+        const successReason = ref<any>(null);
 
-            const modal = useModal().createModal(PromptComponent, {
-                title: titleArg,
-                props: {
-                    subTitle: subTitleArg,
-                    message: messageArg,
+        const modal = createModal(PromptComponent, {
+            title: titleArg,
+            props: {
+                subTitle: subTitleArg,
+                message: messageArg,
+            },
+            actions: [
+                {
+                    component: VButton,
+                    content: cancelArg,
+                    props: {},
+                    events: {
+                        click() {
+                            cancelReason.value = "closed";
+                            modal.close();
+                        },
+                    },
                 },
-                actions: [
-                    {
-                        component: VButton,
-                        content: cancelArg,
-                        props: {},
-                        events: {
-                            click() {
-                                cancelReason.value = "closed";
-                                modal.close();
-                            },
+                {
+                    component: VButton,
+                    content: confirmArg,
+                    props: {
+                        color: confirmColorArg,
+                    },
+                    events: {
+                        click() {
+                            successReason.value = "success";
+                            modal.close();
                         },
                     },
-                    {
-                        component: VButton,
-                        content: confirmArg,
-                        props: {
-                            color: confirmColorArg,
-                        },
-                        events: {
-                            click() {
-                                successReason.value = "success";
-                                modal.close();
-                            },
-                        },
-                    },
-                ],
-            });
+                },
+            ],
+        });
 
-            return new Promise((resolve, reject) => {
-                until(cancelReason)
-                    .not.toBe(null)
-                    .then(() => {
-                        reject(cancelReason.value);
-                    });
-
-                until(successReason)
-                    .not.toBeNull()
-                    .then(() => {
-                        resolve(successReason.value);
-                    });
-            });
-        },
-
-        createModal(component: any, options: any) {
-            const modal = new Modal(component, options);
-            const vNode = initialize(ModalComponent, { modal: modal });
-
-            void until(modal.isClosed)
-                .toBe(true)
+        return new Promise((resolve, reject) => {
+            until(cancelReason)
+                .not.toBe(null)
                 .then(() => {
-                    destroy(vNode);
+                    reject(cancelReason.value);
                 });
-            return modal;
-        },
+
+            until(successReason)
+                .not.toBeNull()
+                .then(() => {
+                    resolve(successReason.value);
+                });
+        });
+    }
+
+    async function createModal(component: any, options: any) {
+        const modal = new Modal(component, options);
+        const vNode = initialize(ModalComponent, { modal: modal });
+
+        void until(modal.isClosed)
+            .toBe(true)
+            .then(() => {
+                destroy(vNode);
+            });
+        return modal;
+    }
+
+    return {
+        prompt,
+        createModal,
     };
 });
 

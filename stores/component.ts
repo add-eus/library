@@ -1,5 +1,5 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
-import type { Component, VNode } from "vue";
+import type { Component, RendererNode, VNode } from "vue";
 import { render, createVNode, getCurrentInstance } from "vue";
 
 export const useComponent = defineStore("component", () => {
@@ -10,10 +10,14 @@ export const useComponent = defineStore("component", () => {
         initialize(
             component: Component,
             props: any,
-            container: Element = document.body
+            container?: RendererNode | undefined
         ): VNode {
+            if (container === undefined && instance.vnode.el !== null)
+                container = instance.vnode.el;
+            else if (container === undefined) container = document.body;
             const vnode: VNode = createVNode(component, props);
             vnode.appContext = instance.appContext;
+
             const parent = container.appendChild(document.createElement("div"));
             render(vnode, parent);
             return vnode;
