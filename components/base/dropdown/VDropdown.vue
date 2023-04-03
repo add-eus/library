@@ -142,7 +142,7 @@ onMounted(() => {
 .dropdown-menu {
     display: block !important;
     position: absolute;
-    z-index: 100;
+    z-index: 100 !important;
 
     > .dropdown-content {
         > .dropdown-item {
