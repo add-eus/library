@@ -165,8 +165,8 @@ function toggle(value: string) {
 
             &.is-active {
                 a {
-                    background: $primary;
-                    border-color: $primary;
+                    background: $primary !important;
+                    border-color: $primary !important;
 
                     &:hover,
                     &:focus {
@@ -188,13 +188,13 @@ function toggle(value: string) {
     li {
         &.is-active {
             a {
-                border-bottom-color: $primary;
-                color: $primary;
+                border-bottom-color: $primary !important;
+                color: $primary !important;
 
                 &:hover,
                 &:focus {
-                    border-bottom-color: $primary;
-                    color: $primary;
+                    border-bottom-color: $primary !important;
+                    color: $primary !important;
                 }
             }
         }
