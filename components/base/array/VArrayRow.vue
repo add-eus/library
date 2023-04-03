@@ -4,6 +4,7 @@ import { ref } from "vue";
 export interface VArrayRowProps {
     value: any;
     opened?: boolean;
+    canOpen: boolean;
 }
 
 export interface VArrayRowEmits {
@@ -14,6 +15,7 @@ export interface VArrayRowEmits {
 
 const props = withDefaults(defineProps<VArrayRowProps>(), {
     opened: false,
+    canOpen: true,
 });
 defineEmits<VArrayRowEmits>();
 
@@ -54,6 +56,7 @@ function update() {}
 
             <VFlex flex-direction="column" align-items="center" row-gap="2px">
                 <VIconButton
+                    v-if="canOpen"
                     :icon="collapsed ? 'unfold_more' : 'unfold_less'"
                     color="info"
                     light

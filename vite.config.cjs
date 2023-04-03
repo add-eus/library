@@ -1,5 +1,6 @@
 const { defineConfig, loadEnv } = require("vite");
 const path = require("path");
+const os = require("os");
 const Vue = require("@vitejs/plugin-vue");
 const { default: Pages } = require("vite-plugin-pages");
 const Components = require("unplugin-vue-components/vite");
@@ -7,8 +8,6 @@ const { default: ViteFonts } = require("vite-plugin-fonts");
 const { default: dynamicImport } = require("vite-plugin-dynamic-import");
 const { imagetools } = require("vite-imagetools");
 const ImageMin = require("vite-plugin-imagemin");
-// const  Firebase  = require( "@mallanic/vite-plugin-firebase");
-// import Track2MaxDocumentation from './vite-plugin-vuero-doc/index'
 const vueI18n = require("@intlify/unplugin-vue-i18n/vite");
 const { VitePWA } = require("vite-plugin-pwa");
 const { createHtmlPlugin } = require("vite-plugin-html");
@@ -20,6 +19,16 @@ const {
 
 const SILENT = Boolean(process.env.SILENT) ?? false;
 const DEV = process.env.NODE_ENV === "development" || false;
+
+const localDependencies = Object.keys(
+    require("./package.json").dependencies ?? []
+).filter(
+    (dependency) =>
+        dependency !== "bulma" &&
+        dependency !== "material-icons" &&
+        dependency !== "firebase" &&
+        dependency !== "addeus-common-library"
+);
 
 /**
  * This is the main configuration file for vitejs
@@ -34,7 +43,8 @@ module.exports.define = function (config = {}) {
     );
     const rootDir = path.join(currentDir, "src");
     const publicDir = path.join(currentDir, "public");
-    const cacheDir = "/tmp/.vite/";
+    const cacheDir = path.join(currentDir, "node_modules/.vite");
+    //const cacheDir = path.join(os.tmpdir(), config.output);
 
     // Load app-level env vars to node-level env vars.
     process.env = {
@@ -54,20 +64,37 @@ module.exports.define = function (config = {}) {
             mode: DEV ? "development" : "production",
             base: process.env.BASE_PATH !== undefined ? process.env.BASE_PATH : "/",
             // Directory to serve as plain static assets.
-            publicDir: publicDir,
+            publicDir,
             // Adjust console output verbosity.
             logLevel: SILENT ? "error" : "info",
             clearScreen: false,
             cacheDir: cacheDir,
-            /**
-             * By default, Vite will crawl your index.html to detect dependencies that
-             * need to be pre-bundled. If build.rollupOptions.input is specified,
-             * Vite will crawl those entry points instead.
-             *
-             * @see https://vitejs.dev/config/#optimizedeps-entries
-             */
 
+            css: {
+                devSourcemap: DEV,
+                preprocessorOptions: {
+                    scss: {
+                        additionalData: `
+                            $primary: hsl(84deg 64% 44%);
+                            $background: #f9f9f9;
+                            $dark: hsl(240deg 4% 14%);
+                        `,
+                    },
+                },
+            },
+            optimizeDeps: {
+                include: localDependencies,
+                exclude: [
+                    "~pages",
+                    "@intlify/unplugin-vue-i18n/messages",
+                    "firebase",
+                    "bulma",
+                    "addeus-common-library",
+                ],
+            },
             resolve: {
+                //dedupe: localDependencies,
+                //preserveSymlinks: true,
                 alias: [
                     {
                         find: "/@src",
@@ -78,10 +105,10 @@ module.exports.define = function (config = {}) {
             build: {
                 minify: !DEV ? "esbuild" : false,
                 reportCompressedSize: !DEV,
-                sourcemap: DEV,
+                sourcemap: !DEV,
                 outDir: outDir,
                 emptyOutDir: true,
-                chunkSizeWarningLimit: 3000,
+                //chunkSizeWarningLimit: 3000,
                 rollupOptions: {
                     // manualChunks(id) {
                     //     if (id.includes("node_modules")) {
@@ -138,21 +165,7 @@ module.exports.define = function (config = {}) {
                     timeout: 100,
                 },
             },
-            css: {
-                devSourcemap: DEV,
-                preprocessorOptions: {
-                    scss: {
-                        additionalData: `
-                            $primary: hsl(84deg 64% 44%);
-                            $background: #f9f9f9;
-                            $dark: hsl(240deg 4% 14%);
-                        `,
-                    },
-                },
-            },
-            optimizeDeps: {
-                exclude: ["~pages", "@intlify/unplugin-vue-i18n/messages"],
-            },
+
             plugins: [
                 // tsPlugin({
                 //     // cwd: rootDir,
@@ -275,7 +288,17 @@ module.exports.define = function (config = {}) {
                     dts: "components.d.ts",
                     deep: true,
                     allowOverrides: true,
-                    include: [/\.vue$/, /\.vue\?vue/, /\.ts$/],
+                    include: [
+                        /\.vue$/,
+                        /\.vue\?vue/,
+                        /\.ts$/,
+                        /[\\/]node_modules[\\/]addeus-common-library[\\/]/,
+                    ],
+                    exclude: [
+                        /[\\/]node_modules[\\/](?!addeus-common-library[\\/])/,
+                        /[\\/]\.git[\\/]/,
+                        /[\\/]\.nuxt[\\/]/,
+                    ],
                     version: 3,
                 }),
 
