@@ -15,6 +15,7 @@ export interface VFieldModelProps {
     icon?: string;
     options?: any;
     labelAttr?: any;
+    label?: string;
 }
 
 const { translate } = useTranslate();
@@ -139,7 +140,7 @@ if (input.value.type === "select" || input.value.type === "radio") {
         :schema="schema">
         <VField
             v-slot="{ id }"
-            :label="'.' + property + '.label'"
+            :label="label !== undefined ? label : '.' + property + '.label'"
             :label-attr="labelAttr || modelValue">
             <VControl :has-error="field.errors.length > 0" :icon="icon">
                 <slot :field="field">
