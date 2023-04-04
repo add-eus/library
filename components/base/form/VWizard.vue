@@ -101,7 +101,7 @@ defineExpose({ nextStep, previousStep, setStep });
                 </VValidation>
             </div>
         </VFlexItem>
-        <VFlexItem v-if="!props.hideSteps">
+        <VFlexItem v-if="!props.hideSteps" class="wizard-column">
             <div class="wizard">
                 <div
                     v-for="i in props.steps.length"
@@ -138,9 +138,13 @@ defineExpose({ nextStep, previousStep, setStep });
 <style lang="scss" scoped>
 @import "bulma/sass/utilities/all";
 
+.wizard-column {
+    width: 10rem;
+}
+
 .wizard {
     margin-left: 30px;
-    position: relative;
+    position: fixed;
 
     .v-line {
         width: 1px;
