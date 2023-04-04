@@ -8,7 +8,7 @@ export interface VInputPercentProps {
     modelValue?: any;
 }
 
-const transformToPercentage = (v: number): string => (v * 100).toFixed(3);
+const transformToPercentage = (v: number): string => (v * 100).toFixed(2);
 const transformToDecimal = (v: string) => Number.parseFloat(v) / 100;
 
 const emits = defineEmits<VInputPercentEmits>();
