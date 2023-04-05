@@ -74,11 +74,7 @@ module.exports.define = function (config = {}) {
                 devSourcemap: DEV,
                 preprocessorOptions: {
                     scss: {
-                        additionalData: `
-                            $primary: hsl(84deg 64% 44%);
-                            $background: #f9f9f9;
-                            $dark: hsl(240deg 4% 14%);
-                        `,
+                        additionalData: config.additionalScss,
                     },
                 },
             },
@@ -331,6 +327,14 @@ module.exports.define = function (config = {}) {
                                 styles: "wght@300;400;500;600;700",
                             },
                         ],
+                    },
+                    // Custom fonts.
+                    custom: {
+                        families: config.customFonts,
+                        display: "auto",
+                        preload: true,
+                        prefetch: false,
+                        injectTo: "head-prepend",
                     },
                 }),
 
