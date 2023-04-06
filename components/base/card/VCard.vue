@@ -41,14 +41,17 @@ defineExpose({
 <template>
     <div
         ref="$el"
-        :class="[cardRadius, elevated && 'is-raised', props.color && `is-${props.color}`]"
-    >
+        :class="[
+            cardRadius,
+            elevated && 'is-raised',
+            props.color && `is-${props.color}`,
+        ]">
         <slot></slot>
     </div>
 </template>
 
 <style lang="scss">
-/*! _cards.scss | Jarveat | Css ninja 2020-2021 */
+/*! _cards.scss | Addeus | Css ninja 2020-2021 */
 
 @import "../../../scss/abstracts/mixins";
 @import "../../../scss/css-variables/all";

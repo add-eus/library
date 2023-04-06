@@ -131,7 +131,7 @@ function toggle(value: string) {
 <style lang="scss">
 @import "bulma/sass/utilities/all";
 
-/*! _tabs.scss | Jarveat | Css ninja 2020-2021 */
+/*! _tabs.scss | Addeus | Css ninja 2020-2021 */
 
 /*
     1. Tabs

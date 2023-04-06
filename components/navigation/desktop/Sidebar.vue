@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import type { RouteLocation } from "vue-router";
 
 export type SidebarTheme =
     | "default"
@@ -14,9 +15,13 @@ const props = withDefaults(
     defineProps<{
         theme?: SidebarTheme;
         isOpen?: boolean;
+        rootPage?: RouteLocation;
     }>(),
     {
         theme: "default",
+        rootPage: {
+            name: "dashboard",
+        },
     }
 );
 
@@ -43,7 +48,7 @@ const themeClasses = computed(() => {
 <template>
     <div class="main-sidebar" :class="[themeClasses]">
         <div class="sidebar-brand">
-            <RouterLink :to="{ name: 'settings' }">
+            <RouterLink :to="rootPage">
                 <slot name="logo"></slot>
                 <!--img src="/logo.svg" alt="" width="36px" /-->
             </RouterLink>

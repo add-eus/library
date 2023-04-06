@@ -145,7 +145,7 @@ function hasRole(route) {
                 </template>
             </MobileSidebar>
 
-            <Sidebar :theme="props.theme" :is-open="isDesktopSidebarOpen">
+            <Sidebar :theme="props.theme" :is-open="isDesktopSidebarOpen" :root-page="{name: "dashboard"}">
                 <template #logo>
                     <slot name="logo"></slot>
                 </template>

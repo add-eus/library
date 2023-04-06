@@ -274,7 +274,7 @@ if (isReactive(props.options)) {
             label {
                 display: block;
                 position: relative;
-                font-family: var(--font);
+                font-family: $family-primary;
                 font-weight: 400;
                 font-size: 0.9rem;
                 color: var(--light-text);
@@ -335,7 +335,7 @@ if (isReactive(props.options)) {
             }
 
             input {
-                font-family: var(--font);
+                font-family: $family-primary;
                 font-size: 1rem;
                 background: var(--white);
                 border: 1px solid var(--border);
@@ -389,7 +389,7 @@ if (isReactive(props.options)) {
             }
 
             td {
-                font-family: var(--font);
+                font-family: $family-primary;
                 vertical-align: middle;
                 padding: 12px 20px;
                 border-bottom: 1px solid var(--fade-grey);
@@ -419,7 +419,7 @@ if (isReactive(props.options)) {
                         display: block;
                         font-size: 0.8rem;
                         color: var(--light-text);
-                        font-family: var(--font);
+                        font-family: $family-primary;
 
                         &:first-child {
                             font-family: var(--font-alt);
@@ -532,7 +532,7 @@ if (isReactive(props.options)) {
                 }
 
                 span {
-                    font-family: var(--font);
+                    font-family: $family-primary;
                     font-size: 0.9rem;
                     color: var(--light-text);
                 }
@@ -542,7 +542,7 @@ if (isReactive(props.options)) {
 
     .dataTable-bottom {
         .dataTable-info {
-            font-family: var(--font);
+            font-family: $family-primary;
             font-size: 0.9rem;
             color: var(--light-text);
         }
@@ -567,7 +567,7 @@ if (isReactive(props.options)) {
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    font-family: var(--font);
+                    font-family: $family-primary;
                     color: var(--light-text);
                     border-radius: var(--radius-rounded);
                     min-width: 34px;

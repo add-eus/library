@@ -120,11 +120,11 @@ watchEffect(() => {
             border-color: var(--dark-sidebar-light-10) !important;
             background-color: var(--dark-sidebar-dark-2) !important;
             color: #fffdfd !important;
-            font-family: var(--font) !important;
+            font-family: $family-primary !important;
             font-weight: 400 !important;
 
             span {
-                font-family: var(--font) !important;
+                font-family: $family-primary !important;
                 font-weight: 400 !important;
                 color: #fffdfd !important;
             }

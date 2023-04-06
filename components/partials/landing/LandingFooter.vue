@@ -4,15 +4,14 @@
             <div class="footer-head">
                 <div class="head-text">
                     <h3>Ready to get started?</h3>
-                    <p>Get your Jarveat copy now</p>
+                    <p>Get your Addeus copy now</p>
                 </div>
                 <div class="head-action">
                     <div class="buttons">
                         <a
                             href="https://themeforest.net/item/vuero-vuejs-3-admin-and-webapp-ui-kit/31053035"
-                            class="button v-button is-primary is-rounded raised action-button"
-                        >
-                            Buy Jarveat
+                            class="button v-button is-primary is-rounded raised action-button">
+                            Buy Addeus
                         </a>
                         <a href="https://cssninja.io" class="button chat-button">
                             Chat with us
@@ -27,7 +26,7 @@
                         <AnimatedLogo width="36px" height="36px" />
 
                         <div class="footer-description p-t-10 p-b-10">
-                            Jarveat is built for developers and designers. It's modular
+                            Addeus is built for developers and designers. It's modular
                             approach lets you create awesome navbars with incredible
                             layouts and elements.
                         </div>
@@ -73,7 +72,7 @@
                         <!-- Column -->
                         <div class="column">
                             <ul class="footer-column">
-                                <li class="column-header">Jarveat</li>
+                                <li class="column-header">Addeus</li>
                                 <li class="column-item"><a href="#">Home</a></li>
                                 <li class="column-item"><a href="#">Pricing</a></li>
                                 <li class="column-item"><a href="#">Get started</a></li>

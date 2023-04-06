@@ -4,7 +4,7 @@
             <!--Title-->
             <div class="section-title has-text-centered">
                 <h2 class="title is-2">Impecable UI/UX</h2>
-                <h4>Jarveat has been carefully handcrafted.</h4>
+                <h4>Addeus has been carefully handcrafted.</h4>
             </div>
 
             <div class="centered-mockup-wrapper">
@@ -13,33 +13,27 @@
                     <img
                         class="hexagon hexagon-1 light-image-l"
                         src="/images/icons/hexagons/green.svg"
-                        alt=""
-                    />
+                        alt="" />
                     <img
                         class="hexagon hexagon-1 dark-image-l"
                         src="/images/icons/hexagons/green-heavy.svg"
-                        alt=""
-                    />
+                        alt="" />
                     <img
                         class="hexagon hexagon-2 light-image-l"
                         src="/images/icons/hexagons/orange.svg"
-                        alt=""
-                    />
+                        alt="" />
                     <img
                         class="hexagon hexagon-2 dark-image-l"
                         src="/images/icons/hexagons/orange-heavy.svg"
-                        alt=""
-                    />
+                        alt="" />
                     <img
                         class="hexagon hexagon-3 light-image-l"
                         src="/images/icons/hexagons/accent.svg"
-                        alt=""
-                    />
+                        alt="" />
                     <img
                         class="hexagon hexagon-3 dark-image-l"
                         src="/images/icons/hexagons/accent-heavy.svg"
-                        alt=""
-                    />
+                        alt="" />
 
                     <!--Mockup-->
                     <!--img
@@ -94,8 +88,7 @@
                                     'The Progressive JavaScript Framework for building user interfaces.',
                                 homepage: 'https://v3.vuejs.org/',
                                 github: 'https://github.com/vuejs/vue-next',
-                            }"
-                        />
+                            }" />
                     </template>
                 </Tippy>
 
@@ -113,8 +106,7 @@
                                     'Vite is a new breed of frontend build tool that significantly improves the frontend development experience.',
                                 homepage: 'https://vitejs.dev/',
                                 github: 'https://github.com/vitejs/vite',
-                            }"
-                        />
+                            }" />
                     </template>
                 </Tippy>
 
@@ -132,8 +124,7 @@
                                     'Bulma is a free, open source framework that provides ready-to-use frontend components.',
                                 homepage: 'https://bulma.io/',
                                 github: 'https://github.com/jgthms/bulma',
-                            }"
-                        />
+                            }" />
                     </template>
                 </Tippy>
 
@@ -151,8 +142,7 @@
                                     'Sass is an extension of CSS, adding nested rules, variables, mixins, selector inheritance, and more.',
                                 homepage: 'https://sass-lang.com/',
                                 github: 'https://github.com/sass/sass',
-                            }"
-                        />
+                            }" />
                     </template>
                 </Tippy>
 
@@ -170,8 +160,7 @@
                                     'TypeScript adds optional types to JavaScript that support tools for large-scale JavaScript applications.',
                                 homepage: 'https://www.typescriptlang.org/',
                                 github: 'https://github.com/microsoft/TypeScript',
-                            }"
-                        />
+                            }" />
                     </template>
                 </Tippy>
             </div>

@@ -4,7 +4,7 @@
             <!--Title-->
             <div class="section-title has-text-centered py-6">
                 <h2 class="title is-2">Awesome Features</h2>
-                <h4>Jarveat has been carefully handcrafted.</h4>
+                <h4>Addeus has been carefully handcrafted.</h4>
             </div>
 
             <!--Content-->
@@ -17,8 +17,7 @@
                                 <VIconBox size="medium" color="blue">
                                     <i
                                         aria-hidden="true"
-                                        class="lnil lnil-layout-alt-2"
-                                    ></i>
+                                        class="lnil lnil-layout-alt-2"></i>
                                 </VIconBox>
 
                                 <h4 class="title is-5">Nice Vectors</h4>
@@ -116,8 +115,7 @@
                                 <VIconBox size="medium" color="orange">
                                     <i
                                         aria-hidden="true"
-                                        class="lnil lnil-folder-alt"
-                                    ></i>
+                                        class="lnil lnil-folder-alt"></i>
                                 </VIconBox>
 
                                 <h4 class="title is-5">Icon title</h4>
@@ -151,8 +149,7 @@
                                 <VIconBox size="medium" color="blue">
                                     <i
                                         aria-hidden="true"
-                                        class="lnil lnil-pie-chart-alt"
-                                    ></i>
+                                        class="lnil lnil-pie-chart-alt"></i>
                                 </VIconBox>
 
                                 <h4 class="title is-5">Icon title</h4>
@@ -217,7 +214,7 @@
                 <div class="cta-block no-border">
                     <div class="head-text">
                         <h3>Want to learn more?</h3>
-                        <p>Check out the Jarveat documentation</p>
+                        <p>Check out the Addeus documentation</p>
                     </div>
                     <div class="head-action">
                         <div class="buttons">
@@ -226,16 +223,14 @@
                                 color="primary"
                                 rounded
                                 elevated
-                                href="https://docs.cssninja.io/vuero"
-                            >
+                                href="https://docs.cssninja.io/vuero">
                                 Read the Docs
                             </VButton>
                             <a
                                 href="https://cssninja.io"
                                 target="_blank"
                                 rel="noopener"
-                                class="button chat-button is-secondary"
-                            >
+                                class="button chat-button is-secondary">
                                 Chat with us
                             </a>
                         </div>
