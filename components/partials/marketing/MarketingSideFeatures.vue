@@ -4,7 +4,7 @@
             <!--Title-->
             <div class="section-title has-text-centered">
                 <h2 class="title is-2">Top Tier Product</h2>
-                <h4>Jarveat has been carefully handcrafted.</h4>
+                <h4>Addeus has been carefully handcrafted.</h4>
             </div>
 
             <!-- Feature -->
@@ -26,17 +26,16 @@
                         Incredible UI
                     </h2>
                     <p class="section-feature-description is-centered-tablet-portrait">
-                        Jarveat's UI has been carefully thought and designed, and is
-                        simply one of the best you'll find on the market. It's visual
-                        power and its modularity will let you build great apps seamlessly.
+                        Addeus's UI has been carefully thought and designed, and is simply
+                        one of the best you'll find on the market. It's visual power and
+                        its modularity will let you build great apps seamlessly.
                     </p>
                 </div>
             </div>
             <!-- Feature -->
             <div class="columns is-vcentered side-feature">
                 <div
-                    class="column is-6 has-text-centered h-hidden-desktop h-hidden-tablet-p h-hidden-tablet-l"
-                >
+                    class="column is-6 has-text-centered h-hidden-desktop h-hidden-tablet-p h-hidden-tablet-l">
                     <!--img
                         class="light-image-l featured-image"
                         src="/@src/assets/illustrations/landing/feature-2.svg"
@@ -53,7 +52,7 @@
                         Playful Vectors
                     </h2>
                     <p class="section-feature-description is-centered-tablet-portrait">
-                        Jarveat ships with a lot of svg illustrations representing various
+                        Addeus ships with a lot of svg illustrations representing various
                         elements that can be used in a website, following very high
                         quality standards.
                     </p>
@@ -90,9 +89,9 @@
                         Handcrafted UI
                     </h2>
                     <p class="section-feature-description is-centered-tablet-portrait">
-                        Jarveat ships with it's own component library based on the
-                        Bulma.io CSS framework. Each component has been carefully
-                        handcrafted and natively supports dark mode.
+                        Addeus ships with it's own component library based on the Bulma.io
+                        CSS framework. Each component has been carefully handcrafted and
+                        natively supports dark mode.
                     </p>
                 </div>
             </div>
@@ -101,7 +100,7 @@
             <div class="cta-block no-border">
                 <div class="head-text">
                     <h3>Want to learn more?</h3>
-                    <p>Check out the Jarveat documentation</p>
+                    <p>Check out the Addeus documentation</p>
                 </div>
                 <div class="head-action">
                     <div class="buttons">
@@ -110,16 +109,14 @@
                             color="primary"
                             rounded
                             elevated
-                            href="https://docs.cssninja.io/vuero"
-                        >
+                            href="https://docs.cssninja.io/vuero">
                             Read the Docs
                         </VButton>
                         <a
                             href="https://cssninja.io"
                             target="_blank"
                             rel="noopener"
-                            class="button chat-button is-secondary"
-                        >
+                            class="button chat-button is-secondary">
                             Chat with us
                         </a>
                     </div>

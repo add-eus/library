@@ -7,17 +7,12 @@ import type { Functions } from "firebase/functions";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 import type { FirebaseStorage } from "firebase/storage";
 import { getStorage, connectStorageEmulator } from "firebase/storage";
-import type { Analytics } from "firebase/analytics";
 import { getAnalytics } from "firebase/analytics";
-import type { FirebasePerformance } from "firebase/performance";
 import { getPerformance } from "firebase/performance";
 import type { Database } from "firebase/database";
 import { getDatabase, connectDatabaseEmulator } from "firebase/database";
-import type { FirebaseApp } from "firebase/app";
 import { initializeApp } from "firebase/app";
-import type { RemoteConfig } from "firebase/remote-config";
 import { getRemoteConfig, fetchAndActivate } from "firebase/remote-config";
-import type { AppCheck } from "firebase/app-check";
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
 
 function connectToEmulator(
@@ -86,23 +81,8 @@ function connectToEmulator(
     }
 }
 
-let providers:
-    | {
-          app: FirebaseApp;
-          remoteConfig: RemoteConfig;
-          auth: Auth;
-          database: Database;
-          firestore: Firestore;
-          functions: Functions;
-          storage: FirebaseStorage;
-          analytics: Analytics;
-          performance: FirebasePerformance;
-          check: AppCheck;
-      }
-    | undefined;
-
 export function useFirebase() {
-    if (providers === undefined) {
+    if (window.providers === undefined) {
         // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -138,7 +118,7 @@ export function useFirebase() {
             // tokens as needed.
             isTokenAutoRefreshEnabled: true,
         });
-        providers = {
+        window.providers = {
             app,
             remoteConfig,
             auth,
@@ -151,5 +131,5 @@ export function useFirebase() {
             check,
         };
     }
-    return providers;
+    return window.providers;
 }

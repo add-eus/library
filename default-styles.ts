@@ -14,4 +14,3 @@ import "v-tooltip/dist/v-tooltip.css";
 import "floating-vue/dist/style.css";
 import "vue-tel-input/dist/vue-tel-input.css";
 import "v-calendar/dist/style.css";
-import "material-icons/iconfont/material-icons.css";

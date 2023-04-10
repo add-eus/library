@@ -11,6 +11,8 @@ const props = defineProps<VIconProps>();
 </template>
 
 <style lang="scss">
+@import "material-icons/iconfont/material-icons.css";
+
 .material-icons-outlined {
     display: flex;
     align-items: center;

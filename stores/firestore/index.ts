@@ -133,6 +133,7 @@ export function useCollection<T extends typeof Entity>(
     if (isRef(options.wheres))
         watch(options.wheres, () => {
             wheres = transformWheres(options.wheres.value);
+
             // eslint-disable-next-line no-console
             fetch().catch(console.error);
         });

@@ -12,9 +12,12 @@ export const useComponent = defineStore("component", () => {
             props: any,
             container?: RendererNode | undefined
         ): VNode {
-            if (container === undefined && instance.vnode.el !== null)
+            if (container === undefined && instance.vnode.el !== null) {
                 container = instance.vnode.el;
-            else if (container === undefined) container = document.body;
+                if (container.nodeName === "#text") container = container.parentNode;
+            }
+
+            if (container === undefined) container = document.body;
             const vnode: VNode = createVNode(component, props);
             vnode.appContext = instance.appContext;
 
