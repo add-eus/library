@@ -1,5 +1,4 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
-import type { ComputedRef } from "vue";
 import { computed, ref } from "vue";
 import type {
     User as UserFirebase,
@@ -22,6 +21,7 @@ import {
     deleteUser,
     signOut,
 } from "firebase/auth";
+import { UserImpl } from "@firebase/auth/internal";
 
 import { useFirebase } from "addeus-common-library/stores/firebase";
 import { until } from "@vueuse/core";
@@ -37,7 +37,6 @@ export const useUserSession = defineStore("userSession", () => {
 
     const auth = firebase.auth;
     const user = ref<User | null>(null);
-    const users = ref([]);
 
     const isLoggedIn = computed(() => {
         return user.value !== null;
@@ -60,6 +59,14 @@ export const useUserSession = defineStore("userSession", () => {
         return user;
     }
 
+    function select(selectedUser: any) {
+        const userFormatted = UserImpl._fromJSON(auth, selectedUser);
+        if (user.value === null || user.value.uid !== userFormatted.uid) {
+            user.value = userFormatted;
+            void auth.updateCurrentUser(userFormatted);
+        }
+    }
+
     async function logout() {
         user.value = null;
         await signOut(auth);
@@ -80,7 +87,9 @@ export const useUserSession = defineStore("userSession", () => {
 
     async function deleteAccount() {
         if (!user.value) throw new Error("No User");
-        return deleteUser(user.value);
+        await deleteUser(user.value);
+        const index = users.value.findIndex((user) => user.uid === auth.currentUser.uid);
+        users.value.splice(index, 1);
     }
 
     async function sendPasswordReset(email?: string) {
@@ -168,8 +177,13 @@ export const useUserSession = defineStore("userSession", () => {
         }
     })();
 
-    const onUserChangeCallbacks: Function[] = [];
-    async function onUserChange(callback: Function) {
+    const onUserChangeCallbacks: ((
+        authUser: User | null,
+        customAttributes: null | any
+    ) => Promise<void>)[] = [];
+    async function onUserChange(
+        callback: (authUser: User | null, customAttributes: null | any) => Promise<void>
+    ) {
         if (isLoaded.value) {
             const authUser = auth.currentUser;
             if (
@@ -193,7 +207,7 @@ export const useUserSession = defineStore("userSession", () => {
 
     const onLogin = async function (authUser: User | null) {
         if (hasMagicLink.value) return;
-        if (!authUser) {
+        if (authUser === null) {
             isLoaded.value = true;
             await Promise.all(
                 onUserChangeCallbacks.map((onUserChangeCallback) => {
@@ -203,7 +217,8 @@ export const useUserSession = defineStore("userSession", () => {
             return;
         }
 
-        if (authUser.reloadUserInfo === undefined) await reload(authUser);
+        if (authUser.reloadUserInfo === null) await reload(authUser);
+
         const customAttributes = JSON.parse(
             authUser.reloadUserInfo.customAttributes !== undefined
                 ? authUser.reloadUserInfo.customAttributes
@@ -217,14 +232,8 @@ export const useUserSession = defineStore("userSession", () => {
             })
         );
 
-        if (
-            customAttributes.owners === undefined ||
-            Object.keys(customAttributes.owners).length <= 0
-        ) {
-            if (!isLoaded.value) {
-                isLoaded.value = true;
-            }
-            return;
+        if (!isLoaded.value) {
+            isLoaded.value = true;
         }
     };
     // auth.onIdTokenChanged(onLogin);
@@ -232,7 +241,6 @@ export const useUserSession = defineStore("userSession", () => {
 
     return {
         user,
-        users,
         onUserChange,
         hasPermission,
         configurePermissionManagement,
@@ -241,6 +249,7 @@ export const useUserSession = defineStore("userSession", () => {
         isLoggedIn,
         loading,
         login,
+        select,
         logout,
         loginOrRegisterWithPhoneNumber,
         setLoading,
