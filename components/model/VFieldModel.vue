@@ -129,6 +129,12 @@ if (input.value.type === "select" || input.value.type === "radio") {
         }
     }
 }
+if (input.value.type === "file" && input.value.attrs.multiple === true) {
+    schema = yup.array(schema);
+    if (input.value.attrs.required === true) {
+        schema = schema.min(1, `.${props.property}.validation.required`);
+    }
+}
 </script>
 
 <template>
@@ -252,6 +258,7 @@ if (input.value.type === "select" || input.value.type === "radio") {
                         v-model="field.value"
                         :name="property"
                         :is-uploading="isProcessing"
+                        :multiple="input.attrs.multiple"
                         :storage-path="modelValue.$getModelName()"
                         @processing="isProcessing = true"
                         @end-processing="isProcessing = false" />
