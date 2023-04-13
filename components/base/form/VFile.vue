@@ -97,10 +97,9 @@ async function process(fieldName, file, metadata, loadFile) {
             loadFile(path);
             skipNextFile = false;
         } else {
-            pond.value.removeFiles();
-            const newFile = await pond.value.addFile(blob);
-            loadFile(newFile);
+            pond.value.removeFile(pond.value.getFiles()[0].id);
             skipNextFile = true;
+            pond.value.addFile(blob);
         }
         emit("endProcessing");
         if (field !== undefined) field.isProcessing = false;
