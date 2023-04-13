@@ -136,8 +136,7 @@ watch(() => props.filters, fetch);
         :data="entities"
         use-infinite-scroll
         @update:infinite-scroll="onInfiniteScroll"
-        @update:sort="onSort"
-    >
+        @update:sort="onSort">
         <template #default>
             <slot :entities="entities" :create="create">
                 <!-- 
@@ -155,8 +154,7 @@ watch(() => props.filters, fetch);
                                     v-model="searchInput"
                                     :placeholder="'.filter'"
                                     rounded
-                                    type="text"
-                                />
+                                    type="text" />
                             </VControl>
                         </VField>
                     </template>
@@ -171,8 +169,7 @@ watch(() => props.filters, fetch);
                                             color="primary"
                                             icon="add"
                                             light
-                                            @click="create()"
-                                        >
+                                            @click="create()">
                                             <Translate path=".add"></Translate>
                                         </VButton>
                                     </VPermission>
@@ -191,8 +188,7 @@ watch(() => props.filters, fetch);
                         <!-- This is the empty state -->
                         <div
                             v-if="entities.length === 0 && !entities.isUpdating"
-                            class="flex-list-inner"
-                        >
+                            class="flex-list-inner">
                             <TranslateNamespace path=".empty">
                                 <VPlaceholderSection class="my-6">
                                     <template #title>
@@ -219,8 +215,7 @@ watch(() => props.filters, fetch);
                                         };
                                     })
                                 "
-                                size="medium"
-                            />
+                                size="medium" />
                         </template>
                         <template v-else-if="column.key === 'action'">
                             <TranslateNamespace path=".action">
@@ -230,14 +225,12 @@ watch(() => props.filters, fetch);
                                             icon="more_vert"
                                             class="is-pushed-mobile"
                                             spaced
-                                            right
-                                        >
+                                            right>
                                             <template #content="{ close }">
                                                 <slot
                                                     name="actionButtons"
                                                     :row="row"
-                                                    :close="close"
-                                                ></slot>
+                                                    :close="close"></slot>
                                                 <VDropdownItem
                                                     icon="edit"
                                                     @click.prevent="
@@ -245,8 +238,7 @@ watch(() => props.filters, fetch);
                                                             row.$edit();
                                                             close();
                                                         }
-                                                    "
-                                                >
+                                                    ">
                                                     <Translate path=".edit"></Translate>
                                                 </VDropdownItem>
 
@@ -257,8 +249,7 @@ watch(() => props.filters, fetch);
                                                             row.$promptAndDelete();
                                                             close();
                                                         }
-                                                    "
-                                                >
+                                                    ">
                                                     <Translate path=".remove"></Translate>
                                                 </VDropdownItem>
                                             </template>
@@ -273,15 +264,21 @@ watch(() => props.filters, fetch);
                                 name="cell-body"
                                 :title="row[column.key]"
                                 :column="column"
-                                :entity="row"
-                            >
-                                <div>
-                                    {{
-                                        column.format
-                                            ? column.format(row[column.key], row)
-                                            : row[column.key]
-                                    }}
-                                </div>
+                                :entity="row">
+                                <slot
+                                    :ref="row"
+                                    :name="`cell-body-${column.key}`"
+                                    :title="row[column.key]"
+                                    :column="column"
+                                    :entity="row">
+                                    <div>
+                                        {{
+                                            column.format
+                                                ? column.format(row[column.key], row)
+                                                : row[column.key]
+                                        }}
+                                    </div>
+                                </slot>
                             </slot>
                         </template>
                     </template>
