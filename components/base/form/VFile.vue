@@ -77,7 +77,7 @@ async function load(url, load) {
     }
 }
 let skipNextFile = false;
-async function process(fieldName, file, metadata, loadFile) {
+async function process(fieldName, file, metadata, loadFile, error) {
     if (!props.storagePath) {
         loadFile(file);
     } else {
@@ -97,15 +97,19 @@ async function process(fieldName, file, metadata, loadFile) {
             loadFile(path);
             skipNextFile = false;
         } else {
-            pond.value.removeFiles();
-            const newFile = await pond.value.addFile(blob);
-            loadFile(newFile);
+            error();
             skipNextFile = true;
+            pond.value.addFile(blob);
         }
         emit("endProcessing");
         if (field !== undefined) field.isProcessing = false;
     }
 }
+
+function error(e, file) {
+    if (file.id !== undefined) pond.value.removeFile(file.id);
+}
+
 async function remove(url, load) {
     if (field !== undefined) field.isProcessing = true;
     emit("processing");
@@ -201,6 +205,7 @@ function emitChangedEvent() {
         @processfile="fileUploaded"
         @removefile="fileReverted"
         @reorderfiles="reorderFiles"
+        @error="error"
         @addfile="fileAdd" />
 </template>
 
