@@ -16,11 +16,6 @@ const src = computedAsync(
     undefined,
     evaluating
 );
-let a = 0;
-setInterval(() => {
-    a++;
-    evaluating.value = a % 2 === 0;
-}, 1000);
 </script>
 <template>
     <Transition name="fade-fast">
