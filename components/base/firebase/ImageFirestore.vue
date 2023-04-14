@@ -16,10 +16,17 @@ const src = computedAsync(
     undefined,
     evaluating
 );
+let a = 0;
+setInterval(() => {
+    a++;
+    evaluating.value = a % 2 === 0;
+}, 1000);
 </script>
 <template>
-    <slot v-if="evaluating" name="loading">
-        <VPlaceload height="100%" width="100%"></VPlaceload
-    ></slot>
-    <img v-else :src="src" :alt="alt" />
+    <Transition name="fade-fast">
+        <slot v-if="evaluating" name="loading">
+            <VPlaceload height="100%" width="100%"></VPlaceload>
+        </slot>
+        <img v-else :src="src" :alt="alt" />
+    </Transition>
 </template>
