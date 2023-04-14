@@ -1,78 +1,27 @@
 <script setup lang="ts">
-import { watch, ref, onUnmounted } from "vue";
-import {} from "../../../stores/firebase";
 import { useStorage } from "../../../stores/storage";
+import { ref } from "vue";
+import { computedAsync } from "@vueuse/core";
 
-export type ImageFirestoreProps = {
-    path?: string | null;
-};
+interface FirebaseImageProps {
+    path: string;
+    alt: string;
+}
 
+const props = defineProps<FirebaseImageProps>();
 const storage = useStorage();
-
-const props = withDefaults(defineProps<ImageFirestoreProps>(), {
-    path: null,
-});
-let path = null;
-let image = ref(null);
-let currentBlobUrl: string;
-const isLoaded = ref(false);
-
-async function unsetUrlBlob() {}
-async function updatePath() {
-    try {
-        if (path === props.path) return false;
-
-        unsetUrlBlob();
-
-        if (props.path?.match("/")) {
-            image.value = props.path;
-        } else {
-            const blob = await storage.fetch(path);
-            currentBlobUrl = URL.createObjectURL(blob);
-            image.value = currentBlobUrl;
-        }
-
-        path = props.path;
-    } catch (err) {
-        image.value = `https://via.placeholder.com/100x100`;
-    }
-    isLoaded.value = true;
-
-    return true;
-}
-
-onUnmounted(unsetUrlBlob);
-updatePath();
-watch(() => props.path, updatePath);
+const evaluating = ref(false);
+const src = computedAsync(
+    async () => await storage.fetchAsDataUrl(props.path),
+    undefined,
+    evaluating
+);
 </script>
-
 <template>
-    <VPlaceload
-        :class="{ shown: !isLoaded }"
-        v-bind="$attrs"
-        height="100%"
-        width="100%"></VPlaceload>
-    <img alt="" :class="{ shown: isLoaded }" v-bind="$attrs" :src="image" />
+    <Transition name="fade-fast">
+        <slot v-if="evaluating" name="loading">
+            <VPlaceload height="100%" width="100%"></VPlaceload>
+        </slot>
+        <img v-else :src="src" :alt="alt" />
+    </Transition>
 </template>
-
-<style lang="scss" scoped>
-* {
-    transition: opacity 0.3s ease-in-out;
-
-    &.shown {
-        opacity: 1;
-    }
-
-    &:not(.shown) {
-        opacity: 0;
-    }
-
-    &:nth-child(1) {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-    }
-}
-</style>
