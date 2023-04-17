@@ -18,10 +18,15 @@ export type VFileProps = {
     label?: string;
 };
 
+export interface NewFileEvent {
+    fileType: string;
+}
+
 export interface VFileEmits {
     (event: "update:modelValue", value: any): void;
     (event: "processing"): void;
     (event: "endProcessing"): void;
+    (event: "newFile", value: NewFileEvent): void;
 }
 
 const props = withDefaults(defineProps<VFileProps>(), {
@@ -95,6 +100,7 @@ async function process(fieldName, file, metadata, loadFile, error) {
         if (blob === undefined) {
             const path = await storage.upload(file, props.storagePath);
             loadFile(path);
+            emit("newFile", { fileType: file.type });
             skipNextFile = false;
         } else {
             error();

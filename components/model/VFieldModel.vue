@@ -149,7 +149,7 @@ if (input.value.type === "file" && input.value.attrs.multiple === true) {
             :label="label !== undefined ? label : '.' + property + '.label'"
             :label-attr="labelAttr || modelValue">
             <VControl :has-error="field.errors.length > 0" :icon="icon">
-                <slot :field="field">
+                <slot :field="field" :is-processing="isProcessing" :input="input">
                     <VInput
                         v-if="
                             input.type == 'text' ||
@@ -260,6 +260,7 @@ if (input.value.type === "file" && input.value.attrs.multiple === true) {
                         :is-uploading="isProcessing"
                         :multiple="input.attrs.multiple"
                         :storage-path="modelValue.$getModelName()"
+                        :accepts="input.attrs.accepts"
                         @processing="isProcessing = true"
                         @end-processing="isProcessing = false" />
                     <VInputPercent
