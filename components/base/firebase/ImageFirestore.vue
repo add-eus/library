@@ -12,7 +12,7 @@ const props = defineProps<FirebaseImageProps>();
 const storage = useStorage();
 const evaluating = ref(false);
 const src = computedAsync(
-    async () => await storage.fetchAsDataUrl(props.path),
+    async () => await storage.fetchAsDataUrl(props.path).catch(() => props.path),
     undefined,
     evaluating
 );

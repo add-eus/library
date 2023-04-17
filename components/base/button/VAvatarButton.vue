@@ -112,10 +112,10 @@ export default defineComponent({
                 props.light && "is-light",
             ];
         });
-        //const isIconify = computed(() => props.icon && props.icon.indexOf(":") !== -1);
+        // const isIconify = computed(() => props.icon && props.icon.indexOf(":") !== -1);
 
         return () => {
-            /*let icon;
+            /* let icon;
             if (isIconify.value) {
                 icon = h("i", {
                     "aria-hidden": true,
@@ -128,6 +128,7 @@ export default defineComponent({
 
             const avatarWrapper = h(VAvatar, {
                 class: "icon",
+                ...props,
             });
 
             if (props.to) {
