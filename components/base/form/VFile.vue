@@ -3,7 +3,9 @@ import { computed, inject, ref } from "vue";
 import vueFilePond from "vue-filepond";
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
+import "filepond-plugin-media-preview/dist/filepond-plugin-media-preview.min.css";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
+import FilePondPluginMediaPreview from "filepond-plugin-media-preview";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import { useStorage } from "../../../stores/storage";
@@ -18,10 +20,15 @@ export type VFileProps = {
     label?: string;
 };
 
+export interface NewFileEvent {
+    fileType: string;
+}
+
 export interface VFileEmits {
     (event: "update:modelValue", value: any): void;
     (event: "processing"): void;
     (event: "endProcessing"): void;
+    (event: "newFile", value: NewFileEvent): void;
 }
 
 const props = withDefaults(defineProps<VFileProps>(), {
@@ -35,7 +42,8 @@ const props = withDefaults(defineProps<VFileProps>(), {
 const Filepond = vueFilePond(
     FilePondPluginImagePreview,
     FilePondPluginFileValidateSize,
-    FilePondPluginFileValidateType
+    FilePondPluginFileValidateType,
+    FilePondPluginMediaPreview
 );
 
 const storage = useStorage();
@@ -95,6 +103,7 @@ async function process(fieldName, file, metadata, loadFile, error) {
         if (blob === undefined) {
             const path = await storage.upload(file, props.storagePath);
             loadFile(path);
+            emit("newFile", { fileType: file.type });
             skipNextFile = false;
         } else {
             error();
