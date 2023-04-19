@@ -37,7 +37,7 @@ onUpdated(() => {
 <template>
     <div class="card v-card">
         <div v-if="props.image" class="card-image">
-            <figure class="image is-4by3" :class="[props.format && `is-${props.format}`]">
+            <figure class="image" :class="[props.format && `is-${props.format}`]">
                 <ImageFirestore :path="image" alt="" @error.once="placeholderHandler" />
             </figure>
         </div>
@@ -48,8 +48,7 @@ onUpdated(() => {
                         v-if="props.avatar"
                         :picture="props.avatar"
                         :badge="props.badge"
-                        size="medium"
-                    />
+                        size="medium" />
                 </template>
             </VBlock>
 
@@ -59,3 +58,15 @@ onUpdated(() => {
         </div>
     </div>
 </template>
+<style lang="scss" scoped>
+.card {
+    background: var(--white);
+}
+
+.is-dark {
+    .card {
+        background: var(--dark-sidebar-light-6);
+        border-color: var(--dark-sidebar-light-12);
+    }
+}
+</style>
