@@ -6,6 +6,7 @@ import {
     getBlob,
     uploadBytes,
     updateMetadata,
+    getDownloadURL,
 } from "firebase/storage";
 import { useFirebase } from "./firebase";
 import { v4 as uuid } from "uuid";
@@ -54,7 +55,23 @@ export const useStorage = defineStore("Storage", () => {
         });
     };
 
-    return { upload, remove, fetch, fetchAsDataUrl };
+    function publicUrlToPath(publicUrl: string): string {
+        return publicUrl
+            .replace(
+                `${storage._protocol}://${
+                    storage.host
+                }${storage._bucket.fullServerUrl()}`,
+                ""
+            )
+            .replace(/\?.*$/, "");
+    }
+
+    async function pathToPublicUrl(path: string): Promise<string> {
+        const refFile = refStorage(storage, path);
+        return getDownloadURL(refFile);
+    }
+
+    return { upload, remove, fetch, fetchAsDataUrl, pathToPublicUrl, publicUrlToPath };
 });
 
 /**

@@ -10,7 +10,7 @@ interface FirebaseImageProps {
 
 const props = defineProps<FirebaseImageProps>();
 const storage = useStorage();
-const evaluating = ref(false);
+const evaluating = ref(true);
 const src = computedAsync(
     async () => await storage.fetchAsDataUrl(props.path).catch(() => props.path),
     undefined,
@@ -25,3 +25,11 @@ const src = computedAsync(
         <img v-else :src="src" :alt="alt" />
     </Transition>
 </template>
+
+<style lang="scss" scoped>
+*:nth-child(2) {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+</style>

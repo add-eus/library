@@ -50,7 +50,6 @@ const themeClasses = computed(() => {
         <div class="sidebar-brand">
             <RouterLink :to="rootPage">
                 <slot name="logo"></slot>
-                <!--img src="/logo.svg" alt="" width="36px" /-->
             </RouterLink>
         </div>
         <div class="sidebar-inner">
@@ -110,7 +109,7 @@ const themeClasses = computed(() => {
 
         .sidebar-inner {
             .naver {
-                background: var(--white);
+                //background: var(--white);
             }
 
             .icon-menu,
@@ -120,13 +119,16 @@ const themeClasses = computed(() => {
                         &:hover,
                         &.is-active,
                         &.router-link-active {
-                            .sidebar-svg {
-                                color: var(--smoke-white);
+                            background-color: $primary;
+                            color: $white;
+
+                            .icon {
+                                color: $white;
                             }
                         }
 
-                        .sidebar-svg {
-                            color: var(--light-text);
+                        .icon {
+                            color: $white;
                         }
                     }
                 }
@@ -271,9 +273,9 @@ const themeClasses = computed(() => {
         justify-content: center;
 
         img {
-            margin-top: 5px;
-            width: 36px;
-            height: auto;
+            margin-top: 10px;
+            max-width: 100%;
+            height: 100px;
         }
     }
 
@@ -292,7 +294,7 @@ const themeClasses = computed(() => {
             height: 64px;
             width: 4px;
             border-radius: 100px;
-            background: $primary;
+            // background: $primary;
             transition: all 0.3s; // transition-all test
 
             &.is-search-results {
@@ -313,11 +315,10 @@ const themeClasses = computed(() => {
 
             li {
                 position: relative;
-                margin: 20px 0;
                 width: 100%;
+
+                margin: 5px 0;
                 display: flex;
-                align-items: center;
-                justify-content: center;
                 text-overflow: ellipsis;
                 white-space: nowrap;
 
@@ -347,10 +348,13 @@ const themeClasses = computed(() => {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    justify-content: center;
+                    justify-content: start;
                     position: relative;
                     transform: rotate(0);
+                    padding: 5px 10px;
+                    border-radius: $radius;
                     opacity: 1;
+                    width: 100%;
                     transition: all 0.3s; // transition-all test
                     color: var(--title-grey);
                     text-transform: uppercase;
@@ -375,7 +379,7 @@ const themeClasses = computed(() => {
                         color: var(--title-grey);
                         stroke-width: 1.6px;
                         transition: all 0.3s; // transition-all test
-                        margin: 5px;
+                        margin: 5px 10px;
                     }
 
                     &:hover svg,

@@ -2,14 +2,30 @@
 const emit = defineEmits<{
     (e: "toggle"): void;
 }>();
-const props = defineProps<{
-    isOpen?: boolean;
-}>();
+const props = withDefaults(
+    defineProps<{
+        isOpen?: boolean;
+
+        theme?: string;
+    }>(),
+    {
+        isOpen: false,
+        theme: "default",
+    }
+);
 </script>
 
 <template>
     <div :class="[props.isOpen && 'is-active']" class="mobile-main-sidebar">
-        <div class="inner">
+        <Sidebar :theme="theme">
+            <template #links>
+                <slot name="links"></slot>
+            </template>
+            <template #bottom-links>
+                <slot name="bottom-links"></slot>
+            </template>
+        </Sidebar>
+        <!-- <div class="inner">
             <ul class="icon-side-menu">
                 <slot name="links">
                     <li>
@@ -26,7 +42,7 @@ const props = defineProps<{
             <ul class="bottom-icon-side-menu">
                 <slot name="bottom-links"></slot>
             </ul>
-        </div>
+        </div> -->
     </div>
 
     <button
@@ -57,15 +73,20 @@ const props = defineProps<{
     left: 0;
     height: calc(100% - 60px);
     width: 200px;
-    background: var(--white);
-    border-top: 1px solid var(--fade-grey);
-    border-right: 1px solid var(--fade-grey);
     z-index: 100;
     transform: translateX(-100%);
     transition: all 0.3s; // transition-all test
 
     &.is-active {
         transform: translateX(0);
+    }
+
+    > .main-sidebar {
+        top: 0;
+        position: relative;
+        height: 100%;
+        width: 100%;
+        display: block;
     }
 
     .inner {
