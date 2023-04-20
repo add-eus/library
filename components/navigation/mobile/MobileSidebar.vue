@@ -7,17 +7,21 @@ const props = withDefaults(
         isOpen?: boolean;
 
         theme?: string;
+        rootPage?: RouteLocation;
     }>(),
     {
         isOpen: false,
         theme: "default",
+        rootPage: {
+            name: "dashboard",
+        },
     }
 );
 </script>
 
 <template>
     <div :class="[props.isOpen && 'is-active']" class="mobile-main-sidebar">
-        <Sidebar :theme="theme">
+        <Sidebar :theme="theme" :root-page="rootPage">
             <template #links>
                 <slot name="links"></slot>
             </template>

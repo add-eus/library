@@ -24,6 +24,7 @@ const props = withDefaults(
         },
     }
 );
+console.log(props);
 
 const themeClasses = computed(() => {
     switch (props.theme) {
