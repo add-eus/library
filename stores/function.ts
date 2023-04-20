@@ -1,11 +1,13 @@
 import { useFirebase } from "./firebase";
 import { httpsCallable as firebaseHttpsCallable } from "firebase/functions";
 
-export async function httpsOpen(path: string, args: any) {
+export async function httpsOpen(path: string, args: { [name: string]: string | number }) {
     const { functions } = useFirebase();
     const url = (<any>functions)._url(path);
-    const encodedArgs = encodeURIComponent(JSON.stringify(args));
-    const page = <Window>window.open(`${url}?args=${encodedArgs}`);
+    const query = Object.keys(args)
+        .map((key) => `${key}=${encodeURIComponent(args[key])}`)
+        .join("&");
+    const page = <Window>window.open(`${url}?${query}`);
     await new Promise((resolve) => {
         const i = setInterval(() => {
             if (page.closed) {
