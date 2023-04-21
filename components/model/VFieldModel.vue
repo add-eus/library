@@ -116,6 +116,12 @@ if (Array.isArray(input.value.attrs.validate)) {
     });
 }
 
+if (input.value.type === "text" && input.value.attrs.match !== undefined) {
+    schema = yup
+        .string()
+        .matches(input.value.attrs.match, `.${props.property}.validation.match`);
+}
+
 if (input.value.attrs.required === true) {
     schema = schema.required(`.${props.property}.validation.required`);
 }
