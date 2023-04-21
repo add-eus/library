@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useStorage } from "../../../stores/storage";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { computedAsync } from "@vueuse/core";
 
 interface FirebaseImageProps {
@@ -16,13 +16,27 @@ const src = computedAsync(
     undefined,
     evaluating
 );
+
+const mimeType = computed(() => {
+    const matched = src.value.match(/^data:([^;]+)/);
+    if (matched === null) return "text/plain";
+    return matched[1];
+});
+const isVideo = computed(() => {
+    return mimeType.value.startsWith("video/");
+});
 </script>
 <template>
     <Transition name="fade-fast">
         <slot v-if="evaluating" name="loading">
             <VPlaceload height="100%" width="100%"></VPlaceload>
         </slot>
-        <img v-else :src="src" :alt="alt" />
+        <video v-else-if="isVideo" v-bind="$attrs" controls>
+            <source :src="src" :type="mimeType" />
+
+            <track kind="captions" />
+        </video>
+        <img v-else :src="src" :alt="alt" v-bind="$attrs" />
     </Transition>
 </template>
 
