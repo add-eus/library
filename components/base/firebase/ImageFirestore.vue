@@ -11,6 +11,7 @@ interface FirebaseImageProps {
 const props = defineProps<FirebaseImageProps>();
 const storage = useStorage();
 const evaluating = ref(true);
+
 const src = computedAsync(
     async () => await storage.fetchAsDataUrl(props.path).catch(() => props.path),
     undefined,
@@ -18,6 +19,7 @@ const src = computedAsync(
 );
 
 const mimeType = computed(() => {
+    if (typeof src.value !== "string") return "text/plain";
     const matched = src.value.match(/^data:([^;]+)/);
     if (matched === null) return "text/plain";
     return matched[1];

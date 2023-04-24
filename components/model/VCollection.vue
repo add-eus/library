@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { refDebounced } from "@vueuse/core";
+import { refDebounced, watchArray } from "@vueuse/core";
 import type { VFlexTableColumn } from "../../components/base/table/VFlexTable.vue";
 import { useCollection, newDoc } from "../../stores/firestore";
 import { useTranslate } from "../../stores/translate";
@@ -190,7 +190,11 @@ watch(() => props.filters, fetch);
                                 The VFlexTable "data" and "columns" props 
                                 will be inherited from parent VFlexTableWrapper 
                         -->
-                <VFlexTable :key="(row: any) => row.$getID()" rounded reactive compact>
+                <VFlexTable
+                    :get-key="(row: any) => row.$getID()"
+                    rounded
+                    reactive
+                    compact>
                     <template #body>
                         <!-- This is the empty state -->
                         <div

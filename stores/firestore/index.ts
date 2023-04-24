@@ -151,6 +151,7 @@ export function useCollection<T extends typeof Entity>(
             const limit = newLimit - oldLimit;
             if (limit <= 0) return;
             entities.isUpdating = true;
+
             await query.next(limit);
             entities.isUpdating = false;
         });
