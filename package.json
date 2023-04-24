@@ -105,6 +105,7 @@
         "moment-with-locales-es6": "^1.0.1",
         "notyf": "3.10.0",
         "nprogress": "0.2.0",
+        "photoswipe": "^5.3.7",
         "pinia": "2.0.29",
         "simplebar": "^6.2.1",
         "tiny-slider": "github:yaquawa/tiny-slider#patch-1",

@@ -29,10 +29,11 @@ const props = withDefaults(defineProps<VCollectionProps>(), {
     hideToolbar: false,
     hideAdd: false,
     search: false,
+    permissionEdit: undefined,
 });
 
 const searchInput = ref("");
-const sortKey = ref(null);
+const sortKey = ref<null | string>(null);
 const sortAscending = ref(false);
 
 const wheres = ref([]);
@@ -45,12 +46,12 @@ async function fetch() {
 
     Object.keys(props.filters).forEach((filterKey) => {
         if (
-            props.filters[filterKey] &&
-            props.filters[filterKey].hasOwnProperty("value")
+            typeof props.filters[filterKey] === "object" &&
+            "value" in props.filters[filterKey]
         ) {
             if (Array.isArray(props.filters[filterKey].comparator)) {
                 for (var i = 0; i < props.filters[filterKey].comparator.length; i++) {
-                    if (!props.filters[filterKey].value[i]) return;
+                    if (props.filters[filterKey].value[i] === undefined) return;
                     wheresValue.push([
                         filterKey,
                         props.filters[filterKey].comparator[i],
@@ -65,18 +66,18 @@ async function fetch() {
                 ]);
             }
         } else {
-            if (!props.filters[filterKey]) return;
+            if (props.filters[filterKey] === undefined) return;
             wheresValue.push([filterKey, "==", props.filters[filterKey]]);
         }
     });
 
-    if (sortKey.value) {
+    if (sortKey.value !== null) {
         orders.value = [[sortKey.value, sortAscending.value ? "asc" : "desc"]];
     }
     wheres.value = wheresValue;
     limit.value = 10;
 }
-fetch();
+void fetch();
 
 const entities = useCollection(props.model, {
     wheres,
@@ -112,16 +113,16 @@ async function onInfiniteScroll(done: Function) {
     done();
 }
 
-async function onSort(sort) {
-    if (!sort) {
+async function onSort(sort: string) {
+    if (sort === undefined || sort === null) {
         sortKey.value = null;
         sortAscending.value = false;
     } else {
         const splitted = sort.split(":");
         sortKey.value = splitted[0];
-        sortAscending.value = splitted[1] == "asc";
+        sortAscending.value = splitted[1] === "asc";
     }
-    fetch();
+    return fetch();
 }
 
 watch(searchInput, fetch);
@@ -136,8 +137,7 @@ watch(() => props.filters, fetch);
         :data="entities"
         use-infinite-scroll
         @update:infinite-scroll="onInfiniteScroll"
-        @update:sort="onSort"
-    >
+        @update:sort="onSort">
         <template #default>
             <slot :entities="entities" :create="create">
                 <!-- 
@@ -148,21 +148,22 @@ watch(() => props.filters, fetch);
                 <!-- We can place any content inside the default slot-->
                 <VFlexTableToolbar v-if="!props.hideToolbar">
                     <template #left>
-                        <!-- We can bind wrapperState.searchInput to any input -->
-                        <VField v-if="search">
-                            <VControl icon="search">
-                                <VInput
-                                    v-model="searchInput"
-                                    :placeholder="'.filter'"
-                                    rounded
-                                    type="text"
-                                />
-                            </VControl>
-                        </VField>
+                        <slot name="topLeft">
+                            <!-- We can bind wrapperState.searchInput to any input -->
+                            <VField v-if="search">
+                                <VControl icon="search">
+                                    <VInput
+                                        v-model="searchInput"
+                                        :placeholder="'.filter'"
+                                        rounded
+                                        type="text" />
+                                </VControl>
+                            </VField>
+                        </slot>
                     </template>
 
                     <template v-if="!props.hideAdd" #right>
-                        <slot name="buttons">
+                        <slot name="buttons" :create="create">
                             <!-- We can also bind wrapperState.limit -->
                             <VField>
                                 <VControl>
@@ -171,8 +172,7 @@ watch(() => props.filters, fetch);
                                             color="primary"
                                             icon="add"
                                             light
-                                            @click="create()"
-                                        >
+                                            @click="create()">
                                             <Translate path=".add"></Translate>
                                         </VButton>
                                     </VPermission>
@@ -191,8 +191,7 @@ watch(() => props.filters, fetch);
                         <!-- This is the empty state -->
                         <div
                             v-if="entities.length === 0 && !entities.isUpdating"
-                            class="flex-list-inner"
-                        >
+                            class="flex-list-inner">
                             <TranslateNamespace path=".empty">
                                 <VPlaceholderSection class="my-6">
                                     <template #title>
@@ -219,8 +218,7 @@ watch(() => props.filters, fetch);
                                         };
                                     })
                                 "
-                                size="medium"
-                            />
+                                size="medium" />
                         </template>
                         <template v-else-if="column.key === 'action'">
                             <TranslateNamespace path=".action">
@@ -230,14 +228,12 @@ watch(() => props.filters, fetch);
                                             icon="more_vert"
                                             class="is-pushed-mobile"
                                             spaced
-                                            right
-                                        >
+                                            right>
                                             <template #content="{ close }">
                                                 <slot
                                                     name="actionButtons"
                                                     :row="row"
-                                                    :close="close"
-                                                ></slot>
+                                                    :close="close"></slot>
                                                 <VDropdownItem
                                                     icon="edit"
                                                     @click.prevent="
@@ -245,8 +241,7 @@ watch(() => props.filters, fetch);
                                                             row.$edit();
                                                             close();
                                                         }
-                                                    "
-                                                >
+                                                    ">
                                                     <Translate path=".edit"></Translate>
                                                 </VDropdownItem>
 
@@ -257,8 +252,7 @@ watch(() => props.filters, fetch);
                                                             row.$promptAndDelete();
                                                             close();
                                                         }
-                                                    "
-                                                >
+                                                    ">
                                                     <Translate path=".remove"></Translate>
                                                 </VDropdownItem>
                                             </template>
@@ -273,8 +267,7 @@ watch(() => props.filters, fetch);
                                 name="cell-body"
                                 :title="row[column.key]"
                                 :column="column"
-                                :entity="row"
-                            >
+                                :entity="row">
                                 <div>
                                     {{
                                         column.format

@@ -145,6 +145,10 @@ onMounted(() => {
     z-index: 100 !important;
 
     > .dropdown-content {
+        &:empty {
+            display: none;
+        }
+
         > .dropdown-item {
             display: flex;
             border: none;

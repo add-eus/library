@@ -189,8 +189,8 @@ export default defineComponent({
 
     > .icon {
         font-size: 21px;
-        margin-left: -11px !important;
-        margin-right: -11px !important;
+        margin-left: -16px !important;
+        margin-right: -16px !important;
     }
 }
 </style>

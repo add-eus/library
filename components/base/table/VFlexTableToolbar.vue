@@ -11,10 +11,21 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 40px;
+
+    .left {
+        flex-grow: 1;
+    }
+
+    .right {
+        flex-grow: 1;
+        text-align: right;
+    }
 }
 @media (max-width: 767px) {
     .flex-table-toolbar {
         margin-bottom: 10px;
+        flex-direction: column;
+        align-items: stretch;
 
         .left {
             //flex-grow: 2;

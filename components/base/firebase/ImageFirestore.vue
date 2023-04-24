@@ -27,23 +27,31 @@ const isVideo = computed(() => {
 });
 </script>
 <template>
-    <Transition name="fade-fast">
-        <slot v-if="evaluating" name="loading">
-            <VPlaceload height="100%" width="100%"></VPlaceload>
-        </slot>
-        <video v-else-if="isVideo" v-bind="$attrs" controls>
-            <source :src="src" :type="mimeType" />
+    <div class="v-image-firebase">
+        <Transition name="fade-fast">
+            <slot v-if="evaluating" name="loading">
+                <VPlaceload height="100%" width="100%"></VPlaceload>
+            </slot>
+            <video v-else-if="isVideo" v-bind="$attrs">
+                <source :src="src" :type="mimeType" />
 
-            <track kind="captions" />
-        </video>
-        <img v-else :src="src" :alt="alt" v-bind="$attrs" />
-    </Transition>
+                <track kind="captions" />
+            </video>
+            <img v-else :src="src" :alt="alt" v-bind="$attrs" />
+        </Transition>
+    </div>
 </template>
 
 <style lang="scss" scoped>
-*:nth-child(2) {
-    position: absolute;
-    top: 0;
-    left: 0;
+.v-image-firebase {
+    position: relative;
+
+    > *:nth-child(2) {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
 }
 </style>

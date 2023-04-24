@@ -157,7 +157,6 @@ const props = withDefaults(defineProps<VAvatarProps>(), {
 
     .avatar {
         width: 40px;
-        min-width: 40px;
         height: 40px;
         object-fit: cover;
         border-radius: 50%;

@@ -56,6 +56,10 @@ const props = withDefaults(defineProps<VBlockProps>(), {
         margin-bottom: 0;
     }
 
+    > .icon {
+        color: $grey-darker;
+    }
+
     .flex-meta {
         margin-left: 12px;
         line-height: 1.3;
@@ -128,6 +132,10 @@ const props = withDefaults(defineProps<VBlockProps>(), {
     &:last-child,
     &.no-margin {
         margin-bottom: 0;
+    }
+
+    > .icon {
+        color: $grey-darker;
     }
 
     .flex-meta {
