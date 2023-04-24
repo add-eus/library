@@ -13,6 +13,8 @@ export interface VCollectionProps {
     hideAdd?: boolean;
     search?: boolean;
     permissionEdit?: string;
+    sort: string | null;
+    sortAscending: boolean;
 }
 
 const { setTranslateNamespace } = useTranslate();
@@ -30,11 +32,13 @@ const props = withDefaults(defineProps<VCollectionProps>(), {
     hideAdd: false,
     search: false,
     permissionEdit: undefined,
+    sort: null,
+    sortAscending: false,
 });
 
 const searchInput = ref("");
-const sortKey = ref<null | string>(null);
-const sortAscending = ref(false);
+const sortKey = ref<null | string>(props.sort);
+const sortAscending = ref(props.sortAscending);
 
 const wheres = ref([]);
 const orders = ref([]);
