@@ -111,12 +111,10 @@ export const useUserSession = defineStore("userSession", () => {
         await confirmPasswordReset(auth, actionCode, password);
     }
 
-    let permissionManagement: (user: User, permission: string) => boolean = () => true;
+    let permissionManagement: (user: User, permission: string) => boolean = () => false;
     function configurePermissionManagement(
         callbackPermissionManagement: (user: User, permission: string) => boolean
     ) {
-        if (!isLoggedIn.value) return;
-
         permissionManagement = callbackPermissionManagement;
     }
 
