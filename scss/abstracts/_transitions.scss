@@ -253,5 +253,21 @@
 
 .collapse-enter-active,
 .collapse-leave-active {
+    transition: all 0.5s ease;
+    max-height: 100vh;
     overflow: hidden;
+}
+
+.collapse-enter-from,
+.collapse-leave-to {
+    max-height: 0vh;
+    padding: 0;
+    margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .collapse-enter-active,
+    .collapse-leave-active {
+        transition: none;
+    }
 }

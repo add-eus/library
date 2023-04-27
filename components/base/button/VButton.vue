@@ -206,7 +206,7 @@ export default defineComponent({
                     })
                 );
             } else {
-                childrens.push(h("span", slots.default?.()));
+                childrens.push(h("span", { class: "text-ellipsis" }, slots.default?.()));
             }
             if (caretWrapper) {
                 childrens.push(caretWrapper);
