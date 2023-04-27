@@ -178,7 +178,7 @@ export class Entity extends EntityBase {
                 await updateDoc($metadata.reference, raw);
             }
             $metadata.previousOrigin = $metadata.origin;
-            $metadata.origin = raw;
+            $metadata.origin = this.$getPlain();
         } catch (err) {
             // eslint-disable-next-line no-console
             console.error(err);
