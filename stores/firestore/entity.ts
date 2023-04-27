@@ -88,10 +88,7 @@ export class EntityBase {
 
     $reset() {
         if (!this.$getMetadata().reference) throw new Error("No original data to reset");
-        // Object.values(this.$getMetadata().properties).forEach(
-        //     (property: any) => (property.origin = false)
-        // );
-        this.$getMetadata().emit("parse", this.$getMetadata().origin);
+        this.$getMetadata().emit("parse", this.$getMetadata().origin, true);
         this.$getMetadata().isFullfilled = true;
     }
 

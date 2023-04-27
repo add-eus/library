@@ -141,8 +141,8 @@ export function Var(type: any) {
                 }
             });
 
-            metadata.on("parse", (raw: any) => {
-                if (isChanged) return;
+            metadata.on("parse", (raw: any, forceAll: boolean = false) => {
+                if (!forceAll && isChanged) return;
                 const parsed = parseData(raw[name], type);
 
                 if (parsed !== this[name]) this[name] = parsed;
@@ -151,9 +151,9 @@ export function Var(type: any) {
                 isChanged = false;
             });
 
-            metadata.on("format", (raw: any, forceAll = false) => {
+            metadata.on("format", (raw: any, forceAll: boolean = false) => {
                 if (
-                    forceAll === false &&
+                    !forceAll &&
                     metadata.reference &&
                     metadata.properties[name].isChanged === false
                 )
