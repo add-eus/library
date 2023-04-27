@@ -45,7 +45,7 @@ const props = withDefaults(defineProps<VFlexTableProps>(), {
 const wrapper = inject(flewTableWrapperSymbol, null);
 
 const data = computed(() => {
-    if (wrapper?.data) return wrapper.data;
+    if (wrapper?.data !== undefined) return wrapper.data;
 
     if (props.reactive) {
         if (isReactive(props.data)) {
@@ -63,7 +63,7 @@ const columns = computed(() => {
     const columnsSrc = wrapper?.columns ?? props.columns;
     let columns: VFlexTableColumn[] = [];
 
-    if (columnsSrc) {
+    if (columnsSrc !== undefined) {
         for (const [key, label] of Object.entries(columnsSrc)) {
             if (typeof label === "string") {
                 columns.push({
@@ -108,8 +108,7 @@ function getValueByPath(row: any, key: any) {
             props.noHeader && 'no-header',
             props.clickable && 'is-table-clickable',
             props.subtable && 'sub-table',
-        ]"
-    >
+        ]">
         <slot name="header">
             <div v-if="!props.noHeader" class="flex-table-header">
                 <template v-for="column in columns" :key="'col' + column.key">
@@ -123,8 +122,7 @@ function getValueByPath(row: any, key: any) {
                                 column.grow === 'xl' && 'is-grow-xl',
                                 column.align === 'end' && 'cell-end',
                                 column.align === 'center' && 'cell-center',
-                            ]"
-                        ></component>
+                            ]"></component>
                         <span
                             v-else
                             :class="[
@@ -133,8 +131,7 @@ function getValueByPath(row: any, key: any) {
                                 column.grow === 'xl' && 'is-grow-xl',
                                 column.align === 'end' && 'cell-end',
                                 column.align === 'center' && 'cell-center',
-                            ]"
-                        >
+                            ]">
                             <Translate>{{ column.label }}</Translate>
                         </span>
                     </slot>
@@ -147,10 +144,8 @@ function getValueByPath(row: any, key: any) {
                     name="body-row-pre"
                     :row="row"
                     :columns="columns"
-                    :index="index"
-                ></slot>
+                    :index="index"></slot>
                 <button
-                    v-hide-on-hidden="wrapper.useInfiniteScroll"
                     class="flex-table-item"
                     :class="[props.clickable && 'is-clickable']"
                     :tabindex="props.clickable ? 0 : undefined"
@@ -163,8 +158,7 @@ function getValueByPath(row: any, key: any) {
                         () => {
                             props.clickable && emits('rowClick', row, index);
                         }
-                    "
-                >
+                    ">
                     <slot name="body-row" :row="row" :columns="columns" :index="index">
                         <template v-for="column in columns" :key="'row' + column.key">
                             <Transition name="list">
@@ -180,8 +174,7 @@ function getValueByPath(row: any, key: any) {
                                                 row,
                                                 index
                                             )
-                                        "
-                                    >
+                                        ">
                                         <component
                                             :is="{
                                                 render: () =>
@@ -191,8 +184,7 @@ function getValueByPath(row: any, key: any) {
                                                         index
                                                     ),
                                             }"
-                                            v-if="column.renderRow"
-                                        ></component>
+                                            v-if="column.renderRow"></component>
                                         <span
                                             v-else-if="
                                                 typeof column.format(
@@ -208,8 +200,7 @@ function getValueByPath(row: any, key: any) {
                                                     (column.bold
                                                         ? 'dark-text'
                                                         : 'light-text'),
-                                            ]"
-                                        >
+                                            ]">
                                             <details v-if="printObjects">
                                                 <div class="language-json py-4">
                                                     <pre><code>{{ column.format(getValueByPath(row, column.key), row, index) }}</code></pre>
@@ -225,8 +216,7 @@ function getValueByPath(row: any, key: any) {
                                                     (column.bold
                                                         ? 'dark-text'
                                                         : 'light-text'),
-                                            ]"
-                                        >
+                                            ]">
                                             {{
                                                 column.format(
                                                     getValueByPath(row, column.key),
@@ -245,8 +235,7 @@ function getValueByPath(row: any, key: any) {
                     name="body-row-post"
                     :row="row"
                     :columns="columns"
-                    :index="index"
-                ></slot>
+                    :index="index"></slot>
             </template>
             <VProgress v-if="wrapper.loading" size="tiny" />
         </slot>
