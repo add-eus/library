@@ -144,7 +144,8 @@ defineExpose({ nextStep, previousStep, setStep });
 
 .wizard {
     margin-left: 30px;
-    position: fixed;
+    position: sticky;
+    top: 0;
 
     .v-line {
         width: 1px;
