@@ -26,3 +26,9 @@ jobs:
                           workflow_id: 'on-library-updated.yml',
                           ref: 'master',
                       })
+                      await github.rest.actions.createWorkflowDispatch({
+                          owner: 'add-eus',
+                          repo: 'application',
+                          workflow_id: 'on-library-updated.yml',
+                          ref: 'master',
+                      })
