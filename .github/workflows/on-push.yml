@@ -1,5 +1,7 @@
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
+name: Update repositories
+
 on:
     push:
         branches:
@@ -11,14 +13,16 @@ concurrency:
 
 jobs:
     update-repositories:
+        name: Update repositories
+        runs-on: ubuntu-latest
         steps:
             - uses: actions/github-script@v6
-                with:
-                github-token: ${{ secrets.GH_TOKEN }}
-                script: |
-                    await github.rest.actions.createWorkflowDispatch({
-                        owner: 'track2max',
-                        repo: 'application',
-                        workflow_id: 'on-library-updated.yml',
-                        ref: 'master'
-                    })
+              with:
+                  github-token: ${{ secrets.GH_TOKEN }}
+                  script: |
+                      await github.rest.actions.createWorkflowDispatch({
+                          owner: 'track2max',
+                          repo: 'application',
+                          workflow_id: 'on-library-updated.yml',
+                          ref: 'master',
+                      })
