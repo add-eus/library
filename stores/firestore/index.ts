@@ -64,7 +64,11 @@ export function useCollection<T extends typeof Entity>(
     const entities = shallowReactive<any>(new Collection());
     const firebase = useFirebase();
     const algoliaIndex = algoliaClient.initIndex(
-        `${import.meta.env.VITE_ALGOLIA_PREFIX}${collectionModel.collectionName}`
+        `${
+            import.meta.env.VITE_ALGOLIA_PREFIX !== undefined
+                ? import.meta.env.VITE_ALGOLIA_PREFIX
+                : ""
+        }${collectionModel.collectionName}`
     );
 
     const collectionRef = collection(firebase.firestore, collectionModel.collectionName);
