@@ -12,6 +12,8 @@ export interface VInputProps {
     min?: number;
     max?: number;
     format?: Function;
+    iconUp?: string;
+    iconDown?: string;
 }
 
 const emits = defineEmits<VInputEmits>();
@@ -21,6 +23,8 @@ const props = withDefaults(defineProps<VInputProps>(), {
     min: 0,
     max: 100,
     format: (line) => line,
+    iconUp: "arrow_drop_up",
+    iconDown: "arrow_drop_down",
 });
 
 const value = useVModel(props, "modelValue", emits);
@@ -54,20 +58,16 @@ watchOnce(el, () => {
 </script>
 
 <template>
-    <VFlex flex-direction="column" align="center">
+    <VFlex flex-direction="column">
         <VIconButton
-            icon="arrow_drop_up"
+            :icon="iconUp"
             color="white"
             size="small"
             circle
             @click="value -= props.step" />
         <span v-if="!load" ref="el"></span>
         <VScrollPicker v-if="load" v-model="value" :options="options" />
-        <VIconButton
-            icon="arrow_drop_down"
-            color="white"
-            circle
-            @click="value += props.step" />
+        <VIconButton :icon="iconDown" color="white" circle @click="value += props.step" />
     </VFlex>
 </template>
 
