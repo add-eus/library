@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { refDebounced, watchArray } from "@vueuse/core";
+import { refDebounced } from "@vueuse/core";
 import type { VFlexTableColumn } from "../../components/base/table/VFlexTable.vue";
 import { useCollection, newDoc } from "../../stores/firestore";
 import { useTranslate } from "../../stores/translate";
@@ -13,8 +13,8 @@ export interface VCollectionProps {
     hideAdd?: boolean;
     search?: boolean;
     permissionEdit?: string;
-    sort: string | null;
-    sortAscending: boolean;
+    sort?: string | null;
+    sortAscending?: boolean;
 }
 
 const { setTranslateNamespace } = useTranslate();

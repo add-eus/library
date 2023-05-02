@@ -3,7 +3,6 @@ import { ref, watch } from "vue";
 
 export interface VCollapseProps {
     isOpen: boolean;
-    withChevron: boolean;
 }
 
 const props = withDefaults(defineProps<VCollapseProps>(), {
@@ -45,7 +44,7 @@ watch(
             </slot>
         </VButton>
         <Transition name="collapse">
-            <div class="collapse-content" v-if="isOpen">
+            <div v-if="isOpen" class="collapse-content">
                 <slot :toggle="toggle" :close="close" :open="open"> </slot>
             </div>
         </Transition>
