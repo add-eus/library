@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { inject, onUnmounted, provide, watch, reactive } from "vue";
+import * as yup from "yup";
 
 export interface VValidationProps {
     property: string;
@@ -12,7 +13,9 @@ export interface VValidationEmits {
     (event: "update:modelValue", value?: any): void;
 }
 
-const props = defineProps<VValidationProps>();
+const props = withDefaults(defineProps<VValidationProps>(), {
+    schema: yup.object(),
+});
 const emits = defineEmits<VValidationEmits>();
 
 const onChangeCallbacks: Function[] = [];

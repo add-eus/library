@@ -22,3 +22,7 @@ export function lowerCaseFirst(text: string): string {
 export function padNumber(number: number, length: number = 2) {
     return (number + "").padStart(length, "0");
 }
+
+export function randomNumber(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
