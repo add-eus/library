@@ -43,6 +43,7 @@ module.exports = {
                 bracketSameLine: true,
             },
         ],
+        "vue/no-multiple-template-root": ["error"],
     },
     overrides: [
         {
