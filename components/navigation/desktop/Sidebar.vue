@@ -79,7 +79,7 @@ const themeClasses = computed(() => {
     width: 240px;
     background-color: var(--body-color);
     box-shadow: none;
-    z-index: 0;
+    z-index: 1;
     transition: border-radius 0.3s ease-in, background-color 0.3s ease-in,
         top 0.3s ease-in, margin-left 0.3s ease-in, height 0.3s ease-in;
 
