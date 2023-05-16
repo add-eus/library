@@ -108,7 +108,7 @@ function change(event) {
         &::after {
             content: "";
             display: block;
-            transform: scale(0);
+            transform: scale();
             transition: transform 0.2s;
         }
     }
@@ -124,7 +124,7 @@ function change(event) {
     }
 
     input:checked + span::after {
-        transform: translate(-50%, -50%) scale(1) !important;
+        transform: translate(-50%, -50%) scale(2) !important;
     }
 
     input {
@@ -148,7 +148,7 @@ function change(event) {
 
     &.is-circle {
         input + span {
-            border-radius: var(--radius-rounded);
+            border-radius: 4px;
         }
     }
 

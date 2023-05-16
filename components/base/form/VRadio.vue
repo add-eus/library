@@ -25,8 +25,6 @@ const props = withDefaults(defineProps<VRadioProps>(), {
     paddingless: false,
 });
 
-const radioLabel = props.label;
-
 const identifier = computed(() => {
     if (isEntity(props.value)) return props.value.$getID();
     return props.value;
@@ -34,7 +32,7 @@ const identifier = computed(() => {
 
 function isSame(v1, v2) {
     if (isEntity(v1) && isEntity(v2)) return v1.$isSame(v2);
-    return v1 == v2;
+    return v1 === v2;
 }
 
 const checked = computed({
@@ -66,7 +64,7 @@ const checked = computed({
             @change="checked = !checked" />
         <span></span>
         <slot
-            ><Translate>{{ radioLabel }}</Translate></slot
+            ><Translate>{{ label }}</Translate></slot
         >
     </label>
 </template>
@@ -95,7 +93,7 @@ const checked = computed({
         vertical-align: middle;
         width: 1.4em;
         height: 1.4em;
-        border: 1px solid var(--fade-grey-dark-8);
+        border: 1px solid $grey-lighter;
         transform: translate3d(0, 0, 0);
         backface-visibility: hidden;
 

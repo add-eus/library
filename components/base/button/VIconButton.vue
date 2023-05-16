@@ -186,11 +186,13 @@ export default defineComponent({
 <style lang="scss">
 .button-icon {
     height: 38px !important;
+    width: 38px !important;
+    padding: 0 !important;
 
-    > .icon {
+    .icon {
         font-size: 21px;
-        margin-left: -16px !important;
-        margin-right: -16px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
     }
 }
 </style>
