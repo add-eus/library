@@ -316,7 +316,6 @@ const themeClasses = computed(() => {
             li {
                 position: relative;
                 width: 100%;
-
                 margin: 5px 0;
                 display: flex;
                 text-overflow: ellipsis;

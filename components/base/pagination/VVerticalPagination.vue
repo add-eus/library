@@ -113,7 +113,7 @@ $height: 50px;
     top: 0;
     background-color: $primary-light;
     width: 100%;
-    padding: 5px 0 0 0;
+    padding: 5px 0 0;
     height: $height;
     box-shadow: var(--light-box-shadow-md);
     z-index: 3;
