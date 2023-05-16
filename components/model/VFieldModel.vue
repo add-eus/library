@@ -61,7 +61,7 @@ if (input.value.attrs.options !== undefined) {
         const enumerable = enumToObject(input.value.attrs.options);
         selectOptions = Object.keys(enumerable).map((rowKey) => {
             return {
-                label: translate(`.${props.property}.options.${rowKey}`),
+                label: translate(`.${props.property}.options.${rowKey}`).value,
                 value: enumerable[rowKey],
                 id: rowKey,
             };
@@ -223,8 +223,9 @@ if (input.value.type === "file" && input.value.attrs.multiple === true) {
                             v-model="field.value"
                             :value="option.value"
                             :name="id"
-                            :label="option.label"
-                            color="primary" />
+                            color="primary"
+                            >{{ option.label }}</VRadio
+                        >
                     </VFlex>
 
                     <VInputDate
