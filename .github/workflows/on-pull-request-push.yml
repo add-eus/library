@@ -61,3 +61,36 @@ jobs:
               run: |
                   npm install -g npm cordova
                   npm ci
+
+    lint:
+        name: Lint
+        needs: install
+        runs-on: ubuntu-latest
+        steps:
+            # Configure checkout
+            - name: Set up Checkout repository
+              uses: actions/checkout@v3
+
+            # Configure Node
+            - name: Set up Node 16
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "16"
+                  cache: "npm"
+
+            # Configure node_modules
+            - name: Cache node modules
+              uses: actions/cache@v3
+              env:
+                  cache-name: cache-node-modules
+              with:
+                  path: |
+                      node_modules
+                      functions/node_modules
+                  key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('package-lock.json') }}-${{ hashFiles('functions/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-cache-node-modules-
+                      ${{ runner.os }}-
+
+            - name: Lint
+              run: npm run lint:changed
