@@ -314,8 +314,6 @@ const props = withDefaults(defineProps<VAvatarProps>(), {
         position: absolute;
         bottom: 0;
         right: 0;
-        height: 16px;
-        width: 16px;
         background: $white;
         color: $black-ter;
         border-radius: 10px;

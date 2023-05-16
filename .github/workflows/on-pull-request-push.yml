@@ -71,6 +71,8 @@ jobs:
             - name: Set up Checkout repository
               uses: actions/checkout@v3
 
+            - run: git fetch origin master
+
             # Configure Node
             - name: Set up Node 16
               uses: actions/setup-node@v3

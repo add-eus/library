@@ -233,14 +233,30 @@ const props = withDefaults(defineProps<VTagProps>(), {
 
 .is-dark {
     .tag {
-        &:not(.is-primary):not(.is-secondary):not(.is-success):not(.is-info):not(
-                .is-warning
-            ):not(.is-danger):not(.is-orange):not(.is-green):not(.is-blue):not(
-                .is-purple
-            ) {
-            background: var(--dark-sidebar-light-10);
-            border-color: var(--dark-sidebar-light-10);
-            color: var(--dark-dark-text);
+        &:not(.is-primary) {
+            &:not(.is-secondary) {
+                &:not(.is-success) {
+                    &:not(.is-info) {
+                        &:not(.is-warning) {
+                            &:not(.is-danger) {
+                                &:not(.is-orange) {
+                                    &:not(.is-green) {
+                                        &:not(.is-blue) {
+                                            &:not(.is-purple) {
+                                                background: var(--dark-sidebar-light-10);
+                                                border-color: var(
+                                                    --dark-sidebar-light-10
+                                                );
+                                                color: var(--dark-dark-text);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         &.is-primary {

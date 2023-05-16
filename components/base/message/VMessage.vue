@@ -120,14 +120,20 @@ const props = withDefaults(defineProps<VMessageProps>(), {
 
 .is-dark {
     .message {
-        &:not(.is-primary):not(.is-info):not(.is-success):not(.is-warning):not(
-                .is-danger
-            ) {
-            background-color: var(--dark-sidebar);
-            border-color: var(--dark-sidebar-light-3);
+        &:not(.is-primary) {
+            &:not(.is-info) {
+                &:not(.is-success) {
+                    &:not(.is-warning) {
+                        &:not(.is-danger) {
+                            background-color: var(--dark-sidebar);
+                            border-color: var(--dark-sidebar-light-3);
 
-            .message-body {
-                color: var(--light-text);
+                            .message-body {
+                                color: var(--light-text);
+                            }
+                        }
+                    }
+                }
             }
         }
 
