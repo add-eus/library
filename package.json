@@ -28,6 +28,7 @@
         "lint": "run-s lint:eslint:fix lint:stylelint:fix lint:prettier:fix",
         "lint:prettier": "prettier --check \"./**/*.(ts|vue|css|scss)\"",
         "lint:prettier:fix": "prettier --write \"./**/*.(ts|vue|css|scss)\"",
+        "lint:prettier:changed": "prettier --check $(git diff --name-only --diff-filter=ACMRTUXB master | grep  -E \"(.js$|.ts$|.tsx$)\")",
         "lint:eslint": "eslint --ext .ts,.vue",
         "lint:eslint:fix": "eslint --fix --ext .ts,.vue",
         "lint:stylelint": "stylelint ./**/*.{vue,css,scss}",
