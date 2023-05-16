@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Colors } from "../../../stores/color";
+import { useColor } from "../../../stores/color";
 import { computed } from "vue";
 
 export type VTabsType = "boxed" | "toggle" | "rounded";
@@ -16,6 +18,7 @@ export interface VTabsProps {
     slider?: boolean;
     slow?: boolean;
     modelValue?: string | number;
+    color?: Colors;
 }
 
 export interface VTabsEmits {
@@ -29,7 +32,10 @@ const props = withDefaults(defineProps<VTabsProps>(), {
     type: undefined,
     align: undefined,
     modelValue: undefined,
+    color: "primary",
 });
+
+const color = useColor(computed(() => props.color));
 
 const activeValue = computed({
     get() {
@@ -165,8 +171,8 @@ function toggle(value: string) {
 
             &.is-active {
                 a {
-                    background: $primary !important;
-                    border-color: $primary !important;
+                    background: v-bind(color) !important;
+                    border-color: v-bind(color) !important;
 
                     &:hover,
                     &:focus {
@@ -188,13 +194,13 @@ function toggle(value: string) {
     li {
         &.is-active {
             a {
-                border-bottom-color: $primary !important;
-                color: $primary !important;
+                border-bottom-color: v-bind(color) !important;
+                color: v-bind(color) !important;
 
                 &:hover,
                 &:focus {
-                    border-bottom-color: $primary !important;
-                    color: $primary !important;
+                    border-bottom-color: v-bind(color) !important;
+                    color: v-bind(color) !important;
                 }
             }
         }
@@ -269,8 +275,8 @@ function toggle(value: string) {
                 &.is-active {
                     a,
                     a:hover {
-                        background: $primary !important;
-                        border-color: $primary;
+                        background: v-bind(color) !important;
+                        border-color: v-bind(color);
                         color: var(--white);
                     }
                 }
@@ -293,8 +299,8 @@ function toggle(value: string) {
         li {
             &.is-active {
                 a {
-                    border-bottom-color: $primary;
-                    color: $primary;
+                    border-bottom-color: v-bind(color);
+                    color: v-bind(color);
                 }
             }
         }

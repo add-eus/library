@@ -29,18 +29,13 @@ const blockSwitchId = `block-switch-${++instances}`;
         :class="[
             props.label && 'switch-block',
             props.thin && props.label && 'thin-switch-block',
-        ]"
-    >
+        ]">
         <template v-if="props.thin">
             <label
                 :for="blockSwitchId"
                 class="thin-switch"
                 tabindex="0"
-                :class="[props.color && `is-${props.color}`]"
-                @keydown.space.prevent="
-                    () => emit('update:modelValue', !props.modelValue)
-                "
-            >
+                :class="[props.color && `is-${props.color}`]">
                 <input
                     :id="blockSwitchId"
                     :checked="props.modelValue"
@@ -48,7 +43,9 @@ const blockSwitchId = `block-switch-${++instances}`;
                     type="checkbox"
                     v-bind="$attrs"
                     @change="emit('update:modelValue', !props.modelValue)"
-                />
+                    @keydown.space.prevent="
+                        () => emit('update:modelValue', !props.modelValue)
+                    " />
                 <div class="slider"></div>
             </label>
         </template>
@@ -56,16 +53,14 @@ const blockSwitchId = `block-switch-${++instances}`;
             <label
                 :for="blockSwitchId"
                 class="form-switch"
-                :class="[props.color && `is-${props.color}`]"
-            >
+                :class="[props.color && `is-${props.color}`]">
                 <input
                     :id="blockSwitchId"
                     :checked="props.modelValue"
                     type="checkbox"
                     class="is-switch"
                     v-bind="$attrs"
-                    @change="emit('update:modelValue', !props.modelValue)"
-                />
+                    @change="emit('update:modelValue', !props.modelValue)" />
                 <i aria-hidden="true"></i>
             </label>
         </template>
@@ -328,7 +323,7 @@ const blockSwitchId = `block-switch-${++instances}`;
 
     &.is-primary {
         .input:checked ~ .slider {
-            background: var(--primary-light-20);
+            background: $primary-light;
 
             &::after {
                 background: var(--primary);
@@ -339,7 +334,7 @@ const blockSwitchId = `block-switch-${++instances}`;
 
     &.is-success {
         .input:checked ~ .slider {
-            background: var(--success-light-20);
+            background: $success-light;
 
             &::after {
                 background: var(--success);
@@ -350,7 +345,7 @@ const blockSwitchId = `block-switch-${++instances}`;
 
     &.is-info {
         .input:checked ~ .slider {
-            background: var(--info-light-20);
+            background: $info-light;
 
             &::after {
                 background: var(--info);
@@ -361,7 +356,7 @@ const blockSwitchId = `block-switch-${++instances}`;
 
     &.is-warning {
         .input:checked ~ .slider {
-            background: var(--warning-light-20);
+            background: $warning-light;
 
             &::after {
                 background: var(--warning);
@@ -372,7 +367,7 @@ const blockSwitchId = `block-switch-${++instances}`;
 
     &.is-danger {
         .input:checked ~ .slider {
-            background: var(--danger-light-20);
+            background: $danger-light;
 
             &::after {
                 background: var(--danger);
@@ -453,7 +448,7 @@ const blockSwitchId = `block-switch-${++instances}`;
     .thin-switch {
         &.is-primary {
             .input:checked ~ .slider {
-                background: var(--primary-light-20);
+                background: $primary-light;
 
                 &::after {
                     background: var(--primary);

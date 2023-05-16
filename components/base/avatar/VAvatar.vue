@@ -173,7 +173,7 @@ const props = withDefaults(defineProps<VAvatarProps>(), {
             border-radius: var(--radius-rounded);
 
             &.is-primary {
-                background: var(--primary-light-42);
+                background: $primary-light;
 
                 span {
                     color: var(--primary);
@@ -181,7 +181,7 @@ const props = withDefaults(defineProps<VAvatarProps>(), {
             }
 
             &.is-accent {
-                background: var(--primary-light-36);
+                background: $primary-light;
 
                 span {
                     color: var(--primary);
@@ -189,7 +189,7 @@ const props = withDefaults(defineProps<VAvatarProps>(), {
             }
 
             &.is-success {
-                background: var(--success-light-45);
+                background: $success-light;
 
                 span {
                     color: var(--success);
@@ -197,7 +197,7 @@ const props = withDefaults(defineProps<VAvatarProps>(), {
             }
 
             &.is-info {
-                background: var(--info-light-45);
+                background: $info-light;
 
                 span {
                     color: var(--info);
@@ -205,7 +205,7 @@ const props = withDefaults(defineProps<VAvatarProps>(), {
             }
 
             &.is-warning {
-                background: var(--warning-light-32);
+                background: $warning-light;
 
                 span {
                     color: var(--warning);
@@ -213,7 +213,7 @@ const props = withDefaults(defineProps<VAvatarProps>(), {
             }
 
             &.is-danger {
-                background: var(--danger-light-36);
+                background: $danger-light;
 
                 span {
                     color: var(--danger);

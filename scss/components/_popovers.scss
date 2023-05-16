@@ -320,7 +320,7 @@
                 border-radius: var(--radius-rounded);
 
                 &.is-primary {
-                    background: var(--primary-light-42);
+                    background: $primary-light;
 
                     span {
                         color: var(--primary);
@@ -328,7 +328,7 @@
                 }
 
                 &.is-accent {
-                    background: var(--primary-light-36);
+                    background: $primary-light;
 
                     span {
                         color: var(--primary);
@@ -336,7 +336,7 @@
                 }
 
                 &.is-success {
-                    background: var(--success-light-45);
+                    background: $success-light;
 
                     span {
                         color: var(--success);
@@ -344,7 +344,7 @@
                 }
 
                 &.is-info {
-                    background: var(--info-light-45);
+                    background: $info-light;
 
                     span {
                         color: var(--info);
@@ -352,7 +352,7 @@
                 }
 
                 &.is-warning {
-                    background: var(--warning-light-32);
+                    background: $warning-light;
 
                     span {
                         color: var(--warning);
@@ -360,7 +360,7 @@
                 }
 
                 &.is-danger {
-                    background: var(--danger-light-36);
+                    background: $danger-light;
 
                     span {
                         color: var(--danger);
@@ -368,7 +368,7 @@
                 }
 
                 &.is-h-purple {
-                    background: var(--purple-light-36);
+                    background: var(--purple-light);
 
                     span {
                         color: var(--purple);
@@ -376,7 +376,7 @@
                 }
 
                 &.is-h-orange {
-                    background: var(--orange-light-18);
+                    background: var(--orange-light);
 
                     span {
                         color: var(--orange);

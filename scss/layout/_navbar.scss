@@ -190,7 +190,7 @@
                                 border-radius: 0;
 
                                 a {
-                                    color: var(--primary-dark-14);
+                                    color: $primary-dark;
 
                                     svg {
                                         opacity: 1;
@@ -200,7 +200,7 @@
                             }
 
                             .router-link-exact-active {
-                                color: var(--primary-dark-14);
+                                color: $primary-dark;
 
                                 svg {
                                     opacity: 1;

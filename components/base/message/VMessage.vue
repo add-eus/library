@@ -28,8 +28,7 @@ const props = withDefaults(defineProps<VMessageProps>(), {
             class="delete"
             tabindex="0"
             @keydown.space.prevent="emit('close')"
-            @click.prevent="emit('close')"
-        ></button>
+            @click.prevent="emit('close')"></button>
         <div class="message-body"><slot></slot></div>
     </div>
 </template>
@@ -42,7 +41,7 @@ const props = withDefaults(defineProps<VMessageProps>(), {
     padding-right: 20px;
 
     &.is-primary {
-        border-color: var(--primary-light-24);
+        border-color: $primary-light;
 
         .delete {
             &::before,
@@ -53,7 +52,7 @@ const props = withDefaults(defineProps<VMessageProps>(), {
     }
 
     &.is-info {
-        border-color: var(--info-light-24);
+        border-color: $info-light;
 
         .delete {
             &::before,
@@ -64,7 +63,7 @@ const props = withDefaults(defineProps<VMessageProps>(), {
     }
 
     &.is-success {
-        border-color: var(--success-light-24);
+        border-color: $success-light;
 
         .delete {
             &::before,
@@ -75,7 +74,7 @@ const props = withDefaults(defineProps<VMessageProps>(), {
     }
 
     &.is-warning {
-        border-color: var(--warning-light-24);
+        border-color: $warning-light;
 
         .delete {
             &::before,
@@ -86,7 +85,7 @@ const props = withDefaults(defineProps<VMessageProps>(), {
     }
 
     &.is-danger {
-        border-color: var(--danger-light-24);
+        border-color: $danger-light;
 
         .delete {
             &::before,

@@ -10,21 +10,16 @@ SCSS Imports
 ========================================================================== */
 
 @import "./css-variables/all";
-
 @import "./abstracts/variables";
 @import "./abstracts/mixins";
-
 @import "bulma/bulma";
-
 @import "./abstracts/typography";
 @import "./abstracts/animations";
 @import "./abstracts/transitions";
 @import "./abstracts/helpers";
-
 @import "./layout/layout";
 @import "./layout/right-panel";
 @import "./layout/utilities";
-
 @import "./components/content";
 @import "./components/forms-general";
 @import "./components/forms-checkboxes";
@@ -41,7 +36,6 @@ SCSS Imports
 @import "./components/toggles";
 @import "./components/placeload";
 @import "./components/popovers";
-@import "./components/scroll-pickers";
 @import "./components/theme-switch";
 @import "./components/table";
 @import "./components/toasts";
@@ -52,9 +46,7 @@ SCSS Imports
 @import "./components/credit-card";
 @import "./components/widgets";
 @import "./components/layout-selector";
-
 @import "./layout/responsive";
-
 @import "./abstracts/dark";
 
 // DEV

@@ -31,32 +31,32 @@ const props = withDefaults(defineProps<VCheckboxProps>(), {
 
 function isSame(v1, v2) {
     if (isEntity(v1) && isEntity(v2)) return v1.$isSame(v2);
-    return v1 == v2;
+    return v1 === v2;
 }
 
 const checked = computed(() => {
     if (props.multiple) {
         if (!Array.isArray(props.modelValue)) return false;
-        return !!props.modelValue.find((a) => isSame(a, props.value));
+        return props.modelValue.find((a) => isSame(a, props.value)) !== undefined;
     }
     return isSame(props.modelValue, props.value);
 });
 
 function change(event) {
-    const checked = event.target.checked;
+    const checked: boolean = event.target.checked;
     let value = checked;
     if (props.multiple) {
         value = [...props.modelValue];
-        if (checked) value.push(props.value);
+        if (checked === true) value.push(props.value);
         else {
             const pos = value.indexOf(props.value);
             value.splice(pos, 1);
         }
     } else {
-        if (checked) {
+        if (checked === true) {
             value = props.value;
         } else {
-            value = props.falseValue || false;
+            value = props.falseValue !== undefined ? props.falseValue : false;
         }
     }
     emit("update:modelValue", value);
@@ -70,8 +70,7 @@ function change(event) {
             props.solid ? 'is-solid' : 'is-outlined',
             props.circle && 'is-circle',
             props.color && `is-${props.color}`,
-        ]"
-    >
+        ]">
         <input type="checkbox" :checked="checked" v-bind="$attrs" @change="change" />
         <span></span>
         <slot></slot>
@@ -94,7 +93,7 @@ function change(event) {
     input + span {
         position: relative;
         top: -1px;
-        background: var(--white);
+        background: $white;
         content: "";
         display: inline-block;
         margin: 0 0.5em 0 0;
@@ -102,7 +101,7 @@ function change(event) {
         vertical-align: middle;
         width: 1.4em;
         height: 1.4em;
-        border: 1px solid var(--fade-grey-dark-8);
+        border: 1px solid var(--light-text);
         transform: translate3d(0, 0, 0);
         backface-visibility: hidden;
 

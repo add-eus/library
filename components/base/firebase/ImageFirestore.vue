@@ -8,12 +8,28 @@ interface FirebaseImageProps {
     alt: string;
 }
 
+const DEFAULT_IMAGE =
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+
 const props = defineProps<FirebaseImageProps>();
 const storage = useStorage();
 const evaluating = ref(true);
 
 const src = computedAsync(
-    async () => await storage.fetchAsDataUrl(props.path).catch(() => props.path),
+    async () => {
+        if (typeof props.path !== "string") return DEFAULT_IMAGE;
+        try {
+            return await storage.fetchAsDataUrl(props.path);
+        } catch (err) {
+            try {
+                const response = await fetch(props.path);
+                const blob = response.blob();
+                return URL.createObjectURL(blob);
+            } catch (err) {
+                return DEFAULT_IMAGE;
+            }
+        }
+    },
     undefined,
     evaluating
 );
@@ -24,6 +40,7 @@ const mimeType = computed(() => {
     if (matched === null) return "text/plain";
     return matched[1];
 });
+
 const isVideo = computed(() => {
     return mimeType.value.startsWith("video/");
 });
@@ -31,7 +48,7 @@ const isVideo = computed(() => {
 <template>
     <div class="v-image-firebase">
         <Transition name="fade-fast">
-            <slot v-if="evaluating" name="loading">
+            <slot v-if="evaluating" name="loading" v-bind="$attrs">
                 <VPlaceload height="100%" width="100%"></VPlaceload>
             </slot>
             <video v-else-if="isVideo" v-bind="$attrs">

@@ -33,8 +33,7 @@ const props = withDefaults(defineProps<VIconProps>(), {
             props.color && 'is-' + props.color,
             props.rounded && 'is-rounded',
             props.bordered && 'is-bordered',
-        ]"
-    >
+        ]">
         <slot></slot>
     </div>
 </template>
@@ -223,7 +222,7 @@ const props = withDefaults(defineProps<VIconProps>(), {
     }
 
     &.is-primary {
-        background: var(--primary-light-42);
+        background: $primary-light;
 
         &.is-bordered {
             border-color: var(--primary);
@@ -255,7 +254,7 @@ const props = withDefaults(defineProps<VIconProps>(), {
     }
 
     &.is-accent {
-        background: var(--primary-light-36);
+        background: $primary-light;
 
         &.is-bordered {
             border-color: var(--primary);
@@ -271,7 +270,7 @@ const props = withDefaults(defineProps<VIconProps>(), {
     }
 
     &.is-success {
-        background: var(--success-light-45);
+        background: $success-light;
 
         &.is-bordered {
             border-color: var(--success);
@@ -287,7 +286,7 @@ const props = withDefaults(defineProps<VIconProps>(), {
     }
 
     &.is-info {
-        background: var(--info-light-45);
+        background: $info-light;
 
         &.is-bordered {
             border-color: var(--info);
@@ -303,7 +302,7 @@ const props = withDefaults(defineProps<VIconProps>(), {
     }
 
     &.is-warning {
-        background: var(--warning-light-32);
+        background: $warning-light;
 
         &.is-bordered {
             border-color: var(--warning);
@@ -319,7 +318,7 @@ const props = withDefaults(defineProps<VIconProps>(), {
     }
 
     &.is-danger {
-        background: var(--danger-light-36);
+        background: $danger-light;
 
         &.is-bordered {
             border-color: var(--danger);

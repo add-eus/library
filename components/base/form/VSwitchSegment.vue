@@ -32,16 +32,14 @@ const blockSwitchId = `segment-switch-${++instances}`;
         <label
             :for="blockSwitchId"
             class="form-switch"
-            :class="[props.color && `is-${props.color}`]"
-        >
+            :class="[props.color && `is-${props.color}`]">
             <input
                 :id="blockSwitchId"
                 :checked="props.modelValue"
                 v-bind="$attrs"
                 type="checkbox"
                 class="is-switch"
-                @change="emit('update:modelValue', !props.modelValue)"
-            />
+                @change="emit('update:modelValue', !props.modelValue)" />
             <i aria-hidden="true"></i>
         </label>
         <label v-if="props.labelTrue" class="is-label" :for="blockSwitchId">
@@ -298,7 +296,7 @@ const blockSwitchId = `segment-switch-${++instances}`;
 
     &.is-primary {
         .input:checked ~ .slider {
-            background: var(--primary-light-20);
+            background: $primary-light;
 
             &::after {
                 background: var(--primary);
@@ -309,7 +307,7 @@ const blockSwitchId = `segment-switch-${++instances}`;
 
     &.is-success {
         .input:checked ~ .slider {
-            background: var(--success-light-20);
+            background: $success-light;
 
             &::after {
                 background: var(--success);
@@ -320,7 +318,7 @@ const blockSwitchId = `segment-switch-${++instances}`;
 
     &.is-info {
         .input:checked ~ .slider {
-            background: var(--info-light-20);
+            background: $info-light;
 
             &::after {
                 background: var(--info);
@@ -331,7 +329,7 @@ const blockSwitchId = `segment-switch-${++instances}`;
 
     &.is-warning {
         .input:checked ~ .slider {
-            background: var(--warning-light-20);
+            background: $warning-light;
 
             &::after {
                 background: var(--warning);
@@ -342,7 +340,7 @@ const blockSwitchId = `segment-switch-${++instances}`;
 
     &.is-danger {
         .input:checked ~ .slider {
-            background: var(--danger-light-20);
+            background: $danger-light;
 
             &::after {
                 background: var(--danger);
@@ -423,7 +421,7 @@ const blockSwitchId = `segment-switch-${++instances}`;
     .thin-switch {
         &.is-primary {
             .input:checked ~ .slider {
-                background: var(--primary-light-20);
+                background: $primary-light;
 
                 &::after {
                     background: var(--primary);

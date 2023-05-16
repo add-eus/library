@@ -634,8 +634,8 @@ const themeClasses = computed(() => {
 
     .main-sidebar {
         &.is-colored {
-            // background: var(--primary-dark-2);
-            // border-color: var(--primary-dark-2) !important;
+            // background: $primary-dark;
+            // border-color: $primary-dark !important;
 
             .sidebar-inner {
                 .naver {
@@ -666,7 +666,7 @@ const themeClasses = computed(() => {
 
             .profile-dropdown {
                 .status-indicator {
-                    border-color: var(--primary-dark-2) !important;
+                    border-color: $primary-dark !important;
                 }
 
                 .dropdown-menu {

@@ -75,8 +75,7 @@ onMounted(async () => {
                             :class="{
                                 'is-active':
                                     items[content.id] && items[content.id].isActive,
-                            }"
-                        >
+                            }">
                             <button @click="goTo(content.id)" @keydown="goTo(content.id)">
                                 {{ content[props.tabName] }}
                             </button>
@@ -96,8 +95,7 @@ onMounted(async () => {
                             $el: ref,
                             isActive: false,
                         })
-                "
-            >
+                ">
                 <h1 class="title is-4 m-l-10">{{ content[props.tabName] }}</h1>
                 <div v-for="item in filter(content[loopContent])" :key="item.id">
                     <slot :item="item"></slot>
@@ -113,7 +111,7 @@ $height: 50px;
 .vverticalpagination-links {
     position: fixed;
     top: 0;
-    background-color: var(--primary-light-30);
+    background-color: $primary-light;
     width: 100%;
     padding: 5px 0 0 0;
     height: $height;
@@ -139,7 +137,7 @@ $height: 50px;
 
                 &.is-active {
                     background-color: var(--primary);
-                    //box-shadow: inset 0 0 0px 5px var(--primary-light-30);
+                    //box-shadow: inset 0 0 0px 5px $primary-light;
                     a {
                         color: var(--white);
                     }
@@ -178,8 +176,8 @@ $height: 50px;
                     }
 
                     &.is-active {
-                        background-color: var(--primary-dark-30);
-                        //box-shadow: inset 0 0 0px 5px var(--primary-light-30);
+                        background-color: $primary-dark;
+                        //box-shadow: inset 0 0 0px 5px $primary-light;
                         a {
                             color: var(--white);
                         }

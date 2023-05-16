@@ -51,6 +51,8 @@ const props = withDefaults(defineProps<VTagProps>(), {
 </template>
 
 <style lang="scss">
+@import "bulma/sass/utilities/all";
+
 .tag:not(body) {
     display: inline-block;
     line-height: 2.3;
@@ -231,7 +233,11 @@ const props = withDefaults(defineProps<VTagProps>(), {
 
 .is-dark {
     .tag {
-        &:not(.is-primary):not(.is-secondary):not(.is-success):not(.is-info):not(.is-warning):not(.is-danger):not(.is-orange):not(.is-green):not(.is-blue):not(.is-purple) {
+        &:not(.is-primary):not(.is-secondary):not(.is-success):not(.is-info):not(
+                .is-warning
+            ):not(.is-danger):not(.is-orange):not(.is-green):not(.is-blue):not(
+                .is-purple
+            ) {
             background: var(--dark-sidebar-light-10);
             border-color: var(--dark-sidebar-light-10);
             color: var(--dark-dark-text);
@@ -246,7 +252,7 @@ const props = withDefaults(defineProps<VTagProps>(), {
             }
 
             &.is-light {
-                background: var(--primary-light-22);
+                background: $primary-light;
                 color: var(--primary);
             }
         }

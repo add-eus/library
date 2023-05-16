@@ -734,11 +734,11 @@
 
                 &.is-active {
                     border-left-color: var(--primary);
-                    background: var(--primary-light-51);
+                    background: $primary-light;
 
                     &:hover,
                     &:focus {
-                        background: var(--primary-light-51);
+                        background: $primary-light;
                     }
                 }
 
@@ -1028,11 +1028,11 @@
 
                 &.is-active {
                     border-left-color: var(--primary);
-                    background: var(--primary-light-51);
+                    background: $primary-light;
 
                     &:hover,
                     &:focus {
-                        background: var(--primary-light-51);
+                        background: $primary-light;
                     }
                 }
 

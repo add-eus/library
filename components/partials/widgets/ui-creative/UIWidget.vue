@@ -796,7 +796,7 @@ const props = defineProps<{
             }
 
             &.is-green {
-                background: var(--success-light-48);
+                background: $success-light;
             }
 
             .meta {

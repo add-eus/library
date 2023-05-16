@@ -2,6 +2,7 @@
 import { useVModel, watchOnce } from "@vueuse/core";
 import { ref, watch } from "vue";
 import { waitForElementVisible } from "../../../utils/observer";
+import type { Colors } from "../../stores/color";
 
 export interface VInputEmits {
     (event: "update:modelValue", value?: any): void;
@@ -14,6 +15,8 @@ export interface VInputProps {
     format?: Function;
     iconUp?: string;
     iconDown?: string;
+    disabled?: boolean;
+    color: Colors;
 }
 
 const emits = defineEmits<VInputEmits>();
@@ -25,6 +28,8 @@ const props = withDefaults(defineProps<VInputProps>(), {
     format: (line) => line,
     iconUp: "arrow_drop_up",
     iconDown: "arrow_drop_down",
+    disabled: false,
+    color: "primary",
 });
 
 const value = useVModel(props, "modelValue", emits);
@@ -64,10 +69,21 @@ watchOnce(el, () => {
             color="white"
             size="small"
             circle
+            :disabled="disabled"
             @click="value -= props.step" />
         <span v-if="!load" ref="el"></span>
-        <VScrollPicker v-if="load" v-model="value" :options="options" />
-        <VIconButton :icon="iconDown" color="white" circle @click="value += props.step" />
+        <VScrollPicker
+            v-if="load"
+            v-model="value"
+            :options="options"
+            :color="color"
+            :disabled="disabled" />
+        <VIconButton
+            :icon="iconDown"
+            color="white"
+            circle
+            :disabled="disabled"
+            @click="value += props.step" />
     </VFlex>
 </template>
 

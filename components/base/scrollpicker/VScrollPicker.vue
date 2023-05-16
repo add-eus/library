@@ -1,12 +1,14 @@
 <script lang="ts">
 import type { PropType, VNode } from "vue";
 import { defineComponent, h, renderSlot } from "vue";
+import type { Colors } from "../../../stores/color";
+import { useColor } from "../../../stores/color";
 
 function debounce<TFunc extends Function>(handle: TFunc, delay = 83): TFunc {
     // eslint-disable-line @typescript-eslint/ban-types
     let timeout = null as any;
     return function (this: any) {
-        if (timeout) {
+        if (timeout !== null) {
             clearTimeout(timeout);
             timeout = null;
         }
@@ -37,7 +39,7 @@ function normalizeOptions(options: ScrollPickerOptionable[]): ScrollPickerOption
 }
 
 function isTouchEvent(event: any): event is TouchEvent {
-    return event.changedTouches || event.touches;
+    return event.changedTouches !== undefined ? event.changedTouches : event.touches;
 }
 
 function getEventXY(event: TouchEvent | MouseEvent): {
@@ -45,7 +47,9 @@ function getEventXY(event: TouchEvent | MouseEvent): {
     clientY: number;
 } {
     if (isTouchEvent(event)) {
-        return event.changedTouches[0] || event.touches[0];
+        return event.changedTouches[0] !== undefined
+            ? event.changedTouches[0]
+            : event.touches[0];
     }
     return event;
 }
@@ -61,10 +65,17 @@ export type ScrollPickerOptionable = string | number | boolean | ScrollPickerOpt
 
 export default defineComponent({
     props: {
-        modelValue: {},
+        modelValue: {
+            type: [String, Number, Boolean, Object, Array],
+            default: null,
+        },
         label: {
             type: String,
             default: "",
+        },
+        disabled: {
+            type: Boolean,
+            default: false,
         },
         options: {
             type: Array as PropType<ScrollPickerOptionable[]>,
@@ -90,13 +101,17 @@ export default defineComponent({
             type: String,
             default: null,
         },
+        color: {
+            type: String as PropType<Colors>,
+            default: "primary",
+        },
     },
     emits: ["update:modelValue"],
     data() {
         const internalOptions = normalizeOptions(this.options);
 
         let internalIndex = internalOptions.findIndex(
-            (option) => option.value == this.modelValue
+            (option) => option.value === this.modelValue
         );
         if (
             internalIndex === -1 &&
@@ -110,7 +125,7 @@ export default defineComponent({
 
         return {
             refItems: [] as HTMLDivElement[],
-
+            colorValue: useColor(this.color).value,
             internalOptions,
             internalIndex,
             internalValue,
@@ -146,7 +161,7 @@ export default defineComponent({
             }
 
             const nextInternalIndex = this.internalOptions.findIndex(
-                (option) => option.value == value
+                (option) => option.value === value
             );
             if (nextInternalIndex === -1) {
                 this.$emit("update:modelValue", this.internalValue);
@@ -163,7 +178,7 @@ export default defineComponent({
                     normalizeOptions(options));
 
                 let internalIndex = internalOptions.findIndex(
-                    (option) => option.value == this.modelValue
+                    (option) => option.value === this.modelValue
                 );
                 if (
                     internalIndex === -1 &&
@@ -174,8 +189,8 @@ export default defineComponent({
                 }
                 const internalValue = internalOptions[internalIndex]?.value ?? null;
 
-                this.$nextTick(() => {
-                    this.calculatePivots();
+                void this.$nextTick(() => {
+                    void this.calculatePivots();
                     this.scroll = this.findScrollByIndex(internalIndex);
                     this.internalIndex = internalIndex;
                     if (this.internalValue !== internalValue) {
@@ -187,6 +202,9 @@ export default defineComponent({
                 });
             },
             deep: true,
+        },
+        color(value) {
+            this.colorValue = useColor(value).value;
         },
     },
     beforeUpdate() {
@@ -232,10 +250,11 @@ export default defineComponent({
     },
     methods: {
         setRefItem(el: HTMLDivElement) {
+            if (this.disabled) return;
             this.refItems.push(el);
         },
         resize() {
-            this.$nextTick(() => {
+            void this.$nextTick(() => {
                 this.calculatePivots();
                 this.scroll = this.findScrollByIndex(this.internalIndex);
             });
@@ -292,6 +311,7 @@ export default defineComponent({
             return this.scrollOffsetTop - this.pivotsMin;
         },
         onWheel(event: MouseWheelEvent) {
+            if (this.disabled) return;
             if (this.scroll! >= this.scrollMin && event.deltaY < 0) {
                 return;
             }
@@ -340,6 +360,7 @@ export default defineComponent({
             handler();
         }, 200),
         onStart(event: TouchEvent | MouseEvent) {
+            if (this.disabled) return;
             if (event.cancelable) {
                 event.preventDefault();
             }
@@ -391,6 +412,7 @@ export default defineComponent({
             this.isDragging = false;
         },
         onClick(event: TouchEvent | MouseEvent) {
+            if (this.disabled) return;
             const $layerTop = this.$refs.layerTop as HTMLDivElement;
             const $layerBottom = this.$refs.layerBottom as HTMLDivElement;
             const touchInfo = getEventXY(event);
@@ -422,7 +444,7 @@ export default defineComponent({
             this.scroll = this.findScrollByIndex(nextInternalIndex);
 
             this.transitioning = true;
-            if (this.transitionTimer) {
+            if (this.transitionTimer !== null) {
                 clearTimeout(this.transitionTimer);
                 this.transitionTimer = null;
             }
@@ -487,7 +509,7 @@ export default defineComponent({
 
         nodes = nodes.concat(
             this.internalOptions.map((option, index) => {
-                /*const indexCursor = this.internalOptions.length / 2 - index;
+                /* const indexCursor = this.internalOptions.length / 2 - index;
                 const indexPos = indexCursor / this.internalOptions.length;
                 const ratio = 1 - Math.abs(indexPos - step);*/
                 return h(
@@ -503,9 +525,9 @@ export default defineComponent({
                         key: option.value,
                         ref: (el) => el && this.setRefItem(el as HTMLDivElement),
                         style:
-                            typeof this.scroll == "number"
+                            typeof this.scroll === "number"
                                 ? {
-                                      //transform: `scale(${ratio})`,
+                                      // transform: `scale(${ratio})`,
                                   }
                                 : {},
                     },
@@ -562,3 +584,189 @@ export default defineComponent({
     },
 });
 </script>
+
+<style lang="scss">
+@import "bulma/sass/utilities/_all";
+
+.vue-scroll-picker {
+    position: relative;
+    width: 100%;
+    height: 10em;
+    overflow: hidden;
+}
+
+.vue-scroll-picker-rotator {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+}
+
+.vue-scroll-picker-rotator-transition {
+    transition: transform ease 200ms;
+}
+
+.vue-scroll-picker-item {
+    text-align: center;
+    line-height: 2em;
+    color: #333;
+}
+
+.vue-scroll-picker-item-selected {
+    color: #007bff;
+}
+
+.vue-scroll-picker-item-empty,
+.vue-scroll-picker-item-placeholder {
+    color: #aaa;
+}
+
+.vue-scroll-picker-item-empty.vue-scroll-picker-item-selected,
+.vue-scroll-picker-item-placeholder.vue-scroll-picker-item-selected {
+    color: #777;
+}
+
+.vue-scroll-picker-layer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.vue-scroll-picker-layer-top,
+.vue-scroll-picker-layer-selection,
+.vue-scroll-picker-layer-bottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+
+.vue-scroll-picker-layer-top {
+    box-sizing: border-box;
+    background: linear-gradient(180deg, #fff 10%, rgb(255 255 255 / 70%));
+    top: 0;
+    height: calc(50% - 1em);
+    cursor: pointer;
+}
+
+.vue-scroll-picker-layer-selection {
+    top: calc(50% - 1em);
+    bottom: calc(50% - 1em);
+}
+
+.vue-scroll-picker-layer-bottom {
+    background: linear-gradient(0deg, #fff 10%, rgb(255 255 255/ 70%));
+    bottom: 0;
+    height: calc(50% - 1em);
+    cursor: pointer;
+}
+
+.vue-scroll-picker {
+    label {
+        color: var(--light-text);
+        font-size: 0.9rem;
+        font-family: $family-sans-serif;
+        font-weight: 700;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+    }
+
+    .vue-scroll-picker-rotator {
+        &:not(.handling) {
+            //transition: transform 3s ease-in-out;
+        }
+
+        .vue-scroll-picker-item {
+            color: var(--dark);
+            font-size: 1rem;
+        }
+
+        .vue-scroll-picker-item.vue-scroll-picker-item-selected {
+            color: $primary;
+        }
+    }
+
+    .vue-scroll-picker-layer {
+        .vue-scroll-picker-layer-top {
+            border: none;
+            background: linear-gradient(180deg, var(--white) 40%, rgb(255 255 255 / 0%));
+        }
+
+        .vue-scroll-picker-layer-bottom {
+            border: none;
+            background: linear-gradient(0deg, var(--white) 40%, rgb(255 255 255 / 0%));
+        }
+    }
+}
+
+.is-dark {
+    .vue-scroll-picker {
+        color: $white;
+
+        .vue-scroll-picker-rotator {
+            .vue-scroll-picker-item {
+                color: $white;
+            }
+
+            .vue-scroll-picker-item.vue-scroll-picker-item-selected {
+                color: $primary;
+            }
+        }
+
+        .vue-scroll-picker-layer {
+            //box-shadow: inset 0 0 5px 20px var(--dark-sidebar-light-6);
+
+            .vue-scroll-picker-layer-top {
+                background: linear-gradient(
+                    180deg,
+                    var(--dark-sidebar-light-6) 40%,
+                    rgb(255 255 255 / 0%)
+                );
+            }
+
+            .vue-scroll-picker-layer-bottom {
+                background: linear-gradient(
+                    0deg,
+                    var(--dark-sidebar-light-6) 40%,
+                    rgb(255 255 255 / 0%)
+                );
+            }
+        }
+    }
+}
+
+.vue-scroll-picker-group {
+    display: flex;
+
+    > .vue-scroll-picker {
+        > .vue-scroll-picker-layer {
+            .vue-scroll-picker-layer-selection {
+                border-top: 1px solid #b5b5b5;
+                border-bottom: 1px solid #b5b5b5;
+            }
+        }
+    }
+
+    > .vue-scroll-picker:first-child {
+        > .vue-scroll-picker-layer {
+            .vue-scroll-picker-layer-selection {
+                border-left: 1px solid #b5b5b5;
+                border-radius: 20px 0 0 20px;
+            }
+        }
+    }
+
+    > .vue-scroll-picker:last-child {
+        > .vue-scroll-picker-layer {
+            .vue-scroll-picker-layer-selection {
+                border-right: 1px solid #b5b5b5;
+                border-radius: 0 20px 20px 0;
+            }
+        }
+    }
+}
+</style>

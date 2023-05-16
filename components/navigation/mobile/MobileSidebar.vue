@@ -20,16 +20,17 @@ const props = withDefaults(
 </script>
 
 <template>
-    <div :class="[props.isOpen && 'is-active']" class="mobile-main-sidebar">
-        <Sidebar :theme="theme" :root-page="rootPage">
-            <template #links>
-                <slot name="links"></slot>
-            </template>
-            <template #bottom-links>
-                <slot name="bottom-links"></slot>
-            </template>
-        </Sidebar>
-        <!-- <div class="inner">
+    <div v-if="props.isOpen" class="root-mobile-sidebar">
+        <div :class="[props.isOpen && 'is-active']" class="mobile-main-sidebar">
+            <Sidebar :theme="theme" :root-page="rootPage">
+                <template #links>
+                    <slot name="links"></slot>
+                </template>
+                <template #bottom-links>
+                    <slot name="bottom-links"></slot>
+                </template>
+            </Sidebar>
+            <!-- <div class="inner">
             <ul class="icon-side-menu">
                 <slot name="links">
                     <li>
@@ -47,18 +48,25 @@ const props = withDefaults(
                 <slot name="bottom-links"></slot>
             </ul>
         </div> -->
-    </div>
+        </div>
 
-    <button
-        v-if="props.isOpen"
-        class="mobile-overlay"
-        tabindex="0"
-        @keydown.space.prevent="emit('toggle')"
-        @click="emit('toggle')"></button>
+        <button
+            class="mobile-overlay"
+            tabindex="0"
+            @keydown.space.prevent="emit('toggle')"
+            @click="emit('toggle')"></button>
+    </div>
 </template>
 
 <style lang="scss">
 @import "bulma/sass/utilities/all";
+
+.root-mobile-sidebar {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 10;
+}
 
 .mobile-overlay {
     background: rgb(0 0 0 / 30%);
@@ -426,11 +434,11 @@ const props = withDefaults(
 
             &.is-active {
                 border-left-color: $primary;
-                background: var(--primary-light-51);
+                background: $primary-light;
 
                 &:hover,
                 &:focus {
-                    background: var(--primary-light-51);
+                    background: $primary-light;
                 }
             }
 
@@ -583,7 +591,7 @@ const props = withDefaults(
 
             &.is-active {
                 opacity: 1;
-                background: var(--primary-light-51);
+                background: $primary-light;
                 border-left-color: $primary;
 
                 &.is-eth {
