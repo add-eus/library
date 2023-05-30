@@ -60,6 +60,7 @@ const updateFormButton = useDebounceFn(function () {
                 ? translate(".wizard.submit").value
                 : translate(".wizard.next").value,
             validations.value[currentStep.value] === undefined ||
+                validations.value[currentStep.value] === null ||
                 validations.value[currentStep.value].field.hasChildErrors() === false,
             isLastStep
                 ? undefined
