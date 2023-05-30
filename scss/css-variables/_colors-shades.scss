@@ -4,6 +4,22 @@ $shade-variants: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 
 @import "bulma/sass/utilities/all";
 
 :root {
+    @each $shade in 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20, 22, 25, 55 {
+        --dark-sidebar-light-#{$shade}: hsl(
+            var(--dark-sidebar-h)
+                var(--dark-sidebar-s)
+                calc(var(--dark-sidebar-l) + #{$shade + "%"})
+        );
+    }
+
+    @each $shade in 2, 3, 4, 5, 6, 10, 12 {
+        --dark-sidebar-dark-#{$shade}: hsl(
+            var(--dark-sidebar-h)
+                var(--dark-sidebar-s)
+                calc(var(--dark-sidebar-l) - #{$shade + "%"})
+        );
+    }
+
     --primary: #{$primary};
     --primary-dark: #{$primary-dark};
     --primary-light: #{$primary-light};
