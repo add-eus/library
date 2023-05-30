@@ -80,60 +80,62 @@ defineExpose({ nextStep, previousStep, setStep });
 </script>
 
 <template>
-    <VFlex>
-        <VFlexItem flex-grow="1" :flex-shrink="1">
-            <div
-                v-for="i in props.steps.length"
-                :key="i"
-                :class="currentStep !== i ? 'is-hidden' : ''">
-                <VValidation
-                    :ref="
-                        (element) => {
-                            validations[i] = element;
-                            if (element !== null)
-                                element.field.onChange(updateFormButton);
-                        }
-                    "
-                    v-slot="{ field }"
-                    v-model="modelValue"
-                    :schema="yup.object()"
-                    :property="`step-${i}`">
-                    <slot :name="`step-${i}`" :field="field"> </slot>
-                </VValidation>
-            </div>
-        </VFlexItem>
-        <VFlexItem v-if="!props.hideSteps" class="wizard-column">
-            <div class="wizard">
+    <div>
+        <VFlex>
+            <VFlexItem flex-grow="1" :flex-shrink="1">
                 <div
                     v-for="i in props.steps.length"
                     :key="i"
-                    :onclick="() => setStep(i)"
-                    class="step"
-                    :class="{ done: currentStep >= i }">
-                    <div v-if="i < props.steps.length" class="v-line"></div>
-                    <span>{{ props.steps[i - 1] }}</span>
+                    :class="currentStep !== i ? 'is-hidden' : ''">
+                    <VValidation
+                        :ref="
+                            (element) => {
+                                validations[i] = element;
+                                if (element !== null)
+                                    element.field.onChange(updateFormButton);
+                            }
+                        "
+                        v-slot="{ field }"
+                        v-model="modelValue"
+                        :schema="yup.object()"
+                        :property="`step-${i}`">
+                        <slot :name="`step-${i}`" :field="field"> </slot>
+                    </VValidation>
                 </div>
-            </div>
-        </VFlexItem>
-    </VFlex>
-    <VFlex v-if="!props.hideActions && !setSubmitButton" justify-content="center">
-        <TranslateNamespace path=".wizard">
-            <VButton class="m-1" :disabled="currentStep <= 1" @click="previousStep">
-                <Translate>.previous</Translate>
-            </VButton>
-            <VButton
-                class="m-1"
-                color="primary"
-                :disabled="
-                    currentStep >= props.steps.length ||
-                    (validations[currentStep] !== null &&
-                        validations[currentStep].field.hasChildErrors())
-                "
-                @click="nextStep">
-                <Translate>.next</Translate>
-            </VButton>
-        </TranslateNamespace>
-    </VFlex>
+            </VFlexItem>
+            <VFlexItem v-if="!props.hideSteps" class="wizard-column">
+                <div class="wizard">
+                    <div
+                        v-for="i in props.steps.length"
+                        :key="i"
+                        :onclick="() => setStep(i)"
+                        class="step"
+                        :class="{ done: currentStep >= i }">
+                        <div v-if="i < props.steps.length" class="v-line"></div>
+                        <span>{{ props.steps[i - 1] }}</span>
+                    </div>
+                </div>
+            </VFlexItem>
+        </VFlex>
+        <VFlex v-if="!props.hideActions && !setSubmitButton" justify-content="center">
+            <TranslateNamespace path=".wizard">
+                <VButton class="m-1" :disabled="currentStep <= 1" @click="previousStep">
+                    <Translate>.previous</Translate>
+                </VButton>
+                <VButton
+                    class="m-1"
+                    color="primary"
+                    :disabled="
+                        currentStep >= props.steps.length ||
+                        (validations[currentStep] !== null &&
+                            validations[currentStep].field.hasChildErrors())
+                    "
+                    @click="nextStep">
+                    <Translate>.next</Translate>
+                </VButton>
+            </TranslateNamespace>
+        </VFlex>
+    </div>
 </template>
 
 <style lang="scss" scoped>
