@@ -29,10 +29,10 @@ const previousStep = () => {
     if (currentStep.value <= 1) return;
     currentStep.value--;
 };
-const setStep = (value: number) => {
+const setStep = (value: number): number => {
     if (value <= currentStep.value) {
         currentStep.value = value;
-        return;
+        return value;
     }
 
     let lastValidStep = currentStep.value;
@@ -43,6 +43,7 @@ const setStep = (value: number) => {
         lastValidStep++;
     }
     currentStep.value = lastValidStep;
+    return lastValidStep;
 };
 watch(currentStep, () => {
     emits("update:currentStep", currentStep.value);
