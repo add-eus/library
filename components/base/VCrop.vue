@@ -27,11 +27,10 @@ defineExpose({ getResult });
             :stencil-props="{
                 aspectRatio: props.options?.aspectRatio,
             }"
-            :canvas="{
-                minWidth: props.options?.minWidth,
-                minHeight: props.options?.minHeight,
-                maxWidth: props.options?.maxWidth,
-                maxHeight: props.options?.maxHeight,
-            }" />
+            :min-height="props.options?.minHeight"
+            :min-width="props.options?.minWidth"
+            :max-height="props.options?.maxHeight"
+            :max-width="props.options?.maxWidth"
+            :size-restrictions-algorithm="(size: any) => size" />
     </div>
 </template>

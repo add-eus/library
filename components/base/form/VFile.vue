@@ -9,6 +9,7 @@ import FilePondPluginMediaPreview from "filepond-plugin-media-preview";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import { useStorage } from "../../../stores/storage";
+import type { CropOptions } from "../../../stores/cropModal";
 import { useCropModal } from "../../../stores/cropModal";
 
 export type VFileProps = {
@@ -18,6 +19,8 @@ export type VFileProps = {
     button?: boolean;
     accepts?: string[];
     label?: string;
+    cropOptions?: CropOptions;
+    name: string;
 };
 
 export interface NewFileEvent {
@@ -37,6 +40,7 @@ const props = withDefaults(defineProps<VFileProps>(), {
     button: false,
     accepts: () => ["image/png", "image/jpeg", "image/gif"],
     label: "",
+    cropOptions: undefined,
 });
 
 const Filepond = vueFilePond(
@@ -53,6 +57,7 @@ const emit = defineEmits<VFileEmits>();
 const pond = ref<any>(null);
 
 const field = inject<any>("field");
+const imageIsTooSmall = ref(false);
 
 const uploadedImages = computed(() => {
     if (props.modelValue === undefined) {
@@ -96,8 +101,27 @@ async function process(fieldName, file, metadata, loadFile, error) {
         if (!skipNextFile && file.type.match(/image\/*/) !== null) {
             try {
                 const blobURL = URL.createObjectURL(file);
-                blob = await cropModal(blobURL);
-                URL.revokeObjectURL(blobURL);
+                var img = new Image();
+                const p = new Promise<void>((resolve) => {
+                    img.onload = async function (this: any) {
+                        if (
+                            (props.cropOptions?.minWidth !== undefined &&
+                                this.width < props.cropOptions?.minWidth) ||
+                            (props.cropOptions?.minHeight !== undefined &&
+                                this.height < props.cropOptions?.minHeight)
+                        ) {
+                            error();
+                            imageIsTooSmall.value = true;
+                            return;
+                        }
+                        imageIsTooSmall.value = false;
+                        blob = await cropModal(blobURL, props.cropOptions);
+                        URL.revokeObjectURL(blobURL);
+                        resolve();
+                    };
+                });
+                img.src = blobURL;
+                await p;
             } catch {}
         }
         if (blob === undefined) {
@@ -185,37 +209,44 @@ function emitChangedEvent() {
 </script>
 
 <template>
-    <Filepond
-        ref="pond"
-        name="profile_filepond"
-        :class="button ? 'button v-button is-raised is-primary' : 'profile_filepond'"
-        :chunk-retry-delays="[500, 1000, 3000]"
-        :label-idle="
-            button
-                ? '<span class=&quot;icon&quot;><i aria-hidden=&quot;true&quot; class=&quot;fas fa-file-upload&quot;></i></span><span>' +
-                  label +
-                  '</span>'
-                : '<i class=&quot;material-icons-outlined&quot;>cloud_upload</i>'
-        "
-        :accepted-file-types="accepts"
-        :image-preview-height="300"
-        :image-resize-target-width="1000"
-        :image-resize-target-height="1000"
-        image-crop-aspect-ratio="1:1"
-        :style-load-indicator-position="'center bottom'"
-        :style-progress-indicator-position="'right bottom'"
-        :style-button-remove-item-position="'left bottom'"
-        :style-button-process-item-position="'right bottom'"
-        :allow-multiple="multiple"
-        :allow-revert="true"
-        :allow-reorder="multiple && uploadedImages.length > 1"
-        :files="uploadedImages"
-        :server="{ load, process, remove, revert }"
-        @processfile="fileUploaded"
-        @removefile="fileReverted"
-        @reorderfiles="reorderFiles"
-        @error="error"
-        @addfile="fileAdd" />
+    <div>
+        <Filepond
+            ref="pond"
+            name="profile_filepond"
+            :class="button ? 'button v-button is-raised is-primary' : 'profile_filepond'"
+            :chunk-retry-delays="[500, 1000, 3000]"
+            :label-idle="
+                button
+                    ? '<span class=&quot;icon&quot;><i aria-hidden=&quot;true&quot; class=&quot;fas fa-file-upload&quot;></i></span><span>' +
+                      label +
+                      '</span>'
+                    : '<i class=&quot;material-icons-outlined&quot;>cloud_upload</i>'
+            "
+            :accepted-file-types="accepts"
+            :image-preview-height="300"
+            :image-resize-target-width="1000"
+            :image-resize-target-height="1000"
+            :style-load-indicator-position="'center bottom'"
+            :style-progress-indicator-position="'right bottom'"
+            :style-button-remove-item-position="'left bottom'"
+            :style-button-process-item-position="'right bottom'"
+            :allow-multiple="multiple"
+            :allow-revert="true"
+            :allow-reorder="multiple && uploadedImages.length > 1"
+            :files="uploadedImages"
+            :server="{ load, process, remove, revert }"
+            @processfile="fileUploaded"
+            @removefile="fileReverted"
+            @reorderfiles="reorderFiles"
+            @error="error"
+            @addfile="fileAdd" />
+        <p v-if="imageIsTooSmall" class="help is-danger">
+            <Translate
+                :values="{ minWidth: cropOptions!.minWidth, minHeight: cropOptions!.minHeight}"
+                >.{{ name }}.validation.imageIsTooSmall</Translate
+            >
+        </p>
+    </div>
 </template>
 
 <style lang="scss">
