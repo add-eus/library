@@ -264,6 +264,7 @@ if (input.value.type === "file" && input.value.attrs.multiple === true) {
                         :id="id"
                         v-model="field.value"
                         :name="property"
+                        :crop-options="input.attrs.cropOptions"
                         :is-uploading="isProcessing"
                         :multiple="input.attrs.multiple"
                         :storage-path="modelValue.$getModelName()"
