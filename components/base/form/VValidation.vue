@@ -51,14 +51,11 @@ watch(
     }
 );
 
-watch(
-    () => field.value,
-    async () => {
-        await field.validate();
-        emits("update:modelValue", field.value);
-        onChangeCallbacks.forEach((callback) => callback());
-    }
-);
+watch([() => field.value, () => props.schema], async () => {
+    await field.validate();
+    emits("update:modelValue", field.value);
+    onChangeCallbacks.forEach((callback) => callback());
+});
 
 watch(
     () => field.isProcessing,
