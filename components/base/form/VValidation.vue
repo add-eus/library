@@ -15,6 +15,7 @@ export interface VValidationEmits {
 
 const props = withDefaults(defineProps<VValidationProps>(), {
     schema: yup.object(),
+    updateOn: undefined,
 });
 const emits = defineEmits<VValidationEmits>();
 
@@ -107,5 +108,7 @@ defineExpose({ field });
 </script>
 
 <template>
-    <slot :field="field"></slot>
+    <div>
+        <slot :field="field"></slot>
+    </div>
 </template>
