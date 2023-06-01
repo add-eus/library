@@ -15,6 +15,7 @@ export interface VValidationEmits {
 
 const props = withDefaults(defineProps<VValidationProps>(), {
     schema: yup.object(),
+    updateOn: undefined,
 });
 const emits = defineEmits<VValidationEmits>();
 
@@ -51,14 +52,11 @@ watch(
     }
 );
 
-watch(
-    () => field.value,
-    async () => {
-        await field.validate();
-        emits("update:modelValue", field.value);
-        onChangeCallbacks.forEach((callback) => callback());
-    }
-);
+watch([() => field.value, () => props.schema], async () => {
+    await field.validate();
+    emits("update:modelValue", field.value);
+    onChangeCallbacks.forEach((callback) => callback());
+});
 
 watch(
     () => field.isProcessing,
@@ -110,5 +108,7 @@ defineExpose({ field });
 </script>
 
 <template>
-    <slot :field="field"></slot>
+    <div>
+        <slot :field="field"></slot>
+    </div>
 </template>
