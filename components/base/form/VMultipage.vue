@@ -23,22 +23,29 @@ const tabs = computed(() => {
 const tabSelected = ref("1");
 watch(tabSelected, () => {
     if (wizardRef.value === undefined) return;
-    wizardRef.value.setStep(Number.parseInt(tabSelected.value));
+    const step = wizardRef.value.setStep(Number.parseInt(tabSelected.value));
+    tabSelected.value = step.toString();
 });
 </script>
 
 <template>
-    <VTabs v-if="props.mode === 'tabs'" v-model="tabSelected" :tabs="tabs" class="mb-4">
-    </VTabs>
-    <VWizard
-        :ref="(ref: any) => (wizardRef = ref)"
-        :model-value="props.modelValue"
-        :steps="steps"
-        :hide-actions="props.mode !== 'wizard'"
-        :hide-steps="props.mode !== 'wizard'"
-        @update:current-step="(currentStep: number) => (tabSelected = currentStep.toString())">
-        <template v-for="stepName in stepNames" #[stepName]="{ field }">
-            <slot :name="stepName" :field="field"></slot>
-        </template>
-    </VWizard>
+    <div>
+        <VTabs
+            v-if="props.mode === 'tabs'"
+            v-model="tabSelected"
+            :tabs="tabs"
+            class="mb-4">
+        </VTabs>
+        <VWizard
+            :ref="(ref: any) => (wizardRef = ref)"
+            :model-value="props.modelValue"
+            :steps="steps"
+            :hide-actions="props.mode !== 'wizard'"
+            :hide-steps="props.mode !== 'wizard'"
+            @update:current-step="(currentStep: number) => (tabSelected = currentStep.toString())">
+            <template v-for="stepName in stepNames" #[stepName]="{ field }">
+                <slot :name="stepName" :field="field"></slot>
+            </template>
+        </VWizard>
+    </div>
 </template>
