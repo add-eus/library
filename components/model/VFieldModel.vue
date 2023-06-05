@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /* eslint vue/no-mutating-props: 0 */
+import type { ComputedRef } from "vue";
 import { computed, ref } from "vue";
 import { VueTelInput } from "vue-tel-input";
 import * as yup from "yup";
@@ -14,6 +15,7 @@ export interface VFieldModelProps {
     property: string;
     icon?: string;
     options?: any;
+    selectOptions?: any[];
     labelAttr?: any;
     label?: string;
 }
@@ -32,7 +34,13 @@ const isProcessing = ref(false);
 
 let schema = yup.string(`.${props.property}.validation.string`);
 
-let selectOptions: any[] = props.options !== undefined ? props.options : [];
+let selectOptions: ComputedRef<any[] | undefined> | never[] =
+    props.selectOptions !== undefined
+        ? computed(() => {
+              return props.selectOptions;
+          })
+        : [];
+
 if (input.value.attrs.options !== undefined) {
     if (input.value.attrs.options.entity !== undefined) {
         const wheres =
@@ -223,8 +231,8 @@ if (input.value.type === "file" && input.value.attrs.multiple === true) {
                             v-model="field.value"
                             :value="option.value"
                             :name="id"
-                            color="primary"
-                            >{{ option.label }}</VRadio
+                            color="primary">
+                            <Translate>{{ option.label }}</Translate></VRadio
                         >
                     </VFlex>
 
