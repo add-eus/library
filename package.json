@@ -177,7 +177,7 @@
         "tsuml2": "^0.7.0",
         "typescript": "^5.0.2",
         "unplugin-vue-components": "^0.22.12",
-        "vite": "^4.1.4",
+        "vite": "^4.2.3",
         "vite-imagetools": "4.0.18",
         "vite-plugin-dynamic-import": "^1.2.6",
         "vite-plugin-dynamic-import-module": "^0.2.1",
