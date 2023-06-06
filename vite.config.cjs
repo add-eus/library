@@ -71,7 +71,7 @@ module.exports.define = function (config = {}) {
             cacheDir: cacheDir,
 
             css: {
-                devSourcemap: DEV,
+                devSourcemap: config.map !== undefined ? config.map : DEV,
                 preprocessorOptions: {
                     scss: {
                         additionalData: config.additionalScss,
@@ -101,7 +101,7 @@ module.exports.define = function (config = {}) {
             build: {
                 minify: !DEV ? "esbuild" : false,
                 reportCompressedSize: !DEV,
-                sourcemap: !DEV,
+                sourcemap: config.map !== undefined ? config.map : !DEV,
                 outDir: outDir,
                 emptyOutDir: true,
                 //chunkSizeWarningLimit: 3000,
