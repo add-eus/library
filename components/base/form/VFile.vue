@@ -58,6 +58,7 @@ const pond = ref<any>(null);
 
 const field = inject<any>("field");
 const imageIsTooSmall = ref(false);
+const aspectRatioIsWrong = ref(false);
 
 const uploadedImages = computed(() => {
     if (props.modelValue === undefined) {
@@ -89,6 +90,24 @@ async function load(url, load) {
         console.error(err);
     }
 }
+
+const getImageSize = async (url: string) => {
+    var img = new Image();
+    const loadPromise = new Promise<{ width: number; height: number; ratio: number }>(
+        (resolve) => {
+            img.onload = async function (this: any) {
+                resolve({
+                    width: this.width,
+                    height: this.height,
+                    ratio: this.width / this.height,
+                });
+            };
+        }
+    );
+    img.src = url;
+    return await loadPromise;
+};
+
 let skipNextFile = false;
 async function process(fieldName, file, metadata, loadFile, error) {
     if (!props.storagePath) {
@@ -101,30 +120,34 @@ async function process(fieldName, file, metadata, loadFile, error) {
         if (!skipNextFile && file.type.match(/image\/*/) !== null) {
             try {
                 const blobURL = URL.createObjectURL(file);
-                var img = new Image();
-                const p = new Promise<void>((resolve) => {
-                    img.onload = async function (this: any) {
-                        if (
-                            (props.cropOptions?.minWidth !== undefined &&
-                                this.width < props.cropOptions?.minWidth) ||
-                            (props.cropOptions?.minHeight !== undefined &&
-                                this.height < props.cropOptions?.minHeight)
-                        ) {
-                            error();
-                            imageIsTooSmall.value = true;
-                            return;
-                        }
-                        imageIsTooSmall.value = false;
-                        blob = await cropModal(blobURL, props.cropOptions);
-                        URL.revokeObjectURL(blobURL);
-                        resolve();
-                    };
-                });
-                img.src = blobURL;
-                await p;
+                const { width, height } = await getImageSize(blobURL);
+                if (
+                    (props.cropOptions?.minWidth !== undefined &&
+                        width < props.cropOptions?.minWidth) ||
+                    (props.cropOptions?.minHeight !== undefined &&
+                        height < props.cropOptions?.minHeight)
+                ) {
+                    error();
+                    imageIsTooSmall.value = true;
+                    return;
+                }
+                imageIsTooSmall.value = false;
+                blob = await cropModal(blobURL, props.cropOptions);
+                URL.revokeObjectURL(blobURL);
             } catch {}
         }
         if (blob === undefined) {
+            const blobURL = URL.createObjectURL(file);
+            const { ratio } = await getImageSize(blobURL);
+            if (
+                props.cropOptions?.aspectRatio !== undefined &&
+                ratio !== props.cropOptions?.aspectRatio
+            ) {
+                error();
+                aspectRatioIsWrong.value = true;
+                return;
+            }
+            aspectRatioIsWrong.value = false;
             const path = await storage.upload(file, props.storagePath);
             loadFile(path);
             emit("newFile", { fileType: file.type });
@@ -244,6 +267,11 @@ function emitChangedEvent() {
             <Translate
                 :values="{ minWidth: cropOptions!.minWidth, minHeight: cropOptions!.minHeight}"
                 >.{{ name }}.validation.imageIsTooSmall</Translate
+            >
+        </p>
+        <p v-if="aspectRatioIsWrong" class="help is-danger">
+            <Translate :values="{ aspectRatio: cropOptions!.aspectRatio }"
+                >.{{ name }}.validation.aspectRatioIsWrong</Translate
             >
         </p>
     </div>
