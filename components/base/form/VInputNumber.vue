@@ -63,7 +63,7 @@ watchOnce(el, () => {
 </script>
 
 <template>
-    <VFlex flex-direction="column">
+    <VFlex flex-direction="column" align-items="center" class="v-input-number">
         <VIconButton
             :icon="iconUp"
             color="white"
@@ -90,13 +90,27 @@ watchOnce(el, () => {
 <style lang="scss">
 @import "bulma/sass/utilities/all";
 
-.vue-scroll-picker {
-    > .vue-scroll-picker-rotator {
-        > .vue-scroll-picker-item {
-            &.vue-scroll-picker-item-selected {
-                color: $primary;
+.v-input-number {
+    > .button:first-child {
+        margin-bottom: -25px;
+        z-index: 1;
+    }
+
+    > .vue-scroll-picker {
+        z-index: 0;
+
+        > .vue-scroll-picker-rotator {
+            > .vue-scroll-picker-item {
+                &.vue-scroll-picker-item-selected {
+                    color: $primary;
+                }
             }
         }
+    }
+
+    > .button:last-child {
+        margin-top: -25px;
+        z-index: 1;
     }
 }
 </style>
