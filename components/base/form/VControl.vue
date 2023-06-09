@@ -153,7 +153,7 @@ export default defineComponent({
         }
 
         > .multiselect {
-            //padding-left: 38px;
+            padding-left: 38px;
 
             > .multiselect-single-label {
                 left: 25px;
