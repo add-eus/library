@@ -134,7 +134,10 @@ async function process(fieldName, file, metadata, loadFile, error) {
                 imageIsTooSmall.value = false;
                 blob = await cropModal(blobURL, props.cropOptions);
                 URL.revokeObjectURL(blobURL);
-            } catch {}
+            } catch {
+                error();
+                return;
+            }
         }
         if (blob === undefined) {
             const blobURL = URL.createObjectURL(file);
