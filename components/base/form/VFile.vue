@@ -155,7 +155,7 @@ async function process(fieldName, file, metadata, loadFile, error) {
         } else {
             error();
             skipNextFile = true;
-            pond.value.addFile(blob);
+            setTimeout(() => pond.value.addFile(blob), 100);
         }
         emit("endProcessing");
         if (field !== undefined) field.isProcessing = false;
