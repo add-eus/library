@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watchEffect, onUnmounted } from "vue";
 
-export type VModalSize = "small" | "medium" | "large" | "big";
+export type VModalSize = "small" | "medium" | "large" | "big" | "giant";
 export type VModalAction = "center" | "right";
 
 export interface VModalEmits {
@@ -113,6 +113,17 @@ defineExpose({
 .modal {
     transition: all 0.5s;
     color: $grey;
+
+    &.is-giant {
+        .modal-content {
+            width: 100%;
+            max-width: 1100px;
+
+            .modal-card {
+                width: 100%;
+            }
+        }
+    }
 
     &.is-big {
         .modal-content {
