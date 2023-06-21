@@ -46,7 +46,8 @@ class Queue {
             subCallback = (previousItem: any) => {
                 const onUpdate = useDebounceFn(
                     (list: any[], snapshots: DocumentSnapshot[]) => {
-                        if (list.length === 0) return resolve(list);
+                        console.log("onUpdate", list, snapshots, chunkIndex);
+                        // if (list.length === 0) return resolve(list);
                         this.chunk[chunkIndex] = list;
 
                         const newList = [...this.list];
