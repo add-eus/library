@@ -1,3 +1,4 @@
+import type { Ref } from "vue";
 import { watch, isRef, shallowReactive, onScopeDispose, getCurrentScope } from "vue";
 import algoliasearch from "algoliasearch";
 import type {
@@ -5,8 +6,9 @@ import type {
     QueryConstraint,
     OrderByDirection,
     DocumentSnapshot,
+    QueryFilterConstraint,
 } from "firebase/firestore";
-import { where, orderBy, collection, doc } from "firebase/firestore";
+import { where, orderBy, collection, doc, or, and } from "firebase/firestore";
 import { useFirebase } from "../firebase";
 import { until } from "@vueuse/core";
 import { Query } from "./query";
@@ -17,22 +19,59 @@ export { Input } from "./input";
 export { Entity, EntityBase } from "./entity";
 export { Var } from "./var";
 
+export type WhereOption = [string, WhereFilterOp, any];
+export type OrderOption = [string, OrderByDirection];
+
+export interface CompositeConstraint {
+    type: "OR" | "AND" | "WHERE";
+    constraints: CompositeConstraint[] | WhereOption;
+}
+
+export interface CollectionOptions {
+    wheres?: WhereOption[] | Ref<WhereOption[]>;
+    orders?: OrderOption[] | Ref<OrderOption[]>;
+    limit?: number | Ref<number>;
+    search?: string | Ref<string>;
+    compositeConstraint?: CompositeConstraint | Ref<CompositeConstraint>;
+}
+
 const cachedEntities: { [key: string]: { usedBy: number; entity: any } } = {};
 const algoliaClient = algoliasearch(
     import.meta.env.VITE_ALGOLIA_APPLICATION_ID,
     import.meta.env.VITE_ALGOLIA_API_KEY
 );
 
-function transformWheres(whereOptions: [] = []): QueryConstraint[] {
+function transformWheres(whereOptions: WhereOption[] = []): QueryConstraint[] {
     return whereOptions.map((whereOption: [string, WhereFilterOp, any]) => {
         return where(...whereOption);
     });
 }
 
-function transformOrders(orderOptions: [] = []): QueryConstraint[] {
+function transformOrders(orderOptions: OrderOption[] = []): QueryConstraint[] {
     return orderOptions.map((orderOption: [string, OrderByDirection]) => {
         return orderBy(...orderOption);
     });
+}
+
+function transformCompositeConstraint(
+    compositeConstraint: CompositeConstraint
+): QueryFilterConstraint {
+    if (compositeConstraint.type === "OR") {
+        return or(
+            ...compositeConstraint.constraints.map((c) =>
+                transformCompositeConstraint(c as CompositeConstraint)
+            )
+        );
+    } else if (compositeConstraint.type === "AND") {
+        return and(
+            ...compositeConstraint.constraints.map((c) =>
+                transformCompositeConstraint(c as CompositeConstraint)
+            )
+        );
+    } else if (compositeConstraint.type === "WHERE") {
+        return where(...(compositeConstraint.constraints as WhereOption));
+    }
+    throw new Error("Invalid composite constraint type");
 }
 
 export class Collection<T> extends Array<T> {
@@ -53,8 +92,11 @@ export class Collection<T> extends Array<T> {
  */
 export function useCollection<T extends typeof Entity>(
     collectionModel: T,
-    options: any
+    options: CollectionOptions
 ): Collection<InstanceType<T>> {
+    if (options.wheres !== undefined && options.compositeConstraint !== undefined) {
+        throw new Error("You can't use both wheres and compositeConstraint");
+    }
     const onDestroy: (() => void)[] = [];
     getCurrentScope()
         ? onScopeDispose(() => {
@@ -81,7 +123,17 @@ export function useCollection<T extends typeof Entity>(
     let orders: QueryConstraint[] = transformOrders(
         isRef(options.orders) ? options.orders.value : options.orders
     );
-    let search: string = isRef(options.search) ? options.search.value : options.search;
+    let search: string | undefined = isRef(options.search)
+        ? options.search.value
+        : options.search;
+
+    const compositeConstraintOption = isRef(options.compositeConstraint)
+        ? options.compositeConstraint.value
+        : options.compositeConstraint;
+    let compositeConstraint =
+        compositeConstraintOption === undefined
+            ? undefined
+            : transformCompositeConstraint(compositeConstraintOption);
 
     let query: Query | QuerySearch | null;
 
@@ -90,8 +142,11 @@ export function useCollection<T extends typeof Entity>(
         if (query) query.destroy();
 
         if (search && search.length > 0) {
+            const constraints = [...wheres, ...orders];
+            if (compositeConstraint !== undefined)
+                constraints.push(compositeConstraint as any);
             query = new QuerySearch(
-                [...wheres, ...orders],
+                constraints,
                 entities,
                 (doc: DocumentSnapshot) => {
                     return transform(doc, collectionModel, (callback) => {
@@ -103,8 +158,11 @@ export function useCollection<T extends typeof Entity>(
                 algoliaIndex
             );
         } else {
+            const constraints = [...wheres, ...orders];
+            if (compositeConstraint !== undefined)
+                constraints.push(compositeConstraint as any);
             query = new Query(
-                [...wheres, ...orders],
+                constraints,
                 entities,
                 (doc: DocumentSnapshot) => {
                     return transform(doc, collectionModel, (callback) => {
@@ -134,7 +192,7 @@ export function useCollection<T extends typeof Entity>(
 
     if (isRef(options.wheres))
         watch(options.wheres, () => {
-            wheres = transformWheres(options.wheres.value);
+            wheres = transformWheres((options.wheres as Ref).value);
 
             // eslint-disable-next-line no-console
             fetch().catch(console.error);
@@ -142,7 +200,7 @@ export function useCollection<T extends typeof Entity>(
 
     if (isRef(options.orders))
         watch(options.orders, () => {
-            orders = transformOrders(options.orders.value);
+            orders = transformOrders((options.orders as Ref).value);
             // eslint-disable-next-line no-console
             fetch().catch(console.error);
         });
@@ -160,7 +218,15 @@ export function useCollection<T extends typeof Entity>(
 
     if (isRef(options.search))
         watch(options.search, async () => {
-            search = options.search.value;
+            search = (options.search as Ref).value;
+            await fetch();
+        });
+
+    if (isRef(options.compositeConstraint))
+        watch(options.compositeConstraint, async () => {
+            compositeConstraint = transformCompositeConstraint(
+                (options.compositeConstraint as Ref).value
+            );
             await fetch();
         });
 
