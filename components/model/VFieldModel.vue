@@ -130,10 +130,6 @@ if (input.value.type === "text" && input.value.attrs.match !== undefined) {
         .matches(input.value.attrs.match, `.${props.property}.validation.match`);
 }
 
-if (input.value.attrs.required === true) {
-    schema = schema.required(`.${props.property}.validation.required`);
-}
-
 if (input.value.type === "select" || input.value.type === "radio") {
     schema = schema.nullable();
     if (input.value.attrs.multiple === true) {
@@ -148,6 +144,28 @@ if (input.value.type === "file" && input.value.attrs.multiple === true) {
     if (input.value.attrs.required === true) {
         schema = schema.min(1, `.${props.property}.validation.required`);
     }
+}
+
+if (input.value.type === "number" || input.value.type === "percent") {
+    schema = yup
+        .number(`.${props.property}.validation.number`)
+        .transform((value) => (isNaN(value) ? undefined : value));
+    if (input.value.attrs.min !== undefined || input.value.type === "percent") {
+        schema = schema.min(
+            input.value.attrs.min !== undefined ? input.value.attrs.min : 0,
+            `.${props.property}.validation.min`
+        );
+    }
+    if (input.value.attrs.max !== undefined || input.value.type === "percent") {
+        schema = schema.max(
+            input.value.attrs.min !== undefined ? input.value.attrs.max : 1,
+            `.${props.property}.validation.max`
+        );
+    }
+}
+
+if (input.value.attrs.required === true) {
+    schema = schema.required(`.${props.property}.validation.required`);
 }
 </script>
 
@@ -283,11 +301,7 @@ if (input.value.type === "file" && input.value.attrs.multiple === true) {
                         v-else-if="input.type === 'percent'"
                         :id="id"
                         v-model="field.value"
-                        :name="property"
-                        :is-uploading="isProcessing"
-                        :storage-path="modelValue.constructor.collectionName"
-                        @processing="isProcessing = true"
-                        @end-processing="isProcessing = false" />
+                        :name="property" />
                 </slot>
                 <p v-for="error in field.errors" :key="error" class="help is-danger">
                     <Translate>{{ error }}</Translate>
