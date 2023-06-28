@@ -10,6 +10,7 @@ import type {
 } from "firebase/firestore";
 import { where, orderBy, collection, doc, or, and } from "firebase/firestore";
 import { useFirebase } from "../firebase";
+import type { MaybeRef } from "@vueuse/core";
 import { until } from "@vueuse/core";
 import { Query } from "./query";
 import { QuerySearch } from "./querySearch";
@@ -28,11 +29,11 @@ export interface CompositeConstraint {
 }
 
 export interface CollectionOptions {
-    wheres?: WhereOption[] | Ref<WhereOption[]>;
-    orders?: OrderOption[] | Ref<OrderOption[]>;
-    limit?: number | Ref<number>;
-    search?: string | Ref<string>;
-    compositeConstraint?: CompositeConstraint | Ref<CompositeConstraint>;
+    wheres: MaybeRef<WhereOption[]>;
+    orders?: MaybeRef<OrderOption[]>;
+    limit?: MaybeRef<number>;
+    search?: MaybeRef<string>;
+    compositeConstraint?: MaybeRef<CompositeConstraint>;
 }
 
 const cachedEntities: { [key: string]: { usedBy: number; entity: any } } = {};
