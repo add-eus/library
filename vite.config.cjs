@@ -121,7 +121,7 @@ module.exports.define = function (config = {}) {
                                 ? DEV
                                     ? "[name].js"
                                     : "sw.js" // put service worker in root
-                                : "assets/[name]-[hash].js"; // others in `assets/js/`
+                                : "assets/[name].js"; // others in `assets/js/`
                         },
                     },
                 },
