@@ -7,14 +7,18 @@ export interface VInputDateEmits {
 }
 export interface VInputDateProps {
     modelValue: moment;
+    maxYear: number;
+    minYear: number;
 }
 
 const emits = defineEmits<VInputDateEmits>();
 
-const props = withDefaults(defineProps<VInputDateProps>(), {});
+const props = withDefaults(defineProps<VInputDateProps>(), {
+    maxYear: moment().year() + 130,
+    minYear: moment().year() - 130,
+});
 
 let currentDate;
-const maxYear = moment().year();
 
 function formatMonth(month) {
     return moment()
@@ -74,7 +78,7 @@ parseModelValue(props.modelValue || moment());
         </VFlexItem>
         /
         <VFlexItem flex-grow="33" style="max-width: 100px; min-width: 50px">
-            <VInputNumber v-model="year" :max="maxYear" :min="maxYear - 130" />
+            <VInputNumber v-model="year" :max="maxYear" :min="minYear" />
         </VFlexItem>
     </VFlex>
 </template>

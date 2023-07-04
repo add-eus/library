@@ -12,6 +12,8 @@ export interface VInputDateTimeProps {
     hourStep?: number;
     minuteStep?: number;
     maxHour?: number;
+    minYear?: number | undefined;
+    maxYear?: number | undefined;
 }
 
 const emits = defineEmits<VInputDateTimeEmits>();
@@ -19,6 +21,8 @@ const props = withDefaults(defineProps<VInputDateTimeProps>(), {
     hourStep: 1,
     minuteStep: 1,
     maxHour: 23,
+    minYear: undefined,
+    maxYear: undefined,
 });
 
 const date = useVModel(props, "modelValue", emits);
@@ -27,13 +31,12 @@ const time = useVModel(props, "modelValue", emits);
 
 <template>
     <VFlex flex-direction="row" justify-content="space-around" align-items="center">
-        <VInputDate v-model="date"></VInputDate>
+        <VInputDate v-model="date" :min-year="minYear" :max-year="maxYear"></VInputDate>
         <VInputTime
             v-model="time"
             :hour-step="hourStep"
             :minute-step="minuteStep"
             :max-hour="maxHour"
-            :to-string="false"
-        ></VInputTime>
+            :to-string="false"></VInputTime>
     </VFlex>
 </template>
