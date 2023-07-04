@@ -29,7 +29,7 @@ export interface CompositeConstraint {
 }
 
 export interface CollectionOptions {
-    wheres: MaybeRef<WhereOption[]>;
+    wheres?: MaybeRef<WhereOption[]>;
     orders?: MaybeRef<OrderOption[]>;
     limit?: MaybeRef<number>;
     search?: MaybeRef<string>;
