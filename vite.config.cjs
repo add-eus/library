@@ -208,6 +208,16 @@ module.exports.define = function (config = {}) {
                 dynamicImport(),
 
                 /**
+                 * vite-plugin-vue-i18n plugin does i18n resources pre-compilation / optimizations
+                 *
+                 * @see https://github.com/intlify/bundle-tools/tree/main/packages/vite-plugin-vue-i18n
+                 */
+                vueI18n({
+                    defaultSFCLang: "json",
+                    globalSFCScope: true,
+                }),
+
+                /**
                  * vite-plugin-pages plugin generate routes based on file system
                  *
                  * @see https://github.com/hannoeru/vite-plugin-pages
