@@ -47,7 +47,7 @@ module.exports = {
         "vue/no-lifecycle-after-await": ["error"],
         "vue/no-expose-after-await": ["error"],
         "vue/no-use-computed-property-like-method": ["error"],
-        "vue/no-restricted-props": ["error", "/^on/"],
+        "vue/no-restricted-props": ["error", "/^on[A-Z]/"],
     },
     overrides: [
         {
