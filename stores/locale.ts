@@ -6,7 +6,6 @@ const autoImportedLangs: Record<string, any> = import.meta.glob([`/locales/**/**
     import: "default",
     eager: true,
 });
-console.log(autoImportedLangs);
 
 for (const path in autoImportedLangs) {
     const absolutePath = path.replace("/locales", "");
@@ -22,5 +21,4 @@ for (const path in autoImportedLangs) {
         autoImportedLangs[path]
     );
 }
-console.log(messages);
 export default messages;
