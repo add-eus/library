@@ -27,6 +27,7 @@ export interface VAvatarProps {
     dotColor?: VAvatarDotColor;
     squared?: boolean;
     dot?: boolean;
+    useDirectLink?: boolean;
 }
 
 const props = withDefaults(defineProps<VAvatarProps>(), {
@@ -38,6 +39,7 @@ const props = withDefaults(defineProps<VAvatarProps>(), {
     size: undefined,
     color: undefined,
     dotColor: undefined,
+    useDirectLink: false,
 });
 </script>
 
@@ -52,7 +54,7 @@ const props = withDefaults(defineProps<VAvatarProps>(), {
         ]">
         <slot name="avatar">
             <ImageFirestore
-                v-if="props.picture"
+                v-if="props.picture && !props.useDirectLink"
                 class="avatar"
                 :class="[
                     props.squared && 'is-squared',
@@ -60,6 +62,17 @@ const props = withDefaults(defineProps<VAvatarProps>(), {
                     props.color && `is-${props.color}`,
                 ]"
                 :path="props.picture"
+                alt=""
+                @error.once="(event) => onceImageErrored(event, '150x150')" />
+            <img
+                v-else-if="props.picture && props.useDirectLink"
+                class="avatar"
+                :class="[
+                    props.squared && 'is-squared',
+                    props.pictureDark && 'light-image',
+                    props.color && `is-${props.color}`,
+                ]"
+                :src="props.picture"
                 alt=""
                 @error.once="(event) => onceImageErrored(event, '150x150')" />
             <span
@@ -72,13 +85,23 @@ const props = withDefaults(defineProps<VAvatarProps>(), {
                 <img src="/images/avatars/placeholder.jpg" alt="" />
             </span>
             <ImageFirestore
-                v-if="props.picture && props.pictureDark"
+                v-if="props.picture && props.pictureDark && !props.useDirectLink"
                 class="avatar dark-image"
                 :class="[
                     props.squared && 'is-squared',
                     props.color && `is-${props.color}`,
                 ]"
                 :path="props.pictureDark"
+                alt=""
+                @error.once="(event) => onceImageErrored(event, '150x150')" />
+            <img
+                v-else-if="props.picture && props.pictureDark && props.useDirectLink"
+                class="avatar dark-image"
+                :class="[
+                    props.squared && 'is-squared',
+                    props.color && `is-${props.color}`,
+                ]"
+                :src="props.pictureDark"
                 alt=""
                 @error.once="(event) => onceImageErrored(event, '150x150')" />
         </slot>
