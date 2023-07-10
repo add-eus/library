@@ -238,6 +238,16 @@ if (input.value.attrs.required === true) {
                         <template #option="option">
                             <slot name="option" v-bind="option"></slot>
                         </template>
+                        <template #nooptions>
+                            <span class="p-2 text-ellipsis">
+                                <Translate>.noOptions</Translate>
+                            </span>
+                        </template>
+                        <template #noresults>
+                            <span class="p-2 text-ellipsis">
+                                <Translate>.noResults</Translate>
+                            </span>
+                        </template>
                     </Multiselect>
                     <VFlex
                         v-else-if="input.type == 'radio'"
