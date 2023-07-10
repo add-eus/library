@@ -4,7 +4,6 @@ import { set } from "lodash";
 const messages: Record<string, any> = {};
 const autoImportedLangs: Record<string, any> = import.meta.glob([`/locales/**/**.json`], {
     import: "default",
-    as: "raw",
     eager: true,
 });
 console.log(autoImportedLangs);
@@ -20,9 +19,8 @@ for (const path in autoImportedLangs) {
     set(
         messages[lang],
         absolutePath.replace(`/${lang}/`, "").replace(".json", "").replaceAll("/", "."),
-        JSON.parse(autoImportedLangs[path])
+        autoImportedLangs[path]
     );
 }
 console.log(messages);
-
 export default messages;
