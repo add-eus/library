@@ -97,7 +97,7 @@ async function updated({ onEnd }: { onEnd: () => void }) {
     successReason.value = props.entity;
 }
 
-const isSubNotSubmittable = ref(false);
+const isSubNotSubmittable = ref<boolean | undefined>(undefined);
 const submitText = ref<string | null>(null);
 const onSubmit = ref<(() => void) | null>(null);
 provide(
@@ -159,7 +159,10 @@ if (isEdit.value && typeof events.onNew === "function") events.onNew(this);
                 <VButton
                     :loading="loading"
                     color="primary"
-                    :disabled="isNotSubmittable && isSubNotSubmittable"
+                    :disabled="
+                        (isSubNotSubmittable === undefined && isNotSubmittable) ||
+                        isSubNotSubmittable === true
+                    "
                     @click="onSubmit ? onSubmit() : vmodel.submit()">
                     <span v-if="submitText">{{ submitText }}</span>
                     <Translate v-else>.save</Translate>
