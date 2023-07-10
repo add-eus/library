@@ -61,9 +61,16 @@ export function translate(options: any, component: any, values?: any) {
 
         function translateInScope() {
             try {
+                const unrefValues = resolveUnref(options.values);
+                console.log(
+                    transformedOptions.path,
+                    unrefValues,
+                    component.appContext.app.config.globalProperties.$t,
+                    component
+                );
                 translated.value = component.appContext.app.config.globalProperties.$t(
                     transformedOptions.path,
-                    resolveUnref(options.values)
+                    unrefValues
                 );
             } catch (e) {
                 // eslint-disable-next-line no-console
