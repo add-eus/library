@@ -215,6 +215,7 @@ module.exports.define = function (config = {}) {
                 vueI18n({
                     defaultSFCLang: "json",
                     globalSFCScope: true,
+                    runtimeOnly: false,
                 }),
 
                 /**
