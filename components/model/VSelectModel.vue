@@ -43,7 +43,7 @@ function updateModelValue(value) {
             emits("update:modelValue", value.$getID());
         }
     }
-    emits("update:modelValue", value == null ? undefined : value);
+    emits("update:modelValue", value === null ? undefined : value);
 }
 </script>
 <template>
