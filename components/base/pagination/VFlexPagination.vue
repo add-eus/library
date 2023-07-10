@@ -96,28 +96,12 @@ const handleLinkClick = (e: MouseEvent, page = 1) => {
 };
 </script>
 
-<i18n lang="yaml">
-de:
-    goto-page-title: "Gehe zu Seite {page}"
-en:
-    goto-page-title: "Goto page {page}"
-es-MX:
-    goto-page-title: "Ir a la página {page}"
-es:
-    goto-page-title: "Ir a la página {page}"
-fr-FR:
-    goto-page-title: "Aller à la page {page}"
-zh-CN:
-    goto-page-title: "转到第{page}页"
-</i18n>
-
 <template>
     <VFlex
         role="navigation"
         class="flex-pagination pagination is-rounded"
         aria-label="pagination"
-        justify-content="space-between"
-    >
+        justify-content="space-between">
         <ul class="pagination-list">
             <slot name="before-pagination"></slot>
             <li>
@@ -128,8 +112,7 @@ zh-CN:
                     :aria-label="t('goto-page-title', { page: 1 })"
                     :class="[currentPage === 1 && 'is-current']"
                     @keydown.space.prevent="(e) => (e.target as HTMLAnchorElement).click()"
-                    @click="(e) => handleLinkClick(e, 1)"
-                >
+                    @click="(e) => handleLinkClick(e, 1)">
                     1
                 </RouterLink>
             </li>
@@ -147,8 +130,7 @@ zh-CN:
                     :aria-current="currentPage === page ? 'page' : undefined"
                     :class="[currentPage === page && 'is-current']"
                     @keydown.space.prevent="(e) => (e.target as HTMLAnchorElement).click()"
-                    @click="(e) => handleLinkClick(e, page)"
-                >
+                    @click="(e) => handleLinkClick(e, page)">
                     {{ page }}
                 </RouterLink>
             </li>
@@ -165,8 +147,7 @@ zh-CN:
                     :aria-label="t('goto-page-title', { page: lastPage })"
                     :class="[currentPage === lastPage && 'is-current']"
                     @keydown.space.prevent="(e) => (e.target as HTMLAnchorElement).click()"
-                    @click="(e) => handleLinkClick(e, lastPage)"
-                >
+                    @click="(e) => handleLinkClick(e, lastPage)">
                     {{ lastPage }}
                 </RouterLink>
             </li>
@@ -179,8 +160,7 @@ zh-CN:
             tabindex="0"
             class="pagination-previous has-chevron"
             @keydown.space.prevent="(e) => (e.target as HTMLAnchorElement).click()"
-            @click="(e) => handleLinkClick(e, currentPage - 1)"
-        >
+            @click="(e) => handleLinkClick(e, currentPage - 1)">
             <i aria-hidden="true" class="iconify" data-icon="feather:chevron-left"></i>
         </RouterLink>
         <RouterLink
@@ -188,8 +168,7 @@ zh-CN:
             tabindex="0"
             class="pagination-next has-chevron"
             @keydown.space.prevent="(e) => (e.target as HTMLAnchorElement).click()"
-            @click="(e) => handleLinkClick(e, currentPage + 1)"
-        >
+            @click="(e) => handleLinkClick(e, currentPage + 1)">
             <i aria-hidden="true" class="iconify" data-icon="feather:chevron-right"></i>
         </RouterLink>
         <slot name="after-navigation"></slot>

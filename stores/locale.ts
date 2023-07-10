@@ -1,15 +1,12 @@
 // locale/index.ts
 import { set } from "lodash";
 
-const autoImportedLangs: Record<string, () => Promise> = import.meta.glob(
-    [`/locales/**/**.json`],
-    {
-        import: "default",
-        eager: true,
-    }
-);
+const messages: Record<string, any> = {};
+const autoImportedLangs: Record<string, any> = import.meta.glob([`/locales/**/**.json`], {
+    import: "default",
+    eager: true,
+});
 
-const usedLangs: Record<string, Record<string, string>> = {};
 for (const path in autoImportedLangs) {
     const absolutePath = path.replace("/locales", "");
     const lang: string = absolutePath.substring(
@@ -17,12 +14,12 @@ for (const path in autoImportedLangs) {
         absolutePath.indexOf("/", absolutePath.indexOf("/") + 1)
     );
 
-    if (usedLangs[lang] === undefined) usedLangs[lang] = {};
+    if (messages[lang] === undefined) messages[lang] = {};
     set(
-        usedLangs[lang],
+        messages[lang],
         absolutePath.replace(`/${lang}/`, "").replace(".json", "").replaceAll("/", "."),
         autoImportedLangs[path]
     );
 }
 
-export default usedLangs;
+export default messages;

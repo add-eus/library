@@ -29,51 +29,6 @@ const { t } = useI18n();
 const nameUppercase = computed(() => props.name?.toUpperCase() ?? "");
 </script>
 
-<i18n lang="yaml">
-de:
-    holder-label: "Karteninhabername"
-    number-label: "Kartennummer"
-    expiration-label: "Ablauf"
-    cvc-label: "Sicherheitscode"
-    valid-label: "GÜLTIG"
-    valid-thru-label: "BIS"
-en:
-    holder-label: "cardholder name"
-    number-label: "card number"
-    expiration-label: "expiration"
-    cvc-label: "security code"
-    valid-label: "VALID"
-    valid-thru-label: "THRU"
-es-MX:
-    holder-label: "nombre del titular"
-    number-label: "número de tarjeta"
-    expiration-label: "caducidad"
-    cvc-label: "código de seguridad"
-    valid-label: "VÁLIDO"
-    valid-thru-label: "HASTA"
-es:
-    holder-label: "nombre del titular"
-    number-label: "número de tarjeta"
-    expiration-label: "caducidad"
-    cvc-label: "código de seguridad"
-    valid-label: "VÁLIDO"
-    valid-thru-label: "HASTA"
-fr:
-    holder-label: "titulaire de la carte"
-    number-label: "numéro de carte"
-    expiration-label: "expiration"
-    cvc-label: "code de sécurité"
-    valid-label: "VALABLE"
-    valid-thru-label: "JUSQU'À"
-zh-CN:
-    holder-label: "持卡人姓名"
-    number-label: "卡号"
-    expiration-label: "到期"
-    cvc-label: "安全代码"
-    valid-label: "有效"
-    valid-thru-label: "突破"
-</i18n>
-
 <template>
     <div class="card-container">
         <div
