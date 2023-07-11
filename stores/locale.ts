@@ -21,5 +21,4 @@ for (const path in autoImportedLangs) {
         autoImportedLangs[path]
     );
 }
-
 export default messages;

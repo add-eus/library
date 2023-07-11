@@ -3,7 +3,7 @@ import { getCurrentInstance, isRef, ref, watch } from "vue";
 import { resolveUnref, syncRef } from "@vueuse/core";
 
 function parseOptions(options: any | string, values?: any): any {
-    if (typeof options == "string")
+    if (typeof options === "string")
         options = {
             path: options,
         };
@@ -18,7 +18,7 @@ function transformOptionsFromNamespaces(
     namespacesUnfiltered: string[]
 ): any {
     const namespaces = namespacesUnfiltered.filter((namespace) => {
-        return typeof namespace == "string";
+        return typeof namespace === "string";
     });
 
     const newOptions = { ...options };
@@ -61,9 +61,11 @@ export function translate(options: any, component: any, values?: any) {
 
         function translateInScope() {
             try {
+                const unrefValues = resolveUnref(options.values);
+
                 translated.value = component.appContext.app.config.globalProperties.$t(
                     transformedOptions.path,
-                    resolveUnref(options.values)
+                    unrefValues
                 );
             } catch (e) {
                 // eslint-disable-next-line no-console

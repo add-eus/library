@@ -43,7 +43,7 @@ function updateModelValue(value) {
             emits("update:modelValue", value.$getID());
         }
     }
-    emits("update:modelValue", value == null ? undefined : value);
+    emits("update:modelValue", value === null ? undefined : value);
 }
 </script>
 <template>
@@ -53,7 +53,16 @@ function updateModelValue(value) {
         :value="modelValue"
         :mode="multiple ? 'multiple' : 'single'"
         :options="options"
-        @change="updateModelValue($event)"
-    >
+        @change="updateModelValue($event)">
+        <template #nooptions>
+            <span class="p-2 text-ellipsis">
+                <Translate>.noOptions</Translate>
+            </span>
+        </template>
+        <template #noresults>
+            <span class="p-2 text-ellipsis">
+                <Translate>.noResults</Translate>
+            </span>
+        </template>
     </Multiselect>
 </template>
