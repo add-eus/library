@@ -22,7 +22,8 @@ export interface VTabsProps {
 }
 
 export interface VTabsEmits {
-    (e: "update:modelValue", value: (string | number)[]): void;
+    (e: "update:modelValue", value: string | number | undefined): void;
+    (e: "tabSelected", value: string): void;
 }
 
 const emit = defineEmits<VTabsEmits>();
@@ -74,6 +75,7 @@ const sliderClass = computed(() => {
 });
 
 function toggle(value: string) {
+    emit("tabSelected", value);
     activeValue.value = value;
 }
 </script>
