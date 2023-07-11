@@ -54,6 +54,7 @@ if (input.value.attrs.options !== undefined) {
         const options = useCollection(input.value.attrs.options.entity, {
             wheres,
             orders,
+            limit: input.value.attrs.options.limit,
         });
         schema = yup.object();
         selectOptions = computed(() => {
