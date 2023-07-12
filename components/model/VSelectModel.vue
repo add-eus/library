@@ -9,6 +9,7 @@ export interface VSelectModelProps {
     where: any;
     order: any;
     onlyId: boolean;
+    limit?: number;
 }
 
 export interface VSelectModelEmits {
@@ -21,6 +22,7 @@ const emits = defineEmits<VSelectModelEmits>();
 const entities = useCollection(props.model, {
     wheres: props.where,
     orders: props.order,
+    limit: props.limit,
 });
 
 const options = computed(() => {
