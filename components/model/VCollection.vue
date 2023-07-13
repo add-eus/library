@@ -113,7 +113,9 @@ async function create() {
 }
 
 async function onInfiniteScroll(done: Function) {
-    limit.value += 10;
+    if (entities.length >= limit.value) {
+        limit.value += 10;
+    }
     done();
 }
 
