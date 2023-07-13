@@ -26,7 +26,7 @@ const props = withDefaults(defineProps<VDropdownProps>(), {
 
 const dropdownElement = ref<HTMLElement | null>(null);
 const dropdownMenuElement = ref<HTMLElement | null>(null);
-const dropdown = useDropdown(dropdownElement);
+const dropdown = useDropdown(dropdownElement, dropdownMenuElement);
 
 const menuSize = useElementSize(dropdownMenuElement);
 const scrollableParent = useScrollableParent(dropdownElement);

@@ -9,12 +9,21 @@ import { onClickOutside } from "@vueuse/core";
 /**
  * Generate refs to handle a dropdown state
  */
-export function useDropdown(container: Ref<HTMLElement | undefined>) {
+export function useDropdown(
+    container: Ref<HTMLElement | undefined>,
+    containerDropdown: Ref<HTMLElement | undefined>
+) {
     const isOpen = ref(false);
 
-    onClickOutside(container, () => {
-        isOpen.value = false;
-    });
+    onClickOutside(
+        container,
+        () => {
+            isOpen.value = false;
+        },
+        {
+            ignore: [containerDropdown],
+        }
+    );
 
     const open = () => {
         isOpen.value = true;
