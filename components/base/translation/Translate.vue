@@ -10,7 +10,10 @@ export type TranslateProps = {
 
 const instance: any = getCurrentInstance();
 
-const props = defineProps<TranslateProps>();
+const props = withDefaults(defineProps<TranslateProps>(), {
+    path: "",
+    values: {},
+});
 
 const slots = useSlots();
 

@@ -58,13 +58,16 @@ if (input.value.attrs.options !== undefined) {
         });
         schema = yup.object();
         selectOptions = computed(() => {
-            return [...options].map((option) => {
+            const data = options.map((option) => {
+                const label = option.toString();
                 return {
-                    label: option.toString(),
+                    label: typeof label === "string" ? label : "",
                     value: option,
                     id: option.$getID(),
                 };
             });
+            console.log(data);
+            return data;
         });
     } else if (isEnum(input.value.attrs.options)) {
         const enumerable = enumToObject(input.value.attrs.options);
@@ -261,8 +264,8 @@ if (input.value.attrs.required === true) {
                             :value="option.value"
                             :name="id"
                             color="primary">
-                            <Translate>{{ option.label }}</Translate></VRadio
-                        >
+                            <Translate :path="option.label"></Translate
+                        ></VRadio>
                     </VFlex>
 
                     <VInputDate

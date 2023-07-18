@@ -4,16 +4,18 @@ import { useDoc } from "./index";
 import { Entity, EntityBase, isEntity } from "./entity";
 import { onInitialize, isEntityClass, isEntityStandaloneClass } from "./entity";
 import type { EntityMetaData } from "./entityMetadata";
-import { markRaw } from "vue";
+import { shallowReactive } from "vue";
 
 function parseData(toTransform: any | any[], type: any): any {
     if (typeof toTransform === "undefined") return undefined;
     if (toTransform === null) return null;
     if (Array.isArray(type)) {
-        if (!Array.isArray(toTransform)) return [];
-        return toTransform.map((data) => {
-            return parseData(data, type[0]);
-        });
+        if (!Array.isArray(toTransform)) return shallowReactive([]);
+        return shallowReactive(
+            toTransform.map((data) => {
+                return parseData(data, type[0]);
+            })
+        );
     } else if (type === moment && moment.isMoment(toTransform) === false) {
         return moment.unix(toTransform.seconds);
     } else if (type === GeoPoint) {
@@ -41,7 +43,7 @@ function parseData(toTransform: any | any[], type: any): any {
                 childMetadata.refresh();
             }
         });
-        return markRaw(model);
+        return model;
     } else if (isEntityClass(type)) {
         const o = new type();
         o.$getMetadata().emit("parse", toTransform);

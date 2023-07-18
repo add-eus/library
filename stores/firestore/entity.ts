@@ -8,7 +8,7 @@ import {
     updateDoc,
 } from "firebase/firestore";
 import { lowerCaseFirst } from "../../utils/string";
-import { markRaw, reactive, shallowReactive } from "vue";
+import { markRaw, shallowReactive } from "vue";
 import { useFirebase } from "../firebase";
 import { EntityMetaData } from "./entityMetadata";
 
@@ -200,4 +200,8 @@ export class Entity extends EntityBase {
     $getModelName() {
         return (this.constructor as typeof Entity).collectionName.replace(/s$/, "");
     }
+}
+
+export function EntityArray(a: [] = []) {
+    return shallowReactive(a);
 }
