@@ -58,7 +58,7 @@ if (input.value.attrs.options !== undefined) {
         });
         schema = yup.object();
         selectOptions = computed(() => {
-            const data = options.map((option) => {
+            return options.map((option) => {
                 const label = option.toString();
                 return {
                     label: typeof label === "string" ? label : "",
@@ -66,8 +66,6 @@ if (input.value.attrs.options !== undefined) {
                     id: option.$getID(),
                 };
             });
-            console.log(data);
-            return data;
         });
     } else if (isEnum(input.value.attrs.options)) {
         const enumerable = enumToObject(input.value.attrs.options);
