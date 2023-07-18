@@ -142,6 +142,11 @@ export class Query extends EventEmitter {
             this.on(
                 "destroy",
                 onSnapshot(q, (snapshot) => {
+                    const onlyModified = snapshot.docChanges().every((change) => {
+                        return change.type === "modified";
+                    });
+                    if (onlyModified) return;
+
                     void update(
                         snapshot.docs.map((doc) => {
                             const model = this.transform(doc);

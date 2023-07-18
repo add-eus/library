@@ -8,7 +8,7 @@ import {
     updateDoc,
 } from "firebase/firestore";
 import { lowerCaseFirst } from "../../utils/string";
-import { markRaw, reactive } from "vue";
+import { markRaw, reactive, shallowReactive } from "vue";
 import { useFirebase } from "../firebase";
 import { EntityMetaData } from "./entityMetadata";
 
@@ -60,7 +60,7 @@ export class EntityBase {
             writable: false,
         });
 
-        const reactivity = reactive(proxied);
+        const reactivity = shallowReactive(proxied);
 
         if (Array.isArray((constructor as any).onInitialize)) {
             (constructor as any).onInitialize.map((callback: Function) => {

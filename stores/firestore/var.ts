@@ -4,7 +4,7 @@ import { useDoc } from "./index";
 import { Entity, EntityBase, isEntity } from "./entity";
 import { onInitialize, isEntityClass, isEntityStandaloneClass } from "./entity";
 import type { EntityMetaData } from "./entityMetadata";
-import { reactive } from "vue";
+import { markRaw } from "vue";
 
 function parseData(toTransform: any | any[], type: any): any {
     if (typeof toTransform === "undefined") return undefined;
@@ -27,12 +27,21 @@ function parseData(toTransform: any | any[], type: any): any {
                 childMetadata.isFullfilled === false &&
                 typeof name === "string" &&
                 !name.startsWith("$") &&
+                !name.startsWith("__") &&
                 name !== "constructor"
             ) {
+                // if (
+                //     type.collectionName === "customers" &&
+                //     name === "hasAcceptedCondition"
+                // ) {
+                //     console.trace("get", type.collectionName, name);
+                //     // debugger;
+                // }
+                // console.log("get", type.collectionName, name);
                 childMetadata.refresh();
             }
         });
-        return model;
+        return markRaw(model);
     } else if (isEntityClass(type)) {
         const o = new type();
         o.$getMetadata().emit("parse", toTransform);
@@ -95,8 +104,7 @@ function isEqual(a: any, b: any, type: any): boolean {
 export function Var(type: any) {
     return function (target: EntityBase, name: string) {
         onInitialize(target, function (this: any, metadata: EntityMetaData) {
-            if (metadata.properties[name] === undefined)
-                metadata.properties[name] = reactive({});
+            if (metadata.properties[name] === undefined) metadata.properties[name] = {};
 
             let isChanged: boolean = false;
             const thisTarget = this;
