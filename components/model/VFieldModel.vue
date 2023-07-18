@@ -58,9 +58,10 @@ if (input.value.attrs.options !== undefined) {
         });
         schema = yup.object();
         selectOptions = computed(() => {
-            return [...options].map((option) => {
+            return options.map((option) => {
+                const label = option.toString();
                 return {
-                    label: option.toString(),
+                    label: typeof label === "string" ? label : "",
                     value: option,
                     id: option.$getID(),
                 };
@@ -261,8 +262,8 @@ if (input.value.attrs.required === true) {
                             :value="option.value"
                             :name="id"
                             color="primary">
-                            <Translate>{{ option.label }}</Translate></VRadio
-                        >
+                            <Translate :path="option.label"></Translate
+                        ></VRadio>
                     </VFlex>
 
                     <VInputDate

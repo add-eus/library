@@ -4,16 +4,18 @@ import { useDoc } from "./index";
 import { Entity, EntityBase, isEntity } from "./entity";
 import { onInitialize, isEntityClass, isEntityStandaloneClass } from "./entity";
 import type { EntityMetaData } from "./entityMetadata";
-import { reactive } from "vue";
+import { shallowReactive } from "vue";
 
 function parseData(toTransform: any | any[], type: any): any {
     if (typeof toTransform === "undefined") return undefined;
     if (toTransform === null) return null;
     if (Array.isArray(type)) {
-        if (!Array.isArray(toTransform)) return [];
-        return toTransform.map((data) => {
-            return parseData(data, type[0]);
-        });
+        if (!Array.isArray(toTransform)) return shallowReactive([]);
+        return shallowReactive(
+            toTransform.map((data) => {
+                return parseData(data, type[0]);
+            })
+        );
     } else if (type === moment && moment.isMoment(toTransform) === false) {
         return moment.unix(toTransform.seconds);
     } else if (type === GeoPoint) {
@@ -27,8 +29,17 @@ function parseData(toTransform: any | any[], type: any): any {
                 childMetadata.isFullfilled === false &&
                 typeof name === "string" &&
                 !name.startsWith("$") &&
+                !name.startsWith("__") &&
                 name !== "constructor"
             ) {
+                // if (
+                //     type.collectionName === "customers" &&
+                //     name === "hasAcceptedCondition"
+                // ) {
+                //     console.trace("get", type.collectionName, name);
+                //     // debugger;
+                // }
+                // console.log("get", type.collectionName, name);
                 childMetadata.refresh();
             }
         });
@@ -95,8 +106,7 @@ function isEqual(a: any, b: any, type: any): boolean {
 export function Var(type: any) {
     return function (target: EntityBase, name: string) {
         onInitialize(target, function (this: any, metadata: EntityMetaData) {
-            if (metadata.properties[name] === undefined)
-                metadata.properties[name] = reactive({});
+            if (metadata.properties[name] === undefined) metadata.properties[name] = {};
 
             let isChanged: boolean = false;
             const thisTarget = this;
