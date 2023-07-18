@@ -45,7 +45,9 @@ class Queue {
         const waitCurrent = new Promise((resolve, reject) => {
             subCallback = (previousItem: any) => {
                 const onUpdate = useDebounceFn(
-                    (list: any[], snapshots: DocumentSnapshot[]) => {
+                    (list?: any[], snapshots?: DocumentSnapshot[]) => {
+                        if (list === undefined) return resolve([]);
+
                         this.chunk[chunkIndex] = list;
 
                         const newList = [...this.list];
@@ -145,7 +147,7 @@ export class Query extends EventEmitter {
                     const onlyModified = snapshot.docChanges().every((change) => {
                         return change.type === "modified";
                     });
-                    if (onlyModified) return;
+                    if (onlyModified) return update();
 
                     void update(
                         snapshot.docs.map((doc) => {
