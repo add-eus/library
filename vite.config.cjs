@@ -153,7 +153,7 @@ module.exports.define = function (config = {}) {
                         path.join(currentDir, ".env"),
                     ],
                     awaitWriteFinish: {
-                        stabilityThreshold: 2000,
+                        stabilityThreshold: 500,
                         pollInterval: 100,
                     },
                 },
