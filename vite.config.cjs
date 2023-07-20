@@ -1,6 +1,6 @@
 const { defineConfig, loadEnv } = require("vite");
 const path = require("path");
-const os = require("os");
+const { cpus } = require("os");
 const Vue = require("@vitejs/plugin-vue");
 const { default: Pages } = require("vite-plugin-pages");
 const Components = require("unplugin-vue-components/vite");
@@ -106,6 +106,7 @@ module.exports.define = function (config = {}) {
                 emptyOutDir: true,
                 //chunkSizeWarningLimit: 3000,
                 rollupOptions: {
+                    maxParallelFileOps: Math.max(1, cpus().length - 1),
                     // manualChunks(id) {
                     //     if (id.includes("node_modules")) {
                     //         return "vendor";
