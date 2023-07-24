@@ -7,6 +7,7 @@ export class EntityMetaData extends EventEmitter {
     reference: DocumentReference | null = null;
     isFullfilled: boolean = false;
     isFullfilling: null | Promise<any> = null;
+    isDeleted: boolean = false;
     origin: any = {};
     previousOrigin: any = {};
     properties: { [key: string]: any } = {};
@@ -45,6 +46,10 @@ export class EntityMetaData extends EventEmitter {
         return this.isFullfilling;
     }
 
+    markAsDeleted() {
+        this.isDeleted = true;
+    }
+
     setReference(reference: DocumentReference) {
         this.reference = reference;
         if (this.unsuscribeSnapshot) this.unsuscribeSnapshot();
@@ -54,6 +59,10 @@ export class EntityMetaData extends EventEmitter {
             (document: DocumentSnapshot) => {
                 if (isFirstFetch) {
                     isFirstFetch = false;
+                    return;
+                }
+                if (!document.exists()) {
+                    this.markAsDeleted();
                     return;
                 }
                 const data = document.data();

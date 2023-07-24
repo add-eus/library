@@ -117,6 +117,7 @@ export class Entity extends EntityBase {
             this.$getMetadata().setReference(querySnapshot);
         } else if (querySnapshot instanceof DocumentSnapshot) {
             this.$getMetadata().setReference(querySnapshot.ref);
+            if (!querySnapshot.exists()) return this.$getMetadata().markAsDeleted();
             const data = querySnapshot.data();
             this.$getMetadata().previousOrigin = this.$getMetadata().origin =
                 typeof data === "object" && data !== null ? data : {};
@@ -184,8 +185,13 @@ export class Entity extends EntityBase {
         this.$getMetadata().emit("saved");
     }
 
+    $isDeleted() {
+        return this.$getMetadata().isDeleted;
+    }
+
     async $delete() {
         if (this.$getMetadata().reference) await deleteDoc(this.$getMetadata().reference);
+        this.$getMetadata().markAsDeleted();
         this.$getMetadata().destroy();
     }
 
