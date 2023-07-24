@@ -14,4 +14,9 @@ export default class EventEmitter {
             this.#events[event] = this.#events[event]?.filter((i) => cb !== i);
         };
     }
+
+    off(event: string, cb: (...args: any[]) => void) {
+        const index = this.#events[event].findIndex((event) => event === cb);
+        this.#events[event].splice(index, 1);
+    }
 }

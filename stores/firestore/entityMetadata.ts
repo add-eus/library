@@ -2,7 +2,6 @@ import type { Entity } from "./entity";
 import type { DocumentReference, DocumentSnapshot } from "firebase/firestore";
 import { getDoc, onSnapshot } from "firebase/firestore";
 import EventEmitter from "./event";
-
 export class EntityMetaData extends EventEmitter {
     reference: DocumentReference | null = null;
     isFullfilled: boolean = false;
@@ -48,6 +47,7 @@ export class EntityMetaData extends EventEmitter {
 
     markAsDeleted() {
         this.isDeleted = true;
+        this.emit("deleted");
     }
 
     setReference(reference: DocumentReference) {
