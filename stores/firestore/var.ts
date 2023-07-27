@@ -155,7 +155,7 @@ export function Var(type: any) {
                 if (!forceAll && isChanged) return;
                 const parsed = parseData(raw[name], type);
 
-                if (parsed !== this[name]) this[name] = parsed;
+                if (!isEqual(parsed, this[name], type)) this[name] = parsed;
                 originalPropertyValue = this[name];
                 metadata.properties[name].isInitialized = true;
                 isChanged = false;

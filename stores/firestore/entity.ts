@@ -134,7 +134,7 @@ export class Entity extends EntityBase {
 
     $getID() {
         if (this.$getMetadata().reference === null) return;
-        return this.$getMetadata().reference.id;
+        return this.$getMetadata().reference?.id;
     }
 
     $isNew() {
@@ -143,18 +143,12 @@ export class Entity extends EntityBase {
 
     $isSame(other: any) {
         if (!isEntity(other)) return false;
-        if (
-            this.$getMetadata() === undefined ||
-            this.$getMetadata().reference === undefined
-        )
+        if (this.$getMetadata() === undefined || this.$getMetadata().reference === null)
             return false;
-        if (
-            other.$getMetadata() === undefined ||
-            other.$getMetadata().reference === undefined
-        )
+        if (other.$getMetadata() === undefined || other.$getMetadata().reference === null)
             return false;
         return (
-            this.$getMetadata().reference?.path === other.$getMetadata().reference.path
+            this.$getMetadata().reference?.path === other.$getMetadata().reference?.path
         );
     }
 
