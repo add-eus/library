@@ -55,3 +55,7 @@ export function isEnum(enumeration: any) {
     }
     return false;
 }
+
+export function deduplicate<T>(array: T[]): T[] {
+    return [...new Set(array)];
+}

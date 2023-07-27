@@ -32,14 +32,6 @@ function parseData(toTransform: any | any[], type: any): any {
                 !name.startsWith("__") &&
                 name !== "constructor"
             ) {
-                // if (
-                //     type.collectionName === "customers" &&
-                //     name === "hasAcceptedCondition"
-                // ) {
-                //     console.trace("get", type.collectionName, name);
-                //     // debugger;
-                // }
-                // console.log("get", type.collectionName, name);
                 childMetadata.refresh();
             }
         });
@@ -103,6 +95,21 @@ function isEqual(a: any, b: any, type: any): boolean {
     return a === b;
 }
 
+function isUnparsedEqual(a: any, b: any, type: any): boolean {
+    if (Array.isArray(type) && Array.isArray(a)) {
+        if (a.length !== b.length) return false;
+        return a.every((row: any, index: number) => {
+            if (b === undefined && type[0] !== undefined) return false;
+            return isUnparsedEqual(row, b[index], type[0]);
+        });
+    } else if (type === moment) {
+        if (a === undefined && b === undefined) return true;
+        if (typeof a !== "object" || typeof b !== "object") return false;
+        return a.seconds === b.seconds && a.nanoseconds === b.nanoseconds;
+    }
+    return a === b;
+}
+
 export function Var(type: any) {
     return function (target: EntityBase, name: string) {
         onInitialize(target, function (this: any, metadata: EntityMetaData) {
@@ -141,6 +148,7 @@ export function Var(type: any) {
             });
             metadata.properties[name].isInitialized = false;
 
+            let unparsedValue: any = this[name];
             this[name] = parseData(this[name], type);
 
             let originalPropertyValue: any = this[name];
@@ -153,9 +161,35 @@ export function Var(type: any) {
 
             metadata.on("parse", (raw: any, forceAll: boolean = false) => {
                 if (!forceAll && isChanged) return;
+
+                if (
+                    typeof raw[name] === "object" &&
+                    isEntityClass(type) &&
+                    isEntity(this[name])
+                ) {
+                    this[name].$getMetadata().emit("parse", raw[name]);
+                    return;
+                }
+
+                if (
+                    Array.isArray(type) &&
+                    Array.isArray(raw[name]) &&
+                    isEntityClass(type[0]) &&
+                    Array.isArray(this[name]) &&
+                    raw[name].length === this[name].length
+                ) {
+                    this[name].map((row, index) => {
+                        row.$getMetadata().emit("parse", raw[name][index]);
+                    });
+                    return;
+                }
+
+                if (isUnparsedEqual(unparsedValue, raw[name], type)) return;
+
+                unparsedValue = raw[name];
                 const parsed = parseData(raw[name], type);
 
-                if (!isEqual(parsed, this[name], type)) this[name] = parsed;
+                if (this[name] !== parsed) this[name] = parsed;
                 originalPropertyValue = this[name];
                 metadata.properties[name].isInitialized = true;
                 isChanged = false;
