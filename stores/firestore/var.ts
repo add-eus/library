@@ -96,7 +96,7 @@ function isEqual(a: any, b: any, type: any): boolean {
 }
 
 function isUnparsedEqual(a: any, b: any, type: any): boolean {
-    if (Array.isArray(type) && Array.isArray(a)) {
+    if (Array.isArray(type) && Array.isArray(a) && Array.isArray(b)) {
         if (a.length !== b.length) return false;
         return a.every((row: any, index: number) => {
             if (b === undefined && type[0] !== undefined) return false;
