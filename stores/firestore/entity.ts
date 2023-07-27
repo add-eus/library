@@ -164,8 +164,9 @@ export class Entity extends EntityBase {
                 const docRef = doc(
                     collection(firebase.firestore, constructor.collectionName)
                 );
-                $metadata.setReference(docRef);
+
                 await setDoc(docRef, raw);
+                $metadata.setReference(docRef);
             } else if (Object.keys(raw).length > 0 && $metadata.reference !== null) {
                 await updateDoc($metadata.reference, raw);
             }

@@ -160,29 +160,31 @@ export function Var(type: any) {
             });
 
             metadata.on("parse", (raw: any, forceAll: boolean = false) => {
-                if (!forceAll && isChanged) return;
-
                 if (
                     typeof raw[name] === "object" &&
                     isEntityClass(type) &&
+                    !isEntityStandaloneClass(type) &&
                     isEntity(this[name])
                 ) {
-                    this[name].$getMetadata().emit("parse", raw[name]);
+                    this[name].$getMetadata().emit("parse", raw[name], forceAll);
                     return;
                 }
 
                 if (
                     Array.isArray(type) &&
                     Array.isArray(raw[name]) &&
-                    isEntityClass(type[0]) &&
                     Array.isArray(this[name]) &&
+                    isEntityClass(type[0]) &&
+                    !isEntityStandaloneClass(type[0]) &&
                     raw[name].length === this[name].length
                 ) {
-                    this[name].map((row, index) => {
-                        row.$getMetadata().emit("parse", raw[name][index]);
+                    this[name].map((row: EntityBase, index: number) => {
+                        row.$getMetadata().emit("parse", raw[name][index], forceAll);
                     });
                     return;
                 }
+
+                if (!forceAll && isChanged) return;
 
                 if (isUnparsedEqual(unparsedValue, raw[name], type)) return;
 

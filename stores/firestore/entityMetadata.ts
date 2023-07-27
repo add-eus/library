@@ -61,6 +61,9 @@ export class EntityMetaData extends EventEmitter {
                     isFirstFetch = false;
                     return;
                 }
+
+                if (document.metadata.hasPendingWrites) return;
+
                 if (!document.exists()) {
                     this.markAsDeleted();
                     return;

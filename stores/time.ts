@@ -1,7 +1,7 @@
 import { useIntervalFn } from "@vueuse/core";
 import moment from "moment-with-locales-es6";
 import type { Ref } from "vue";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 function formatMoment(momentElement: moment, format?: string) {
     if (typeof format === "string") {
@@ -14,10 +14,11 @@ export interface Options {
     interval?: number;
 }
 
-export function useCurrentTime(
+export function useTime(
+    date: Ref<moment>,
     format?: string | Options,
     options?: Options
-): Ref<string | moment> {
+): Ref<string> {
     if (typeof format === "object") {
         options = format;
         format = undefined;
@@ -26,14 +27,27 @@ export function useCurrentTime(
             interval: 1000,
         };
 
-    const currentTime = ref(formatMoment(moment(), format));
+    const currentTime = ref(formatMoment(date.value, format));
 
     useIntervalFn(() => {
         currentTime.value = formatMoment(
-            moment(),
+            date.value,
             typeof format === "object" ? undefined : format
         );
     }, options.interval);
 
     return currentTime;
+}
+
+export function useCurrentTime(
+    format?: string | Options,
+    options?: Options
+): Ref<string | moment> {
+    return useTime(
+        computed(() => {
+            return moment();
+        }),
+        format,
+        options
+    );
 }
