@@ -68,7 +68,7 @@ watch(locale, () => {
 </template>
 
 <style lang="scss">
-@import "../../../scss/abstracts/mixins";
+@import "../../scss/css-variables/all";
 
 .right-panel-wrapper {
     &.is-languages {
