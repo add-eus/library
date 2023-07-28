@@ -193,7 +193,7 @@
                 border-color: var(--dark-sidebar-light-12);
 
                 &.se-toolbar-balloon {
-                    box-shadow: var(--light-box-shadow) !important;
+                    box-shadow: $shadow !important;
 
                     .se-arrow.se-arrow-down::after {
                         border-top-color: var(--dark-sidebar-dark-2);

@@ -130,7 +130,7 @@ $sides: top, bottom, left, right;
 // ========================================================================== */
 
 .has-light-shadow {
-    box-shadow: var(--light-box-shadow);
+    box-shadow: $shadow;
 
     &.has-light-border {
         border: 1px solid var(--fade-grey-dark-3);

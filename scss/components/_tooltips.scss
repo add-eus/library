@@ -386,7 +386,7 @@
 }
 
 [class*="hint--"]::after {
-    box-shadow: var(--light-box-shadow);
+    box-shadow: $shadow;
 }
 
 // Defines a primary tooltip.

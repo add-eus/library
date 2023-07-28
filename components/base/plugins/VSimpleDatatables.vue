@@ -308,7 +308,7 @@ if (isReactive(props.options)) {
                 transition: box-shadow 0.3s;
 
                 &:focus {
-                    box-shadow: var(--light-box-shadow);
+                    box-shadow: $shadow;
                 }
             }
         }
@@ -349,7 +349,7 @@ if (isReactive(props.options)) {
                 }
 
                 &:focus {
-                    box-shadow: var(--light-box-shadow);
+                    box-shadow: $shadow;
                 }
             }
         }

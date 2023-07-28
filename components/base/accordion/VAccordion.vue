@@ -45,21 +45,18 @@ const toggle = (key: number) => {
             :key="key"
             class="accordion-item"
             :open="internalOpenItems?.includes(key) ?? undefined"
-            :class="[internalOpenItems?.includes(key) && 'is-active']"
-        >
+            :class="[internalOpenItems?.includes(key) && 'is-active']">
             <slot name="accordion-item" :item="item" :index="key" :toggle="toggle">
                 <button
                     class="accordion-header"
                     tabindex="0"
                     @keydown.space.prevent="() => toggle(key)"
-                    @click.prevent="() => toggle(key)"
-                >
+                    @click.prevent="() => toggle(key)">
                     <slot
                         name="accordion-item-summary"
                         :item="item"
                         :index="key"
-                        :toggle="toggle"
-                    >
+                        :toggle="toggle">
                         {{ item.title }}
                     </slot>
                 </button>
@@ -68,8 +65,7 @@ const toggle = (key: number) => {
                         name="accordion-item-content"
                         :item="item"
                         :index="key"
-                        :toggle="toggle"
-                    >
+                        :toggle="toggle">
                         {{ item.content }}
                     </slot>
                 </div>
@@ -82,7 +78,7 @@ const toggle = (key: number) => {
 .single-accordion {
     background: var(--white);
     margin: 0 auto;
-    box-shadow: var(--light-box-shadow);
+    box-shadow: $shadow;
     border-radius: var(--radius-large);
     overflow: hidden;
 

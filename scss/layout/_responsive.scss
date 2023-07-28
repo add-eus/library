@@ -148,7 +148,7 @@ Responsive styles
     }
 
     .sidebar-panel {
-        box-shadow: var(--light-box-shadow);
+        box-shadow: $shadow;
 
         .panel-close {
             display: block !important;
@@ -275,7 +275,7 @@ Responsive styles
         display: none !important;
         left: 0 !important;
         z-index: 100 !important;
-        box-shadow: var(--light-box-shadow);
+        box-shadow: $shadow;
 
         .panel-close {
             display: flex !important;
@@ -410,7 +410,7 @@ Responsive styles
         left: 0 !important;
         z-index: 100 !important;
         border-right: 1px solid var(--fade-grey) !important;
-        box-shadow: var(--light-box-shadow);
+        box-shadow: $shadow;
 
         .subpanel-header {
             height: 60px !important;

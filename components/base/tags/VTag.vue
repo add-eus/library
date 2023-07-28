@@ -86,7 +86,7 @@ const props = withDefaults(defineProps<VTagProps>(), {
     }
 
     &.is-elevated {
-        box-shadow: var(--light-box-shadow);
+        box-shadow: $shadow;
     }
 
     &.is-solid {

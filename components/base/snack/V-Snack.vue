@@ -41,19 +41,16 @@ const isIconify = computed(() => {
 <template>
     <div
         class="snack"
-        :class="[props.white && 'is-white', props.size && `is-${props.size}`]"
-    >
+        :class="[props.white && 'is-white', props.size && `is-${props.size}`]">
         <div
             v-if="props.icon"
             class="snack-media is-icon"
-            :class="[props.color && `is-${props.color}`, props.solid && `is-solid`]"
-        >
+            :class="[props.color && `is-${props.color}`, props.solid && `is-solid`]">
             <i
                 v-if="isIconify"
                 aria-hidden="true"
                 class="iconify snack-icon"
-                :data-icon="icon"
-            ></i>
+                :data-icon="icon"></i>
             <i v-else aria-hidden="true" class="snack-icon" :class="props.icon"></i>
         </div>
         <div v-else-if="props.image" class="snack-media">
@@ -61,8 +58,7 @@ const isIconify = computed(() => {
                 class="avatar"
                 :src="props.image"
                 alt=""
-                @error.once="placeholderHandler"
-            />
+                @error.once="placeholderHandler" />
         </div>
         <span class="snack-text">
             <slot name="title">{{ props.title }}</slot>
@@ -93,7 +89,7 @@ const isIconify = computed(() => {
     transition: all 0.3s; // transition-all test
 
     &:hover {
-        box-shadow: var(--light-box-shadow);
+        box-shadow: $shadow;
     }
 
     &.is-white {

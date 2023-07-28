@@ -64,7 +64,7 @@ watch(
     &[open] {
         .collapse-icon {
             border-color: var(--fade-grey-dark-3) !important;
-            box-shadow: var(--light-box-shadow);
+            box-shadow: $shadow;
         }
     }
 

@@ -29,8 +29,7 @@ watchEffect(() => {
     <nav
         class="navbar is-fixed-top is-transparent"
         :class="[!isScrolling && 'is-docked', isMobileNavOpen && 'is-solid']"
-        aria-label="main navigation"
-    >
+        aria-label="main navigation">
         <div class="navbar-brand">
             <a href="/" class="navbar-item" @click.prevent="scrollTo('#app', 800)">
                 <div class="brand-icon">
@@ -46,8 +45,7 @@ watchEffect(() => {
                 tabindex="0"
                 aria-expanded="false"
                 @keydown.space.prevent="isMobileNavOpen = !isMobileNavOpen"
-                @click="isMobileNavOpen = !isMobileNavOpen"
-            >
+                @click="isMobileNavOpen = !isMobileNavOpen">
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
@@ -79,22 +77,19 @@ watchEffect(() => {
                         <input
                             id="navbar-night-toggle--daynight"
                             v-model="darkmode.isDark"
-                            type="checkbox"
-                        />
+                            type="checkbox" />
                         <span class="toggler">
                             <span class="dark">
                                 <i
                                     aria-hidden="true"
                                     class="iconify"
-                                    data-icon="feather:moon"
-                                ></i>
+                                    data-icon="feather:moon"></i>
                             </span>
                             <span class="light">
                                 <i
                                     aria-hidden="true"
                                     class="iconify"
-                                    data-icon="feather:sun"
-                                ></i>
+                                    data-icon="feather:sun"></i>
                             </span>
                         </span>
                     </label>
@@ -123,7 +118,7 @@ watchEffect(() => {
             max-width: 1140px;
             margin: 0 auto;
             background-color: var(--white);
-            box-shadow: var(--light-box-shadow);
+            box-shadow: $shadow;
             border: 1px solid var(--fade-grey);
             border-radius: 500px;
             font-family: $family-sans-serif;
@@ -461,7 +456,7 @@ watchEffect(() => {
 
             &.is-solid {
                 top: 10px;
-                box-shadow: var(--light-box-shadow) !important;
+                box-shadow: $shadow !important;
 
                 .navbar-brand {
                     .brand-icon {
@@ -470,7 +465,7 @@ watchEffect(() => {
                 }
 
                 .navbar-menu {
-                    box-shadow: var(--light-box-shadow) !important;
+                    box-shadow: $shadow !important;
                 }
             }
 
@@ -550,7 +545,7 @@ watchEffect(() => {
 
             &.is-solid {
                 top: 10px;
-                box-shadow: var(--light-box-shadow) !important;
+                box-shadow: $shadow !important;
 
                 .navbar-brand {
                     .brand-icon {
@@ -559,7 +554,7 @@ watchEffect(() => {
                 }
 
                 .navbar-menu {
-                    box-shadow: var(--light-box-shadow) !important;
+                    box-shadow: $shadow !important;
                 }
             }
 

@@ -531,7 +531,7 @@ var {
         background: var(--white);
         color: var(--dark-text);
         border: 1px solid var(--primary-grey);
-        box-shadow: var(--light-box-shadow);
+        box-shadow: $shadow;
         border-radius: var(--radius-large);
         font-size: 0.9rem;
     }

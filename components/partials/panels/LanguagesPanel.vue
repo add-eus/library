@@ -123,7 +123,7 @@ watch(locale, () => {
                             border-radius: var(--radius-rounded);
                             border: 1.6px solid var(--fade-grey);
                             background: var(--white);
-                            box-shadow: var(--light-box-shadow);
+                            box-shadow: $shadow;
                             transition: color 0.3s, background-color 0.3s,
                                 border-color 0.3s, height 0.3s, width 0.3s;
 

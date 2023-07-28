@@ -36,8 +36,7 @@ provide(useVFieldSymbol, vField);
             props.grouped && 'is-grouped',
             props.grouped && props.multiline && 'is-grouped-multiline',
             props.horizontal && 'is-horizontal',
-        ]"
-    >
+        ]">
         <template v-if="hasLabel && props.horizontal">
             <VLabel :for="vField.id">
                 <slot name="label"
@@ -142,7 +141,7 @@ provide(useVFieldSymbol, vField);
             border-bottom-right-radius: 0;
             border-bottom: none;
             border-color: var(--fade-grey-dark-2) !important;
-            box-shadow: var(--light-box-shadow);
+            box-shadow: $shadow;
         }
 
         .is-textarea-addon {
@@ -155,7 +154,7 @@ provide(useVFieldSymbol, vField);
             border-radius: 0 0 4px 4px;
             border: 1px solid var(--fade-grey-dark-2);
             border-top: none;
-            box-shadow: var(--light-box-shadow);
+            box-shadow: $shadow;
         }
     }
 

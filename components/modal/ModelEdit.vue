@@ -122,7 +122,7 @@ defineExpose({
     isEdit,
 });
 
-if (isEdit.value && typeof events.onNew === "function") events.onNew(this);
+if (isEdit.value && typeof events.onNew === "function") events.onNew(props.entity);
 </script>
 
 <template>

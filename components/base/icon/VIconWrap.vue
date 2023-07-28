@@ -62,20 +62,17 @@ const isIconify = computed(() => {
             props.hasLargeIcon && 'has-large-icon',
             props.picture && 'has-img',
             props.placeholder && 'is-placeholder',
-        ]"
-    >
+        ]">
         <img
             v-if="props.picture"
             :src="props.picture"
             alt=""
-            @error.once="(event) => onceImageErrored(event, '32x32')"
-        />
+            @error.once="(event) => onceImageErrored(event, '32x32')" />
         <i
             v-else-if="isIconify"
             aria-hidden="true"
             class="iconify"
-            :data-icon="props.icon"
-        ></i>
+            :data-icon="props.icon"></i>
         <i v-else-if="props.icon" aria-hidden="true" :class="props.icon"></i>
         <slot name="after"></slot>
     </div>
@@ -92,7 +89,7 @@ const isIconify = computed(() => {
     border-radius: var(--radius-rounded);
     background: var(--white);
     border: 1px solid var(--fade-grey-dark-3);
-    box-shadow: var(--light-box-shadow);
+    box-shadow: $shadow;
     color: var(--primary);
     font-size: 1rem;
 

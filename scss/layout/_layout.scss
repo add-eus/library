@@ -123,7 +123,7 @@ body {
     align-items: center;
     z-index: 1;
     background-color: var(--body-color);
-    box-shadow: var(--light-box-shadow);
+    box-shadow: $shadow;
 
     .control {
         min-width: 280px;
@@ -143,7 +143,7 @@ body {
                     background: var(--white);
                     border-color: var(--fade-grey);
                     border-radius: var(--radius-rounded);
-                    box-shadow: var(--light-box-shadow);
+                    box-shadow: $shadow;
                 }
             }
 
@@ -172,7 +172,7 @@ body {
                     width: 20rem;
                     background: var(--white);
                     border-radius: 5px;
-                    box-shadow: var(--light-box-shadow);
+                    box-shadow: $shadow;
                     padding-top: 0;
 
                     .heading {
@@ -261,7 +261,7 @@ body {
         &:hover {
             background: var(--white);
             border-color: var(--fade-grey);
-            box-shadow: var(--light-box-shadow);
+            box-shadow: $shadow;
         }
 
         &:focus {

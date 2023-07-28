@@ -184,9 +184,11 @@ export function Var(type: any) {
                     return;
                 }
 
-                if (!forceAll && isChanged) return;
-
-                if (isUnparsedEqual(unparsedValue, raw[name], type)) return;
+                if (
+                    !forceAll &&
+                    (isChanged || isUnparsedEqual(unparsedValue, raw[name], type))
+                )
+                    return;
 
                 unparsedValue = raw[name];
                 const parsed = parseData(raw[name], type);

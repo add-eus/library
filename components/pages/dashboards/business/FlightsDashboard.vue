@@ -45,8 +45,7 @@ const options = ref(["All Flights"]);
                                             class="input flight-datepicker"
                                             placeholder="Departure"
                                             :value="inputValue.start"
-                                            v-on="inputEvents.start"
-                                        />
+                                            v-on="inputEvents.start" />
                                     </VControl>
                                     <VControl icon="feather:calendar">
                                         <input
@@ -54,8 +53,7 @@ const options = ref(["All Flights"]);
                                             class="input flight-datepicker"
                                             placeholder="Return"
                                             :value="inputValue.end"
-                                            v-on="inputEvents.end"
-                                        />
+                                            v-on="inputEvents.end" />
                                     </VControl>
                                 </div>
                             </template>
@@ -243,14 +241,12 @@ const options = ref(["All Flights"]);
                                 <input
                                     type="text"
                                     class="input"
-                                    placeholder="Search..."
-                                />
+                                    placeholder="Search..." />
                                 <button class="searcv-button">
                                     <i
                                         aria-hidden="true"
                                         class="iconify"
-                                        data-icon="feather:search"
-                                    ></i>
+                                        data-icon="feather:search"></i>
                                 </button>
                             </div>
 
@@ -272,8 +268,7 @@ const options = ref(["All Flights"]);
                                     <i
                                         aria-hidden="true"
                                         class="iconify"
-                                        data-icon="feather:chevron-left"
-                                    ></i>
+                                        data-icon="feather:chevron-left"></i>
                                 </a>
                             </div>
                             <div class="center">
@@ -284,8 +279,7 @@ const options = ref(["All Flights"]);
                                     <i
                                         aria-hidden="true"
                                         class="iconify"
-                                        data-icon="feather:chevron-right"
-                                    ></i>
+                                        data-icon="feather:chevron-right"></i>
                                 </a>
                             </div>
                         </div>
@@ -373,8 +367,7 @@ const options = ref(["All Flights"]);
                                     value="All Flights"
                                     label="All Flights"
                                     color="primary"
-                                    circle
-                                />
+                                    circle />
                             </div>
                             <div class="control">
                                 <VCheckbox
@@ -382,8 +375,7 @@ const options = ref(["All Flights"]);
                                     value="No Stops"
                                     label="No Stops"
                                     color="primary"
-                                    circle
-                                />
+                                    circle />
                             </div>
                             <div class="control">
                                 <VCheckbox
@@ -391,8 +383,7 @@ const options = ref(["All Flights"]);
                                     value="1 Stop"
                                     label="1 Stop"
                                     color="primary"
-                                    circle
-                                />
+                                    circle />
                             </div>
                             <div class="control">
                                 <VCheckbox
@@ -400,8 +391,7 @@ const options = ref(["All Flights"]);
                                     value="2 Stops"
                                     label="2 Stops"
                                     color="primary"
-                                    circle
-                                />
+                                    circle />
                             </div>
                         </div>
                     </div>
@@ -415,8 +405,7 @@ const options = ref(["All Flights"]);
                                     value="All Options"
                                     label="All Options"
                                     color="primary"
-                                    circle
-                                />
+                                    circle />
                             </div>
                             <div class="control">
                                 <VCheckbox
@@ -424,8 +413,7 @@ const options = ref(["All Flights"]);
                                     value="1 Cabine Luggage"
                                     label="1 Cabine Luggage"
                                     color="primary"
-                                    circle
-                                />
+                                    circle />
                             </div>
                             <div class="control">
                                 <VCheckbox
@@ -433,8 +421,7 @@ const options = ref(["All Flights"]);
                                     value="2 Cabin Luggage"
                                     label="2 Cabin Luggage"
                                     color="primary"
-                                    circle
-                                />
+                                    circle />
                             </div>
                             <div class="control">
                                 <VCheckbox
@@ -442,8 +429,7 @@ const options = ref(["All Flights"]);
                                     value="None"
                                     label="None"
                                     color="primary"
-                                    circle
-                                />
+                                    circle />
                             </div>
                         </div>
                     </div>
@@ -621,7 +607,7 @@ const options = ref(["All Flights"]);
 
             &:hover,
             &:focus {
-                box-shadow: var(--light-box-shadow);
+                box-shadow: $shadow;
 
                 .route {
                     .line {
@@ -805,7 +791,7 @@ const options = ref(["All Flights"]);
 
             background: var(--dark-sidebar-light-4);
             border-color: var(--dark-sidebar-light-12);
-            box-shadow: var(--light-box-shadow);
+            box-shadow: $shadow;
         }
 
         .flights-summary-wrapper {

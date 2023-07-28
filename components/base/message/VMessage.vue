@@ -37,7 +37,7 @@ const props = withDefaults(defineProps<VMessageProps>(), {
 .message {
     position: relative;
     border: 1px solid var(--fade-grey-dark-3);
-    box-shadow: var(--light-box-shadow);
+    box-shadow: $shadow;
     padding-right: 20px;
 
     &.is-primary {

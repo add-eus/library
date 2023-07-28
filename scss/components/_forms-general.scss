@@ -67,7 +67,7 @@ label[for] {
 
     &:focus {
         border-color: var(--fade-grey-dark-4);
-        box-shadow: var(--light-box-shadow);
+        box-shadow: $shadow;
 
         &.is-primary-focus {
             border-color: var(--primary) !important;
@@ -100,7 +100,7 @@ label[for] {
 
     &:focus {
         border-color: var(--fade-grey-dark-4);
-        box-shadow: var(--light-box-shadow);
+        box-shadow: $shadow;
 
         &.is-primary-focus {
             border-color: var(--primary) !important;
@@ -421,7 +421,7 @@ select {
             input,
             .multiselect {
                 border-color: var(--success) !important;
-                //box-shadow: var(--light-box-shadow);
+                //box-shadow: $shadow;
                 transition: all 0.3s; // transition-all test
             }
 
@@ -440,7 +440,7 @@ select {
             input,
             .multiselect {
                 border-color: var(--danger) !important;
-                box-shadow: var(--light-box-shadow);
+                box-shadow: $shadow;
             }
 
             .validation-icon.is-error,
@@ -520,7 +520,7 @@ select {
         border-radius: var(--radius);
         pointer-events: none;
         transform: translateY(5px);
-        box-shadow: var(--light-box-shadow);
+        box-shadow: $shadow;
         z-index: 10;
         transition: all 0.3s; // transition-all test
 
@@ -714,7 +714,7 @@ select {
     &.is-default {
         &:hover {
             .file-cta {
-                box-shadow: var(--light-box-shadow) !important;
+                box-shadow: $shadow !important;
             }
         }
 

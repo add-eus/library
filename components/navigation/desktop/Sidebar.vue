@@ -223,7 +223,7 @@ const themeClasses = computed(() => {
         border: none !important;
 
         &:not(.is-bordered) {
-            box-shadow: var(--light-box-shadow);
+            box-shadow: $shadow;
         }
 
         &.is-bordered {

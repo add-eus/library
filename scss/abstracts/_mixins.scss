@@ -8,7 +8,7 @@
     }
 
     &.is-raised {
-        box-shadow: var(--light-box-shadow);
+        box-shadow: $shadow;
     }
 
     &.is-primary {

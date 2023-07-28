@@ -970,7 +970,7 @@ const props = defineProps<{
             color: var(--light-text-light-12);
             margin: 0 6px;
             border: 1px solid var(--fade-grey-dark-3);
-            box-shadow: var(--light-box-shadow);
+            box-shadow: $shadow;
             transition: all 0.3s; // transition-all test
 
             &:hover {
