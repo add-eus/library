@@ -68,7 +68,7 @@ watch(locale, () => {
 </template>
 
 <style lang="scss">
-@import "../../scss/css-variables/all";
+@import "addeus-common-library/scss/css-variables/all";
 
 .right-panel-wrapper {
     &.is-languages {
