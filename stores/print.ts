@@ -13,8 +13,12 @@ export function usePrint() {
             temporaryWindows.document.write(content);
             return print(temporaryWindows);
         },
-        printFromURL: (url: string) => {
-            return print(window.open(url, "print"));
+        printFromURL: async (url: string) => {
+            const blob = await fetch(url).then((r) => r.blob());
+            const fileURL = URL.createObjectURL(blob);
+            const temporaryWindows = window.open(fileURL, "print");
+            if (!temporaryWindows) throw new Error("Could not open temporary window");
+            return print(temporaryWindows);
         },
     };
 }
