@@ -17,7 +17,12 @@ export function usePrint() {
             const blob = await fetch(url).then((r) => r.blob());
             const fileURL = URL.createObjectURL(blob);
             const temporaryWindows = window.open(fileURL, "print");
+
             if (!temporaryWindows) throw new Error("Could not open temporary window");
+
+            await new Promise((resolve) => {
+                temporaryWindows.onload = resolve;
+            });
             return print(temporaryWindows);
         },
     };
