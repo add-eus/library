@@ -7,6 +7,7 @@ import type {
     OrderByDirection,
     DocumentSnapshot,
     QueryFilterConstraint,
+    FieldPath,
 } from "firebase/firestore";
 import { where, orderBy, collection, doc, or, and } from "firebase/firestore";
 import { useFirebase } from "../firebase";
@@ -20,8 +21,8 @@ export { Input } from "./input";
 export { Entity, EntityBase } from "./entity";
 export { Var } from "./var";
 
-export type WhereOption = [string, WhereFilterOp, any];
-export type OrderOption = [string, OrderByDirection];
+export type WhereOption = [string | FieldPath, WhereFilterOp, any];
+export type OrderOption = [string | FieldPath, OrderByDirection];
 
 export interface CompositeConstraint {
     type: "OR" | "AND" | "WHERE";
