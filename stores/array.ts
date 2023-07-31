@@ -23,3 +23,15 @@ export function useSplittedArray<T>(
         return result;
     });
 }
+
+export function uniqueArray<T>(array: T[]): T[] {
+    return array.filter((value, index, array) => {
+        return array.indexOf(value) === index;
+    });
+}
+
+export function uniqueArrayFilter<T>(array: T[], filter: any): T[] {
+    return array.filter((value, index, array) => {
+        return array.findIndex(filter(value)) === index;
+    });
+}
