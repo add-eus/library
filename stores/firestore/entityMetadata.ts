@@ -62,7 +62,7 @@ export class EntityMetaData extends EventEmitter {
                     return;
                 }
 
-                if (document.metadata.hasPendingWrites) return;
+                // if (document.metadata.hasPendingWrites) return;
 
                 if (!document.exists()) {
                     this.markAsDeleted();
