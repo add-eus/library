@@ -1,30 +1,42 @@
-export function usePrint() {
-    function print(temporaryWindows: Window) {
-        if (typeof TEST_PRINT !== "undefined") return;
+import sleep from "../utils/sleep";
 
-        temporaryWindows.focus();
-        temporaryWindows.print();
-        temporaryWindows.close();
+export function usePrint() {
+    function createPrintFrame() {
+        const iframe = document.createElement("iframe"); // load content in an iframe to print later
+        document.body.appendChild(iframe);
+
+        iframe.style.display = "none";
+        return iframe;
     }
+
+    async function setUrlPrintFrame(iframe: HTMLIFrameElement, url: string) {
+        const promise = new Promise((resolve) => (iframe.onload = resolve));
+        iframe.src = url;
+        await promise;
+    }
+
+    async function print(iframe: HTMLIFrameElement) {
+        await sleep(1);
+        iframe.focus();
+        if (!iframe.contentWindow)
+            throw new Error("Could not get content window from iframe");
+        iframe.contentWindow.print();
+    }
+
     return {
-        print: (content: string) => {
-            const temporaryWindows = window.open("", "print");
-            if (!temporaryWindows) throw new Error("Could not open temporary window");
-            temporaryWindows.document.write(content);
-            temporaryWindows.document.close();
-            return print(temporaryWindows);
+        print: async (content: string) => {
+            const frame = createPrintFrame();
+            frame.contentDocument!.write(content);
+            frame.contentDocument!.close();
+            await print(frame);
         },
         printFromURL: async (url: string) => {
             const blob = await fetch(url).then((r) => r.blob());
             const fileURL = URL.createObjectURL(blob);
-            const temporaryWindows = window.open(fileURL, "print");
 
-            if (!temporaryWindows) throw new Error("Could not open temporary window");
-
-            await new Promise((resolve) => {
-                temporaryWindows.onload = resolve;
-            });
-            return print(temporaryWindows);
+            const iframe = createPrintFrame();
+            await setUrlPrintFrame(iframe, fileURL);
+            await print(iframe);
         },
     };
 }
