@@ -75,8 +75,8 @@ async function beforeCreate({ onEnd }: { onEnd: () => void }) {
 }
 
 async function beforeUpdate({ onEnd }: { onEnd: () => void }) {
-    if (typeof events.onBeforeCreate === "function") {
-        await events.onBeforeCreate(props.entity);
+    if (typeof events.onBeforeEdit === "function") {
+        await events.onBeforeEdit(props.entity);
     }
     onEnd();
 }
