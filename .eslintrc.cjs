@@ -33,6 +33,7 @@ module.exports = {
                 disallowTypeAnnotations: false,
             },
         ],
+        "@typescript-eslint/consistent-type-imports": false,
         "prettier-vue/prettier": [
             "error",
             {
