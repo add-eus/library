@@ -82,7 +82,9 @@ function parseDate(date: moment = moment()) {
     return date;
 }
 
-const placeHolderTranslated = props.placeholder ? translate(props.placeholder) : "";
+const placeHolderTranslated = computed(() =>
+    props.placeholder !== null ? translate(props.placeholder).value : ""
+);
 </script>
 
 <template>
