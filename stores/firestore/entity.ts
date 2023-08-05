@@ -44,6 +44,8 @@ export class EntityBase {
                 return (obj as any)[key];
             },
             set(obj: { [key: string]: any }, key: string, value: any) {
+                if (Array.isArray(value) && value.constructor !== EntityArray)
+                    value = EntityArray(value);
                 obj[key] = value;
 
                 obj.$getMetadata().emit("set", key, value);
