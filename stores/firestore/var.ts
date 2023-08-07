@@ -118,8 +118,7 @@ export function Var(type?: any) {
                 throw new Error(
                     "Property type is not set for " + target.constructor.name + ":" + name
                 );
-    
-            
+
             if (metadata.type === Array) type = Array.of(metadata.elementType);
             else type = metadata;
         }
