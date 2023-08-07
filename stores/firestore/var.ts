@@ -110,8 +110,19 @@ function isUnparsedEqual(a: any, b: any, type: any): boolean {
     return a === b;
 }
 
-export function Var(type: any) {
+export function Var(type?: any) {
     return function (target: EntityBase, name: string) {
+        if (type === undefined) {
+            const metadata = Reflect.getMetadata("design:type", target, name);
+            if (metadata === undefined)
+                throw new Error(
+                    "Property type is not set for " + target.constructor.name + ":" + name
+                );
+
+            if (metadata.type === Array) type = Array.of(metadata.elementType);
+            else type = metadata;
+        }
+
         onInitialize(target, function (this: any, metadata: EntityMetaData) {
             if (metadata.properties[name] === undefined) metadata.properties[name] = {};
 

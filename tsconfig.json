@@ -49,6 +49,7 @@
         ".eslintrc.cjs",
         "index.ts",
         "vite.config.cjs",
-        "default-styles.ts"
+        "default-styles.ts",
+        "reflect-metadata.d.ts"
     ]
 }
