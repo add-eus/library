@@ -102,7 +102,11 @@ if (props.onlyIds) {
         });
     } else {
         onSaved(async () => {
-            if (props.save && typeof entities.value.$save === "function")
+            if (
+                props.save &&
+                entities.value !== null &&
+                typeof entities.value.$save === "function"
+            )
                 return entities.value.$save();
         });
     }
