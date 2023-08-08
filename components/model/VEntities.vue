@@ -168,6 +168,9 @@ function update() {
                     <template #default="{ field: fieldArray }">
                         <slot :field="multiple ? fieldArray : field"></slot>
                     </template>
+                    <template #actions="{ value, index }">
+                        <slot name="actions" :value="value" :index="index"></slot>
+                    </template>
                 </VArray>
                 <p v-for="error in field.errors" :key="error" class="help is-danger">
                     <Translate>.{{ error }}</Translate>

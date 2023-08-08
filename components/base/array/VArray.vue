@@ -106,31 +106,33 @@ function getKey(value) {
                         </template>
                         <slot :field="field" :index="index"></slot>
                         <template #actions="{ value }">
-                            <VIconButton
-                                icon="delete"
-                                color="danger"
-                                light
-                                circle
-                                delete
-                                @click="remove(value)"></VIconButton>
-                            <VIconButton
-                                v-if="sortable"
-                                icon="arrow_drop_up"
-                                color="white"
-                                class="draggable"
-                                light
-                                circle
-                                :disabled="index == 0"
-                                @click="moveUp(value)"></VIconButton>
-                            <VIconButton
-                                v-if="sortable"
-                                icon="arrow_drop_down"
-                                color="white"
-                                class="draggable"
-                                light
-                                circle
-                                :disabled="index >= model.length - 1"
-                                @click="moveDown(value)"></VIconButton>
+                            <slot name="actions" :value="value" :index="index">
+                                <VIconButton
+                                    icon="delete"
+                                    color="danger"
+                                    light
+                                    circle
+                                    delete
+                                    @click="remove(value)"></VIconButton>
+                                <VIconButton
+                                    v-if="sortable"
+                                    icon="arrow_drop_up"
+                                    color="white"
+                                    class="draggable"
+                                    light
+                                    circle
+                                    :disabled="index == 0"
+                                    @click="moveUp(value)"></VIconButton>
+                                <VIconButton
+                                    v-if="sortable"
+                                    icon="arrow_drop_down"
+                                    color="white"
+                                    class="draggable"
+                                    light
+                                    circle
+                                    :disabled="index >= model.length - 1"
+                                    @click="moveDown(value)"></VIconButton>
+                            </slot>
                         </template>
                     </VArrayRow>
                 </VValidation>
