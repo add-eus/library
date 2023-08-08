@@ -66,7 +66,7 @@ const position = computed(() => {
     } else tempPosition.left = left.value + scrollX.value + "px";
 
     const bottom = scrollY.value - top.value - height.value;
-    if (bottom < 0) tempPosition.bottom = "0px";
+    if (!props.up && bottom < 0) tempPosition.bottom = "0px";
 
     return tempPosition;
 });
