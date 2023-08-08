@@ -65,6 +65,13 @@ const position = computed(() => {
             left.value - menuSize.width.value + width.value + scrollX.value + "px";
     } else tempPosition.left = left.value + scrollX.value + "px";
 
+    if (!props.up) {
+        const bottom = scrollY.value - top.value - height.value;
+        if (bottom < 0) tempPosition.bottom = "0px";
+    } else if (props.up) {
+        if (top.value < scrollY.value) tempPosition.top = "0px";
+    }
+
     return tempPosition;
 });
 
