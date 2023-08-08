@@ -2,6 +2,8 @@ import type { Entity } from "./entity";
 import type { DocumentReference, DocumentSnapshot } from "firebase/firestore";
 import { getDoc, onSnapshot } from "firebase/firestore";
 import EventEmitter from "./event";
+import * as yup from "yup";
+
 export class EntityMetaData extends EventEmitter {
     reference: DocumentReference | null = null;
     isFullfilled: boolean = false;

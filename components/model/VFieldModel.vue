@@ -26,153 +26,154 @@ const props = defineProps<VFieldModelProps>();
 const multiselect = ref(null);
 const validation = ref(null);
 
-const input = computed(() => {
-    return props.modelValue.$getMetadata().properties[props.property].input;
-});
+const schema = props.modelValue.properties[props.property].schema;
 
-const isProcessing = ref(false);
+const inputType = props.modelValue.properties[props.property].type;
+console.log(props, schema, inputType);
 
-let schema = yup.string(`.${props.property}.validation.string`);
+// const isProcessing = ref(false);
 
-let selectOptions: ComputedRef<any[] | undefined> | never[] =
-    props.selectOptions !== undefined
-        ? computed(() => {
-              return props.selectOptions;
-          })
-        : [];
+// let schema = yup.string(`.${props.property}.validation.string`);
 
-if (input.value.attrs.options !== undefined) {
-    if (input.value.attrs.options.entity !== undefined) {
-        const wheres =
-            input.value.attrs.options.where !== undefined
-                ? input.value.attrs.options.where()
-                : [];
-        const orders =
-            input.value.attrs.options.orders !== undefined
-                ? input.value.attrs.options.orders()
-                : [];
-        const options = useCollection(input.value.attrs.options.entity, {
-            wheres,
-            orders,
-            limit: input.value.attrs.options.limit,
-        });
-        schema = yup.object();
-        selectOptions = computed(() => {
-            return options.map((option) => {
-                const label = option.toString();
-                return {
-                    label: typeof label === "string" ? label : "",
-                    value: option,
-                    id: option.$getID(),
-                };
-            });
-        });
-    } else if (isEnum(input.value.attrs.options)) {
-        const enumerable = enumToObject(input.value.attrs.options);
-        selectOptions = Object.keys(enumerable).map((rowKey) => {
-            return {
-                label: translate(`.${props.property}.options.${rowKey}`).value,
-                value: enumerable[rowKey],
-                id: rowKey,
-            };
-        });
-    } else {
-        selectOptions = input.value.attrs.options;
-    }
+// let selectOptions: ComputedRef<any[] | undefined> | never[] =
+//     props.selectOptions !== undefined
+//         ? computed(() => {
+//               return props.selectOptions;
+//           })
+//         : [];
 
-    if (input.value.attrs.autoSelect === true) {
-        void until(selectOptions)
-            .toMatch((v) => v.length > 0)
-            .then(() => {
-                if (
-                    typeof validation.value === "object" &&
-                    (validation.value?.field?.value === null ||
-                        validation.value?.field?.value === undefined)
-                )
-                    validation.value.field.value = resolveUnref(selectOptions)[0].value;
-            });
-    }
-}
+// if (input.value.attrs.options !== undefined) {
+//     if (input.value.attrs.options.entity !== undefined) {
+//         const wheres =
+//             input.value.attrs.options.where !== undefined
+//                 ? input.value.attrs.options.where()
+//                 : [];
+//         const orders =
+//             input.value.attrs.options.orders !== undefined
+//                 ? input.value.attrs.options.orders()
+//                 : [];
+//         const options = useCollection(input.value.attrs.options.entity, {
+//             wheres,
+//             orders,
+//             limit: input.value.attrs.options.limit,
+//         });
+//         schema = yup.object();
+//         selectOptions = computed(() => {
+//             return options.map((option) => {
+//                 const label = option.toString();
+//                 return {
+//                     label: typeof label === "string" ? label : "",
+//                     value: option,
+//                     id: option.$getID(),
+//                 };
+//             });
+//         });
+//     } else if (isEnum(input.value.attrs.options)) {
+//         const enumerable = enumToObject(input.value.attrs.options);
+//         selectOptions = Object.keys(enumerable).map((rowKey) => {
+//             return {
+//                 label: translate(`.${props.property}.options.${rowKey}`).value,
+//                 value: enumerable[rowKey],
+//                 id: rowKey,
+//             };
+//         });
+//     } else {
+//         selectOptions = input.value.attrs.options;
+//     }
 
-if (input.value.type === "checkbox") {
-    schema = yup.boolean(`.${props.property}.validation.boolean`);
-}
+//     if (input.value.attrs.autoSelect === true) {
+//         void until(selectOptions)
+//             .toMatch((v) => v.length > 0)
+//             .then(() => {
+//                 if (
+//                     typeof validation.value === "object" &&
+//                     (validation.value?.field?.value === null ||
+//                         validation.value?.field?.value === undefined)
+//                 )
+//                     validation.value.field.value = resolveUnref(selectOptions)[0].value;
+//             });
+//     }
+// }
 
-if (input.value.type === "phone") {
-    schema = schema.test({
-        name: "phone",
-        message: `.${props.property}.validation.phone`,
-        exclusive: true,
+// if (input.value.type === "checkbox") {
+//     schema = yup.boolean(`.${props.property}.validation.boolean`);
+// }
 
-        test(value) {
-            return !value || isValidPhoneNumber(value);
-        },
-    });
-}
+// if (input.value.type === "phone") {
+//     schema = schema.test({
+//         name: "phone",
+//         message: `.${props.property}.validation.phone`,
+//         exclusive: true,
 
-if (Array.isArray(input.value.attrs.validate)) {
-    input.value.attrs.validate.forEach((validate: string | Function) => {
-        if (typeof validate === "string")
-            schema = schema[validate](`.${props.property}.validation.${validate}`);
-        else if (Array.isArray(validate))
-            schema = schema.test.call(
-                schema,
-                validate[0],
-                `.${props.property}.validation.${validate[0]}`,
-                (value) => {
-                    return validate[1](value, props.modelValue);
-                }
-            );
-    });
-}
+//         test(value) {
+//             return !value || isValidPhoneNumber(value);
+//         },
+//     });
+// }
 
-if (input.value.type === "text" && input.value.attrs.match !== undefined) {
-    schema = yup
-        .string()
-        .matches(input.value.attrs.match, `.${props.property}.validation.match`);
-}
+// if (Array.isArray(input.value.attrs.validate)) {
+//     input.value.attrs.validate.forEach((validate: string | Function) => {
+//         if (typeof validate === "string")
+//             schema = schema[validate](`.${props.property}.validation.${validate}`);
+//         else if (Array.isArray(validate))
+//             schema = schema.test.call(
+//                 schema,
+//                 validate[0],
+//                 `.${props.property}.validation.${validate[0]}`,
+//                 (value) => {
+//                     return validate[1](value, props.modelValue);
+//                 }
+//             );
+//     });
+// }
 
-if (input.value.type === "select" || input.value.type === "radio") {
-    schema = schema.nullable();
-    if (input.value.attrs.multiple === true) {
-        schema = yup.array(schema);
-        if (input.value.attrs.required === true) {
-            schema = schema.min(1, `.${props.property}.validation.required`);
-        }
-    }
-}
-if (input.value.type === "file" && input.value.attrs.multiple === true) {
-    schema = yup.array(schema);
-    if (input.value.attrs.required === true) {
-        schema = schema.min(1, `.${props.property}.validation.required`);
-    }
-}
+// if (input.value.type === "text" && input.value.attrs.match !== undefined) {
+//     schema = yup
+//         .string()
+//         .matches(input.value.attrs.match, `.${props.property}.validation.match`);
+// }
 
-if (input.value.type === "number" || input.value.type === "percent") {
-    schema = yup
-        .number(`.${props.property}.validation.number`)
-        .transform((value) => (isNaN(value) ? undefined : value));
-    if (input.value.attrs.min !== undefined || input.value.type === "percent") {
-        schema = schema.min(
-            input.value.attrs.min !== undefined ? input.value.attrs.min : 0,
-            `.${props.property}.validation.min`
-        );
-    }
-    if (input.value.attrs.max !== undefined || input.value.type === "percent") {
-        schema = schema.max(
-            input.value.attrs.min !== undefined ? input.value.attrs.max : 1,
-            `.${props.property}.validation.max`
-        );
-    }
-}
+// if (input.value.type === "select" || input.value.type === "radio") {
+//     schema = schema.nullable();
+//     if (input.value.attrs.multiple === true) {
+//         schema = yup.array(schema);
+//         if (input.value.attrs.required === true) {
+//             schema = schema.min(1, `.${props.property}.validation.required`);
+//         }
+//     }
+// }
+// if (input.value.type === "file" && input.value.attrs.multiple === true) {
+//     schema = yup.array(schema);
+//     if (input.value.attrs.required === true) {
+//         schema = schema.min(1, `.${props.property}.validation.required`);
+//     }
+// }
 
-if (input.value.attrs.required === true) {
-    schema = schema.required(`.${props.property}.validation.required`);
-}
+// if (input.value.type === "number" || input.value.type === "percent") {
+//     schema = yup
+//         .number(`.${props.property}.validation.number`)
+//         .transform((value) => (isNaN(value) ? undefined : value));
+//     if (input.value.attrs.min !== undefined || input.value.type === "percent") {
+//         schema = schema.min(
+//             input.value.attrs.min !== undefined ? input.value.attrs.min : 0,
+//             `.${props.property}.validation.min`
+//         );
+//     }
+//     if (input.value.attrs.max !== undefined || input.value.type === "percent") {
+//         schema = schema.max(
+//             input.value.attrs.min !== undefined ? input.value.attrs.max : 1,
+//             `.${props.property}.validation.max`
+//         );
+//     }
+// }
+
+// if (input.value.attrs.required === true) {
+//     schema = schema.required(`.${props.property}.validation.required`);
+// }
 </script>
 
 <template>
-    <VValidation
+    <!--VValidation
         v-slot="{ field }"
         ref="validation"
         v-model="modelValue[property]"
@@ -320,5 +321,5 @@ if (input.value.attrs.required === true) {
                 </p>
             </VControl>
         </VField>
-    </VValidation>
+    </VValidation-->
 </template>

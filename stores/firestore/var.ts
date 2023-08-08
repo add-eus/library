@@ -5,6 +5,7 @@ import { Entity, EntityBase, isEntity } from "./entity";
 import { onInitialize, isEntityClass, isEntityStandaloneClass } from "./entity";
 import type { EntityMetaData } from "./entityMetadata";
 import { shallowReactive } from "vue";
+import { get } from "firebase/database";
 
 function parseData(toTransform: any | any[], type: any): any {
     if (typeof toTransform === "undefined") return undefined;
@@ -110,18 +111,25 @@ function isUnparsedEqual(a: any, b: any, type: any): boolean {
     return a === b;
 }
 
+export function getType(defaultType: any, target: EntityBase, name: string) {
+    let type;
+
+    if (defaultType === undefined) {
+        const metadata = Reflect.getMetadata("design:type", target, name);
+        if (metadata === undefined)
+            throw new Error(
+                "Property type is not set for " + target.constructor.name + ":" + name
+            );
+
+        if (metadata.type === Array) type = Array.of(metadata.elementType);
+        else type = metadata;
+    } else type = defaultType;
+    return type;
+}
+
 export function Var(type?: any) {
     return function (target: EntityBase, name: string) {
-        if (type === undefined) {
-            const metadata = Reflect.getMetadata("design:type", target, name);
-            if (metadata === undefined)
-                throw new Error(
-                    "Property type is not set for " + target.constructor.name + ":" + name
-                );
-
-            if (metadata.type === Array) type = Array.of(metadata.elementType);
-            else type = metadata;
-        }
+        type = getType(type, target, name);
 
         onInitialize(target, function (this: any, metadata: EntityMetaData) {
             if (metadata.properties[name] === undefined) metadata.properties[name] = {};

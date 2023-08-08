@@ -11,6 +11,7 @@ import { lowerCaseFirst } from "../../utils/string";
 import { markRaw, shallowReactive } from "vue";
 import { useFirebase } from "../firebase";
 import { EntityMetaData } from "./entityMetadata";
+import * as yup from "yup";
 
 export function onInitialize(target: any, callback: Function) {
     const constructor = target.constructor;
@@ -75,6 +76,15 @@ export class EntityBase {
 
     static addMethod(name: string, callback: Function) {
         (this.prototype as any)["$" + name] = callback;
+    }
+
+    static getSchema() {
+        const objects = {};
+        if (this.prototype.properties === undefined) return yup.object();
+        Object.keys(this.prototype.properties).forEach((key) => {
+            objects[key] = this.prototype.properties[key].schema;
+        });
+        return yup.object(objects);
     }
 
     $getMetadata(): EntityMetaData {
