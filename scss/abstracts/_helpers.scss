@@ -206,3 +206,26 @@ $sides: top, bottom, left, right;
 .max-w-540 {
     max-width: 540px;
 }
+
+/* ==========================================================================
+6. Colors helpers
+========================================================================== */
+
+@mixin applyColor($colorName, $colorValue) {
+    .has-background-#{$colorName} {
+        background-color: $colorValue;
+    }
+
+    .has-text-#{color} {
+        color: $colorValue;
+    }
+}
+
+@include applyColor("orange", $orange);
+@include applyColor("yellow", $yellow);
+@include applyColor("green", $green);
+@include applyColor("turquoise", $turquoise);
+@include applyColor("blue", $blue);
+@include applyColor("purple", $purple);
+@include applyColor("cyan", $cyan);
+@include applyColor("red", $red);

@@ -43,11 +43,18 @@ export function useCurrentTime(
     format?: string | Options,
     options?: Options
 ): Ref<string | moment> {
-    return useTime(
-        computed(() => {
-            return moment();
-        }),
-        format,
-        options
-    );
+    if (typeof format === "object") {
+        options = format;
+        format = undefined;
+    } else if (typeof options === "undefined")
+        options = {
+            interval: 1000,
+        };
+
+    const currentTime = ref(moment());
+    useIntervalFn(() => {
+        currentTime.value = moment();
+    }, options.interval);
+
+    return useTime(currentTime, format, options);
 }
