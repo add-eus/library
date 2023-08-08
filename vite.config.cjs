@@ -12,8 +12,6 @@ const vueI18n = require("@intlify/unplugin-vue-i18n/vite");
 const { VitePWA } = require("vite-plugin-pwa");
 const { createHtmlPlugin } = require("vite-plugin-html");
 const purgecss = require("rollup-plugin-purgecss");
-const { esbuildDecorators } = require("@anatine/esbuild-decorators");
-const { default: babel } = require("vite-plugin-babel");
 const {
     VueUseComponentsResolver,
     VueUseDirectiveResolver,
@@ -71,6 +69,7 @@ module.exports.define = function (config = {}) {
             logLevel: SILENT ? "error" : "info",
             clearScreen: false,
             cacheDir: cacheDir,
+
             css: {
                 devSourcemap: config.map !== undefined ? config.map : DEV,
                 preprocessorOptions: {
@@ -88,13 +87,6 @@ module.exports.define = function (config = {}) {
                     "bulma",
                     "addeus-common-library",
                 ],
-                esbuildOptions: {
-                    plugins: [
-                        esbuildDecorators({
-                            tsconfig: "./tsconfig.json",
-                        }),
-                    ],
-                },
             },
             resolve: {
                 //dedupe: localDependencies,
@@ -112,7 +104,6 @@ module.exports.define = function (config = {}) {
                 sourcemap: config.map !== undefined ? config.map : !DEV,
                 outDir: outDir,
                 emptyOutDir: true,
-                esbuild: false,
                 //chunkSizeWarningLimit: 3000,
                 rollupOptions: {
                     maxParallelFileOps: Math.max(1, cpus().length - 1),
@@ -206,20 +197,6 @@ module.exports.define = function (config = {}) {
                 Vue({
                     include: [/\.vue$/],
                     isProduction: !DEV,
-                }),
-
-                babel({
-                    filter: /\.tsx?$/,
-                    babelConfig: {
-                        babelrc: false,
-                        configFile: false,
-                        presets: ["@babel/preset-typescript"],
-                        plugins: [
-                            "babel-plugin-reactgenie",
-                            ["@babel/plugin-proposal-decorators", { legacy: true }],
-                            ["@babel/plugin-proposal-class-properties", { loose: true }],
-                        ],
-                    },
                 }),
 
                 createHtmlPlugin({

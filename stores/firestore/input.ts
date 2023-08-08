@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import { reactive } from "vue";
 import { onInitialize } from "./entity";
 import type { EntityMetaData } from "./entityMetadata";
@@ -15,5 +14,9 @@ export function Input(type: any, options: any = {}) {
                 errors: [],
             };
         });
+        /* setPropertyMetadata(target, name, "input", {
+            type,
+            options,
+        });*/
     };
 }
