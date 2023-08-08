@@ -134,12 +134,16 @@ export function Var(type: any) {
                         return thisTarget[name].some((row: any) => {
                             if (
                                 row instanceof EntityBase &&
-                                !(thisTarget[name] instanceof Entity)
+                                !(thisTarget[name] instanceof Entity) &&
+                                row.$hasChanged()
                             )
-                                return row.$hasChanged();
+                                return true;
                             return (
                                 Array.isArray(metadata.origin[name]) &&
-                                metadata.origin[name].indexOf(row) === -1
+                                metadata.origin[name].findIndex((r) => {
+                                    if (row instanceof Entity) return row.$getID() === r;
+                                    return r === row;
+                                }) === -1
                             );
                         });
                     }

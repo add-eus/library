@@ -8,7 +8,7 @@ import {
     updateDoc,
 } from "firebase/firestore";
 import { lowerCaseFirst } from "../../utils/string";
-import { markRaw, shallowReactive } from "vue";
+import { isReactive, markRaw, shallowReactive } from "vue";
 import { useFirebase } from "../firebase";
 import { EntityMetaData } from "./entityMetadata";
 
@@ -44,8 +44,10 @@ export class EntityBase {
                 return (obj as any)[key];
             },
             set(obj: { [key: string]: any }, key: string, value: any) {
-                if (Array.isArray(value) && value.constructor !== EntityArray)
-                    value = EntityArray(value);
+                if (Array.isArray(value)) {
+                    if (isReactive(value.constructor) === false)
+                        value = EntityArray(value);
+                }
                 obj[key] = value;
 
                 obj.$getMetadata().emit("set", key, value);
@@ -159,6 +161,7 @@ export class Entity extends EntityBase {
 
         const raw = this.$getChangedPlain();
         const $metadata = this.$getMetadata();
+        console.log(raw);
 
         try {
             if ($metadata.reference === null) {
