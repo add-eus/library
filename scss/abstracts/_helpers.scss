@@ -216,8 +216,24 @@ $sides: top, bottom, left, right;
         background-color: $colorValue;
     }
 
-    .has-text-#{color} {
+    .has-text-#{colorName} {
         color: $colorValue;
+    }
+
+    .has-background-#{$colorName}-dark {
+        background-color: findDarkColor($colorValue);
+    }
+
+    .has-text-#{colorName}-dark {
+        color: findDarkColor($colorValue);
+    }
+
+    .has-background-#{$colorName}-light {
+        background-color: findLightColor($colorValue);
+    }
+
+    .has-text-#{colorName}-light {
+        color: findLightColor($colorValue);
     }
 }
 
