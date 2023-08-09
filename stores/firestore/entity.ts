@@ -161,7 +161,6 @@ export class Entity extends EntityBase {
 
         const raw = this.$getChangedPlain();
         const $metadata = this.$getMetadata();
-        console.log(raw);
 
         try {
             if ($metadata.reference === null) {
