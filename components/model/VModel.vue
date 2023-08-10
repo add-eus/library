@@ -37,7 +37,7 @@ export interface VModelEmits {
 export interface VModelProps {
     model: any;
     component: any;
-    isSaving: boolean;
+    isSaving?: boolean;
     options: any;
 }
 

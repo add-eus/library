@@ -8,7 +8,7 @@ export interface VRadioEmits {
 }
 export interface VRadioProps {
     value: any;
-    modelValue?: string | number;
+    modelValue?: any;
     name: string;
     label?: string;
     color?: VRadioColor;

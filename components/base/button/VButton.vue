@@ -19,7 +19,16 @@ export type VButtonColor =
     | "danger"
     | "white"
     | "dark"
-    | "light";
+    | "light"
+    | "grey"
+    | "orange"
+    | "yellow"
+    | "green"
+    | "turquoise"
+    | "purple"
+    | "blue"
+    | "red"
+    | "cyan";
 export type VButtonDark = "1" | "2" | "3" | "4" | "5" | "6";
 
 export default defineComponent({
@@ -57,30 +66,6 @@ export default defineComponent({
         color: {
             type: String as PropType<VButtonColor>,
             default: undefined,
-            validator: (value: VButtonColor) => {
-                // The value must match one of these strings
-                if (
-                    [
-                        undefined,
-                        "primary",
-                        "info",
-                        "success",
-                        "warning",
-                        "danger",
-                        "white",
-                        "dark",
-                        "light",
-                    ].indexOf(value) === -1
-                ) {
-                    // eslint-disable-next-line no-console
-                    console.warn(
-                        `VButton: invalid "${value}" color. Should be primary, info, success, warning, danger, dark, light, white or undefined`
-                    );
-                    return false;
-                }
-
-                return true;
-            },
         },
         size: {
             type: String as PropType<VButtonSize>,
