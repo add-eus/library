@@ -396,16 +396,24 @@ export default defineComponent({
 
 .is-dark {
     .button {
-        &:not(.is-primary):not(.is-success):not(.is-info):not(.is-warning):not(
-                .is-danger
-            ):not(.is-light):not(.is-white) {
-            background: $dark;
-            border-color: $light;
-            color: $light;
+        &:not(.is-primary) {
+            &:not(.is-success) {
+                &:not(.is-info) {
+                    &:not(.is-warning) &:not(.is-danger) {
+                        &:not(.is-light) {
+                            &:not(.is-white) {
+                                background: $dark;
+                                border-color: $light;
+                                color: $light;
 
-            &:hover,
-            &:focus {
-                border-color: var(--dark-sidebar-light-18);
+                                &:hover,
+                                &:focus {
+                                    border-color: var(--dark-sidebar-light-18);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
