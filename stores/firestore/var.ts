@@ -195,6 +195,13 @@ export function Var(type: any) {
                 )
                     return;
 
+                if (
+                    typeof raw[name] === "object" &&
+                    raw[name] !== null &&
+                    typeof raw[name]._toFieldTransform === "function"
+                )
+                    raw[name] = undefined;
+
                 unparsedValue = raw[name];
                 const parsed = parseData(raw[name], type);
 
