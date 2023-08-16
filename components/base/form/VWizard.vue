@@ -29,22 +29,12 @@ const previousStep = () => {
     if (currentStep.value <= 1) return;
     currentStep.value--;
 };
-const setStep = (value: number): number => {
-    if (value <= currentStep.value) {
-        currentStep.value = value;
-        return value;
-    }
 
-    let lastValidStep = currentStep.value;
-    while (
-        validations.value[lastValidStep].field.hasChildErrors() === false &&
-        lastValidStep < value
-    ) {
-        lastValidStep++;
-    }
-    currentStep.value = lastValidStep;
-    return lastValidStep;
+const setStep = (value: number): number => {
+    currentStep.value = value;
+    return value;
 };
+
 watch(currentStep, () => {
     emits("update:currentStep", currentStep.value);
 });
@@ -82,60 +72,65 @@ defineExpose({ nextStep, previousStep, setStep });
 
 <template>
     <div>
-        <VFlex>
-            <VFlexItem flex-grow="1" :flex-shrink="1">
-                <div
-                    v-for="i in props.steps.length"
-                    :key="i"
-                    :class="currentStep !== i ? 'is-hidden' : ''">
-                    <VValidation
-                        :ref="
-                            (element) => {
-                                validations[i] = element;
-                                if (element !== null)
-                                    element.field.onChange(updateFormButton);
-                            }
-                        "
-                        v-slot="{ field }"
-                        v-model="modelValue"
-                        :schema="yup.object()"
-                        :property="`step-${i}`">
-                        <slot :name="`step-${i}`" :field="field"> </slot>
-                    </VValidation>
-                </div>
-            </VFlexItem>
-            <VFlexItem v-if="!props.hideSteps" class="wizard-column">
-                <div class="wizard">
+        <VValidation
+            v-slot="{ field, errors }"
+            v-model="modelValue"
+            :schema="yup.object()">
+            <VFlex>
+                <VFlexItem :flex-grow="1" :flex-shrink="1">
                     <div
                         v-for="i in props.steps.length"
                         :key="i"
-                        :onclick="() => setStep(i)"
-                        class="step"
-                        :class="{ done: currentStep >= i }">
-                        <div v-if="i < props.steps.length" class="v-line"></div>
-                        <span>{{ props.steps[i - 1] }}</span>
+                        :class="currentStep !== i ? 'is-hidden' : ''">
+                        <VValidation
+                            v-if="currentStep === i"
+                            :ref="
+                                (element) => {
+                                    validations[i] = element;
+                                    if (element !== null)
+                                        element.field.onChange(updateFormButton);
+                                }
+                            "
+                            v-slot="{ field: stepField }"
+                            v-model="field.value"
+                            :schema="yup.object()"
+                            :property="`step-${i}`">
+                            <slot :name="`step-${i}`" :field="stepField"> </slot>
+                        </VValidation>
                     </div>
-                </div>
-            </VFlexItem>
-        </VFlex>
-        <VFlex v-if="!props.hideActions && !setSubmitButton" justify-content="center">
-            <TranslateNamespace path=".wizard">
-                <VButton class="m-1" :disabled="currentStep <= 1" @click="previousStep">
-                    <Translate>.previous</Translate>
-                </VButton>
-                <VButton
-                    class="m-1"
-                    color="primary"
-                    :disabled="
-                        currentStep >= props.steps.length ||
-                        (validations[currentStep] !== null &&
-                            validations[currentStep].field.hasChildErrors())
-                    "
-                    @click="nextStep">
-                    <Translate>.next</Translate>
-                </VButton>
-            </TranslateNamespace>
-        </VFlex>
+                </VFlexItem>
+                <VFlexItem v-if="!props.hideSteps" class="wizard-column">
+                    <div class="wizard">
+                        <VButton
+                            v-for="i in props.steps.length"
+                            :key="i"
+                            class="step"
+                            :class="{ done: currentStep >= i }"
+                            @click.prevent="() => setStep(i)">
+                            <div v-if="i < props.steps.length" class="v-line"></div>
+                            <span>{{ props.steps[i - 1] }}</span>
+                        </VButton>
+                    </div>
+                </VFlexItem>
+            </VFlex>
+            <VFlex v-if="!props.hideActions && !setSubmitButton" justify-content="center">
+                <TranslateNamespace path=".wizard">
+                    <VButton
+                        class="m-1"
+                        :disabled="currentStep <= 1"
+                        @click="previousStep">
+                        <Translate>.previous</Translate>
+                    </VButton>
+                    <VButton
+                        class="m-1"
+                        color="primary"
+                        :disabled="currentStep >= props.steps.length || errors.length > 0"
+                        @click="nextStep">
+                        <Translate>.next</Translate>
+                    </VButton>
+                </TranslateNamespace>
+            </VFlex>
+        </VValidation>
     </div>
 </template>
 
@@ -170,6 +165,7 @@ defineExpose({ nextStep, previousStep, setStep });
         padding: 15px 0;
         position: relative;
         cursor: pointer;
+        border: none;
 
         &::before {
             content: "";
@@ -180,7 +176,8 @@ defineExpose({ nextStep, previousStep, setStep });
             background-color: $grey-lighter;
             position: absolute;
             margin-left: -20px;
-            top: 17px;
+            top: 18px;
+            left: 0.5px;
         }
     }
 }

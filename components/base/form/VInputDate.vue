@@ -70,15 +70,15 @@ parseModelValue(props.modelValue);
         justify-content="center"
         align-items="center"
         class="v-input-date">
-        <VFlexItem flex-grow="33" style="max-width: 100px; min-width: 30px">
+        <VFlexItem :flex-grow="33" style="max-width: 100px; min-width: 30px">
             <VInputNumber v-model="date" :max="getMaxMonth()" :min="1" />
         </VFlexItem>
         /
-        <VFlexItem flex-grow="33" style="max-width: 200px; min-width: 80px">
+        <VFlexItem :flex-grow="33" style="max-width: 200px; min-width: 80px">
             <VInputNumber v-model="month" :max="12" :min="1" :format="formatMonth" />
         </VFlexItem>
         /
-        <VFlexItem flex-grow="33" style="max-width: 100px; min-width: 50px">
+        <VFlexItem :flex-grow="33" style="max-width: 100px; min-width: 50px">
             <VInputNumber v-model="year" :max="maxYear" :min="minYear" />
         </VFlexItem>
     </VFlex>

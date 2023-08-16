@@ -15,15 +15,15 @@ export interface VEntitiesProps {
     model?: any;
     component?: any;
     labelAttr?: any;
-    onlyIds: boolean;
-    multiple: boolean;
-    sortable: boolean;
+    onlyIds?: boolean;
+    multiple?: boolean;
+    sortable?: boolean;
     opened: boolean;
     property: string;
-    required: boolean;
-    schema: any;
-    save: boolean;
-    canOpen: boolean;
+    required?: boolean;
+    schema?: any;
+    save?: boolean;
+    canOpen?: boolean;
     defaultNewValue?: () => any;
 }
 const props = withDefaults(defineProps<VEntitiesProps>(), {
@@ -31,9 +31,14 @@ const props = withDefaults(defineProps<VEntitiesProps>(), {
     model: undefined,
     component: undefined,
     labelAttr: undefined,
+    sortable: false,
     save: true,
+    required: false,
+    schema: undefined,
     defaultNewValue: undefined,
     canOpen: true,
+    multiple: false,
+    onlyIds: false,
 });
 const emits = defineEmits<VEntitiesEmits>();
 

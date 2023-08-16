@@ -300,9 +300,11 @@ export async function findDoc<T extends typeof Entity>(
     const collectionRef = collection(firebase.firestore, collectionModel.collectionName);
 
     const onDestroy: (() => void)[] = [];
-    onScopeDispose(() => {
-        onDestroy.forEach((callback) => callback());
-    });
+    getCurrentScope()
+        ? onScopeDispose(() => {
+              onDestroy.forEach((callback) => callback());
+          })
+        : void 0;
 
     if (search && search.length > 0) {
         const algoliaIndex = algoliaClient.initIndex(

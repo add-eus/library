@@ -16,7 +16,7 @@ export interface VInputProps {
     iconUp?: string;
     iconDown?: string;
     disabled?: boolean;
-    color: Colors;
+    color?: Colors;
 }
 
 const emits = defineEmits<VInputEmits>();
