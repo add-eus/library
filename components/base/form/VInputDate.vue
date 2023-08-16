@@ -16,6 +16,7 @@ const emits = defineEmits<VInputDateEmits>();
 const props = withDefaults(defineProps<VInputDateProps>(), {
     maxYear: moment().year() + 130,
     minYear: moment().year() - 130,
+    modelValue: moment(),
 });
 
 let currentDate;
@@ -60,7 +61,7 @@ watch(date, formatModelValue);
 watch(month, formatModelValue);
 watch(year, formatModelValue);
 
-parseModelValue(props.modelValue || moment());
+parseModelValue(props.modelValue);
 </script>
 
 <template>
