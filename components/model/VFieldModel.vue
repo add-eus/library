@@ -40,7 +40,7 @@ let selectOptions: ComputedRef<any[] | undefined> | never[] =
               return props.selectOptions;
           })
         : [];
-
+console.log(selectOptions);
 if (input.value.attrs.options !== undefined) {
     if (input.value.attrs.options.entity !== undefined) {
         const wheres =
