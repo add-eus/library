@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, ref, watch } from "vue";
+import { computed, inject, ref, watch } from "vue";
 import { useDebounceFn, useVModel } from "@vueuse/core";
 import * as yup from "yup";
 import { useTranslate } from "../../../stores/translate";
@@ -43,6 +43,19 @@ const validations = ref<any[]>([]);
 
 const setSubmitButton = inject("setSubmitButton");
 
+const lastChanged: boolean[] = [];
+const isChanged = computed(() => {
+    const result = validations.value.some((v, index) => {
+        if (v === undefined || v === null)
+            return lastChanged[index] !== undefined ? lastChanged[index] : false;
+
+        lastChanged[index] = v.field.isDirty === true;
+
+        return lastChanged[index];
+    });
+    return result;
+});
+
 const updateFormButton = useDebounceFn(function () {
     if (typeof setSubmitButton === "function") {
         const isLastStep = currentStep.value === props.steps.length;
@@ -50,9 +63,11 @@ const updateFormButton = useDebounceFn(function () {
             isLastStep
                 ? translate(".wizard.submit").value
                 : translate(".wizard.next").value,
-            validations.value[currentStep.value] === undefined ||
-                validations.value[currentStep.value] === null ||
-                validations.value[currentStep.value].field.hasChildErrors() === false,
+            (isChanged.value || !isLastStep) &&
+                (validations.value[currentStep.value] === undefined ||
+                    validations.value[currentStep.value] === null ||
+                    validations.value[currentStep.value].field.hasChildErrors() ===
+                        false),
             isLastStep
                 ? undefined
                 : () => {
