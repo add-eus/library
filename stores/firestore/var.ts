@@ -54,7 +54,8 @@ function formatData(toTransform: any | any[], type: any, forceAll: boolean = fal
             return formatData(data, type[0]);
         });
     } else if (type === moment) {
-        return toTransform.toDate();
+        if (toTransform.isValid() === true) return toTransform.toDate();
+        return undefined;
     } else if (type === GeoPoint) {
         return toTransform;
     } else if (isEntityStandaloneClass(type)) {
