@@ -181,6 +181,7 @@ onMounted(() => {
 
             > .dropdown-item {
                 background-color: $dark;
+                color: $white;
             }
         }
     }
