@@ -7,82 +7,18 @@ import type { Functions } from "firebase/functions";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 import type { FirebaseStorage } from "firebase/storage";
 import { getStorage, connectStorageEmulator } from "firebase/storage";
-import { getAnalytics } from "firebase/analytics";
-import { getPerformance } from "firebase/performance";
+import { getAnalytics, initializeAnalytics } from "firebase/analytics";
+import { getPerformance, initializePerformance } from "firebase/performance";
 import type { Database } from "firebase/database";
 import { getDatabase, connectDatabaseEmulator } from "firebase/database";
 import { initializeApp } from "firebase/app";
 import { getRemoteConfig, fetchAndActivate } from "firebase/remote-config";
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
 
-function connectToEmulator(
-    auth: Auth,
-    firestore: Firestore,
-    functions: Functions,
-    database: Database,
-    storage: FirebaseStorage
-) {
-    if (import.meta.env.DEV && (<any>window).emulatorLoaded !== true) {
-        // eslint-disable-next-line no-console
-        console.log("Development mode");
-
-        const host =
-            import.meta.env.VITE_HOST !== undefined
-                ? import.meta.env.VITE_HOST
-                : "localhost";
-
-        connectAuthEmulator(
-            auth,
-            import.meta.env.VITE_FIRESTORE_AUTH_HOST !== undefined
-                ? import.meta.env.VITE_FIRESTORE_AUTH_HOST
-                : `http://${host}:${
-                      import.meta.env.VITE_AUTH_PORT !== undefined
-                          ? import.meta.env.VITE_AUTH_PORT
-                          : 8012
-                  }`
-        );
-
-        connectFirestoreEmulator(
-            firestore,
-            host,
-            import.meta.env.VITE_FIRESTORE_PORT !== undefined
-                ? import.meta.env.VITE_FIRESTORE_PORT
-                : 8014
-        );
-
-        connectFunctionsEmulator(
-            functions,
-            host,
-            import.meta.env.VITE_FUNCTION_PORT !== undefined
-                ? import.meta.env.VITE_FUNCTION_PORT
-                : 8013
-        );
-
-        connectDatabaseEmulator(
-            database,
-            host,
-            import.meta.env.VITE_DATABASE_PORT !== undefined
-                ? import.meta.env.VITE_DATABASE_PORT
-                : 8015
-        );
-
-        connectStorageEmulator(
-            storage,
-            host,
-            import.meta.env.VITE_STORAGE_PORT !== undefined
-                ? import.meta.env.VITE_STORAGE_PORT
-                : 8016
-        );
-
-        (<any>window).FIREBASE_APPCHECK_DEBUG_TOKEN =
-            import.meta.env.VITE_APP_CHECK_DEBUG_TOKEN;
-
-        (<any>window).emulatorLoaded = true;
-    }
-}
-
 export function useFirebase() {
     if (window.providers === undefined) {
+        window.providers = {};
+
         // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -96,40 +32,96 @@ export function useFirebase() {
         };
 
         // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
+        window.providers.app = initializeApp(firebaseConfig);
 
-        const auth = getAuth(app);
-        const firestore = getFirestore(app);
-        const database = getDatabase(app);
-        const storage = getStorage(app);
-        const functions = getFunctions(app, "europe-west1");
-        const analytics = getAnalytics(app);
-        const performance = getPerformance(app);
-        const remoteConfig = getRemoteConfig(app);
+        window.providers.auth = getAuth(window.providers.app);
+        window.providers.firestore = getFirestore(window.providers.app);
+        window.providers.database = getDatabase(window.providers.app);
+        window.providers.storage = getStorage(window.providers.app);
+        window.providers.functions = getFunctions(window.providers.app, "europe-west1");
 
-        void fetchAndActivate(remoteConfig);
+        window.providers.remoteConfig = getRemoteConfig(window.providers.app);
 
-        void connectToEmulator(auth, firestore, functions, database, storage);
+        void fetchAndActivate(window.providers.remoteConfig);
 
-        const check = initializeAppCheck(app, {
+        if (import.meta.env.DEV && (<any>window).emulatorLoaded !== true) {
+            // eslint-disable-next-line no-console
+            console.log("Development mode");
+
+            const host =
+                import.meta.env.VITE_HOST !== undefined
+                    ? import.meta.env.VITE_HOST
+                    : "localhost";
+
+            connectAuthEmulator(
+                window.providers.auth,
+                import.meta.env.VITE_FIRESTORE_AUTH_HOST !== undefined
+                    ? import.meta.env.VITE_FIRESTORE_AUTH_HOST
+                    : `http://${host}:${
+                          import.meta.env.VITE_AUTH_PORT !== undefined
+                              ? import.meta.env.VITE_AUTH_PORT
+                              : 8012
+                      }`
+            );
+
+            connectFirestoreEmulator(
+                window.providers.firestore,
+                host,
+                import.meta.env.VITE_FIRESTORE_PORT !== undefined
+                    ? import.meta.env.VITE_FIRESTORE_PORT
+                    : 8014
+            );
+
+            connectFunctionsEmulator(
+                window.providers.functions,
+                host,
+                import.meta.env.VITE_FUNCTION_PORT !== undefined
+                    ? import.meta.env.VITE_FUNCTION_PORT
+                    : 8013
+            );
+
+            connectDatabaseEmulator(
+                window.providers.database,
+                host,
+                import.meta.env.VITE_DATABASE_PORT !== undefined
+                    ? import.meta.env.VITE_DATABASE_PORT
+                    : 8015
+            );
+
+            connectStorageEmulator(
+                window.providers.storage,
+                host,
+                import.meta.env.VITE_STORAGE_PORT !== undefined
+                    ? import.meta.env.VITE_STORAGE_PORT
+                    : 8016
+            );
+
+            (<any>window).FIREBASE_APPCHECK_DEBUG_TOKEN =
+                import.meta.env.VITE_APP_CHECK_DEBUG_TOKEN;
+
+            (<any>window).emulatorLoaded = true;
+
+            window.providers.analytics = initializeAnalytics(window.providers.app, {
+                allow_google_signals: false,
+                allow_ad_perzonalization_signals: false,
+                event_category: "dev",
+            });
+            window.providers.performance = initializePerformance(window.providers.app, {
+                dataCollectionEnabled: false,
+                instrumentationEnabled: false,
+            });
+        } else {
+            window.providers.analytics = getAnalytics(window.providers.app);
+            window.providers.performance = getPerformance(window.providers.app);
+        }
+
+        window.providers.check = initializeAppCheck(window.providers.app, {
             provider: new ReCaptchaEnterpriseProvider(import.meta.env.VITE_RECAPTCHA_KEY),
 
             // Optional argument. If true, the SDK automatically refreshes App Check
             // tokens as needed.
             isTokenAutoRefreshEnabled: true,
         });
-        window.providers = {
-            app,
-            remoteConfig,
-            auth,
-            database,
-            firestore,
-            functions,
-            storage,
-            analytics,
-            performance,
-            check,
-        };
     }
     return window.providers;
 }
