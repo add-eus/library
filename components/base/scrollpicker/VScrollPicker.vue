@@ -105,6 +105,10 @@ export default defineComponent({
             type: String as PropType<Colors>,
             default: "primary",
         },
+        horizontal: {
+            type: Boolean,
+            default: false,
+        },
     },
     emits: ["update:modelValue"],
     data() {
@@ -473,6 +477,7 @@ export default defineComponent({
                         class: [
                             "vue-scroll-picker-item",
                             "vue-scroll-picker-item-placeholder",
+
                             {
                                 "vue-scroll-picker-item-selected":
                                     this.internalIndex === -1,
@@ -538,7 +543,12 @@ export default defineComponent({
         return h(
             "div",
             {
-                class: ["vue-scroll-picker"],
+                class: [
+                    "vue-scroll-picker",
+                    {
+                        "vue-scroll-picker-horizontal": this.horizontal,
+                    },
+                ],
             },
             [
                 h(
@@ -593,6 +603,36 @@ export default defineComponent({
     width: 100%;
     height: 10em;
     overflow: hidden;
+
+    &.vue-scroll-picker-horizontal {
+        height: 100%;
+        width: 10em;
+
+        .vue-scroll-picker-rotator {
+            top: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        .vue-scroll-picker-layer-top {
+            left: 0;
+            top: inherit;
+            width: calc(50% - 1em);
+            height: auto;
+        }
+
+        .vue-scroll-picker-layer-selection {
+            top: initial;
+            bottom: initial;
+            left: calc(50% - 1em);
+            right: calc(50% - 1em);
+        }
+
+        .vue-scroll-picker-layer-bottom {
+            right: 0;
+            width: calc(50% - 1em);
+        }
+    }
 }
 
 .vue-scroll-picker-rotator {

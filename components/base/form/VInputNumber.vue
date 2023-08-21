@@ -17,6 +17,7 @@ export interface VInputProps {
     iconDown?: string;
     disabled?: boolean;
     color?: Colors;
+    horizontal?: boolean;
 }
 
 const emits = defineEmits<VInputEmits>();
@@ -30,6 +31,7 @@ const props = withDefaults(defineProps<VInputProps>(), {
     iconDown: "arrow_drop_down",
     disabled: false,
     color: "primary",
+    horizontal: false,
 });
 
 const value = useVModel(props, "modelValue", emits);
@@ -77,6 +79,7 @@ watchOnce(el, () => {
             v-model="value"
             :options="options"
             :color="color"
+            :horizontal="horizontal"
             :disabled="disabled" />
         <VIconButton
             :icon="iconDown"
