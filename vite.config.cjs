@@ -89,8 +89,6 @@ module.exports.define = function (config = {}) {
                 ],
             },
             resolve: {
-                //dedupe: localDependencies,
-                //preserveSymlinks: true,
                 alias: [
                     {
                         find: "/@src",
