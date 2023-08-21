@@ -24,7 +24,7 @@
         "importHelpers": true,
         "forceConsistentCasingInFileNames": true,
         "allowSyntheticDefaultImports": true,
-        "skipLibCheck": true,
+        "skipLibCheck": false,
         "lib": ["esnext", "dom", "dom.iterable", "scripthost", "WebWorker"],
         "types": [
             "vite",
