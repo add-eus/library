@@ -2,9 +2,12 @@
     "tsCheckerConfig": {
         "eslint": {
             "enabled": true,
-            "files": "./**.{ts,tsx,js,cjs,jsx,vue}"
+            "files": "./**.{ts,tsx,js,cjs,jsx,vue}",
+            "memoryLimit": 8192 // previously 4096
         },
-        "typescript": {}
+        "typescript": {
+            "memoryLimit": 8192 // previously the default, 2048
+        }
     },
     "compilerOptions": {
         "baseUrl": ".",
@@ -24,7 +27,7 @@
         "importHelpers": true,
         "forceConsistentCasingInFileNames": true,
         "allowSyntheticDefaultImports": true,
-        "skipLibCheck": false,
+        "skipLibCheck": true,
         "lib": ["esnext", "dom", "dom.iterable", "scripthost", "WebWorker"],
         "types": [
             "vite",
