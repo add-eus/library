@@ -2,12 +2,9 @@
     "tsCheckerConfig": {
         "eslint": {
             "enabled": true,
-            "files": "./**.{ts,tsx,js,cjs,jsx,vue}",
-            "memoryLimit": 5120 // previously 4096
+            "files": "./**.{ts,tsx,js,cjs,jsx,vue}"
         },
-        "typescript": {
-            "memoryLimit": 5120 // previously the default, 2048
-        }
+        "typescript": {}
     },
     "compilerOptions": {
         "baseUrl": ".",
