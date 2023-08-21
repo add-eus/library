@@ -3,10 +3,10 @@
         "eslint": {
             "enabled": true,
             "files": "./**.{ts,tsx,js,cjs,jsx,vue}",
-            "memoryLimit": 8192 // previously 4096
+            "memoryLimit": 5120 // previously 4096
         },
         "typescript": {
-            "memoryLimit": 8192 // previously the default, 2048
+            "memoryLimit": 5120 // previously the default, 2048
         }
     },
     "compilerOptions": {
