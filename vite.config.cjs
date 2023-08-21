@@ -279,12 +279,13 @@ module.exports.define = function (config = {}) {
                     extensions: ["vue", "ts"],
                     dts: "components.d.ts",
                     deep: true,
-                    allowOverrides: true,
+                    allowOverrides: false,
+                    //allowOverrides: true,
                     include: [
                         /\.vue$/,
                         /\.vue\?vue/,
                         /\.ts$/,
-                        /[\\/]node_modules[\\/]addeus-common-library[\\/]/,
+                        ///[\\/]node_modules[\\/]addeus-common-library[\\/]/,
                     ],
                     exclude: [
                         /[\\/]node_modules[\\/](?!addeus-common-library[\\/])/,
