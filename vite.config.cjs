@@ -239,8 +239,8 @@ module.exports.define = function (config = {}) {
                  */
                 Components({
                     resolvers: [
-                        VueUseComponentsResolver(),
-                        VueUseDirectiveResolver(),
+                        // VueUseComponentsResolver(),
+                        // VueUseDirectiveResolver(),
                         // {
                         //     type: "directive",
                         //     resolve(name) {
@@ -252,7 +252,6 @@ module.exports.define = function (config = {}) {
                         //             `directives/${lowerCamelCase(name)}.ts`
                         //         );
                         //         if (fs.existsSync(p)) return p;
-
                         //         const libPath = path.join(
                         //             rootDir,
                         //             `./node_modules/addeus-common-library/directives/${lowerCamelCase(
@@ -260,7 +259,6 @@ module.exports.define = function (config = {}) {
                         //             )}.ts`
                         //         );
                         //         if (fs.existsSync(libPath)) return libPath;
-
                         //         const libPath = path.join(
                         //             rootDir,
                         //             `./library/directives/${lowerCamelCase(name)}.ts`
