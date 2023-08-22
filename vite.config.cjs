@@ -367,6 +367,9 @@ module.exports.define = function (config = {}) {
                               "robots.txt",
                               "apple-touch-icon.png",
                           ],
+                          workbox: {
+                              maximumFileSizeToCacheInBytes: 3000000,
+                          },
                           manifest: {
                               start_url: "/?utm_source=pwa",
                               display: "standalone",
