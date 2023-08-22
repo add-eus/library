@@ -240,8 +240,8 @@ module.exports.define = function (config = {}) {
                  */
                 Components({
                     resolvers: [
-                        // VueUseComponentsResolver(),
-                        // VueUseDirectiveResolver(),
+                        VueUseComponentsResolver(),
+                        VueUseDirectiveResolver(),
                         // {
                         //     type: "directive",
                         //     resolve(name) {
