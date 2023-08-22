@@ -123,7 +123,7 @@ module.exports.define = function (config = {}) {
                                 : "assets/[name].js"; // others in `assets/js/`
                         },
                     },
-                    external: [/^virtual\:/],
+                    //external: [/^virtual\:/],
                 },
                 /* watch: {
                     include: "../../lib/**",
