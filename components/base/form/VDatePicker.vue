@@ -1,48 +1,84 @@
 <script setup lang="ts">
+import { syncRef, useVModel } from "@vueuse/core";
 import moment from "moment-with-locales-es6";
 import { DatePicker } from "v-calendar";
-import { ref, watch } from "vue";
+import { getCurrentInstance, ref, watch } from "vue";
 
 export interface VDatePickerEmits {
-    (e: "update:modelValue", value: moment): void;
+    (e: "update:modelValue", value: moment | MomentRange): void;
 }
 export interface VDatePickerProps {
-    modelValue: moment;
+    modelValue: moment | MomentRange;
+}
+
+export interface MomentRange {
+    start: moment;
+    end: moment;
+}
+
+export interface DateRange {
+    start: Date | undefined;
+    end: Date | undefined;
+}
+
+function isMomentRange(value: any): boolean {
+    return (
+        (value as MomentRange).start !== undefined &&
+        (value as MomentRange).end !== undefined
+    );
+}
+
+function isDateRange(value: any): boolean {
+    return (
+        (value as DateRange).start !== undefined && (value as DateRange).end !== undefined
+    );
 }
 
 let isDate = false;
-function parseMoment(momentValue: moment | Date) {
-    if (!momentValue) return momentValue;
-    if (moment.isMoment(momentValue)) return momentValue.toDate();
+
+function parseMoment(momentValue: moment | Date | MomentRange | undefined | null) {
+    if (momentValue === undefined || moment === null) return momentValue;
+    if (isMomentRange(momentValue)) {
+        return {
+            start: momentValue.start.toDate(),
+            end: momentValue.end.toDate(),
+        };
+    }
+    if (moment.isMoment(momentValue) === true) return momentValue.toDate();
     isDate = true;
     return momentValue;
 }
 
-function formatMoment(dateValue: Date) {
+function formatMoment(dateValue: Date | DateRange | undefined | null) {
     if (isDate) return dateValue;
+    if (dateValue !== null && dateValue !== undefined && isDateRange(dateValue)) {
+        return {
+            start: moment(dateValue.start),
+            end: moment(dateValue.end),
+        };
+    }
     return moment(dateValue);
 }
 
 const emit = defineEmits<VDatePickerEmits>();
 const props = defineProps<VDatePickerProps>();
 
-const vModel = ref(parseMoment(props.modelValue));
-
-watch(
-    () => props.modelValue,
-    () => {
-        vModel.value = parseMoment(props.modelValue);
-    }
-);
-
-watch(vModel, () => {
-    const value = formatMoment(vModel.value);
-    if (isDate || !value.isSame(props.modelValue)) emit("update:modelValue", value);
+const modelValue = useVModel(props, "modelValue", emit);
+const transformedModelValue = ref<Date | DateRange | undefined>(undefined);
+syncRef(modelValue, transformedModelValue, {
+    transform: {
+        ltr: parseMoment,
+        rtl: formatMoment,
+    },
 });
 </script>
 
 <template>
-    <DatePicker v-model="vModel" v-bind="$attrs"></DatePicker>
+    <DatePicker v-model="transformedModelValue" v-bind="$attrs">
+        <template #default="datePicker">
+            <slot v-bind="datePicker"></slot>
+        </template>
+    </DatePicker>
 </template>
 
 <style lang="scss">
@@ -97,6 +133,14 @@ watch(vModel, () => {
 
         &.vc-blue {
             background-color: $primary;
+        }
+
+        &.vc-highlight-content-solid {
+            background-color: $primary-dark;
+        }
+
+        &.vc-highlight-content-light {
+            color: $primary-dark;
         }
     }
 
@@ -205,6 +249,25 @@ watch(vModel, () => {
     .vc-time-content {
         .vc-time-date {
             display: none;
+        }
+    }
+
+    .vc-time-header {
+        .vc-time-month,
+        .vc-time-day {
+            color: $primary-dark;
+        }
+    }
+
+    .vc-time-select-group {
+        svg {
+            color: $primary-dark;
+        }
+    }
+
+    .vc-base-select {
+        select {
+            border-color: transparent;
         }
     }
 }

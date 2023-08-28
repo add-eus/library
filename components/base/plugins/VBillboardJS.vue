@@ -40,6 +40,8 @@ watchEffect(() => {
 </template>
 
 <style lang="scss">
+@import "bulma/sass/utilities/_all";
+
 .bb-title {
     font-family: var(--font-alt) !important;
     font-size: 1rem !important;
@@ -64,6 +66,28 @@ watchEffect(() => {
         fill: var(--light-text-dark-5);
     }
 }
+
+.bb-tooltip {
+    tr {
+        border-color: $grey-light !important;
+        background-color: $grey-light !important;
+        color: $grey-darker !important;
+        font-family: $family-primary !important;
+        font-weight: 400 !important;
+
+        span {
+            font-family: $family-primary !important;
+            font-weight: 400 !important;
+            color: $grey-darker !important;
+        }
+    }
+}
+
+.bb-legend-item {
+            text {
+                fill: inherit;
+            }
+        }
 
 .is-dark {
     .bb-title {
@@ -117,17 +141,9 @@ watchEffect(() => {
         // background-color: var(--white);
 
         th {
-            border-color: var(--dark-sidebar-light-10) !important;
-            background-color: var(--dark-sidebar-dark-2) !important;
-            color: #fffdfd !important;
-            font-family: $family-primary !important;
-            font-weight: 400 !important;
-
-            span {
-                font-family: $family-primary !important;
-                font-weight: 400 !important;
-                color: #fffdfd !important;
-            }
+            border-color: $grey-darker !important;
+            background-color: $grey-darker !important;
+            color: $grey-light !important;
         }
 
         tr {

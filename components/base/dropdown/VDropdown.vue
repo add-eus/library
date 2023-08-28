@@ -47,8 +47,9 @@ const position = computed(() => {
             top: "0px",
         };
 
-    let tempPosition: { top?: string; left?: string; right?: string; bottom?: string } =
-        {};
+    let tempPosition: { top?: string; left?: string; right?: string; bottom?: string } = {
+        right: "0px",
+    };
 
     if (props.up) {
         tempPosition.top =
@@ -127,11 +128,13 @@ onMounted(() => {
 
         <Teleport v-if="dropdown.isOpen" to="body">
             <div
-                ref="dropdownMenuElement"
                 class="dropdown-menu"
                 role="menu"
-                :style="position">
-                <div class="dropdown-content">
+                tabindex="0"
+                :style="position"
+                @click="dropdown.close()"
+                @keydown="dropdown.close()">
+                <div ref="dropdownMenuElement" class="dropdown-content">
                     <slot name="content" v-bind="dropdown"></slot>
                 </div>
             </div>
@@ -147,8 +150,11 @@ onMounted(() => {
     position: absolute;
     z-index: 100 !important;
     overflow-y: auto;
+    overflow-x: auto;
 
     > .dropdown-content {
+        width: fit-content;
+
         &:empty {
             display: none;
         }
