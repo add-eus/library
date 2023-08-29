@@ -72,6 +72,13 @@ export class EntityMetaData extends EventEmitter {
 
                 if (data === undefined) return;
                 this.emit("parse", data);
+            },
+            (err) => {
+                if (err instanceof Error && err.code === "permission-denied") {
+                    throw new Error(
+                        `You don't have permission to access ${this.reference?.path}`
+                    );
+                }
             }
         );
         this.on("destroy", () => {

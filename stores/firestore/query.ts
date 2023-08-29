@@ -143,21 +143,31 @@ export class Query extends EventEmitter {
 
             this.on(
                 "destroy",
-                onSnapshot(q, (snapshot) => {
-                    const onlyModified = snapshot.docChanges().every((change) => {
-                        return change.type === "modified";
-                    });
-                    if (onlyModified) return update();
+                onSnapshot(
+                    q,
+                    (snapshot) => {
+                        const onlyModified = snapshot.docChanges().every((change) => {
+                            return change.type === "modified";
+                        });
+                        if (onlyModified) return update();
 
-                    void update(
-                        snapshot.docs.map((doc) => {
-                            const model = this.transform(doc);
+                        void update(
+                            snapshot.docs.map((doc) => {
+                                const model = this.transform(doc);
 
-                            return model;
-                        }),
-                        snapshot.docs
-                    );
-                })
+                                return model;
+                            }),
+                            snapshot.docs
+                        );
+                    },
+                    (err) => {
+                        if (err instanceof Error && err.code === "permission-denied") {
+                            throw new Error(
+                                `You don't have permission to access ${this.reference?.path}`
+                            );
+                        }
+                    }
+                )
             );
         });
     }
