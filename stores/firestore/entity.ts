@@ -161,9 +161,9 @@ export class Entity extends EntityBase {
 
         const raw = this.$getChangedPlain();
         const $metadata = this.$getMetadata();
-
+        const isNew = $metadata.reference === null;
         try {
-            if ($metadata.reference === null) {
+            if (isNew) {
                 const firebase = useFirebase();
                 const docRef = doc(
                     collection(firebase.firestore, constructor.collectionName)
@@ -177,8 +177,14 @@ export class Entity extends EntityBase {
             $metadata.previousOrigin = $metadata.origin;
             $metadata.origin = this.$getPlain();
         } catch (err) {
-            // eslint-disable-next-line no-console
-            console.error(err);
+            if (err instanceof Error && err.code === "permission-denied") {
+                throw new Error(
+                    `You don't have permission to ${isNew ? "create" : "edit"} ${
+                        $metadata.reference?.path
+                    }`
+                );
+            }
+
             throw err;
         }
         this.$getMetadata().emit("saved");
