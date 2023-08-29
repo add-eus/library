@@ -166,6 +166,7 @@ export class Query extends EventEmitter {
                                 `You don't have permission to access ${this.reference?.path}`
                             );
                         }
+                        throw err;
                     }
                 )
             );

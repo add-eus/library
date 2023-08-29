@@ -79,6 +79,7 @@ export class EntityMetaData extends EventEmitter {
                         `You don't have permission to access ${this.reference?.path}`
                     );
                 }
+                throw err;
             }
         );
         this.on("destroy", () => {
