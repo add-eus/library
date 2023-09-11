@@ -1,4 +1,4 @@
-import { useCssVar } from "@vueuse/core";
+import { useCssVar, toValue } from "@vueuse/core";
 import type { Ref } from "vue";
 import { computed } from "vue";
 
@@ -28,10 +28,10 @@ export type Colors =
     | "white-ter"
     | "white-bis";
 
-export function useColor(color: Ref<Colors>) {
+export function useColor(color: Ref<Colors> | Colors) {
     return useCssVar(
         computed(() => {
-            return `--${color.value}`;
+            return `--${toValue(color)}`;
         }),
         document.body
     );
