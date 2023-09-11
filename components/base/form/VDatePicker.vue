@@ -80,9 +80,15 @@ const props = defineProps<VDatePickerProps>();
 const modelValue = useVModel(props, "modelValue", emit);
 const transformedModelValue = ref<Date | DateRange | undefined>(undefined);
 
-watch(modelValue, (m) => {
-    transformedModelValue.value = parseMoment(m);
-});
+watch(
+    modelValue,
+    (m) => {
+        transformedModelValue.value = parseMoment(m);
+    },
+    {
+        immediate: true,
+    }
+);
 
 watch(transformedModelValue, (m) => {
     const formated = formatMoment(m);
