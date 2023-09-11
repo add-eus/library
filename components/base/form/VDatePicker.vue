@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { syncRef, useVModel } from "@vueuse/core";
+import { useVModel } from "@vueuse/core";
 import moment from "moment-with-locales-es6";
 import { DatePicker } from "v-calendar";
 import { ref, watch } from "vue";
@@ -49,7 +49,6 @@ function isEqual(
 let isDate = false;
 
 function parseMoment(momentValue: moment | Date | MomentRange | undefined | null) {
-    console.log("parse", momentValue, isDate);
     if (momentValue === undefined || moment === null) return momentValue;
     if (isMomentRange(momentValue)) {
         return {
@@ -63,7 +62,6 @@ function parseMoment(momentValue: moment | Date | MomentRange | undefined | null
 }
 
 function formatMoment(dateValue: Date | DateRange | undefined | null) {
-    console.log("format", dateValue, isDate);
     if (isDate) return dateValue;
     if (dateValue !== null && dateValue !== undefined && isDateRange(dateValue)) {
         return {
