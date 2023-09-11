@@ -2,7 +2,7 @@
 import { syncRef, useVModel } from "@vueuse/core";
 import moment from "moment-with-locales-es6";
 import { DatePicker } from "v-calendar";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 export interface VDatePickerEmits {
     (e: "update:modelValue", value: moment | MomentRange): void;
@@ -32,6 +32,18 @@ function isDateRange(value: any): boolean {
     return (
         (value as DateRange).start !== undefined && (value as DateRange).end !== undefined
     );
+}
+
+function isEqual(
+    v1: moment | Date | MomentRange | undefined | null,
+    v2: moment | Date | MomentRange | undefined | null
+): boolean {
+    if (v1 === undefined || v1 === null) return v1 === v2;
+    if (v2 === undefined || v2 === null) return v1 === v2;
+    if (isDateRange(v1) && isDateRange(v2)) {
+        return v1.start.$isSame(v2.start) === true && v1.end.$isSame(v2.end) === true;
+    }
+    return v1.$isSame(v2);
 }
 
 let isDate = false;
@@ -67,12 +79,16 @@ const props = defineProps<VDatePickerProps>();
 
 const modelValue = useVModel(props, "modelValue", emit);
 const transformedModelValue = ref<Date | DateRange | undefined>(undefined);
-console.log(modelValue, transformedModelValue);
-syncRef(modelValue, transformedModelValue, {
-    transform: {
-        ltr: parseMoment,
-        rtl: formatMoment,
-    },
+
+watch(modelValue, (m) => {
+    transformedModelValue.value = parseMoment(m);
+});
+
+watch(transformedModelValue, (m) => {
+    const formated = formatMoment(m);
+    if (isEqual(formated, modelValue.value)) return;
+
+    modelValue.value = formated;
 });
 </script>
 
