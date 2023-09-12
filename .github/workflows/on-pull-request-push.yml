@@ -59,7 +59,6 @@ jobs:
             - name: Install
               if: steps.cache.outputs.cache-hit != 'true'
               run: |
-                  npm install -g npm cordova
                   npm ci
 
     lint:
