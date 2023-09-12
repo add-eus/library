@@ -127,13 +127,7 @@ onMounted(() => {
         </slot>
 
         <Teleport v-if="dropdown.isOpen" to="body">
-            <div
-                class="dropdown-menu"
-                role="menu"
-                tabindex="0"
-                :style="position"
-                @click="dropdown.close()"
-                @keydown="dropdown.close()">
+            <div class="dropdown-menu" role="menu" tabindex="0" :style="position">
                 <div ref="dropdownMenuElement" class="dropdown-content">
                     <slot name="content" v-bind="dropdown"></slot>
                 </div>
