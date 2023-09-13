@@ -24,7 +24,7 @@ const toggle = () => {
         <slot name="button"></slot>
         <div
             :class="{ 'is-active': isOpen }"
-            class="dropdown-submenu dropdown"
+            class="dropdown-submenu"
             @click.prevent.stop>
             <slot></slot>
         </div>
@@ -41,6 +41,7 @@ const toggle = () => {
     top: 0;
     background-color: $scheme-main;
     border-radius: var(--radius);
+    padding: 0.5rem 0;
 
     &.is-active {
         display: block;
@@ -69,6 +70,11 @@ const toggle = () => {
 .is-dark {
     .dropdown-submenu {
         background-color: $dark;
+
+        > .dropdown-item {
+            background-color: $dark;
+            color: $white;
+        }
     }
 }
 </style>
