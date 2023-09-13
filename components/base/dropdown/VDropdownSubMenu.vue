@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onClickOutside } from "@vueuse/core";
-import { useDropdown } from "../../../composable/useDropdown";
 import { ref } from "vue";
 
 interface VDropdownItemProps {
@@ -25,7 +24,7 @@ const toggle = () => {
         <slot name="button"></slot>
         <div
             :class="{ 'is-active': isOpen }"
-            class="dropdown-submenu"
+            class="dropdown-submenu dropdown"
             @click.prevent.stop>
             <slot></slot>
         </div>
@@ -45,6 +44,25 @@ const toggle = () => {
 
     &.is-active {
         display: block;
+    }
+
+    > .dropdown-item {
+        display: flex;
+        border: none;
+        margin: 0;
+        justify-content: start;
+        border-radius: 0;
+        padding: 7px 14px;
+        height: 35px;
+
+        > span {
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        > .icon {
+            margin-left: 0;
+        }
     }
 }
 
