@@ -21,7 +21,7 @@ export function useDropdown(
             isOpen.value = false;
         },
         {
-            ignore: [containerDropdown],
+            ignore: [containerDropdown, ".dropdown-content"],
         }
     );
 
