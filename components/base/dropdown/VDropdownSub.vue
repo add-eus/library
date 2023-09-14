@@ -181,7 +181,7 @@ onMounted(() => {
     overflow-y: auto;
     overflow-x: auto;
     width: fit-content;
-    
+
     > .dropdown-content {
         width: fit-content;
 
