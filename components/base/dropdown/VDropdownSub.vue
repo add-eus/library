@@ -220,6 +220,7 @@ onMounted(() => {
         > .dropdown-content {
             background-color: $dark;
 
+            > .dropdown > .dropdown-item,
             > .dropdown-item {
                 background-color: $dark;
                 color: $white;
