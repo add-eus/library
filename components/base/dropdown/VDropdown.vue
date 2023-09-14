@@ -65,5 +65,3 @@ const props = withDefaults(defineProps<VDropdownProps>(), {
         </template>
     </VDropdownSub>
 </template>
-
-<style lang="scss"></style>
