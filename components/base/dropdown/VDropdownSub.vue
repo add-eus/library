@@ -180,7 +180,8 @@ onMounted(() => {
     z-index: 100 !important;
     overflow-y: auto;
     overflow-x: auto;
-
+    width: fit-content;
+    
     > .dropdown-content {
         width: fit-content;
 
