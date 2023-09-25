@@ -45,8 +45,6 @@ watch(isElementVisible, () => {
     if (!isElementVisible.value) dropdown.close();
 });
 
-console.log(dropdownElement);
-
 const position = computed(() => {
     if (!dropdownElement.value || !dropdown.isOpen)
         return {
