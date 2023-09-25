@@ -40,10 +40,11 @@ function isEqual(
 ): boolean {
     if (v1 === undefined || v1 === null) return v1 === v2;
     if (v2 === undefined || v2 === null) return v1 === v2;
+
     if (isDateRange(v1) && isDateRange(v2)) {
-        return v1.start.$isSame(v2.start) === true && v1.end.$isSame(v2.end) === true;
+        return v1.start.isSame(v2.start) === true && v1.end.isSame(v2.end) === true;
     }
-    return v1.$isSame(v2);
+    return v1.isSame(v2);
 }
 
 let isDate = false;

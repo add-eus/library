@@ -45,6 +45,8 @@ watch(isElementVisible, () => {
     if (!isElementVisible.value) dropdown.close();
 });
 
+console.log(dropdownElement);
+
 const position = computed(() => {
     if (!dropdownElement.value || !dropdown.isOpen)
         return {
@@ -180,7 +182,7 @@ onMounted(() => {
     z-index: 100 !important;
     overflow-y: auto;
     overflow-x: auto;
-    width: fit-content;
+    width: inherit;
 
     > .dropdown-content {
         width: fit-content;
