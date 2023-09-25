@@ -123,6 +123,7 @@ module.exports.define = function (config = {}) {
                                 : "assets/[name].js"; // others in `assets/js/`
                         },
                     },
+                    //external: [/^virtual\:/],
                 },
                 /* watch: {
                     include: "../../lib/**",
@@ -239,8 +240,8 @@ module.exports.define = function (config = {}) {
                  */
                 Components({
                     resolvers: [
-                        // VueUseComponentsResolver(),
-                        // VueUseDirectiveResolver(),
+                        VueUseComponentsResolver(),
+                        VueUseDirectiveResolver(),
                         // {
                         //     type: "directive",
                         //     resolve(name) {
@@ -367,6 +368,9 @@ module.exports.define = function (config = {}) {
                               "robots.txt",
                               "apple-touch-icon.png",
                           ],
+                          workbox: {
+                              maximumFileSizeToCacheInBytes: 3000000,
+                          },
                           manifest: {
                               start_url: "/?utm_source=pwa",
                               display: "standalone",

@@ -16,7 +16,12 @@ function parseData(toTransform: any | any[], type: any): any {
                 return parseData(data, type[0]);
             })
         );
-    } else if (type === moment && moment.isMoment(toTransform) === false) {
+    } else if (
+        type === moment &&
+        moment.isMoment(toTransform) === false &&
+        typeof toTransform === "object" &&
+        typeof toTransform.seconds === "number"
+    ) {
         return moment.unix(toTransform.seconds);
     } else if (type === GeoPoint) {
         return new GeoPoint(toTransform._lat, toTransform._long);
@@ -104,7 +109,8 @@ function isUnparsedEqual(a: any, b: any, type: any): boolean {
             return isUnparsedEqual(row, b[index], type[0]);
         });
     } else if (type === moment) {
-        if (a === undefined && b === undefined) return true;
+        if ((a === undefined || a === null) && (b === null || b === undefined))
+            return true;
         if (typeof a !== "object" || typeof b !== "object") return false;
         return a.seconds === b.seconds && a.nanoseconds === b.nanoseconds;
     }
