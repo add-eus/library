@@ -63,10 +63,6 @@
     "bugs": {
         "url": "https://github.com/add-eus/library/issues"
     },
-    "gitHooks": {
-        "pre-commit": "NODE_ENV=production lint-staged",
-        "commit-msg": "commitlint -e -V "
-    },
     "lint-staged": {
         "functions/**.ts": [
             "npm --prefix ./functions run lint"
