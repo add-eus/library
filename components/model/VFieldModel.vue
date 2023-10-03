@@ -16,6 +16,7 @@ export interface VFieldModelProps {
     icon?: string;
     options?: any;
     selectOptions?: any[];
+    selectOptionsWheres?: any[];
     labelAttr?: any;
     label?: string;
 }
@@ -43,18 +44,23 @@ let selectOptions: ComputedRef<any[] | undefined> | never[] =
 if (input.value.attrs.options !== undefined) {
     if (input.value.attrs.options.entity !== undefined) {
         const wheres =
-            input.value.attrs.options.where !== undefined
-                ? input.value.attrs.options.where()
+            props.selectOptionsWheres !== undefined
+                ? computed(() => props.selectOptionsWheres)
+                : input.value.attrs.options.where !== undefined
+                ? input.value.attrs.options.where(props)
                 : [];
+
         const orders =
             input.value.attrs.options.orders !== undefined
-                ? input.value.attrs.options.orders()
+                ? input.value.attrs.options.orders(props)
                 : [];
+
         const options = useCollection(input.value.attrs.options.entity, {
             wheres,
             orders,
             limit: input.value.attrs.options.limit,
         });
+
         schema = yup.object();
         selectOptions = computed(() => {
             return options.map((option) => {
