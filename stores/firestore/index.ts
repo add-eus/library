@@ -35,6 +35,7 @@ export interface CollectionOptions {
     limit?: MaybeRef<number>;
     search?: MaybeRef<string>;
     compositeConstraint?: MaybeRef<CompositeConstraint>;
+    path?: string;
 }
 
 const cachedEntities: { [key: string]: { usedBy: number; entity: any } } = {};
@@ -115,7 +116,10 @@ export function useCollection<T extends typeof Entity>(
         }${collectionModel.collectionName}`
     );
 
-    const collectionRef = collection(firebase.firestore, collectionModel.collectionName);
+    const collectionRef = collection(
+        firebase.firestore,
+        options.path === undefined ? collectionModel.collectionName : options.path
+    );
 
     entities.isUpdating = true;
 
@@ -177,7 +181,7 @@ export function useCollection<T extends typeof Entity>(
 
         entities.isUpdating = true;
 
-        let limit = 10;
+        let limit = -1;
         if (isRef(options.limit) && typeof options.limit.value === "number")
             limit = options.limit.value;
         else if (typeof options.limit === "number") limit = options.limit;
@@ -353,7 +357,7 @@ function transform<T extends typeof Entity>(
     Model: T,
     onDisposed: (callback: () => void) => void
 ): InstanceType<T> {
-    const cachedIdEntity = `${Model.collectionName}/${doc.id}`;
+    const cachedIdEntity = doc.ref?.path ?? `${Model.collectionName}/${doc.id}`;
     if (cachedEntities[cachedIdEntity] === undefined) {
         const model = new Model();
         model.$setAndParseFromReference(doc);
