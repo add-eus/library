@@ -14,6 +14,7 @@ export class EntityMetaData extends EventEmitter {
     unsuscribeSnapshot: Function | null = null;
 
     firestoreArrays: { [key: string]: any } = {};
+    collectionProperties: string[] = [];
 
     constructor(entity: any) {
         super();
