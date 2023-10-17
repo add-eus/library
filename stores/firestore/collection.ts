@@ -52,6 +52,7 @@ export function Collection(options: CollectionOptions = {}) {
                 if (options.namespace === undefined) {
                     throw new Error("namespace is undefined");
                 }
+                const namespace = options.namespace;
                 onInitialize(target, function (this: any, metadata: EntityMetaData) {
                     if (metadata.entity instanceof EntitySubCollection) {
                         const info = entitiesInfos.get(options.namespace!);
@@ -63,7 +64,7 @@ export function Collection(options: CollectionOptions = {}) {
                             info.subPaths.push(propertyKey);
 
                         // set property as collection property used in EntitySubCollection to save and parse this property
-                        metadata.collectionProperties.push(propertyKey);
+                        metadata.collectionProperties[propertyKey] = namespace;
                     } else {
                         throw new Error(
                             `SubCollection decorator can only be used on EntitySubCollection`
@@ -87,15 +88,13 @@ export class EntitySubCollection extends Entity {
     $setAndParseFromReference(querySnapshot: DocumentReference | DocumentSnapshot) {
         super.$setAndParseFromReference(querySnapshot);
 
-        const constructor = this.constructor as typeof Entity;
-        const info = entitiesInfos.get(constructor.collectionName);
-        if (info === undefined)
-            throw new Error(`${constructor.collectionName} info is undefined`);
-
         const metadata = this.$getMetadata();
-        metadata.collectionProperties.map((propertyKey) => {
+        Object.entries(metadata.collectionProperties).map(([propertyKey, namespace]) => {
             if (metadata.reference === null)
                 throw new Error("reference in metadata is null");
+
+            const info = entitiesInfos.get(namespace); // constructor.collectionName WRONG
+            if (info === undefined) throw new Error(`${namespace} info is undefined`);
 
             // array used in app
             const appArray = shallowReactive(new SubCollection());
@@ -129,10 +128,11 @@ export class EntitySubCollection extends Entity {
     }
 
     async savePropertyCollections(copyFrom?: EntitySubCollection) {
-        const savePropertyCollectionPromises =
-            this.$getMetadata().collectionProperties.map(async (propertyKey) => {
-                await this.savePropertyCollection(propertyKey, copyFrom);
-            });
+        const savePropertyCollectionPromises = Object.keys(
+            this.$getMetadata().collectionProperties
+        ).map(async (propertyKey) => {
+            await this.savePropertyCollection(propertyKey, copyFrom);
+        });
         await Promise.all(savePropertyCollectionPromises);
     }
 

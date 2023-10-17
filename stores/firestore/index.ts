@@ -5,11 +5,19 @@ import type {
     WhereFilterOp,
     QueryConstraint,
     OrderByDirection,
-    DocumentSnapshot,
     QueryFilterConstraint,
     FieldPath,
 } from "firebase/firestore";
-import { where, orderBy, collection, doc, or, and } from "firebase/firestore";
+import {
+    where,
+    orderBy,
+    collection,
+    doc,
+    or,
+    and,
+    DocumentSnapshot,
+    DocumentReference,
+} from "firebase/firestore";
 import { useFirebase } from "../firebase";
 import type { MaybeRef } from "@vueuse/core";
 import { until } from "@vueuse/core";
@@ -353,11 +361,17 @@ export async function findDoc<T extends typeof Entity>(
  * @returns
  */
 function transform<T extends typeof Entity>(
-    doc: DocumentSnapshot,
+    doc: DocumentSnapshot | DocumentReference,
     Model: T,
     onDisposed: (callback: () => void) => void
 ): InstanceType<T> {
-    const cachedIdEntity = doc.ref?.path ?? `${Model.collectionName}/${doc.id}`;
+    let path: string | undefined = undefined;
+    if (doc instanceof DocumentReference) {
+        path = doc.path;
+    } else if (doc instanceof DocumentSnapshot) {
+        path = doc.ref.path;
+    }
+    const cachedIdEntity = path ?? `${Model.collectionName}/${doc.id}`;
     if (cachedEntities[cachedIdEntity] === undefined) {
         const model = new Model();
         model.$setAndParseFromReference(doc);
