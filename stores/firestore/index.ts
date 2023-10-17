@@ -17,6 +17,9 @@ import {
     and,
     DocumentSnapshot,
     DocumentReference,
+    query,
+    collectionGroup,
+    getDocs,
 } from "firebase/firestore";
 import { useFirebase } from "../firebase";
 import type { MaybeRef } from "@vueuse/core";
@@ -24,6 +27,7 @@ import { until } from "@vueuse/core";
 import { Query } from "./query";
 import { QuerySearch } from "./querySearch";
 import type { Entity } from "./entity";
+import type { EntitySubCollection } from "./collection";
 
 export { Input } from "./input";
 export { Entity, EntityBase } from "./entity";
@@ -394,3 +398,38 @@ function transform<T extends typeof Entity>(
 
     return cachedEntities[cachedIdEntity].entity;
 }
+
+export const useParentOfCollectionGroup = (
+    model: typeof EntitySubCollection,
+    collectionGroupName: string,
+    wheres: MaybeRef<WhereOption[]>
+) => {
+    const firebase = useFirebase();
+
+    const workspaceRefs = shallowReactive<any>(new Collection());
+
+    if (isRef<WhereOption[]>(wheres)) {
+        watch(
+            wheres,
+            async (value) => {
+                const whereConstraints: QueryConstraint[] = transformWheres(value);
+                const groupQuery = query(
+                    collectionGroup(firebase.firestore, collectionGroupName),
+                    ...whereConstraints
+                );
+                const groupSnapshot = await getDocs(groupQuery);
+                const newWorkspaceRefs = groupSnapshot.docs
+                    .filter(
+                        (doc) =>
+                            doc.ref.parent.parent !== null &&
+                            doc.ref.parent.parent?.parent?.path === model.collectionName
+                    )
+                    .map((doc) => doc.ref.parent.parent!);
+                workspaceRefs.splice(0, workspaceRefs.length, ...newWorkspaceRefs);
+            },
+            { immediate: true }
+        );
+    }
+
+    return workspaceRefs;
+};
