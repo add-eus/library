@@ -7,21 +7,7 @@ import type { Entity } from "./entity";
 import { onInitialize } from "./entity";
 import type { EntityMetaData } from "./entityMetadata";
 import { useFirebase } from "addeus-common-library/stores/firebase";
-import type { DocumentReference, DocumentSnapshot } from "firebase/firestore";
-import {
-    collection,
-    collectionGroup,
-    deleteDoc,
-    doc,
-    documentId,
-    getDoc,
-    getDocs,
-    or,
-    query,
-    setDoc,
-    updateDoc,
-    where,
-} from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { shallowReactive } from "vue";
 import { watchArray } from "@vueuse/core";
 
@@ -34,7 +20,7 @@ export interface CollectionOptions {
  */
 export const entitiesInfos = new Map<
     string,
-    { model: typeof EntitySubCollection; subPaths: string[] }
+    { model: typeof Entity; subPaths: string[] }
 >();
 
 export function Collection(options: CollectionOptions = {}) {
@@ -63,7 +49,7 @@ export function Collection(options: CollectionOptions = {}) {
                 // save propertyKey in subCollections of model
                 if (!info.subPaths.includes(propertyKey)) info.subPaths.push(propertyKey);
 
-                // set property as collection property used in EntitySubCollection to save and parse this property
+                // set property as collection property, used in Entity to save and parse this property
                 metadata.collectionProperties[propertyKey] = namespace;
             });
         }
