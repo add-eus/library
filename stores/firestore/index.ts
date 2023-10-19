@@ -201,8 +201,6 @@ export function useCollection<T extends typeof Entity>(
             );
         }
 
-        entities.isUpdating = true;
-
         let limit = -1;
         if (isRef(options.limit) && typeof options.limit.value === "number")
             limit = options.limit.value;
@@ -210,6 +208,8 @@ export function useCollection<T extends typeof Entity>(
         if (limit === 0) return;
 
         try {
+            entities.isUpdating = true;
+
             await query.next(limit);
             entities.isUpdating = false;
         } catch (err) {
@@ -258,7 +258,10 @@ export function useCollection<T extends typeof Entity>(
             await fetch();
         });
 
-    fetch().catch(() => {});
+    fetch().catch((e) => {
+        // eslint-disable-next-line no-console
+        console.error(e);
+    });
 
     return entities;
 }
