@@ -123,6 +123,26 @@ export class EntityBase {
 export class Entity extends EntityBase {
     static collectionName: string;
 
+    initSubCollections(isNew: boolean = false) {
+        // init subcollections
+        const metadata = this.$getMetadata();
+        Object.entries(metadata.collectionProperties).map(([propertyKey, namespace]) => {
+            if (!isNew && metadata.reference === null)
+                throw new Error("reference in metadata is null, new doc ?");
+
+            const info = entitiesInfos.get(namespace);
+            if (info === undefined) throw new Error(`${namespace} info is undefined`);
+
+            const subCollection = (this as any)[propertyKey];
+            if (!(subCollection instanceof SubCollection))
+                throw new Error(`${propertyKey} is not a SubCollection`);
+            subCollection.init(
+                info.model,
+                isNew ? undefined : `${metadata.reference!.path}/${propertyKey}`
+            );
+        });
+    }
+
     $setAndParseFromReference(querySnapshot: DocumentReference | DocumentSnapshot) {
         const metadata = this.$getMetadata();
         if (querySnapshot instanceof DocumentReference) {
@@ -138,20 +158,7 @@ export class Entity extends EntityBase {
 
             metadata.isFullfilled = true;
         }
-
-        // parse subcollections
-        Object.entries(metadata.collectionProperties).map(([propertyKey, namespace]) => {
-            if (metadata.reference === null)
-                throw new Error("reference in metadata is null");
-
-            const info = entitiesInfos.get(namespace);
-            if (info === undefined) throw new Error(`${namespace} info is undefined`);
-
-            const subCollection = (this as any)[propertyKey];
-            if (!(subCollection instanceof SubCollection))
-                throw new Error(`${propertyKey} is not a SubCollection`);
-            subCollection.init(info.model, `${metadata.reference.path}/${propertyKey}`);
-        });
+        this.initSubCollections();
     }
 
     static addMethod(name: string, callback: Function) {
@@ -236,14 +243,23 @@ export class Entity extends EntityBase {
             throw new Error(`${constructor.collectionName} info is undefined`);
 
         const subCollection = (this as any)[propertyKey] as SubCollection<Entity>;
+        const copiedSubCollection =
+            copyFrom === undefined
+                ? undefined
+                : ((copyFrom as any)[propertyKey] as SubCollection<Entity>);
         // elements changed in array, if copyFrom is defined, it's a new entity, all elements are added from copyFrom
         const { toDelete, toAdd } =
-            copyFrom !== undefined
+            copiedSubCollection !== undefined
                 ? {
                       toDelete: [],
-                      toAdd: [...((copyFrom as any)[propertyKey] as Entity[])],
+                      toAdd: [...copiedSubCollection.list],
                   }
                 : subCollection.getArrayModification();
+
+        copiedSubCollection?.init(
+            copiedSubCollection.entityModel!,
+            `${metadata.reference.path}/${propertyKey}`
+        );
 
         // add or remove elememts in the property collection and all duplicate collections
         const subPathPromises = info.subPaths.map(async (path) => {

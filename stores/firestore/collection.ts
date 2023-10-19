@@ -60,15 +60,17 @@ export class SubCollection<T extends Entity> {
     private firestoreArray?: UseCollectionType<T>;
     private currentList = shallowReactive(new Array<T>());
     private model?: typeof Entity;
-    private path?: string;
+    public path?: string;
     private initialized = false;
     private stopWatch?: () => void;
     private isFetched = false;
+    private isNew = false;
 
-    init(model: typeof Entity, path: string) {
+    init(model: typeof Entity, path?: string) {
         this.model = model;
         this.path = path;
         this.initialized = true;
+        this.isNew = path === undefined;
     }
 
     setOptions(options?: UseCollectionOption) {
@@ -120,8 +122,12 @@ export class SubCollection<T extends Entity> {
     }
 
     get list() {
-        if (!this.isFetched) this.setOptions();
+        if (!this.isFetched && !this.isNew) this.setOptions();
         return this.currentList;
+    }
+
+    get entityModel() {
+        return this.model;
     }
 
     /**
@@ -159,12 +165,12 @@ export const updatePropertyCollection = async (
     const firebase = useFirebase();
 
     const collectionRef = collection(firebase.firestore, path);
-    toRemove.map(async (entity) => {
+    const removePromises = toRemove.map(async (entity) => {
         const id = entity.$getMetadata().reference!.id;
         const docRef = doc(collectionRef, id);
         await deleteDoc(docRef);
     });
-    toAdd.map(async (entity) => {
+    const addPromises = toAdd.map(async (entity) => {
         let id = entity.$getMetadata().reference?.id;
         if (id === undefined) {
             // entity is new, save it before add to collection
@@ -191,4 +197,5 @@ export const updatePropertyCollection = async (
         model.$getMetadata().setReference(docRef);
         await model.savePropertyCollections(entity);
     });
+    await Promise.all([...removePromises, ...addPromises]);
 };

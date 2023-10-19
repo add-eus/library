@@ -272,6 +272,7 @@ export function useDoc<T extends typeof Entity>(
 
 export function newDoc<T extends typeof Entity>(collectionModel: T): InstanceType<T> {
     const entity = new collectionModel();
+    entity.initSubCollections(true);
 
     (getCurrentScope() ? onScopeDispose : () => {})(() => {
         const cachedIdEntity = `${collectionModel.collectionName}/${entity.$getID()}`;
