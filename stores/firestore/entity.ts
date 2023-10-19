@@ -122,25 +122,29 @@ export class EntityBase {
 
 export class Entity extends EntityBase {
     static collectionName: string;
+    blacklistedProperties: string[] = [];
 
     initSubCollections(isNew: boolean = false) {
         // init subcollections
         const metadata = this.$getMetadata();
-        Object.entries(metadata.collectionProperties).map(([propertyKey, namespace]) => {
-            if (!isNew && metadata.reference === null)
-                throw new Error("reference in metadata is null, new doc ?");
+        Object.entries(metadata.collectionProperties)
+            .filter(([propertyKey]) => !this.blacklistedProperties.includes(propertyKey))
+            .map(([propertyKey, { namespace, blacklistedProperties }]) => {
+                if (!isNew && metadata.reference === null)
+                    throw new Error("reference in metadata is null, new doc ?");
 
-            const info = entitiesInfos.get(namespace);
-            if (info === undefined) throw new Error(`${namespace} info is undefined`);
+                const info = entitiesInfos.get(namespace);
+                if (info === undefined) throw new Error(`${namespace} info is undefined`);
 
-            const subCollection = (this as any)[propertyKey];
-            if (!(subCollection instanceof SubCollection))
-                throw new Error(`${propertyKey} is not a SubCollection`);
-            subCollection.init(
-                info.model,
-                isNew ? undefined : `${metadata.reference!.path}/${propertyKey}`
-            );
-        });
+                const subCollection = (this as any)[propertyKey];
+                if (!(subCollection instanceof SubCollection))
+                    throw new Error(`${propertyKey} is not a SubCollection`);
+                subCollection.init(
+                    info.model,
+                    isNew ? undefined : `${metadata.reference!.path}/${propertyKey}`,
+                    blacklistedProperties
+                );
+            });
     }
 
     $setAndParseFromReference(querySnapshot: DocumentReference | DocumentSnapshot) {
@@ -227,9 +231,11 @@ export class Entity extends EntityBase {
     async savePropertyCollections(copyFrom?: Entity) {
         const savePropertyCollectionPromises = Object.keys(
             this.$getMetadata().collectionProperties
-        ).map(async (propertyKey) => {
-            await this.savePropertyCollection(propertyKey, copyFrom);
-        });
+        )
+            .filter((propertyKey) => !this.blacklistedProperties.includes(propertyKey))
+            .map(async (propertyKey) => {
+                await this.savePropertyCollection(propertyKey, copyFrom);
+            });
         await Promise.all(savePropertyCollectionPromises);
     }
 

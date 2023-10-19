@@ -47,6 +47,7 @@ export interface CollectionOptions {
     search?: MaybeRef<string>;
     compositeConstraint?: MaybeRef<CompositeConstraint>;
     path?: string;
+    blacklistedProperties?: string[];
 }
 
 const cachedEntities: { [key: string]: { usedBy: number; entity: any } } = {};
@@ -166,9 +167,14 @@ export function useCollection<T extends typeof Entity>(
                 constraints,
                 entities,
                 (doc: DocumentSnapshot) => {
-                    return transform(doc, collectionModel, (callback) => {
-                        onDestroy.push(callback);
-                    });
+                    return transform(
+                        doc,
+                        collectionModel,
+                        (callback) => {
+                            onDestroy.push(callback);
+                        },
+                        options.blacklistedProperties
+                    );
                 },
                 collectionRef,
                 search,
@@ -182,9 +188,14 @@ export function useCollection<T extends typeof Entity>(
                 constraints,
                 entities,
                 (doc: DocumentSnapshot) => {
-                    return transform(doc, collectionModel, (callback) => {
-                        onDestroy.push(callback);
-                    });
+                    return transform(
+                        doc,
+                        collectionModel,
+                        (callback) => {
+                            onDestroy.push(callback);
+                        },
+                        options.blacklistedProperties
+                    );
                 },
                 collectionRef
             );
@@ -367,7 +378,8 @@ export async function findDoc<T extends typeof Entity>(
 function transform<T extends typeof Entity>(
     doc: DocumentSnapshot | DocumentReference,
     Model: T,
-    onDisposed: (callback: () => void) => void
+    onDisposed: (callback: () => void) => void,
+    blacklistedProperties: string[] = []
 ): InstanceType<T> {
     let path: string | undefined = undefined;
     if (doc instanceof DocumentReference) {
@@ -378,6 +390,7 @@ function transform<T extends typeof Entity>(
     const cachedIdEntity = path ?? `${Model.collectionName}/${doc.id}`;
     if (cachedEntities[cachedIdEntity] === undefined) {
         const model = new Model();
+        model.blacklistedProperties = blacklistedProperties;
         model.$setAndParseFromReference(doc);
         cachedEntities[cachedIdEntity] = {
             entity: model,

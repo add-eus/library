@@ -13,7 +13,9 @@ export class EntityMetaData extends EventEmitter {
     entity: Entity;
     unsuscribeSnapshot: Function | null = null;
 
-    collectionProperties: { [key: string]: string } = {};
+    collectionProperties: {
+        [key: string]: { namespace: string; blacklistedProperties: string[] };
+    } = {};
 
     constructor(entity: any) {
         super();

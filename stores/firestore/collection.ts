@@ -11,8 +11,17 @@ import { collection, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { shallowReactive } from "vue";
 import { watchArray } from "@vueuse/core";
 
-export interface CollectionOptions {
+type FunctionPropertyNames<T> = {
+    [K in keyof T]: T[K] extends (...args: any[]) => any ? K : never;
+}[keyof T];
+
+type NonFunctionProperties<T> = {
+    [K in Exclude<keyof T, FunctionPropertyNames<T>>]: T[K];
+};
+
+export interface CollectionOptions<T> {
     namespace?: string;
+    backlistFields?: Partial<Record<keyof NonFunctionProperties<T>, boolean>>;
 }
 
 /**
@@ -23,7 +32,7 @@ export const entitiesInfos = new Map<
     { model: typeof Entity; subPaths: string[] }
 >();
 
-export function Collection(options: CollectionOptions = {}) {
+export function Collection<T>(options: CollectionOptions<T> = {}) {
     return function (target: any, propertyKey?: string) {
         // On class
         if (propertyKey === undefined) {
@@ -42,15 +51,21 @@ export function Collection(options: CollectionOptions = {}) {
             }
             const namespace = options.namespace;
             onInitialize(target, function (this: any, metadata: EntityMetaData) {
-                const info = entitiesInfos.get(options.namespace!);
-                if (info === undefined)
-                    throw new Error(`${options.namespace} info is undefined`);
+                const info = entitiesInfos.get(namespace);
+                if (info === undefined) throw new Error(`${namespace} info is undefined`);
 
                 // save propertyKey in subCollections of model
                 if (!info.subPaths.includes(propertyKey)) info.subPaths.push(propertyKey);
 
+                const blacklistedProperties = Object.entries(options.backlistFields ?? {})
+                    .filter(([, value]) => value)
+                    .map(([key]) => key);
+
                 // set property as collection property, used in Entity to save and parse this property
-                metadata.collectionProperties[propertyKey] = namespace;
+                metadata.collectionProperties[propertyKey] = {
+                    namespace,
+                    blacklistedProperties,
+                };
             });
         }
     };
@@ -65,27 +80,35 @@ export class SubCollection<T extends Entity> {
     private stopWatch?: () => void;
     private isFetched = false;
     private isNew = false;
+    private blacklistedProperties: string[] = [];
 
-    init(model: typeof Entity, path?: string) {
+    init(
+        model: typeof Entity,
+        path: string | undefined,
+        blacklistedProperties: string[]
+    ) {
         this.model = model;
         this.path = path;
+        this.blacklistedProperties = blacklistedProperties;
         this.initialized = true;
         this.isNew = path === undefined;
     }
 
-    setOptions(options?: UseCollectionOption) {
-        if (!this.initialized)
-            throw new Error(`property ${this.path} is not initialized`);
+    setOptions(options?: Omit<UseCollectionOption, "path" | "blacklistedProperties">) {
+        if (!this.initialized) throw new Error(`property subcollection not initialized`);
         if (this.model === undefined)
             throw new Error(`model in property ${this.path} is undefined`);
         if (this.path === undefined)
             throw new Error(`path in property ${this.path} is undefined`);
-        if (options === undefined) options = {};
-        options.path = this.path;
 
         this.stopWatch?.();
 
-        this.firestoreArray = useCollection(this.model, options) as any;
+        const useCollectionOptions: UseCollectionOption = {
+            ...options,
+            path: this.path,
+            blacklistedProperties: this.blacklistedProperties,
+        };
+        this.firestoreArray = useCollection(this.model, useCollectionOptions) as any;
 
         this.currentList.splice(0, this.currentList.length);
 
@@ -116,6 +139,7 @@ export class SubCollection<T extends Entity> {
     }
 
     async existsById(id: string): Promise<boolean> {
+        if (!this.initialized) throw new Error(`property subcollection not initialized`);
         const firebase = useFirebase();
         const snap = await getDoc(doc(firebase.firestore, `${this.path}/${id}`));
         return snap.exists();
@@ -195,6 +219,7 @@ export const updatePropertyCollection = async (
         const constructor = entity.constructor as typeof Entity;
         const model = new constructor();
         model.$getMetadata().setReference(docRef);
+        model.blacklistedProperties = entity.blacklistedProperties;
         await model.savePropertyCollections(entity);
     });
     await Promise.all([...removePromises, ...addPromises]);
