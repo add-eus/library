@@ -231,11 +231,9 @@ export class Entity extends EntityBase {
     async savePropertyCollections(copyFrom?: Entity) {
         const savePropertyCollectionPromises = Object.keys(
             this.$getMetadata().collectionProperties
-        )
-            .filter((propertyKey) => !this.blacklistedProperties.includes(propertyKey))
-            .map(async (propertyKey) => {
-                await this.savePropertyCollection(propertyKey, copyFrom);
-            });
+        ).map(async (propertyKey) => {
+            await this.savePropertyCollection(propertyKey, copyFrom);
+        });
         await Promise.all(savePropertyCollectionPromises);
     }
 
@@ -248,11 +246,28 @@ export class Entity extends EntityBase {
         if (info === undefined)
             throw new Error(`${constructor.collectionName} info is undefined`);
 
-        const subCollection = (this as any)[propertyKey] as SubCollection<Entity>;
+        const propertySubCollection = (this as any)[propertyKey] as SubCollection<Entity>;
+        if (propertySubCollection.isNew) {
+            propertySubCollection.init(
+                propertySubCollection.entityModel!,
+                `${metadata.reference.path}/${propertyKey}`,
+                propertySubCollection.blacklistedProperties
+            );
+        }
         const copiedSubCollection =
             copyFrom === undefined
                 ? undefined
                 : ((copyFrom as any)[propertyKey] as SubCollection<Entity>);
+        // get blacklisted properties of entity collection
+        const parentBlacklistedProperties: string[] = [];
+        entitiesInfos.forEach((info) => {
+            info.subPaths.forEach((subPath) => {
+                if (subPath.path === metadata.reference?.parent.id)
+                    parentBlacklistedProperties.push(...subPath.blacklistedProperties);
+            });
+        });
+        if (parentBlacklistedProperties.includes(propertyKey)) return;
+
         // elements changed in array, if copyFrom is defined, it's a new entity, all elements are added from copyFrom
         const { toDelete, toAdd } =
             copiedSubCollection !== undefined
@@ -260,34 +275,44 @@ export class Entity extends EntityBase {
                       toDelete: [],
                       toAdd: [...copiedSubCollection.list],
                   }
-                : subCollection.getArrayModification();
-
-        copiedSubCollection?.init(
-            copiedSubCollection.entityModel!,
-            `${metadata.reference.path}/${propertyKey}`
-        );
+                : propertySubCollection.getArrayModification();
 
         // add or remove elememts in the property collection and all duplicate collections
-        const subPathPromises = info.subPaths.map(async (path) => {
-            const firebase = useFirebase();
-            const subCollection = collectionGroup(firebase.firestore, path);
-            const result = query(
-                subCollection,
-                or(
-                    where("originalId", "==", metadata.reference!.id),
-                    where(documentId(), "==", metadata.reference!.path)
-                )
-            );
-            const querySnap = await getDocs(result);
-            const docsPromises = querySnap.docs.map(async (doc) => {
-                await updatePropertyCollection(
-                    toDelete,
-                    toAdd,
-                    `${doc.ref.path}/${propertyKey}`
+        const subPathPromises = info.subPaths.map(
+            async ({ path, blacklistedProperties }) => {
+                const firebase = useFirebase();
+                const subCollection = collectionGroup(firebase.firestore, path);
+                const result = query(
+                    subCollection,
+                    or(
+                        where("originalId", "==", metadata.reference!.id),
+                        where(documentId(), "==", metadata.reference!.path)
+                    )
                 );
-            });
-            await Promise.all(docsPromises);
-        });
+                const querySnap = await getDocs(result);
+                const docsPromises = querySnap.docs.map(async (doc) => {
+                    const parentCollection = doc.ref.parent.id;
+                    // get blacklisted properties of the parent collection
+                    const parentBlacklistedProperties: string[] = [];
+                    entitiesInfos.forEach((info) => {
+                        info.subPaths.forEach((subPath) => {
+                            if (subPath.path === parentCollection)
+                                parentBlacklistedProperties.push(
+                                    ...subPath.blacklistedProperties
+                                );
+                        });
+                    });
+                    if (parentBlacklistedProperties.includes(propertyKey)) return;
+                    await updatePropertyCollection(
+                        toDelete,
+                        toAdd,
+                        `${doc.ref.path}/${propertyKey}`,
+                        blacklistedProperties
+                    );
+                });
+                await Promise.all(docsPromises);
+            }
+        );
         await Promise.all(subPathPromises);
     }
 
@@ -306,43 +331,33 @@ export class Entity extends EntityBase {
         if (reference === null) throw new Error("reference in metadata is null");
 
         const firebase = useFirebase();
-        const subCollectionsPromises = info.subPaths.map(
-            async (subCollectionPath: string) => {
-                try {
-                    const raw = this.$getPlain();
-                    const subCollection = collectionGroup(
-                        firebase.firestore,
-                        subCollectionPath
-                    );
-                    const result = query(
-                        subCollection,
-                        or(
-                            where("originalId", "==", reference.id),
-                            where(documentId(), "==", reference.path)
-                        )
-                    );
-                    const querySnap = await getDocs(result);
-                    const saveSubRefPromises = querySnap.docs.map(async (doc) => {
-                        await updateDoc(doc.ref, {
-                            originalId: reference.id,
-                            ...raw,
-                        });
+        const subCollectionsPromises = info.subPaths.map(async ({ path }) => {
+            try {
+                const raw = this.$getPlain();
+                const subCollection = collectionGroup(firebase.firestore, path);
+                const result = query(
+                    subCollection,
+                    or(
+                        where("originalId", "==", reference.id),
+                        where(documentId(), "==", reference.path)
+                    )
+                );
+                const querySnap = await getDocs(result);
+                const saveSubRefPromises = querySnap.docs.map(async (doc) => {
+                    await updateDoc(doc.ref, {
+                        originalId: reference.id,
+                        ...raw,
                     });
-                    await Promise.all(saveSubRefPromises);
-                } catch (err) {
-                    if (
-                        err instanceof Error &&
-                        (err as any).code === "permission-denied"
-                    ) {
-                        throw new Error(
-                            `You don't have permission to edit ${subCollectionPath}`
-                        );
-                    }
-
-                    throw err;
+                });
+                await Promise.all(saveSubRefPromises);
+            } catch (err) {
+                if (err instanceof Error && (err as any).code === "permission-denied") {
+                    throw new Error(`You don't have permission to edit ${path}`);
                 }
+
+                throw err;
             }
-        );
+        });
         await Promise.all(subCollectionsPromises);
     }
 
