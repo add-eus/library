@@ -96,6 +96,7 @@ async function submit() {
             );
 
         emits("update:isSaving", false);
+        window.onbeforeunload = null;
     } catch (e) {
         window.onbeforeunload = null;
         throw e;
