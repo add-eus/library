@@ -27,7 +27,6 @@ import { until } from "@vueuse/core";
 import { Query } from "./query";
 import { QuerySearch } from "./querySearch";
 import type { Entity } from "./entity";
-import type { EntitySubCollection } from "./collection";
 
 export { Input } from "./input";
 export { Entity, EntityBase } from "./entity";
@@ -276,6 +275,7 @@ export function useDoc<T extends typeof Entity>(
 
 export function newDoc<T extends typeof Entity>(collectionModel: T): InstanceType<T> {
     const entity = new collectionModel();
+    entity.initSubCollections(true);
 
     (getCurrentScope() ? onScopeDispose : () => {})(() => {
         const cachedIdEntity = `${collectionModel.collectionName}/${entity.$getID()}`;
@@ -403,7 +403,7 @@ function transform<T extends typeof Entity>(
 }
 
 export const useParentOfCollectionGroup = (
-    model: typeof EntitySubCollection,
+    model: typeof Entity,
     collectionGroupName: string,
     wheres: MaybeRef<WhereOption[]>
 ) => {
