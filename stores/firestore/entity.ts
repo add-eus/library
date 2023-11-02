@@ -147,6 +147,26 @@ export class Entity extends EntityBase {
             });
     }
 
+    initSubCollections(isNew: boolean = false) {
+        // init subcollections
+        const metadata = this.$getMetadata();
+        Object.entries(metadata.collectionProperties).map(([propertyKey, namespace]) => {
+            if (!isNew && metadata.reference === null)
+                throw new Error("reference in metadata is null, new doc ?");
+
+            const info = entitiesInfos.get(namespace);
+            if (info === undefined) throw new Error(`${namespace} info is undefined`);
+
+            const subCollection = (this as any)[propertyKey];
+            if (!(subCollection instanceof SubCollection))
+                throw new Error(`${propertyKey} is not a SubCollection`);
+            subCollection.init(
+                info.model,
+                isNew ? undefined : `${metadata.reference!.path}/${propertyKey}`
+            );
+        });
+    }
+
     $setAndParseFromReference(querySnapshot: DocumentReference | DocumentSnapshot) {
         const metadata = this.$getMetadata();
         if (querySnapshot instanceof DocumentReference) {
@@ -267,7 +287,6 @@ export class Entity extends EntityBase {
             });
         });
         if (parentBlacklistedProperties.includes(propertyKey)) return;
-
         // elements changed in array, if copyFrom is defined, it's a new entity, all elements are added from copyFrom
         const { toDelete, toAdd } =
             copiedSubCollection !== undefined
