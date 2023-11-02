@@ -257,9 +257,10 @@ export const updatePropertyCollection = async (
         // save sub collections of added entity recursively
         const constructor = entity.constructor as typeof Entity;
         const model = new constructor();
-        model.$getMetadata().setReference(docRef);
-        model.blacklistedProperties = blacklistedProperties;
-        await model.savePropertyCollections(entity);
+        const metadata = model.$getMetadata();
+        metadata.setReference(docRef);
+        metadata.blacklistedProperties = blacklistedProperties;
+        await metadata.savePropertyCollections(entity);
     });
     await Promise.all([...removePromises, ...addPromises]);
 };

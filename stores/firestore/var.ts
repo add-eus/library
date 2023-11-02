@@ -172,8 +172,8 @@ export function Var(type: any) {
 
             metadata.on("parse", (raw: any, forceAll: boolean = false) => {
                 if (
-                    metadata.entity.blacklistedProperties?.length > 0 &&
-                    metadata.entity.blacklistedProperties.includes(name)
+                    metadata.blacklistedProperties?.length > 0 &&
+                    metadata.blacklistedProperties.includes(name)
                 ) {
                     return;
                 }

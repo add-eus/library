@@ -286,7 +286,7 @@ export function useDoc<T extends typeof Entity>(
 
 export function newDoc<T extends typeof Entity>(collectionModel: T): InstanceType<T> {
     const entity = new collectionModel();
-    entity.initSubCollections(true);
+    entity.$getMetadata().initSubCollections(true);
 
     (getCurrentScope() ? onScopeDispose : () => {})(() => {
         const cachedIdEntity = `${collectionModel.collectionName}/${entity.$getID()}`;
@@ -393,8 +393,8 @@ function transform<T extends typeof Entity>(
     const cachedIdEntity = path ?? `${Model.collectionName}/${doc.id}`;
     if (cachedEntities[cachedIdEntity] === undefined) {
         const model = new Model();
-        model.blacklistedProperties = blacklistedProperties;
         model.$setAndParseFromReference(doc);
+        model.$getMetadata().blacklistedProperties = blacklistedProperties;
         cachedEntities[cachedIdEntity] = {
             entity: model,
             usedBy: 0,
