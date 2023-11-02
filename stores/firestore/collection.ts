@@ -10,12 +10,13 @@ import { useFirebase } from "addeus-common-library/stores/firebase";
 import { collection, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { shallowReactive } from "vue";
 import { watchArray } from "@vueuse/core";
+import { securityCollectionCallbacks } from "./security/securityDecorators";
 
-type FunctionPropertyNames<T> = {
+export type FunctionPropertyNames<T> = {
     [K in keyof T]: T[K] extends (...args: any[]) => any ? K : never;
 }[keyof T];
 
-type NonFunctionProperties<T> = {
+export type NonFunctionProperties<T> = {
     [K in Exclude<keyof T, FunctionPropertyNames<T>>]: T[K];
 };
 
@@ -26,16 +27,17 @@ export interface CollectionOptions<T> {
     >;
 }
 
+export interface EntityInfo {
+    model: typeof Entity;
+    subPaths: { path: string; blacklistedProperties: string[] }[];
+}
+
 /**
  * Map model to namespace of all entities
  */
-export const entitiesInfos = new Map<
-    string,
-    {
-        model: typeof Entity;
-        subPaths: { path: string; blacklistedProperties: string[] }[];
-    }
->();
+export const entitiesInfos = new Map<string, EntityInfo>();
+
+const onCollectionsInitialize = new Map<string, (() => void)[]>();
 
 export function Collection<T>(options: CollectionOptions<T> = {}) {
     return function (target: any, propertyKey?: string) {
@@ -48,6 +50,10 @@ export function Collection<T>(options: CollectionOptions<T> = {}) {
                 model: target,
                 subPaths: [{ path: target.collectionName, blacklistedProperties: [] }],
             });
+            onCollectionsInitialize.get(target.collectionName)?.forEach((init) => init());
+            securityCollectionCallbacks
+                .get(target.collectionName)
+                ?.forEach((init) => init());
         }
         // On property
         else {
@@ -55,9 +61,11 @@ export function Collection<T>(options: CollectionOptions<T> = {}) {
                 throw new Error("namespace is undefined");
             }
             const namespace = options.namespace;
-            onInitialize(target, function (this: any, metadata: EntityMetaData) {
+            const onCollectionInitialize = () => {
                 const info = entitiesInfos.get(namespace);
-                if (info === undefined) throw new Error(`${namespace} info is undefined`);
+                if (info === undefined) {
+                    throw new Error(`${namespace} info is undefined`);
+                }
 
                 const blacklistedProperties = Object.entries(options.backlistFields ?? {})
                     .filter(([, value]) => value)
@@ -82,12 +90,27 @@ export function Collection<T>(options: CollectionOptions<T> = {}) {
                     });
                 }
 
-                // tag property as collection property, used in Entity to save and parse this property
-                metadata.collectionProperties[propertyKey] = {
-                    namespace,
-                    blacklistedProperties,
-                };
-            });
+                onInitialize(target, function (this: any, metadata: EntityMetaData) {
+                    // tag property as collection property, used in Entity to save and parse this property
+                    metadata.collectionProperties[propertyKey] = {
+                        namespace,
+                        blacklistedProperties,
+                    };
+                });
+            };
+
+            // wait Collection decorator on model
+            const info = entitiesInfos.get(namespace);
+            if (info === undefined) {
+                const inits = onCollectionsInitialize.get(namespace);
+                if (inits === undefined) {
+                    onCollectionsInitialize.set(namespace, [onCollectionInitialize]);
+                } else {
+                    inits.push(onCollectionInitialize);
+                }
+            } else {
+                onCollectionInitialize();
+            }
         }
     };
 }

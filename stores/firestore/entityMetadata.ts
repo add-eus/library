@@ -14,6 +14,11 @@ import {
 import EventEmitter from "./event";
 import { SubCollection, entitiesInfos, updatePropertyCollection } from "./collection";
 import { useFirebase } from "../firebase";
+
+export interface CollectionProperties {
+    [key: string]: { namespace: string; blacklistedProperties: string[] };
+}
+
 export class EntityMetaData extends EventEmitter {
     reference: DocumentReference | null = null;
     isFullfilled: boolean = false;
@@ -26,9 +31,7 @@ export class EntityMetaData extends EventEmitter {
     unsuscribeSnapshot: Function | null = null;
 
     blacklistedProperties: string[] = [];
-    collectionProperties: {
-        [key: string]: { namespace: string; blacklistedProperties: string[] };
-    } = {};
+    collectionProperties: CollectionProperties = {};
 
     constructor(entity: any) {
         super();
