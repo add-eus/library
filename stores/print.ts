@@ -66,6 +66,13 @@ export function usePrint() {
                     printFrame.contentDocument.head.appendChild(style.cloneNode(true));
                 }
             });
+
+            const links = document.getElementsByTagName("link");
+            Array.from(links).forEach((link) => {
+                if (printFrame.contentDocument) {
+                    printFrame.contentDocument.head.appendChild(link.cloneNode(true));
+                }
+            });
             await promise;
 
             await print(printFrame);
