@@ -71,3 +71,43 @@ export function uniqueArrayFilter<T>(array: T[], filter: any): T[] {
         return array.findIndex(filter(value)) === index;
     });
 }
+
+/**
+ * Sort array with async function and return an array sorted
+ * @param array Array to sort
+ * @param compareFunction Function async to compare
+ */
+export async function asyncSort<T>(
+    arr: T[],
+    compareFn: (a: T, b: T) => Promise<number>
+): Promise<T[]> {
+    const indices = arr.map((_, index) => index);
+
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = i + 1; j < arr.length; j++) {
+            if ((await compareFn(arr[indices[i]], arr[indices[j]])) > 0) {
+                [indices[i], indices[j]] = [indices[j], indices[i]];
+            }
+        }
+    }
+
+    return indices.map((index) => arr[index]);
+}
+
+export function shuffleArrayLength<T>(array: T[]): T[] {
+    const length = Math.round(Math.random() * array.length);
+    const newArray = [];
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * length);
+        newArray.push(array[randomIndex]);
+    }
+    return newArray;
+}
+
+export function shuffle(array: string[]) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
