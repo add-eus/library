@@ -47,6 +47,7 @@ export interface CollectionOptions {
     search?: MaybeRef<string>;
     compositeConstraint?: MaybeRef<CompositeConstraint>;
     path?: string;
+    blacklistedProperties?: string[];
 }
 
 const cachedEntities: { [key: string]: { usedBy: number; entity: any } } = {};
@@ -166,9 +167,14 @@ export function useCollection<T extends typeof Entity>(
                 constraints,
                 entities,
                 (doc: DocumentSnapshot) => {
-                    return transform(doc, collectionModel, (callback) => {
-                        onDestroy.push(callback);
-                    });
+                    return transform(
+                        doc,
+                        collectionModel,
+                        (callback) => {
+                            onDestroy.push(callback);
+                        },
+                        options.blacklistedProperties
+                    );
                 },
                 collectionRef,
                 search,
@@ -182,9 +188,14 @@ export function useCollection<T extends typeof Entity>(
                 constraints,
                 entities,
                 (doc: DocumentSnapshot) => {
-                    return transform(doc, collectionModel, (callback) => {
-                        onDestroy.push(callback);
-                    });
+                    return transform(
+                        doc,
+                        collectionModel,
+                        (callback) => {
+                            onDestroy.push(callback);
+                        },
+                        options.blacklistedProperties
+                    );
                 },
                 collectionRef
             );
@@ -275,7 +286,7 @@ export function useDoc<T extends typeof Entity>(
 
 export function newDoc<T extends typeof Entity>(collectionModel: T): InstanceType<T> {
     const entity = new collectionModel();
-    entity.initSubCollections(true);
+    entity.$getMetadata().initSubCollections(true);
 
     (getCurrentScope() ? onScopeDispose : () => {})(() => {
         const cachedIdEntity = `${collectionModel.collectionName}/${entity.$getID()}`;
@@ -370,7 +381,8 @@ export async function findDoc<T extends typeof Entity>(
 function transform<T extends typeof Entity>(
     doc: DocumentSnapshot | DocumentReference,
     Model: T,
-    onDisposed: (callback: () => void) => void
+    onDisposed: (callback: () => void) => void,
+    blacklistedProperties: string[] = []
 ): InstanceType<T> {
     let path: string | undefined = undefined;
     if (doc instanceof DocumentReference) {
@@ -382,6 +394,7 @@ function transform<T extends typeof Entity>(
     if (cachedEntities[cachedIdEntity] === undefined) {
         const model = new Model();
         model.$setAndParseFromReference(doc);
+        model.$getMetadata().blacklistedProperties = blacklistedProperties;
         cachedEntities[cachedIdEntity] = {
             entity: model,
             usedBy: 0,
