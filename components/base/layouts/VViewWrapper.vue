@@ -143,8 +143,8 @@ const props = defineProps<VViewWrapperProps>();
 
 @media (max-width: 1024px) {
     .view-wrapper {
-        width: 100%;
-        margin-left: 0;
+        width: 100% !important;
+        margin-left: 0 !important;
 
         &.has-top-nav {
             .is-navbar-md,

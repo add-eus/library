@@ -57,7 +57,7 @@ export async function waitForElementVisible(element: Element): Promise<Element> 
                 }
             },
             {
-                threshold: 0.9,
+                threshold: 0,
             }
         );
         // start observing
@@ -75,7 +75,7 @@ export async function waitForElementHidden(element: Element): Promise<Element> {
                 }
             },
             {
-                threshold: 0.9,
+                threshold: 0,
             }
         );
         // start observing
