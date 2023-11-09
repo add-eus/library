@@ -379,3 +379,10 @@ function transform<T extends typeof Entity>(
 
     return cachedEntities[cachedIdEntity].entity;
 }
+
+export function clearCache() {
+    for (const cachedIdEntity in cachedEntities) {
+        cachedEntities[cachedIdEntity].entity.$getMetadata().destroy();
+        delete cachedEntities[cachedIdEntity];
+    }
+}

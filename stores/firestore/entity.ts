@@ -40,9 +40,10 @@ export class EntityBase {
     constructor() {
         const constructor = this.constructor as typeof EntityBase;
 
+        let hasPreventGetEmit = true;
         const proxied = new Proxy(this, {
             get(obj, key: string) {
-                obj.$getMetadata().emit("get", key);
+                if (!hasPreventGetEmit) obj.$getMetadata().emit("get", key);
                 return (obj as any)[key];
             },
             set(obj: { [key: string]: any }, key: string, value: any) {
@@ -73,6 +74,8 @@ export class EntityBase {
                 return callback.call(reactivity, this.$getMetadata());
             });
         }
+
+        hasPreventGetEmit = false;
 
         return reactivity;
     }
