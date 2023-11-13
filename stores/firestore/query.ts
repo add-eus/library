@@ -27,9 +27,11 @@ class Queue {
     list: any[] = [];
     chunk: any[] = [];
     lastSnapshots: any[] = [];
+    reference: any;
 
-    constructor(list: any[]) {
+    constructor(list: any[], reference) {
         this.list = list;
+        this.reference = reference;
     }
 
     async add(
@@ -82,7 +84,7 @@ class Queue {
 
                         resolve(list);
                     },
-                    33
+                    100
                 );
                 callback(previousItem, onUpdate).then(undefined, reject);
             };
@@ -119,7 +121,7 @@ export class Query extends EventEmitter {
         this.constraints = constraints;
         this.transform = transform;
         this.reference = reference;
-        this.queue = new Queue(list);
+        this.queue = new Queue(list, reference);
     }
 
     async next(
@@ -149,16 +151,15 @@ export class Query extends EventEmitter {
                         const onlyModified = snapshot.docChanges().every((change) => {
                             return change.type === "modified";
                         });
-                        if (onlyModified) return update();
-
-                        void update(
-                            snapshot.docs.map((doc) => {
+                        if (onlyModified) void update();
+                        else {
+                            const list = snapshot.docs.map((doc) => {
                                 const model = this.transform(doc);
 
                                 return model;
-                            }),
-                            snapshot.docs
-                        );
+                            });
+                            void update(list, snapshot.docs);
+                        }
                     },
                     (err) => {
                         if (err instanceof Error && err.code === "permission-denied") {

@@ -1,6 +1,6 @@
 import type { Entity } from "./entity";
 import type { DocumentReference, DocumentSnapshot } from "firebase/firestore";
-import { getDoc, onSnapshot } from "firebase/firestore";
+import { getDoc, onSnapshot, onSnapshotsInSync } from "firebase/firestore";
 import EventEmitter from "./event";
 export class EntityMetaData extends EventEmitter {
     reference: DocumentReference | null = null;
@@ -12,6 +12,7 @@ export class EntityMetaData extends EventEmitter {
     properties: { [key: string]: any } = {};
     entity: Entity;
     unsuscribeSnapshot: Function | null = null;
+    disableWatch: boolean = false;
 
     constructor(entity: any) {
         super();
@@ -50,9 +51,8 @@ export class EntityMetaData extends EventEmitter {
         this.emit("deleted");
     }
 
-    setReference(reference: DocumentReference) {
-        this.reference = reference;
-        if (this.unsuscribeSnapshot) this.unsuscribeSnapshot();
+    watch() {
+        if (this.unsuscribeSnapshot) return;
         let isFirstFetch = true;
         this.unsuscribeSnapshot = onSnapshot(
             this.reference,
@@ -82,6 +82,18 @@ export class EntityMetaData extends EventEmitter {
                 throw err;
             }
         );
+    }
+
+    stopWatch() {
+        this.unsuscribeSnapshot?.();
+        this.unsuscribeSnapshot = null;
+    }
+
+    setReference(reference: DocumentReference) {
+        this.reference = reference;
+        if (this.unsuscribeSnapshot) this.unsuscribeSnapshot();
+
+        this.watch();
         this.on("destroy", () => {
             this.unsuscribeSnapshot?.();
         });
