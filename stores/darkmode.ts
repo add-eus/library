@@ -9,7 +9,7 @@
  * @see /src/components/partials/toolbars/Toolbar.vue
  */
 
-import { computed, watchEffect, ref } from "vue";
+import { computed, watchEffect } from "vue";
 import { usePreferredDark, useStorage } from "@vueuse/core";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import tinyColor from "tinycolor2";
@@ -26,7 +26,7 @@ export const initDarkmode = () => {
     watchEffect(() => {
         const body = document.documentElement;
 
-        if (darkmode.isDark) {
+        if (darkmode.isDark.value) {
             body.classList.add(DARK_MODE_BODY_CLASS);
         } else {
             body.classList.remove(DARK_MODE_BODY_CLASS);
@@ -36,7 +36,7 @@ export const initDarkmode = () => {
 };
 
 export const useDarkmode = defineStore("darkmode", () => {
-    let preferredDark;
+    const preferredDark = usePreferredDark();
     const colorSchema = useStorage<DarkModeSchema>("color-schema", "auto");
 
     /* window.matchMedia("(prefers-color-scheme: dark)");
@@ -60,14 +60,14 @@ export const useDarkmode = defineStore("darkmode", () => {
         const metaThemeColor = document.querySelector("meta[name=theme-color]");
 
         const setHasDark =
-            colorSchema.value == "dark" ||
-            (colorSchema.value == "auto" && preferredDark.value);
+            colorSchema.value === "dark" ||
+            (colorSchema.value === "auto" && preferredDark.value === true);
 
         const colorVar = getComputedStyle(document.documentElement).getPropertyValue(
             setHasDark ? "--dark-sidebar-light-6" : "--white"
         );
         const colorHex = tinyColor(colorVar).toHex();
-        metaThemeColor.setAttribute("content", colorHex);
+        metaThemeColor?.setAttribute("content", colorHex);
     };
 
     const onChange = (event: Event) => {
@@ -78,8 +78,6 @@ export const useDarkmode = defineStore("darkmode", () => {
     const toggle = () => {
         isDark.value = !isDark.value;
     };
-
-    preferredDark = usePreferredDark();
 
     return {
         isDark,
