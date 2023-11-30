@@ -11,6 +11,7 @@ import { lowerCaseFirst } from "../../utils/string";
 import { isReactive, markRaw, shallowReactive } from "vue";
 import { useFirebase } from "../firebase";
 import { EntityMetaData } from "./entityMetadata";
+import { FirebaseError } from "firebase/app";
 
 export function onInitialize(target: any, callback: Function) {
     const constructor = target.constructor;
@@ -168,31 +169,32 @@ export class Entity extends EntityBase {
             if (isNew) {
                 const firebase = useFirebase();
                 const docRef = doc(
-                    collection(firebase.firestore, constructor.collectionName)
+                    collection(
+                        firebase.firestore,
+                        $metadata.saveNewDocPath ?? constructor.collectionName
+                    )
                 );
 
-                await setDoc(docRef, raw);
                 $metadata.setReference(docRef);
+                await setDoc(docRef, raw);
             } else if (Object.keys(raw).length > 0 && $metadata.reference !== null) {
                 await updateDoc($metadata.reference, raw);
             }
             $metadata.previousOrigin = $metadata.origin;
             $metadata.origin = this.$getPlain();
         } catch (err) {
-            if (err instanceof Error && err.code === "permission-denied") {
+            if (err instanceof FirebaseError && err.code === "permission-denied") {
                 throw new Error(
                     `You don't have permission to ${isNew ? "create" : "edit"} ${
                         $metadata.reference?.path
                     }`
                 );
             }
-
             throw err;
         }
 
         // save subcollections
         await $metadata.savePropertyCollections();
-        await $metadata.updateEntityToSubCollections();
 
         this.$getMetadata().emit("saved");
     }
@@ -202,7 +204,8 @@ export class Entity extends EntityBase {
     }
 
     async $delete() {
-        if (this.$getMetadata().reference) await deleteDoc(this.$getMetadata().reference);
+        const ref = this.$getMetadata().reference;
+        if (ref !== null) await deleteDoc(ref);
         this.$getMetadata().markAsDeleted();
         this.$getMetadata().destroy();
     }
@@ -220,6 +223,6 @@ export class Entity extends EntityBase {
     }
 }
 
-export function EntityArray(a: [] = []) {
+export function EntityArray(a: any[] = []) {
     return shallowReactive(a);
 }
