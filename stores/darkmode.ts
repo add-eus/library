@@ -39,7 +39,7 @@ export const useDarkmode = defineStore("darkmode", () => {
     let preferredDark;
     const colorSchema = useStorage<DarkModeSchema>("color-schema", "auto");
 
-    /*window.matchMedia("(prefers-color-scheme: dark)");
+    /* window.matchMedia("(prefers-color-scheme: dark)");
     window.addEventListener("change", (e) => {
         colorSchema.value = e.matches ? "dark" : "light";
     });*/
@@ -68,15 +68,6 @@ export const useDarkmode = defineStore("darkmode", () => {
         );
         const colorHex = tinyColor(colorVar).toHex();
         metaThemeColor.setAttribute("content", colorHex);
-
-        if (typeof cordova !== "undefined") {
-            StatusBar.backgroundColorByHexString(colorHex);
-
-            if (setHasDark) StatusBar.styleLightContent();
-            else StatusBar.styleDefault();
-
-            NavigationBar.backgroundColorByHexString(colorHex, !setHasDark);
-        }
     };
 
     const onChange = (event: Event) => {
@@ -88,14 +79,7 @@ export const useDarkmode = defineStore("darkmode", () => {
         isDark.value = !isDark.value;
     };
 
-    if (typeof cordova !== "undefined") {
-        preferredDark = ref(false);
-        cordova.plugins.osTheme.getTheme().then((theme) => {
-            preferredDark.value = theme.isDark;
-        });
-    } else {
-        preferredDark = usePreferredDark();
-    }
+    preferredDark = usePreferredDark();
 
     return {
         isDark,
