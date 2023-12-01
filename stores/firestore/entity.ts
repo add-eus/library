@@ -6,11 +6,13 @@ import {
     doc,
     setDoc,
     updateDoc,
+    FirestoreError,
 } from "firebase/firestore";
 import { lowerCaseFirst } from "../../utils/string";
 import { isReactive, markRaw, shallowReactive } from "vue";
 import { useFirebase } from "../firebase";
 import { EntityMetaData } from "./entityMetadata";
+import { FirebaseError } from "firebase/app";
 
 export function onInitialize(target: any, callback: Function) {
     const constructor = target.constructor;
@@ -38,9 +40,14 @@ export class EntityBase {
     constructor() {
         const constructor = this.constructor as typeof EntityBase;
 
+        let hasPreventGetEmit = true;
         const proxied = new Proxy(this, {
             get(obj, key: string) {
-                obj.$getMetadata().emit("get", key);
+                if (
+                    !hasPreventGetEmit &&
+                    (typeof key !== "string" || !key.startsWith("$"))
+                )
+                    obj.$getMetadata().emit("get", key);
                 return (obj as any)[key];
             },
             set(obj: { [key: string]: any }, key: string, value: any) {
@@ -71,6 +78,8 @@ export class EntityBase {
                 return callback.call(reactivity, this.$getMetadata());
             });
         }
+
+        hasPreventGetEmit = false;
 
         return reactivity;
     }
@@ -179,13 +188,17 @@ export class Entity extends EntityBase {
             $metadata.previousOrigin = $metadata.origin;
             $metadata.origin = this.$getPlain();
         } catch (err) {
-            if (err instanceof Error && err.code === "permission-denied") {
+            if (err instanceof FirestoreError && err.code === "permission-denied") {
                 throw new Error(
                     `You don't have permission to ${isNew ? "create" : "edit"} ${
                         $metadata.reference?.path
                     }`
                 );
-            }
+            } else if (
+                err instanceof FirebaseError &&
+                err.code === "auth/network-request-failed"
+            )
+                return this.$save();
 
             throw err;
         }
