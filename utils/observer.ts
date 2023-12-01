@@ -1,13 +1,14 @@
 import sleep from "./sleep";
 import { isVisible, isHidden } from "./element";
+
 export async function waitForElementPresent(selector, parent = document.body) {
     await new Promise((resolve) => {
-        if (parent.querySelector(selector)) {
+        if (parent.querySelector(selector) !== null) {
             return resolve(parent.querySelector(selector));
         }
 
         const observer = new MutationObserver(() => {
-            if (parent.querySelector(selector)) {
+            if (parent.querySelector(selector) !== null) {
                 resolve(parent.querySelector(selector));
                 observer.disconnect();
             }
@@ -28,13 +29,13 @@ export async function waitForElementLoaded(element) {
     await Promise.all(
         Array.prototype.map.call(elements, async (element) => {
             if (element.tagName.toLowerCase() === "img") {
-                if (element.complete && element.naturalHeight !== 0) return;
+                if (element.complete === true && element.naturalHeight !== 0) return;
                 return new Promise((resolve, reject) => {
                     element.addEventListener("load", resolve);
                     element.addEventListener("error", reject);
                 });
             } else if (element.tagName.toLowerCase() === "iframe") {
-                if (element.contentDocument.readyState == "complete") {
+                if (element.contentDocument.readyState === "complete") {
                     await sleep(100);
                     return;
                 }
@@ -69,7 +70,7 @@ export async function waitForElementHidden(element: Element): Promise<Element> {
     return new Promise((resolve) => {
         const intersectionObserver = new IntersectionObserver(
             () => {
-                if (isHidden(element)) {
+                if (isHidden(element) === true) {
                     intersectionObserver.disconnect();
                     resolve(element);
                 }
@@ -100,7 +101,7 @@ function setTransition(element, value) {
 function getTransition(element) {
     let value = null;
     transitionPropertyNames.forEach((property) => {
-        if (element.style[property]) {
+        if (element.style[property] !== undefined) {
             value = element.style[property];
         }
     });
@@ -109,7 +110,7 @@ function getTransition(element) {
 
 export async function waitTransition(element, styles, duration, easing) {
     let oldTransition;
-    if (duration) {
+    if (typeof duration === "number" && typeof easing === "string") {
         oldTransition = getTransition(element);
         const transition = Object.keys(styles)
             .map((key) => {
@@ -120,9 +121,9 @@ export async function waitTransition(element, styles, duration, easing) {
     }
     await Promise.all(
         Object.keys(styles).map((key) => {
-            if (element.style[key] == styles[key]) return;
+            if (element.style[key] === styles[key]) return;
 
-            return new Promise((resolve) => {
+            return new Promise<void>((resolve) => {
                 const transitionEnded = (e) => {
                     if (e.propertyName !== key) return;
                     element.removeEventListener("transitionend", transitionEnded);
@@ -143,7 +144,7 @@ export async function waitTransition(element, styles, duration, easing) {
             });
         })
     );
-    if (duration) {
+    if (typeof duration === "number") {
         setTransition(element, oldTransition);
     }
 }
