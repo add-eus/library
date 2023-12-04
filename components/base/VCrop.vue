@@ -13,9 +13,7 @@ const props = defineProps<VCropProps>();
 const cropperRef = vRef<typeof Cropper>();
 const getResult = async (): Promise<string> => {
     const { canvas } = cropperRef.value?.getResult();
-    const blob = await new Promise<any>((resolve) =>
-        canvas.toBlob(resolve, "image/jpeg")
-    );
+    const blob = await new Promise<any>((resolve) => canvas.toBlob(resolve, "image/png"));
     return blob;
 };
 defineExpose({ getResult });

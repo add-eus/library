@@ -92,17 +92,10 @@ export const useModal = defineStore("modal", () => {
         });
 
         return new Promise((resolve, reject) => {
-            until(cancelReason)
-                .not.toBe(null)
-                .then(() => {
-                    reject(cancelReason.value);
-                });
-
-            until(successReason)
-                .not.toBeNull()
-                .then(() => {
-                    resolve(successReason.value);
-                });
+            modal.onClose = () => {
+                if (successReason.value !== null) resolve("success");
+                else reject("closed");
+            };
         });
     }
 

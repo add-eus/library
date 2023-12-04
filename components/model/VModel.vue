@@ -57,32 +57,50 @@ async function submit() {
     if (hasError() || isProcessing() || !hasChanged() || typeof addField === "function")
         return;
 
-    emits("update:isSaving", true);
+    try {
+        window.onbeforeunload = function () {
+            return "Are you sure you want to leave ? current saving make damage to your data.";
+        };
 
-    await Promise.all(onSavedCallbacks.map((onSavedCallback) => onSavedCallback()));
-    const isEdit = props.model.$getMetadata().reference !== null;
+        emits("update:isSaving", true);
 
-    if (isEdit)
-        await new Promise((resolve, reject) =>
-            emits("beforeUpdate", { model: props.model, onEnd: resolve, onError: reject })
-        );
-    else
-        await new Promise((resolve, reject) =>
-            emits("beforeCreate", { model: props.model, onEnd: resolve, onError: reject })
-        );
+        await Promise.all(onSavedCallbacks.map((onSavedCallback) => onSavedCallback()));
+        const isEdit = props.model.$getMetadata().reference !== null;
 
-    await props.model.$save();
+        if (isEdit)
+            await new Promise((resolve, reject) =>
+                emits("beforeUpdate", {
+                    model: props.model,
+                    onEnd: resolve,
+                    onError: reject,
+                })
+            );
+        else
+            await new Promise((resolve, reject) =>
+                emits("beforeCreate", {
+                    model: props.model,
+                    onEnd: resolve,
+                    onError: reject,
+                })
+            );
 
-    if (isEdit)
-        await new Promise((resolve, reject) =>
-            emits("updated", { model: props.model, onEnd: resolve, onError: reject })
-        );
-    else
-        await new Promise((resolve, reject) =>
-            emits("created", { model: props.model, onEnd: resolve, onError: reject })
-        );
+        await props.model.$save();
 
-    emits("update:isSaving", false);
+        if (isEdit)
+            await new Promise((resolve, reject) =>
+                emits("updated", { model: props.model, onEnd: resolve, onError: reject })
+            );
+        else
+            await new Promise((resolve, reject) =>
+                emits("created", { model: props.model, onEnd: resolve, onError: reject })
+            );
+
+        emits("update:isSaving", false);
+        window.onbeforeunload = null;
+    } catch (e) {
+        window.onbeforeunload = null;
+        throw e;
+    }
 }
 
 const fields = ref({});
