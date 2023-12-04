@@ -41,7 +41,7 @@ export class EntityBase {
 
         let hasPreventGetEmit = true;
         const proxied = new Proxy(this, {
-            get(obj, key: string) {
+            get(obj, key: any) {
                 if (
                     !hasPreventGetEmit &&
                     (typeof key !== "string" || !key.startsWith("$"))
