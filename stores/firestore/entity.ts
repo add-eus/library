@@ -6,7 +6,6 @@ import {
     doc,
     setDoc,
     updateDoc,
-    FirestoreError,
 } from "firebase/firestore";
 import { lowerCaseFirst } from "../../utils/string";
 import { isReactive, markRaw, shallowReactive } from "vue";
@@ -167,7 +166,7 @@ export class Entity extends EntityBase {
         );
     }
 
-    async $save() {
+    async $save(): Promise<void> {
         const constructor = this.constructor as typeof Entity;
 
         const raw = this.$getChangedPlain();

@@ -1,16 +1,6 @@
 import type { Entity } from "./entity";
 import type { DocumentReference, DocumentSnapshot } from "firebase/firestore";
-import {
-    collectionGroup,
-    documentId,
-    getDoc,
-    getDocs,
-    onSnapshot,
-    or,
-    query,
-    updateDoc,
-    where,
-} from "firebase/firestore";
+import { getDoc, onSnapshot } from "firebase/firestore";
 import EventEmitter from "./event";
 import { SubCollection, entitiesInfos, updatePropertyCollection } from "./collection";
 
