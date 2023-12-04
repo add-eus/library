@@ -33,8 +33,8 @@ export function SecurityEntity(options: SecurityOptions) {
                     throw new Error(`Security already defined for ${key}`);
                 }
                 securityInfos.set(key, { security: options });
-                if (securityPropertyCallbacks.has(key)) {
-                    securityPropertyCallbacks.get(key)!.forEach((callback) => {
+                if (securityPropertyCallbacks.has(target.name)) {
+                    securityPropertyCallbacks.get(target.name)!.forEach((callback) => {
                         callback();
                     });
                 }
