@@ -415,7 +415,6 @@ function transform<T extends typeof Entity>(
     return cachedEntities[cachedIdEntity].entity;
 }
 
-
 export const useParentOfCollectionGroup = (
     model: typeof Entity,
     collectionGroupName: string,
