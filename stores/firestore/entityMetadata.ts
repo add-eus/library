@@ -11,7 +11,6 @@ import {
     updateDoc,
     where,
 } from "firebase/firestore";
-import { getDoc, onSnapshot, onSnapshotsInSync } from "firebase/firestore";
 import EventEmitter from "./event";
 import { SubCollection, entitiesInfos, updatePropertyCollection } from "./collection";
 import { useFirebase } from "../firebase";
