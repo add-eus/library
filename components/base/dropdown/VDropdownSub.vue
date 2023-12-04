@@ -89,7 +89,9 @@ const position = computed(() => {
     // Apply the menu size to the position to get the right size
     tempPosition.bottom =
         windowHeight.value - tempPosition.top - menuSize.height.value - 5;
-    tempPosition.right = windowWidth.value - tempPosition.left - menuSize.width.value;
+    const scrollBarSize = 20;
+    tempPosition.right =
+        windowWidth.value - tempPosition.left - (menuSize.width.value + scrollBarSize);
 
     // Check if the menu is out of bounds and adjust it
 
@@ -180,7 +182,6 @@ onMounted(() => {
     z-index: 100 !important;
     overflow-y: auto;
     overflow-x: auto;
-    width: inherit;
 
     > .dropdown-content {
         width: fit-content;
