@@ -90,8 +90,8 @@ export class EntityMetaData extends EventEmitter {
     }
 
     setReference(reference: DocumentReference) {
+        if (this.reference) return;
         this.reference = reference;
-        if (this.unsuscribeSnapshot) this.unsuscribeSnapshot();
 
         this.watch();
         this.on("destroy", () => {
