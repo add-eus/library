@@ -2,11 +2,12 @@ import type {
     CollectionOptions as UseCollectionOption,
     Collection as UseCollectionType,
 } from ".";
-import { useCollection } from ".";
+import { newDoc, useCollection } from ".";
 import type { Entity } from "./entity";
 import { onInitialize } from "./entity";
 import type { EntityMetaData } from "./entityMetadata";
 import { useFirebase } from "addeus-common-library/stores/firebase";
+import type { DocumentData, DocumentReference } from "firebase/firestore";
 import { collection, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { shallowReactive } from "vue";
 import { watchArray } from "@vueuse/core";
@@ -231,6 +232,16 @@ export class SubCollection<T extends Entity> {
         );
         return { toDelete, toAdd };
     }
+
+    newDoc(): T {
+        if (!this.isInitialized)
+            throw new Error(`property subcollection not initialized`);
+        if (this.model === undefined) throw new Error(`model is undefined`);
+        const entity = newDoc(this.model) as T;
+        entity.$getMetadata().saveNewDocPath = this.path;
+        this.currentList.push(entity);
+        return entity;
+    }
 }
 
 /**
@@ -255,25 +266,22 @@ export const updatePropertyCollection = async (
     });
     const addPromises = toAdd.map(async (entity) => {
         let id = entity.$getMetadata().reference?.id;
-        if (id === undefined) {
-            // entity is new, save it before add to collection
-            await entity.$save();
-            id = entity.$getMetadata().reference?.id;
-        }
+
         // entity is already in collection
         if (entity.$getMetadata().reference?.path === `${collectionRef.path}/${id}`) {
             return;
         }
 
-        const docRef = doc(collectionRef, id);
-        await setDoc(
-            docRef,
-            {
-                originalId: id,
-                ...entity.$getPlain(),
-            },
-            { merge: true }
-        );
+        let docRef: DocumentReference<DocumentData> | undefined;
+        if (id === undefined) {
+            // entity is new, save it before add to collection
+            await entity.$save();
+            id = entity.$getMetadata().reference!.id;
+            docRef = entity.$getMetadata().reference!;
+        } else {
+            docRef = doc(collectionRef, id);
+            await setDoc(docRef, entity.$getPlain(), { merge: true });
+        }
 
         // save sub collections of added entity recursively
         const constructor = entity.constructor as typeof Entity;

@@ -26,7 +26,8 @@ export const initDarkmode = () => {
     watchEffect(() => {
         const body = document.documentElement;
 
-        if (darkmode.isDark.value === true) {
+        const isDark = darkmode.isDark as any;
+        if (isDark === true) {
             body.classList.add(DARK_MODE_BODY_CLASS);
         } else {
             body.classList.remove(DARK_MODE_BODY_CLASS);
