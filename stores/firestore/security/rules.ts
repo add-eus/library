@@ -12,7 +12,7 @@ service cloud.firestore {
     match /databases/{database}/documents {
         ${rootCollections
             .map((rootCollection) => {
-                return createCollectionRules(rootCollection, undefined, undefined);
+                return createCollectionRules(rootCollection);
             })
             .join("")}
     }
@@ -22,8 +22,8 @@ service cloud.firestore {
 
 const createCollectionRules = (
     collectionName: string,
-    modelNamespace: string | undefined,
-    blacklistedProperties: string[] | undefined,
+    modelNamespace?: string,
+    blacklistedProperties?: string[],
     parentModelNamespace?: string
 ): string => {
     if (modelNamespace === undefined) modelNamespace = collectionName;

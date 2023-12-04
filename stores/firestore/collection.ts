@@ -21,7 +21,7 @@ export type NonFunctionProperties<T> = {
 };
 
 export interface CollectionOptions<T> {
-    namespace?: string;
+    namespace: string;
     backlistFields?: Partial<
         Omit<Record<keyof NonFunctionProperties<T>, boolean>, "blacklistedProperties">
     >;
@@ -39,11 +39,11 @@ export const entitiesInfos = new Map<string, EntityInfo>();
 
 const onCollectionsInitialize = new Map<string, (() => void)[]>();
 
-export function Collection<T>(options: CollectionOptions<T> = {}) {
+export function Collection<T>(options: CollectionOptions<T>) {
     return function (target: any, propertyKey?: string) {
         // On class
         if (propertyKey === undefined) {
-            target.collectionName = options.namespace ?? target.name;
+            target.collectionName = options.namespace;
 
             // Associate namespace to model
             entitiesInfos.set(target.collectionName, {
@@ -51,9 +51,7 @@ export function Collection<T>(options: CollectionOptions<T> = {}) {
                 subPaths: [{ path: target.collectionName, blacklistedProperties: [] }],
             });
             onCollectionsInitialize.get(target.collectionName)?.forEach((init) => init());
-            securityCollectionCallbacks
-                .get(target.collectionName)
-                ?.forEach((init) => init());
+            securityCollectionCallbacks.get(target.name)?.forEach((init) => init());
         }
         // On property
         else {
