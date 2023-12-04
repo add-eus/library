@@ -1,20 +1,8 @@
 import type { Entity } from "./entity";
 import type { DocumentReference, DocumentSnapshot } from "firebase/firestore";
-import {
-    collectionGroup,
-    documentId,
-    getDoc,
-    getDocs,
-    onSnapshot,
-    or,
-    query,
-    updateDoc,
-    where,
-} from "firebase/firestore";
-import { getDoc, onSnapshot, onSnapshotsInSync } from "firebase/firestore";
+import { getDoc, onSnapshot } from "firebase/firestore";
 import EventEmitter from "./event";
 import { SubCollection, entitiesInfos, updatePropertyCollection } from "./collection";
-import { useFirebase } from "../firebase";
 
 export interface CollectionProperties {
     [key: string]: { namespace: string; blacklistedProperties: string[] };
@@ -34,6 +22,7 @@ export class EntityMetaData extends EventEmitter {
 
     blacklistedProperties: string[] = [];
     collectionProperties: CollectionProperties = {};
+    saveNewDocPath?: string;
 
     constructor(entity: any) {
         super();
@@ -192,87 +181,11 @@ export class EntityMetaData extends EventEmitter {
                   }
                 : propertySubCollection.getArrayModification();
 
-        // add or remove elememts in the property collection and all duplicate collections
-        const subPathPromises = info.subPaths.map(
-            async ({ path, blacklistedProperties }) => {
-                const firebase = useFirebase();
-                const subCollection = collectionGroup(firebase.firestore, path);
-                const result = query(
-                    subCollection,
-                    or(
-                        where("originalId", "==", this.reference!.id),
-                        where(documentId(), "==", this.reference!.path)
-                    )
-                );
-                const querySnap = await getDocs(result);
-                const docsPromises = querySnap.docs.map(async (doc) => {
-                    const parentCollection = doc.ref.parent.id;
-                    // get blacklisted properties of the parent collection
-                    const parentBlacklistedProperties: string[] = [];
-                    entitiesInfos.forEach((info) => {
-                        info.subPaths.forEach((subPath) => {
-                            if (subPath.path === parentCollection)
-                                parentBlacklistedProperties.push(
-                                    ...subPath.blacklistedProperties
-                                );
-                        });
-                    });
-                    if (parentBlacklistedProperties.includes(propertyKey)) return;
-                    await updatePropertyCollection(
-                        toDelete,
-                        toAdd,
-                        `${doc.ref.path}/${propertyKey}`,
-                        blacklistedProperties
-                    );
-                });
-                await Promise.all(docsPromises);
-            }
+        await updatePropertyCollection(
+            toDelete,
+            toAdd,
+            `${this.reference.path}/${propertyKey}`,
+            parentBlacklistedProperties
         );
-        await Promise.all(subPathPromises);
-    }
-
-    /**
-     *  Update entity on all its collections
-     * @param subCollections
-     * @param metadata
-     */
-    async updateEntityToSubCollections() {
-        const constructor = this.entity.constructor as typeof Entity;
-        const info = entitiesInfos.get(constructor.collectionName);
-        if (info === undefined)
-            throw new Error(`${constructor.collectionName} info is undefined`);
-
-        const reference = this.reference;
-        if (reference === null) throw new Error("reference in metadata is null");
-
-        const firebase = useFirebase();
-        const subCollectionsPromises = info.subPaths.map(async ({ path }) => {
-            try {
-                const raw = this.entity.$getPlain();
-                const subCollection = collectionGroup(firebase.firestore, path);
-                const result = query(
-                    subCollection,
-                    or(
-                        where("originalId", "==", reference.id),
-                        where(documentId(), "==", reference.path)
-                    )
-                );
-                const querySnap = await getDocs(result);
-                const saveSubRefPromises = querySnap.docs.map(async (doc) => {
-                    await updateDoc(doc.ref, {
-                        originalId: reference.id,
-                        ...raw,
-                    });
-                });
-                await Promise.all(saveSubRefPromises);
-            } catch (err) {
-                if (err instanceof Error && (err as any).code === "permission-denied") {
-                    throw new Error(`You don't have permission to edit ${path}`);
-                }
-
-                throw err;
-            }
-        });
-        await Promise.all(subCollectionsPromises);
     }
 }
