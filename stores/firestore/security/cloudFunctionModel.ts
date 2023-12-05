@@ -41,7 +41,7 @@ const getNamespaceCollections = (
 ): Collection[] => {
     const collections: Collection[] = [];
     if (path === undefined) {
-        const rootPath = `${namespace}/{id}`;
+        const rootPath = `${namespace}/{${namespace}Id}`;
         collections.push({
             path: rootPath,
             namespace,
@@ -59,7 +59,7 @@ const getNamespaceCollections = (
     const collectionsPaths = collectionNamespaces
         .filter(([name]) => !blacklistedSubPaths.includes(name))
         .map(([name, group]): Collection[] => {
-            const collectionPath = `${path}/${name}/{id}`;
+            const collectionPath = `${path}/${name}/{${name}Id}`;
             const collectionNamespace = `${group.namespace}`;
             const collectionBlacklistedSubPaths = group.blacklistedProperties as
                 | string[]
