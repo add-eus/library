@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, reactive, computed } from "vue";
-import { useVField } from "../../composable/useVField";
+import { ref, watch, computed } from "vue";
 
 export interface VTextareaEmits {
     (event: "update:modelValue", value?: any): void;
