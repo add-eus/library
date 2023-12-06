@@ -29,8 +29,14 @@ const classes = computed(() => {
 
     return ["textarea"];
 });
+
+const textarea = ref<HTMLTextAreaElement | null>(null);
+
+defineExpose({
+    textarea,
+});
 </script>
 
 <template>
-    <textarea v-model="value" :class="classes"></textarea>
+    <textarea ref="textarea" v-model="value" :class="classes"></textarea>
 </template>
