@@ -86,6 +86,7 @@
     },
     "homepage": "https://github.com/add-eus/library#readme",
     "dependencies": {
+        "@vee-validate/rules": "^4.12.2",
         "@vueform/multiselect": "2.5.8",
         "@vueform/slider": "2.1.7",
         "@vueuse/core": "^10.7.0",
