@@ -58,6 +58,7 @@ const props = withDefaults(defineProps<VTagProps>(), {
     line-height: 2.3;
     height: 2.4em;
     font-size: 0.75rem;
+    vertical-align: middle;
 
     &.is-rounded {
         padding-left: 1em;
