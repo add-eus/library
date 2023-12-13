@@ -125,6 +125,10 @@ $sides: top, bottom, left, right;
     background-color: var(--secondary) !important;
 }
 
+.has-text-blue {
+    color: $blue;
+}
+
 // /* ==========================================================================
 // 3. Shadow helpers
 // ========================================================================== */

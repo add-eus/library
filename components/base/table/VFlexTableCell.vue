@@ -25,8 +25,7 @@ const props = withDefaults(defineProps<VFlexTableCellProps>(), {
             props.column.align === 'end' && 'cell-end',
             props.column.align === 'center' && 'cell-center',
             props.column.cellClass,
-        ]"
-    >
+        ]">
         <span class="cell-title"
             ><Translate>{{ column.label }}</Translate></span
         >
@@ -277,7 +276,7 @@ const props = withDefaults(defineProps<VFlexTableCellProps>(), {
         }
     }
 
-    &.text-ellipsis {
+    &.has-text-ellipsis {
         max-width: 120px;
     }
 

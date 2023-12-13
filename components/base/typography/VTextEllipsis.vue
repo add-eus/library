@@ -25,13 +25,13 @@ if (mobileWidthValue.match(CssUnitRe) === null) {
 </script>
 
 <template>
-    <span class="text-ellipsis">
+    <span class="has-text-ellipsis">
         <slot></slot>
     </span>
 </template>
 
 <style lang="scss" scoped>
-.text-ellipsis {
+.has-text-ellipsis {
     max-width: v-bind("props.width");
     overflow: hidden;
     white-space: nowrap;
@@ -39,7 +39,7 @@ if (mobileWidthValue.match(CssUnitRe) === null) {
 }
 
 @media (max-width: 767px) {
-    .text-ellipsis {
+    .has-text-ellipsis {
         max-width: v-bind("mobileWidthValue");
     }
 }
