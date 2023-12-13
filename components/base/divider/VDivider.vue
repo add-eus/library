@@ -41,6 +41,10 @@ const color = useColor(computed(() => props.color));
         margin: 0 5px;
         font-size: 14px;
         color: v-bind(color);
+
+        &:empty {
+            display: none;
+        }
     }
 }
 </style>
