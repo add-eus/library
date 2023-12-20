@@ -4,6 +4,8 @@ import "plyr/dist/plyr.css";
 
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from "vue";
+import { computedAsync } from "@vueuse/core";
+import { useStorage } from "addeus-common-library/stores/storage";
 import Plyr from "plyr";
 
 export type VPlyrCaptions = {
@@ -14,6 +16,7 @@ export type VPlyrCaptions = {
 export type VPlyrFormat = "4by3" | "16by9" | "square";
 export interface VPlyrProps {
     source: string;
+    sourceFromStorage: string;
     title: string;
     poster: string;
     captions?: VPlyrCaptions[];
@@ -44,6 +47,13 @@ onBeforeUnmount(() => {
         player.value = undefined;
     }
 });
+
+
+const storage = useStorage();
+
+const video = computedAsync(() => {
+    return storage.fetchAsDataUrl(props.sourceFromStorage);
+}, null);
 </script>
 
 <template>
@@ -69,7 +79,8 @@ onBeforeUnmount(() => {
             playsinline
             :data-poster="poster"
         >
-            <source :src="source" type="video/mp4" />
+            <source v-if="source" :src="source" />
+            <source v-else-if="video" :src="video" />
             <track
                 v-for="(caption, key) in props.captions"
                 :key="key"

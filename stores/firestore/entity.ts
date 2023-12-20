@@ -94,9 +94,12 @@ export class EntityBase {
 
     $hasChanged() {
         const $metadata = this.$getMetadata();
-        return Object.values($metadata.properties).some(
-            (property: any) => property.isChanged
-        );
+        const result = Object.keys($metadata.properties).some((propertyKey: string) => {
+            const property = $metadata.properties[propertyKey];
+            const isChanged = property.isChanged;
+            return isChanged;
+        });
+        return result;
     }
 
     $reset() {
@@ -165,12 +168,13 @@ export class Entity extends EntityBase {
         );
     }
 
-    async $save() {
+    async $save(): Promise<void> {
         const constructor = this.constructor as typeof Entity;
 
         const raw = this.$getChangedPlain();
         const $metadata = this.$getMetadata();
         const isNew = $metadata.reference === null;
+
         try {
             if (isNew) {
                 const firebase = useFirebase();

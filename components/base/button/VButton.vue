@@ -374,7 +374,6 @@ export default defineComponent({
 
     &.is-huge {
         height: 50px;
-        width: 220px;
     }
 
     .icon {

@@ -1,30 +1,37 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, onScopeDispose, provide, ref } from "vue";
 import {} from "../../../stores/firebase";
-import { useCurrentElement, useDebounceFn } from "@vueuse/core";
+import { useCurrentElement, useDebounceFn, useIntervalFn } from "@vueuse/core";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
 import "photoswipe/style.css";
 
 export type VGalleryProps = {
-    pictures: string[];
+    backIcon?: string;
+    forwardIcon?: string;
+};
+
+export type VGalleryPage = {
+    index: number;
 };
 
 const props = withDefaults(defineProps<VGalleryProps>(), {
-    pictures: () => [],
+    backIcon: "arrow_back",
+    forwardIcon: "arrow_forward",
 });
 
 const cursor = ref(0);
 const rootElement = useCurrentElement();
 const lightbox = ref<PhotoSwipeLightbox>();
+const pages = ref<VGalleryPage[]>([]);
 
 function previous() {
     cursor.value--;
-    if (cursor.value < 0) cursor.value = props.pictures.length - 1;
+    if (cursor.value < 0) cursor.value = pages.value.length - 1;
 }
 
 function next() {
     cursor.value++;
-    if (cursor.value >= props.pictures.length) cursor.value = 0;
+    if (cursor.value >= pages.value.length) cursor.value = 0;
 }
 
 const showFullScreen = useDebounceFn(function (event) {
@@ -39,52 +46,71 @@ onMounted(() => {
     });
     lightbox.value.init();
 });
+
+function addPage(page: VGalleryPage) {
+    pages.value[page.index] = page;
+    onScopeDispose(() => {
+        delete pages.value[page.index];
+    });
+}
+
+const { pause } = useIntervalFn(() => {
+    next();
+}, 5000);
+
+provide("v-gallery", {
+    cursor,
+    pages,
+    previous,
+    next,
+    showFullScreen,
+    pause,
+    addPage,
+});
 </script>
 
 <template>
     <div class="v-gallery-container">
         <VIconButton
-            v-if="pictures.length > 1"
-            icon="arrow_back"
-            @click.stop="previous"></VIconButton>
-        <ImageFirestore
-            v-for="(picture, index) in pictures"
-            :key="picture"
-            :path="picture"
-            :class="{ active: index == cursor }"
-            :controls="false"
-            width="100"
-            height="100"
-            :alt="'picture' + index"
-            class="picture"
-            v-bind="$attrs"
-            @click="showFullScreen($event)" />
+            v-if="backIcon"
+            :icon="backIcon"
+            @click.stop="
+                previous();
+                pause();
+            "></VIconButton>
+        <slot></slot>
+
         <VIconButton
-            v-if="pictures.length > 1"
-            icon="arrow_next"
-            @click.stop="next"></VIconButton>
+            v-if="forwardIcon"
+            :icon="forwardIcon"
+            @click.stop="
+                next();
+                pause();
+            "></VIconButton>
+        <div class="cursors">
+            <button
+                v-for="(page, index) in pages"
+                :key="index"
+                class="cursor"
+                :class="{ active: index == cursor }"
+                @keydown="
+                    cursor = index;
+                    pause();
+                "
+                @click="
+                    cursor = index;
+                    pause();
+                "></button>
+        </div>
     </div>
 </template>
 
 <style lang="scss">
+@import "bulma/sass/utilities/_all.sass";
+
 .v-gallery-container {
-    max-height: 100%;
-    max-width: 100%;
-    min-height: 100%;
-
     position: relative;
-
-    .picture {
-        object-fit: contain;
-        height: 100%;
-        width: 100%;
-        max-width: 100%;
-        z-index: 1;
-
-        &.active {
-            z-index: 2;
-        }
-    }
+    overflow: hidden;
 
     > .button {
         position: absolute;
@@ -99,12 +125,40 @@ onMounted(() => {
         filter: drop-shadow(0px 0px 10px #000);
         cursor: pointer;
 
-        &:first-child {
+        &:first-of-type {
             left: 0;
         }
 
-        &:last-child {
+        &:last-of-type {
             right: 0;
+            z-index: 300;
+        }
+    }
+
+    > .cursors {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px 0;
+
+        .cursor {
+            height: 12px;
+            width: 12px;
+            border: none;
+            border-radius: 50%;
+            background-color: $white-ter;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: background-color 0.5s ease-in-out;
+
+            &.active {
+                background-color: $primary;
+            }
         }
     }
 }
