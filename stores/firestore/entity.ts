@@ -92,6 +92,14 @@ export class EntityBase {
         return (this as any).$metadata;
     }
 
+    $clone() {
+        const clone = new (this.constructor as typeof EntityBase)();
+        const raw = {};
+        this.$getMetadata().emit("format", raw, true);
+        clone.$getMetadata().emit("parse", raw);
+        return clone;
+    }
+
     $hasChanged() {
         const $metadata = this.$getMetadata();
         const result = Object.keys($metadata.properties).some((propertyKey: string) => {
