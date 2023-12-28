@@ -71,6 +71,7 @@ const props = withDefaults(defineProps<VIconProps>(), {
     min-width: 40px;
     border-radius: 8px;
     background: var(--fade-grey);
+    margin: 0 6px;
     transition: all 0.3s; // transition-all test
 
     &.is-small {
