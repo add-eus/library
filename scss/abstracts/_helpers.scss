@@ -6,6 +6,7 @@
     3. Shadow helpers
     4. Dark helpers
     5. Radius helpers
+    6. Border helpers
 */
 
 /* ==========================================================================
@@ -237,15 +238,38 @@ $sides: top, bottom, left, right;
         color: findDarkColor($colorValue);
     }
 
+    .has-text-#{colorName}-light {
+        color: findLightColor($colorValue);
+    }
+
     .has-background-#{$colorName}-light {
         background-color: findLightColor($colorValue);
     }
 
-    .has-text-#{colorName}-light {
-        color: findLightColor($colorValue);
+    .has-border-#{$colorName} {
+        border-width: 1px;
+        border-style: solid;
+        border-color: $colorValue;
+    }
+
+    .has-border-#{$colorName}-dark {
+        border-width: 1px;
+        border-style: solid;
+        border-color: findDarkColor($colorValue);
+    }
+
+    .has-border-#{$colorName}-light {
+        border-width: 1px;
+        border-style: solid;
+        border-color: findLightColor($colorValue);
     }
 }
 
+@include applyColor("primary", $primary);
+@include applyColor("grey", $grey);
+@include applyColor("grey-dark", $grey-dark);
+@include applyColor("grey-light", $grey-light);
+@include applyColor("grey-lighter", $grey-lighter);
 @include applyColor("orange", $orange);
 @include applyColor("yellow", $yellow);
 @include applyColor("green", $green);

@@ -14,7 +14,7 @@ export type VGalleryPage = {
     index: number;
 };
 
-const props = withDefaults(defineProps<VGalleryProps>(), {
+withDefaults(defineProps<VGalleryProps>(), {
     backIcon: "arrow_back",
     forwardIcon: "arrow_forward",
 });

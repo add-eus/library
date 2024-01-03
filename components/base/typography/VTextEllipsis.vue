@@ -33,9 +33,6 @@ if (mobileWidthValue.match(CssUnitRe) === null) {
 <style lang="scss" scoped>
 .has-text-ellipsis {
     max-width: v-bind("props.width");
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
 }
 
 @media (max-width: 767px) {
