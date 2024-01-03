@@ -39,6 +39,8 @@ const props = withDefaults(defineProps<VIconProps>(), {
 </template>
 
 <style lang="scss">
+@import "bulma/sass/utilities/_all.sass";
+
 .icons {
     display: flex;
     align-items: flex-end;
