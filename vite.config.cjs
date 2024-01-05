@@ -81,6 +81,7 @@ module.exports.define = function (config = {}) {
             optimizeDeps: {
                 include: localDependencies,
                 exclude: [
+                    "@commitlint/prompt-cli",
                     "~pages",
                     "@intlify/unplugin-vue-i18n/messages",
                     "firebase",
