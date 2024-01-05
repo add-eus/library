@@ -277,10 +277,6 @@ button,
     font-size: 2rem;
 }
 
-.is-capitalize {
-    text-transform: capitalize;
-}
-
 .text-align-left {
     text-align: left;
 }
@@ -288,4 +284,14 @@ button,
 .overflow {
     overflow: hidden;
     white-space: nowrap;
+}
+
+.has-text-vertical {
+    writing-mode: vertical-lr;
+    text-orientation: mixed;
+}
+
+.has-text-vertical-rl {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
 }

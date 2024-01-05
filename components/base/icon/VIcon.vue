@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { getIconClasses, getIconStyles } from "../../../stores/icon";
 
 export interface VIconProps {
     icon: string;
@@ -11,12 +12,19 @@ const props = withDefaults(defineProps<VIconProps>(), {
 });
 
 const isImage = computed(() => {
-    return props.icon.endsWith(".png") || props.icon.endsWith(".jpg");
+    return (
+        props.icon.endsWith(".png") ||
+        props.icon.endsWith(".jpg") ||
+        props.icon.endsWith(".svg")
+    );
 });
+
+const classes = getIconClasses();
+const styles = getIconStyles();
 </script>
 
 <template>
-    <i class="material-icons-outlined icon">
+    <i class="icon" :class="classes" :style="styles">
         <template v-if="isImage">
             <img :src="props.icon" :alt="props.icon" />
         </template>
@@ -27,16 +35,17 @@ const isImage = computed(() => {
 </template>
 
 <style lang="scss">
-@import "material-icons/iconfont/material-icons.css";
-
-.material-icons-outlined {
+.icon {
+    font-size: v-bind(size);
+    height: v-bind(size) !important;
+    width: v-bind(size) !important;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: inherit;
-}
 
-.icon {
-    font-size: v-bind(size);
+    > img {
+        max-width: 100%;
+        max-height: 100%;
+    }
 }
 </style>

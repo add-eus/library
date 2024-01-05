@@ -26,7 +26,18 @@ export type Colors =
     | "grey-light"
     | "grey-lighter"
     | "white-ter"
-    | "white-bis";
+    | "white-bis"
+    | "gold"
+    | "silver"
+    | "bronze"
+    | "orange"
+    | "yellow"
+    | "green"
+    | "turquoise"
+    | "cyan"
+    | "blue"
+    | "purple"
+    | "red";
 
 export function useColor(color: Ref<Colors> | Colors) {
     return useCssVar(
