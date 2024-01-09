@@ -68,6 +68,7 @@ watch(
 watch(
     () => field.value,
     () => {
+        // console.log(field.value);
         field.isDirty = true;
         onChangeCallbacks.forEach((callback) => callback());
     },
@@ -76,6 +77,7 @@ watch(
 
 const addField = inject("addField");
 const removeField = inject("removeField");
+
 void field.validate().then(() => {
     if (typeof addField === "function") addField(props.property, field);
 });
@@ -83,17 +85,25 @@ void field.validate().then(() => {
 const childFields = {};
 
 provide("addField", function (name: string, field: any) {
+    const property = props.property + "." + name;
+    childFields[property] = field;
+    field.onChange(() => {
+        Object.values(childFields).forEach((field) => {
+            if (field.updateOn === name) field.validate();
+        });
+        field.value = field.value;
+    });
+
     if (typeof addField === "function") {
-        const property = props.property + "." + name;
-        childFields[property] = field;
         addField(property, field);
     }
 });
 
 provide("removeField", function (name: string) {
+    const property = props.property + "." + name;
+    delete childFields[property];
+
     if (typeof removeField === "function") {
-        const property = props.property + "." + name;
-        delete childFields[property];
         removeField(property);
     }
 });

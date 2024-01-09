@@ -1,3 +1,56 @@
+@use "sass:color";
+@use "sass:map";
+
+@import "./mixins";
+@import "bulma/sass/utilities/derived-variables.sass";
+
+$varColors: (
+    "primary": $primary,
+    "primary-dark": $primary-dark,
+    "primary-light": $primary-light,
+
+    "info": $info,
+    "info-dark": $info-dark,
+    "info-light": $info-light,
+
+    "success": $success,
+    "success-dark": $success-dark,
+    "success-light": $success-light,
+
+    "warning": $warning,
+    "warning-dark": $warning-dark,
+    "warning-light": $warning-light,
+
+    "danger": $danger,
+    "danger-dark": $danger-dark,
+    "danger-light": $danger-light,
+
+    "black-bis": $black-bis,
+    "black-ter": $black-ter,
+
+    "grey-darker": $grey-darker,
+    "grey-dark": $grey-dark,
+    "grey": $grey,
+    "grey-light": $grey-light,
+    "grey-lighter": $grey-lighter,
+
+    "white-ter": $white-ter,
+    "white-bis": $white-bis,
+
+    "gold": $gold,
+    "silver": $silver,
+    "bronze": $bronze,
+
+    "orange": $orange,
+    "yellow": $yellow,
+    "green": $green,
+    "turquoise": $turquoise,
+    "cyan": $cyan,
+    "blue": $blue,
+    "purple": $purple,
+    "red": $red,
+);
+
 :root {
     // layout colors
     --body-color: #f9f9f9;
@@ -14,6 +67,27 @@
     --placeload-dark-nuance-from: rgb(255 255 255 / 15%);
     --placeload-dark-nuance-to: rgb(255 255 255 / 24%);
 
+    @each $varColorName in map.keys($varColors) {
+        $varColor: map.get($varColors, $varColorName);
+
+        @if $varColor == null {
+            $varColor: #000;
+        }
+
+        $varColorHue: color.hue($varColor);
+        $varColorSaturation: color.saturation($varColor);
+        $varColorLightness: color.lightness($varColor);
+
+        @include colorHsl(
+            $varColorName,
+            color.hue($varColor),
+            color.saturation($varColor),
+            color.lightness($varColor)
+        );
+    }
+
+    // @TODO: remove this on next version
+
     // sidebar HSL (#344258) // hsl(217, 26%, 27%)
     @include colorHsl("sidebar", 217, 26%, 27%);
 
@@ -23,27 +97,6 @@
     // secondary HSL (#346beb) // hsl(222, 82%, 56%)
     @include colorHsl("secondary", 222, 82%, 56%);
 
-    // purple HSL (#8269b2) // hsl(261, 32%, 55%)
-    @include colorHsl("purple", 261, 32%, 55%);
-
-    // blue HSL (#37c3ff) // hsl(198, 100%, 61%)
-    @include colorHsl("blue", 198, 100%, 61%);
-
-    // red HSL (#f92b60) // hsl(345, 94%, 57%)
-    @include colorHsl("red", 345, 94%, 57%);
-
-    // orange HSL (#ffa981) // hsl(19, 100%, 75%)
-    @include colorHsl("orange", 19, 100%, 75%);
-
-    // yellow HSL (#ffd66e) // hsl(43, 100%, 72%)
-    @include colorHsl("yellow", 43, 100%, 72%);
-
-    // green HSL (#93e088) // hsl(113, 59%, 71%)
-    @include colorHsl("green", 113, 59%, 71%);
-
-    // pink HSL (#ff9eb8) // hsl(344, 100%, 81%)
-    @include colorHsl("pink", 344, 100%, 81%);
-
     // light-blue HSL (#77d2f3) // hsl(196, 84%, 71%)
     @include colorHsl("light-blue", 196, 84%, 71%);
 
@@ -52,21 +105,6 @@
 
     // dark HSL (#283252) // hsl(226, 34%, 24%)
     @include colorHsl("dark", 226, 34%, 24%);
-
-    // link HSL (#485fc7) // hsl(229, 53%, 53%)
-    @include colorHsl("link", 229, 53%, 53%);
-
-    // info HSL (#039be5) // hsl(200, 97%, 45%)
-    @include colorHsl("info", 200, 97%, 45%);
-
-    // success HSL (#06d6a0) // hsl(153, 53%, 53%)
-    @include colorHsl("success", 142, 52%, 53%);
-
-    // warning HSL (#faae42) // hsl(35, 95%, 62%)
-    @include colorHsl("warning", 35, 95%, 62%);
-
-    // danger HSL (#e62965) // hsl(341, 79%, 53%)
-    @include colorHsl("danger", 341, 79%, 53%);
 
     // smoke-white HSL (#fcfcfc) // hsl(0, 0%, 99%)
     @include colorHsl("smoke-white", 0, 0%, 99%);

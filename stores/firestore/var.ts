@@ -59,7 +59,8 @@ function formatData(toTransform: any | any[], type: any, forceAll: boolean = fal
             return formatData(data, type[0]);
         });
     } else if (type === moment) {
-        if (toTransform.isValid() === true) return toTransform.toDate();
+        if (moment.isMoment(toTransform) === true && toTransform.isValid() === true)
+            return toTransform.toDate();
         return undefined;
     } else if (type === GeoPoint) {
         return toTransform;
@@ -134,8 +135,10 @@ export function Var(type: any) {
                         return thisTarget[name].$hasChanged();
                     else if (Array.isArray(thisTarget[name])) {
                         if (
-                            metadata.origin[name] !== undefined &&
-                            metadata.origin[name].length !== thisTarget[name].length
+                            (metadata.origin[name] !== undefined &&
+                                metadata.origin[name].length !==
+                                    thisTarget[name].length) ||
+                            metadata.origin[name] === undefined
                         )
                             return true;
                         return thisTarget[name].some((row: any) => {

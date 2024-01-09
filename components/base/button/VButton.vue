@@ -9,26 +9,10 @@ import VIcon from "../icon/VIcon.vue";
 import { useHaptic } from "../../../stores/haptic";
 
 import VPlaceload from "../loader/VPlaceload.vue";
+import type { Colors } from "stores/color";
 
 export type VButtonSize = "small" | "normal" | "medium" | "big" | "huge";
-export type VButtonColor =
-    | "primary"
-    | "info"
-    | "success"
-    | "warning"
-    | "danger"
-    | "white"
-    | "dark"
-    | "light"
-    | "grey"
-    | "orange"
-    | "yellow"
-    | "green"
-    | "turquoise"
-    | "purple"
-    | "blue"
-    | "red"
-    | "cyan";
+export type VButtonColor = Colors;
 export type VButtonDark = "1" | "2" | "3" | "4" | "5" | "6";
 
 export default defineComponent({
@@ -191,7 +175,9 @@ export default defineComponent({
                     })
                 );
             } else {
-                childrens.push(h("span", { class: "text-ellipsis" }, slots.default?.()));
+                childrens.push(
+                    h("span", { class: "has-text-ellipsis" }, slots.default?.())
+                );
             }
             if (caretWrapper) {
                 childrens.push(caretWrapper);
@@ -306,6 +292,16 @@ export default defineComponent({
         &.is-elevated {
             box-shadow: var(--info-box-shadow);
         }
+
+        &.is-light {
+            background: $info-light;
+            color: $info-dark;
+        }
+
+        &.is-dark {
+            background: $info-dark;
+            color: $info-light;
+        }
     }
 
     &.is-warning {
@@ -372,7 +368,6 @@ export default defineComponent({
 
     &.is-huge {
         height: 50px;
-        width: 220px;
     }
 
     .icon {

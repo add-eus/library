@@ -5,7 +5,12 @@ import type {
     ConfirmationResult,
     ApplicationVerifier,
 } from "firebase/auth";
-import { signInWithEmailLink } from "firebase/auth";
+import {
+    EmailAuthProvider,
+    reauthenticateWithCredential,
+    signInWithEmailLink,
+    updatePassword,
+} from "firebase/auth";
 import { isSignInWithEmailLink } from "firebase/auth";
 import {
     sendPasswordResetEmail,
@@ -109,6 +114,16 @@ export const useUserSession = defineStore("userSession", () => {
     async function resetPassword(actionCode: string, password: string) {
         await verifyPasswordResetCode(auth, actionCode);
         await confirmPasswordReset(auth, actionCode, password);
+    }
+
+    async function setPassword(password: string, newPassword: string) {
+        if (!user.value) throw new Error("No user");
+        if (user.value.email === null)
+            throw new Error("No email configured in current user");
+
+        const credential = EmailAuthProvider.credential(user.value.email, password);
+        await reauthenticateWithCredential(user.value, credential);
+        await updatePassword(user.value, newPassword);
     }
 
     let permissionManagement: (user: User, permission: string) => boolean = () => false;
@@ -253,6 +268,7 @@ export const useUserSession = defineStore("userSession", () => {
         setLoading,
         deleteAccount,
         sendPasswordReset,
+        setPassword,
         resetPassword,
     };
 });
