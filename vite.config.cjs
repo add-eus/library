@@ -19,15 +19,15 @@ const {
 
 const SILENT = Boolean(process.env.SILENT) ?? false;
 const DEV = process.env.NODE_ENV === "development" || false;
+const PACKAGE = require("./package.json");
 
-const localDependencies = Object.keys(
-    require("./package.json").dependencies ?? []
-).filter(
+const localDependencies = Object.keys(PACKAGE.dependencies ?? []).filter(
     (dependency) =>
+        Object.keys(PACKAGE.devDependencies ?? []).includes(dependency) === false &&
         dependency !== "bulma" &&
-        dependency !== "material-icons" &&
+        dependency !== "addeus-common-library" &&
         dependency !== "firebase" &&
-        dependency !== "addeus-common-library"
+        dependency.match(/^@types\//) === null
 );
 
 /**
@@ -81,6 +81,7 @@ module.exports.define = function (config = {}) {
             optimizeDeps: {
                 include: localDependencies,
                 exclude: [
+                    "@commitlint/prompt-cli",
                     "~pages",
                     "@intlify/unplugin-vue-i18n/messages",
                     "firebase",
