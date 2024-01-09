@@ -917,7 +917,7 @@ select {
     > .vti__input {
         @extend .input;
 
-        padding-left: 55px;
+        padding-left: 55px !important;
     }
 
     > .vti__dropdown {

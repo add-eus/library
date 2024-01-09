@@ -382,7 +382,7 @@ export default defineComponent({
 
         &:first-child {
             &:not(:last-child) {
-                margin-left: 0;
+                margin-left: 0 !important;
                 margin-right: 4px;
             }
 
