@@ -65,7 +65,7 @@ module.exports = {
         "no-invalid-position-at-import-rule": [
             true,
             {
-                ignoreAtRules: ["@use", "@charset", "@layer"],
+                ignoreAtRules: ["use", "charset", "layer"],
             },
         ],
     },
