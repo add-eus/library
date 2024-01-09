@@ -62,5 +62,6 @@ module.exports = {
                 ],
             },
         ],
+        ignoreAtRules: ["@use", "@charset", "@layer"],
     },
 };

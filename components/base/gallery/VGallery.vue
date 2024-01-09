@@ -122,7 +122,7 @@ provide("v-gallery", {
         color: white;
         background-color: transparent;
         border-color: transparent;
-        filter: drop-shadow(0px 0px 10px #000);
+        filter: drop-shadow(0 0 10px #000);
         cursor: pointer;
 
         &:first-of-type {
