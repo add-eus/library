@@ -123,6 +123,7 @@ export default defineComponent({
             const iconWrapper = h(VIcon, {
                 class: "icon",
                 ...props,
+                size: "21px",
             });
 
             if (props.to) {
@@ -177,9 +178,8 @@ export default defineComponent({
     padding: 0 !important;
 
     .icon {
-        font-size: 21px;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
+        margin-left: 8px !important;
+        margin-right: 8px !important;
     }
 }
 </style>

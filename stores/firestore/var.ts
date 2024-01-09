@@ -135,8 +135,10 @@ export function Var(type: any) {
                         return thisTarget[name].$hasChanged();
                     else if (Array.isArray(thisTarget[name])) {
                         if (
-                            metadata.origin[name] !== undefined &&
-                            metadata.origin[name].length !== thisTarget[name].length
+                            (metadata.origin[name] !== undefined &&
+                                metadata.origin[name].length !==
+                                    thisTarget[name].length) ||
+                            metadata.origin[name] === undefined
                         )
                             return true;
                         return thisTarget[name].some((row: any) => {

@@ -246,12 +246,12 @@ if (input.value.attrs.required === true) {
                             <slot name="option" v-bind="option"></slot>
                         </template>
                         <template #nooptions>
-                            <span class="p-2 text-ellipsis">
+                            <span class="p-2 has-text-ellipsis">
                                 <Translate>.noOptions</Translate>
                             </span>
                         </template>
                         <template #noresults>
-                            <span class="p-2 text-ellipsis">
+                            <span class="p-2 has-text-ellipsis">
                                 <Translate>.noResults</Translate>
                             </span>
                         </template>

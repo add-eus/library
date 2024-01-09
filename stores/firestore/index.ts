@@ -262,6 +262,7 @@ export function newDoc<T extends typeof Entity>(collectionModel: T): InstanceTyp
     const entity = new collectionModel();
 
     (getCurrentScope() ? onScopeDispose : () => {})(() => {
+        if (typeof entity.$getID !== "function") return;
         const cachedIdEntity = `${collectionModel.collectionName}/${entity.$getID()}`;
         if (cachedEntities[cachedIdEntity] === undefined) return;
         cachedEntities[cachedIdEntity].usedBy--;
