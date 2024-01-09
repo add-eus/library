@@ -1,26 +1,21 @@
 // Patch imports for ESLint
 require("@rushstack/eslint-patch/modern-module-resolution");
 
-module.exports = {
+const DEFAULT_CONFIG = {
+    root: true,
     env: {
         browser: true,
         node: true,
     },
+    parser: "@typescript-eslint/parser",
     parserOptions: {
-        parser: "@typescript-eslint/parser",
         sourceType: "module",
+        ecmaVersion: 2020,
         tsconfigRootDir: __dirname,
-        project: "./tsconfig.json",
+        project: process.cwd() + "/tsconfig.json",
         extraFileExtensions: [".vue"],
     },
-    extends: [
-        "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:vue/vue3-recommended",
-        "plugin:vue/vue3-essential",
-        "plugin:vuejs-accessibility/recommended",
-        "plugin:prettier-vue/recommended",
-        "prettier",
-    ],
+    extends: ["plugin:@typescript-eslint/eslint-recommended"],
     plugins: ["@typescript-eslint", "prettier-vue"],
     rules: {
         "no-console": process.env.NODE_ENV === "production" ? "error" : "warn",
@@ -35,21 +30,6 @@ module.exports = {
                 disallowTypeAnnotations: false,
             },
         ],
-        "prettier-vue/prettier": [
-            "error",
-            {
-                semi: true,
-                singleQuote: false,
-                printWidth: 90,
-                tabWidth: 4,
-                bracketSameLine: true,
-            },
-        ],
-        "vue/no-multiple-template-root": ["error"],
-        "vue/no-lifecycle-after-await": ["error"],
-        "vue/no-expose-after-await": ["error"],
-        "vue/no-use-computed-property-like-method": ["error"],
-        "vue/no-restricted-props": ["error", "/^on[A-Z]/"],
     },
     overrides: [
         {
@@ -63,13 +43,7 @@ module.exports = {
         },
         {
             files: ["*.vue", "*.ts"],
-            extends: [
-                "plugin:@typescript-eslint/eslint-recommended",
-                "plugin:vue/vue3-recommended",
-                "plugin:vuejs-accessibility/recommended",
-                "plugin:prettier-vue/recommended",
-                "prettier",
-            ],
+            extends: ["plugin:@typescript-eslint/eslint-recommended", "prettier"],
             rules: {
                 "no-console": process.env.NODE_ENV === "production" ? "error" : "warn",
                 "no-debugger": process.env.NODE_ENV === "production" ? "error" : "warn",
@@ -94,16 +68,11 @@ module.exports = {
                 ],
                 "@typescript-eslint/no-floating-promises": "error",
                 "@typescript-eslint/no-misused-promises": "error",
-
-                "vue/no-export-in-script-setup": "off",
-                "vue/no-expose-after-await": "off",
-                "vue/script-setup-uses-vars": "error",
-                "vue/multi-word-component-names": "off",
-                "vuejs-accessibility/form-control-has-label": "off",
-                "vuejs-accessibility/label-has-for": "off",
-                "vuejs-accessibility/anchor-has-content": "off",
-                "vue/multiline-html-element-content-newline": "off",
             },
         },
     ],
+};
+
+module.exports = function (data) {
+    return DEFAULT_CONFIG;
 };

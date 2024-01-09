@@ -66,7 +66,7 @@ function onInput(phone, phoneObject) {
 
 .vue-tel-input {
     > .vti__input {
-        padding-left: 60px;
+        padding-left: 60px !important;
     }
 }
 
