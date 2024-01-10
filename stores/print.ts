@@ -50,7 +50,7 @@ export function usePrint() {
             await setUrlPrintFrame(iframe, fileURL);
             await print(iframe);
         },
-        printComponent: async (component: any, props: any) => {
+        printFromComponent: async (component: any, props: any) => {
             const printFrame = createPrintFrame();
 
             if (!printFrame.contentDocument)
