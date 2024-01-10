@@ -71,7 +71,6 @@ $steps-thin-marker-size: 0.8em;
         position: relative;
 
         &:not(:last-child)::after {
-            // This will contain the horizontal or vertical divider
             content: " ";
             display: block;
             position: absolute;
@@ -90,11 +89,6 @@ $steps-thin-marker-size: 0.8em;
         &.is-short {
             .steps-segment {
                 flex-grow: 0;
-
-                &:not(:last-child) {
-                    // this is commented because text would be running perpendicular to the line, so we won't need as much room
-                    // min-height: $steps-horizontal-min-width;
-                }
             }
         }
 
@@ -167,8 +161,6 @@ $steps-thin-marker-size: 0.8em;
         .steps-content.is-divider-content {
             text-align: center;
         }
-
-        // Marker style
     }
 
     .steps-marker {
@@ -177,13 +169,9 @@ $steps-thin-marker-size: 0.8em;
         border-radius: 50%;
         font-weight: $weight-bold;
         justify-content: center;
-
-        // Position & z-index are needed to put it above the divider
         position: relative;
         z-index: 5;
     }
-
-    // Use a mixin to define all ratios in the same spot
 }
 
 @mixin steps-size($size) {
@@ -196,12 +184,10 @@ $steps-thin-marker-size: 0.8em;
     }
 
     @include steps-vertical {
-        // Draw a vertical divider
         display: flex;
         flex-direction: column;
 
         .steps-segment:not(:last-child)::after {
-            // top and bottom position is almost touching the inner side of a hollow border marker
             bottom: -$steps-gap-size * 0.8;
             left: calc(
                 #{$size * calc($steps-marker-size / 2)} - (#{calc($steps-divider-size / 2)})
@@ -210,7 +196,6 @@ $steps-thin-marker-size: 0.8em;
             width: $steps-divider-size;
         }
 
-        // Align the content with the marker
         .steps-content {
             margin-left: calc(#{$size * calc($steps-marker-size / 2)} + 0.5em);
             margin-top: -$size * $steps-marker-size;
@@ -241,11 +226,8 @@ $steps-thin-marker-size: 0.8em;
     }
 
     @include steps-horizontal {
-        // Draw a horizontal divider
         .steps-segment:not(:last-child)::after {
             height: $steps-divider-size;
-
-            // top and bottom position is almost touching the inner side of a hollow border marker
             left: ($size * $steps-marker-size) - ($steps-gap-size * 0.8);
             right: -$steps-gap-size * 0.8;
             top: calc(
@@ -260,7 +242,6 @@ $steps-thin-marker-size: 0.8em;
             top: auto;
         }
 
-        // extra data
         .extra-data {
             left: calc(50% + #{($size * calc($steps-marker-size / 2)) + $steps-gap-size});
             right: calc(
@@ -308,7 +289,6 @@ $steps-thin-marker-size: 0.8em;
             bottom: auto;
         }
 
-        // Align the content with the marker
         .steps-content {
             margin-left: $size * calc($steps-marker-size / 2);
 
@@ -390,7 +370,6 @@ $steps-thin-marker-size: 0.8em;
     @include steps-size($size-large);
 }
 
-// Divider Default Colors
 .steps-segment {
     &::after {
         background-color: $steps-completed-color;
@@ -406,8 +385,6 @@ $steps-thin-marker-size: 0.8em;
         &::after {
             background-color: $steps-default-color;
         }
-
-        // Marker Default Colors
     }
 }
 
@@ -429,8 +406,6 @@ $steps-thin-marker-size: 0.8em;
             background-color: $steps-default-color;
             color: findColorInvert($steps-default-color);
         }
-
-        // Hollow style
     }
 }
 
@@ -449,7 +424,6 @@ $steps-thin-marker-size: 0.8em;
     border-color: $steps-default-color;
 }
 
-// Override marker color per step
 @each $name, $pair in $colors {
     $color: nth($pair, 1);
     $color-invert: nth($pair, 2);
@@ -466,8 +440,6 @@ $steps-thin-marker-size: 0.8em;
         &.is-#{$name} {
             border-color: $color !important;
         }
-
-        // Divider dashed style
     }
 }
 
@@ -506,8 +478,6 @@ $steps-thin-marker-size: 0.8em;
             &::after {
                 @include steps-divider-background(90deg, $steps-completed-color, 10px);
             }
-
-            // the active segment and any subsequent segment get the default colot
         }
 
         &.is-dashed .steps-segment.is-active,
@@ -517,8 +487,6 @@ $steps-thin-marker-size: 0.8em;
             &::after {
                 @include steps-divider-background(90deg, $steps-default-color, 10px);
             }
-
-            // Thin modifier
         }
     }
 }
@@ -633,8 +601,6 @@ $steps-thin-marker-size: 0.8em;
                         )}
                 );
             }
-
-            // .has-content-above
         }
     }
 }

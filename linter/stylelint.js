@@ -1,14 +1,8 @@
 module.exports = function (path) {
     return {
         cache: true,
-        extends: [
-            "stylelint-config-standard",
-            "stylelint-config-html",
-            "stylelint-config-recommended-scss",
-            "stylelint-config-recommended-vue",
-            //"stylelint-prettier/recommended",
-        ],
-        plugins: ["stylelint-scss", "stylelint-prettier"],
+        extends: ["stylelint-config-standard", "stylelint-config-recommended-vue"],
+        plugins: ["stylelint-scss"],
         ignorePattern: "!(src)/**/*",
         rules: {
             /** Font icons */
