@@ -29,22 +29,20 @@ const toggle = (key: number) => {
                 :key="key"
                 class="has-background-image"
                 tabindex="0"
-                :style="{ backgroundImage: `url(${item.image})` }"
-            >
+                :style="{ backgroundImage: `url(${item.image})` }">
                 <slot name="accordion-item" :item="item" :index="key" :toggle="toggle">
                     <div>
-                        <a
+                        <button
+                            is="button"
                             tabindex="0"
-                            @keydown.space.prevent="toggle(key)"
-                            @click="toggle(key)"
-                        >
+                            ace.prevent="toggle(key)"
+                            @click="toggle(key)">
                             <h2>
                                 <slot
                                     name="accordion-item-summary"
                                     :item="item"
                                     :index="key"
-                                    :toggle="toggle"
-                                >
+                                    :toggle="toggle">
                                     {{ item.title }}
                                 </slot>
                             </h2>
@@ -53,12 +51,11 @@ const toggle = (key: number) => {
                                     name="accordion-item-content"
                                     :item="item"
                                     :index="key"
-                                    :toggle="toggle"
-                                >
+                                    :toggle="toggle">
                                     {{ item.content }}
                                 </slot>
                             </p>
-                        </a>
+                        </button>
                     </div>
                 </slot>
             </li>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch, nextTick } from "vue";
 import { useVModel } from "@vueuse/core";
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 
 export type Coords = {
     latitude: number;
@@ -42,7 +42,7 @@ onMounted(() => {
                 longitude: place.geometry.location.lng(),
                 text: inputElement.value.value,
             };
-            nextTick(() => {
+            void nextTick(() => {
                 changeFromInternal = false;
             });
         })
@@ -52,8 +52,8 @@ onMounted(() => {
 
     const callback = (event) => {
         if (
-            event.target.classList.contains("pac-container") ||
-            event.target.classList.contains("pac-item")
+            event.target.classList.contains("pac-container") === true ||
+            event.target.classList.contains("pac-item") === true
         )
             return;
         inputElement.value.blur();
@@ -74,8 +74,8 @@ watch(vModel, async (newValue, oldValue) => {
     if (changeFromInternal) return;
 
     if (
-        newValue.latitude != oldValue.latitude ||
-        newValue.longitude != oldValue.longitude
+        newValue.latitude !== oldValue.latitude ||
+        newValue.longitude !== oldValue.longitude
     ) {
         const { results } = await geocoder.geocode({
             location: {

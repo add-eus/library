@@ -1,5 +1,5 @@
 <script setup lang="ts">
-//import { computed } from "vue";
+// import { computed } from "vue";
 import { useMediaQuery } from "@vueuse/core";
 
 const isLargeScreen = useMediaQuery("(min-width: 767px)");
@@ -13,7 +13,7 @@ export interface VBarProps {
     color?: string;
 }
 
-//const emit = defineEmits<VBarEmits>();
+// const emit = defineEmits<VBarEmits>();
 const props = withDefaults(defineProps<VBarProps>(), {
     position: "bottom",
     flexDirection: "row",
@@ -24,8 +24,8 @@ const props = withDefaults(defineProps<VBarProps>(), {
 
 const classList = [];
 
-if (props.position == "top") classList.push("vbar-position-top");
-else if (props.position == "bottom") classList.push("vbar-position-bottom");
+if (props.position === "top") classList.push("vbar-position-top");
+else if (props.position === "bottom") classList.push("vbar-position-bottom");
 
 classList.push("vbar-color-" + props.color);
 </script>
@@ -36,8 +36,7 @@ classList.push("vbar-color-" + props.color);
         :class="classList"
         :flex-direction="isLargeScreen ? 'column' : props.flexDirection"
         :justify-content="isLargeScreen ? 'center' : props.justifyContent"
-        :align-items="isLargeScreen ? 'center' : props.alignItems"
-    >
+        :align-items="isLargeScreen ? 'center' : props.alignItems">
         <slot></slot>
     </VFlex>
 </template>
