@@ -56,10 +56,6 @@ export function usePrint() {
             if (!printFrame.contentDocument)
                 throw new Error("Could not get content document from iframe");
 
-            const promiseLoaded = new Promise((resolve) => {
-                printFrame.onload = resolve;
-            });
-
             const promise = new Promise((resolve) => {
                 props.resolve = resolve;
             });
@@ -81,7 +77,6 @@ export function usePrint() {
                     }
                 })
             );
-            await promiseLoaded;
             await promise;
 
             await print(printFrame);
