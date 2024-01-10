@@ -33,7 +33,6 @@ const toggle = (key: number) => {
                 <slot name="accordion-item" :item="item" :index="key" :toggle="toggle">
                     <div>
                         <button
-                            is="button"
                             tabindex="0"
                             ace.prevent="toggle(key)"
                             @click="toggle(key)">

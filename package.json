@@ -9,6 +9,10 @@
     "bin": {
         "addeus-dev": "bin/addeus-dev.js"
     },
+    "gitHooks": {
+        "pre-commit": "lint-staged",
+        "commit-msg": "commitlint -e -V "
+    },
     "scripts": {
         "lint": "run-s lint:eslint:fix lint:stylelint:fix lint:prettier:fix",
         "lint:changed": "lint-staged --concurrent false -q",
