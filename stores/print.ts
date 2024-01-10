@@ -56,6 +56,10 @@ export function usePrint() {
             if (!printFrame.contentDocument)
                 throw new Error("Could not get content document from iframe");
 
+            const promiseLoaded = new Promise((resolve) => {
+                printFrame.onload = resolve;
+            });
+
             const promise = new Promise((resolve) => {
                 props.resolve = resolve;
             });
@@ -70,9 +74,11 @@ export function usePrint() {
             const links = document.getElementsByTagName("link");
             Array.from(links).forEach((link) => {
                 if (printFrame.contentDocument) {
-                    printFrame.contentDocument.head.appendChild(link.cloneNode(true));
+                    const cloneNode = link.cloneNode(true);
+                    printFrame.contentDocument.head.appendChild(cloneNode);
                 }
             });
+            await promiseLoaded;
             await promise;
 
             await print(printFrame);
