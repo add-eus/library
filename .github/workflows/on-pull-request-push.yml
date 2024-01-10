@@ -97,4 +97,4 @@ jobs:
 
             - name: Lint
               run: |
-                  npm run lint:changed -- --diff="origin/${{ github.base_ref }}...origin/${{ github.head_ref }}"
+                  npm run lint:changed -- --no-stash --diff="origin/${{ github.base_ref }}...origin/${{ github.head_ref }}"
