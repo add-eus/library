@@ -109,7 +109,7 @@ watch(vModel, async (newValue, oldValue) => {
         }
     }
 
-    &:after {
+    &::after {
         display: none;
     }
 }

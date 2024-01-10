@@ -10,49 +10,12 @@
         "addeus-dev": "bin/addeus-dev.js"
     },
     "scripts": {
-        "exec:functions": "npm --prefix functions run exec --",
-        "dev": "concurrently --names 'default,firebase' -c 'green.bold,magenta.bold,yellow.bold' npm:dev:vite npm:dev:firebase",
-        "dev:vite": "run-p dev:vite:*",
-        "dev:vite:track2max": "NODE_ENV=development vite --config vite.track2max.config.ts",
-        "dev:vite:speed2max": "NODE_ENV=development vite --config vite.speed2max.config.ts",
-        "dev:functions": "npm --prefix functions run serve",
-        "dev:firebase": "FUNCTIONS_EMULATOR_TIMEOUT_SECONDS=520 concurrently --raw npm:dev:functions 'firebase emulators:start --import $(pwd)/../firebaseExport --export-on-exit $(pwd)/../firebaseExport --only functions,auth,firestore,storage,database,eventarc,pubsub --inspect-functions &'",
-        "build": "vite -c vite.config-build.ts build",
-        "build:vite": "run-s build:vite:*",
-        "build:vite:track2max": "vite build -c vite.track2max.config.ts",
-        "build:vite:speed2max": "vite build -c vite.speed2max.config.ts",
-        "build-cordova:pre": "OUTPUT_PATH=www CORDOVA=true run-s build:vite:customer",
-        "build-cordova:android": "cordova build --release android && jarsigner -keypass \"$KEYPASS\" -storepass \"$KEYPASS\" -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore android.keystore platforms/android/app/build/outputs/bundle/release/app-release.aab ProdApp",
-        "build-cordova:ios": "cordova build --release ios",
-        "build-cordova": "run-s build-cordova:pre build-cordova:android build-cordova:ios",
         "lint": "run-s lint:eslint:fix lint:stylelint:fix lint:prettier:fix",
-        "lint:changed": "run-s lint:eslint:changed lint:stylelint:changed lint:prettier:changed",
-        "lint:prettier": "prettier --check \"./**/*.(ts|vue|css|scss)\"",
-        "lint:prettier:fix": "prettier --write \"./**/*.(ts|vue|css|scss)\"",
-        "lint:prettier:changed": "prettier --check $(git diff --name-only --diff-filter=ACMRTUXB origin/master | grep  -E \"(.(ts|vue|css|scss)$)\")",
-        "lint:eslint": "eslint --ext .ts,.vue",
-        "lint:eslint:fix": "eslint --fix --ext .ts,.vue",
-        "lint:eslint:changed": "eslint $(git diff --name-only --diff-filter=ACMRTUXB origin/master | grep  -E \"(.js$|.ts$|.tsx$|.vue$)\")",
-        "lint:stylelint": "stylelint ./**/*.{vue,css,scss}",
-        "lint:stylelint:fix": "stylelint ./**/*.{vue,css,scss} --fix",
-        "lint:stylelint:changed": "stylelint $(git diff --name-only --diff-filter=ACMRTUXB origin/master | grep  -E \"(.css$|.scss$|.vue$)\")",
-        "test": "concurrently npm:test:lint npm:test:tsc",
-        "test:tsc": "vue-tsc --noEmit",
-        "test:lint": "concurrently npm:lint:eslint npm:lint:stylelint npm:lint:prettier",
-        "test:e2e": "echo \"[warning] no e2e test implemented yet\"",
-        "test:unit": "echo \"[warning] no unit test implemented yet\"",
-        "doc": "run-s doc:database doc:vue",
-        "doc:database": "for d in ./src/models/*/ ; do [ -L \"${d%/}\" ] && continue ; DIR=$(basename \"$d\"); tsuml2 --tsconfig \"./tsconfig.json\" --glob \"$d/{**/*,*}.ts\" --nomnoml --typeLinks -m --outFile \"./docs/image/$DIR-database.svg\" ; done",
-        "doc:vue": "vue-styleguidist build",
-        "doc:vue:dev": "vue-styleguidist server",
-        "cypress": "cypress",
-        "commit": "commit",
-        "release": "run-s test build release:*",
-        "deploy": "run-s build deploy:*",
-        "deploy:firebase": "firebase deploy",
-        "deploy:firebase:no-hosting": "firebase deploy --only functions,storage,database,firestore",
-        "import": "./functions/bin/import-production.sh",
-        "postversion": "git push origin master && git push origin --tags"
+        "lint:changed": "lint-staged",
+        "lint:eslint": "eslint",
+        "lint:eslint:all": "npm run lint:eslint -- ./{components,composable,directives/layouts/linter/locales/stores/utils}/**/*.{ts,js,vue}",
+        "lint:stylelint": "stylelint",
+        "lint:stylelint:all": "npm run lint:stylelint -- ./{components,scss}/**/*.{scss,vue,css}"
     },
     "repository": {
         "type": "git",
@@ -64,24 +27,18 @@
         "url": "https://github.com/add-eus/library/issues"
     },
     "lint-staged": {
-        "functions/**.ts": [
-            "npm --prefix ./functions run lint"
-        ],
         "*.ts": [
-            "eslint --fix",
-            "prettier --write"
+            "npm run lint:eslint --"
         ],
         "*.scss": [
-            "stylelint",
-            "prettier --write"
+            "npm run lint:stylelint --"
         ],
         "*.md": [
-            "eslint --fix",
-            "prettier --write"
+            "npm run lint:eslint --"
         ],
         "*.vue": [
-            "eslint --fix",
-            "prettier --write"
+            "npm run lint:stylelint --",
+            "npm run lint:eslint --"
         ]
     },
     "homepage": "https://github.com/add-eus/library#readme",
@@ -114,7 +71,6 @@
         "eslint": "8.36.0",
         "eslint-plugin-md": "1.0.19",
         "eslint-plugin-prettier-vue": "4.2.0",
-        "eslint-plugin-vue": "9.9.0",
         "eslint-plugin-vuejs-accessibility": "2.1.0",
         "file-loader": "^6.2.0",
         "filepond": "^4.30.4",
@@ -129,9 +85,9 @@
         "image-webpack-loader": "^8.1.0",
         "imask": "6.4.3",
         "iso-country-currency": "^0.7.2",
-        "material-icons": "^1.13.12",
         "lint-staged": "13.2.0",
         "markdown-eslint-parser": "^1.2.1",
+        "material-icons": "^1.13.12",
         "moment-timezone": "^0.5.43",
         "moment-with-locales-es6": "^1.0.1",
         "notyf": "3.10.0",
@@ -212,7 +168,7 @@
         "eslint-config-prettier": "^8.10.0",
         "eslint-plugin-md": "1.0.19",
         "eslint-plugin-prettier-vue": "4.2.0",
-        "eslint-plugin-vue": "9.9.0",
+        "eslint-plugin-vue": "^9.19.2",
         "eslint-plugin-vuejs-accessibility": "2.1.0",
         "file-loader": "^6.2.0",
         "firebase-tools": "^13.0.1",
@@ -224,6 +180,7 @@
         "plyr": "3.7.3",
         "postcss-html": "1.5.0",
         "postcss-scss": "4.0.6",
+        "postcss-syntax": "^0.36.2",
         "prettier": "2.8.5",
         "reflect-metadata": "^0.1.13",
         "rollup": "3.10.0",

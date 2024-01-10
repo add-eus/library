@@ -46,8 +46,7 @@ classList.push("vbar-color-" + props.color);
 .vbar {
     //position: fixed;
     padding: 10px;
-    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.3));
-
+    filter: drop-shadow(0 0 5px rgb(0 0 0 / 30%));
     z-index: 200;
 
     &.vbar-color-white {

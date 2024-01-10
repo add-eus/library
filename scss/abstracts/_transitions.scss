@@ -90,6 +90,7 @@
         opacity: 1;
     }
 }
+
 @keyframes translate-page-x-out {
     0% {
         transform: translateX(0);
@@ -260,7 +261,7 @@
 
 .collapse-enter-from,
 .collapse-leave-to {
-    max-height: 0vh;
+    max-height: 0;
     padding: 0;
     margin: 0;
 }
