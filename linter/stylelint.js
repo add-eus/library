@@ -2,7 +2,14 @@ module.exports = function (path) {
     return {
         cache: true,
         extends: ["stylelint-config-standard", "stylelint-config-recommended-vue"],
+        customSyntax: "postcss-scss",
         plugins: ["stylelint-scss"],
+        overrides: [
+            {
+                files: ["*.vue", "**/*.vue"],
+                customSyntax: "postcss-html",
+            },
+        ],
         ignorePattern: "!(src)/**/*",
         rules: {
             /** Font icons */
