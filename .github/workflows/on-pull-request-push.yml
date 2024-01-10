@@ -68,7 +68,9 @@ jobs:
         steps:
             # Configure checkout
             - name: Set up Checkout repository
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
 
             - run: git fetch origin master
 
@@ -94,4 +96,5 @@ jobs:
                       ${{ runner.os }}-
 
             - name: Lint
-              run: npm run lint:changed
+              run: |
+                  npm run lint:changed -- --no-stash --diff="origin/${{ github.base_ref }}...origin/${{ github.head_ref }}"

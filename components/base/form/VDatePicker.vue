@@ -107,6 +107,7 @@ watch(transformedModelValue, (m) => {
 
 <style lang="scss">
 @import "bulma/sass/utilities/_all.sass";
+
 /*! _datepicker.scss | Addeus | Css ninja 2020-2021 */
 
 /*

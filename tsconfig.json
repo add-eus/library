@@ -45,9 +45,11 @@
         "components/**/*.ts",
         "components/**/*.vue",
         "layouts/**/*.vue",
+        "linter/**/*.js",
         "commitlint.config.cjs",
         "vite.*.ts",
-        ".eslintrc.cjs",
+        ".eslintrc.js",
+        "stylelint.config.js",
         "index.ts",
         "vite.config.cjs",
         "default-styles.ts"
