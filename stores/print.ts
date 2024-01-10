@@ -72,12 +72,15 @@ export function usePrint() {
             });
 
             const links = document.getElementsByTagName("link");
-            Array.from(links).forEach((link) => {
-                if (printFrame.contentDocument) {
-                    const cloneNode = link.cloneNode(true);
-                    printFrame.contentDocument.head.appendChild(cloneNode);
-                }
-            });
+            await Promise.all(
+                Array.from(links).map(async (link) => {
+                    if (printFrame.contentDocument) {
+                        const cloneNode = link.cloneNode(true);
+                        printFrame.contentDocument.head.appendChild(cloneNode);
+                        await new Promise((resolve) => setTimeout(resolve, 0));
+                    }
+                })
+            );
             await promiseLoaded;
             await promise;
 
