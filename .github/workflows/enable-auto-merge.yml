@@ -1,5 +1,8 @@
 name: Enable auto-merge
-on: pull_request
+on:
+    pull_request:
+
+    workflow_call:
 
 permissions:
     contents: write
@@ -7,6 +10,7 @@ permissions:
 
 jobs:
     auto-merge:
+        name: Enable auto-merge
         runs-on: ubuntu-latest
         if: github.event.pull_request.draft == false
         steps:
