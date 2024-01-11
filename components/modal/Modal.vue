@@ -27,14 +27,20 @@ function setReference(ref) {
                 v-on="modal.events" />
         </template>
         <template #action>
-            <component
-                :is="action.component"
-                v-bind="action.props"
-                v-for="(action, index) in modal.actions"
-                :key="index"
-                v-on="action.events"
-                >{{ action.content }}</component
-            >
+            <VFlex
+                flex-direction="row"
+                flex-wrap="wrap"
+                row-gap="2px"
+                justify-content="end">
+                <component
+                    :is="action.component"
+                    v-bind="action.props"
+                    v-for="(action, index) in modal.actions"
+                    :key="index"
+                    v-on="action.events"
+                    >{{ action.content }}</component
+                >
+            </VFlex>
         </template>
     </VModal>
 </template>

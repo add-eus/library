@@ -12,7 +12,16 @@ export type VIconButtonColor =
     | "success"
     | "warning"
     | "danger"
-    | "white";
+    | "white"
+    | "grey"
+    | "orange"
+    | "yellow"
+    | "green"
+    | "turquoise"
+    | "purple"
+    | "blue"
+    | "red"
+    | "cyan";
 
 export default defineComponent({
     props: {
@@ -31,28 +40,6 @@ export default defineComponent({
         color: {
             type: String as PropType<VIconButtonColor>,
             default: undefined,
-            validator: (value: VIconButtonColor) => {
-                // The value must match one of these strings
-                if (
-                    [
-                        undefined,
-                        "primary",
-                        "info",
-                        "success",
-                        "warning",
-                        "danger",
-                        "white",
-                    ].indexOf(value) === -1
-                ) {
-                    // eslint-disable-next-line no-console
-                    console.warn(
-                        `VIconButton: invalid "${value}" color. Should be primary, info, success, warning, danger, white or undefined`
-                    );
-                    return false;
-                }
-
-                return true;
-            },
         },
         dark: {
             type: Boolean,
@@ -136,6 +123,7 @@ export default defineComponent({
             const iconWrapper = h(VIcon, {
                 class: "icon",
                 ...props,
+                size: "21px",
             });
 
             if (props.to) {
@@ -190,9 +178,8 @@ export default defineComponent({
     padding: 0 !important;
 
     .icon {
-        font-size: 21px;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
+        margin-left: 8px !important;
+        margin-right: 8px !important;
     }
 }
 </style>

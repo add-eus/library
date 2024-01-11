@@ -16,7 +16,12 @@ function parseData(toTransform: any | any[], type: any): any {
                 return parseData(data, type[0]);
             })
         );
-    } else if (type === moment && moment.isMoment(toTransform) === false) {
+    } else if (
+        type === moment &&
+        moment.isMoment(toTransform) === false &&
+        typeof toTransform === "object" &&
+        typeof toTransform.seconds === "number"
+    ) {
         return moment.unix(toTransform.seconds);
     } else if (type === GeoPoint) {
         return new GeoPoint(toTransform._lat, toTransform._long);
@@ -54,7 +59,9 @@ function formatData(toTransform: any | any[], type: any, forceAll: boolean = fal
             return formatData(data, type[0]);
         });
     } else if (type === moment) {
-        return toTransform.toDate();
+        if (moment.isMoment(toTransform) === true && toTransform.isValid() === true)
+            return toTransform.toDate();
+        return undefined;
     } else if (type === GeoPoint) {
         return toTransform;
     } else if (isEntityStandaloneClass(type)) {
@@ -103,7 +110,8 @@ function isUnparsedEqual(a: any, b: any, type: any): boolean {
             return isUnparsedEqual(row, b[index], type[0]);
         });
     } else if (type === moment) {
-        if (a === undefined && b === undefined) return true;
+        if ((a === undefined || a === null) && (b === null || b === undefined))
+            return true;
         if (typeof a !== "object" || typeof b !== "object") return false;
         return a.seconds === b.seconds && a.nanoseconds === b.nanoseconds;
     }
@@ -138,19 +146,25 @@ export function Var(type?: any) {
                         return thisTarget[name].$hasChanged();
                     else if (Array.isArray(thisTarget[name])) {
                         if (
-                            metadata.origin[name] !== undefined &&
-                            metadata.origin[name].length !== thisTarget[name].length
+                            (metadata.origin[name] !== undefined &&
+                                metadata.origin[name].length !==
+                                    thisTarget[name].length) ||
+                            metadata.origin[name] === undefined
                         )
                             return true;
                         return thisTarget[name].some((row: any) => {
                             if (
                                 row instanceof EntityBase &&
-                                !(thisTarget[name] instanceof Entity)
+                                !(thisTarget[name] instanceof Entity) &&
+                                row.$hasChanged()
                             )
-                                return row.$hasChanged();
+                                return true;
                             return (
                                 Array.isArray(metadata.origin[name]) &&
-                                metadata.origin[name].indexOf(row) === -1
+                                metadata.origin[name].findIndex((r) => {
+                                    if (row instanceof Entity) return row.$getID() === r;
+                                    return r === row;
+                                }) === -1
                             );
                         });
                     }
@@ -200,6 +214,13 @@ export function Var(type?: any) {
                     (isChanged || isUnparsedEqual(unparsedValue, raw[name], type))
                 )
                     return;
+
+                if (
+                    typeof raw[name] === "object" &&
+                    raw[name] !== null &&
+                    typeof raw[name]._toFieldTransform === "function"
+                )
+                    raw[name] = undefined;
 
                 unparsedValue = raw[name];
                 const parsed = parseData(raw[name], type);

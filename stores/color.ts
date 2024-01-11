@@ -1,4 +1,4 @@
-import { useCssVar } from "@vueuse/core";
+import { useCssVar, toValue } from "@vueuse/core";
 import type { Ref } from "vue";
 import { computed } from "vue";
 
@@ -26,12 +26,23 @@ export type Colors =
     | "grey-light"
     | "grey-lighter"
     | "white-ter"
-    | "white-bis";
+    | "white-bis"
+    | "gold"
+    | "silver"
+    | "bronze"
+    | "orange"
+    | "yellow"
+    | "green"
+    | "turquoise"
+    | "cyan"
+    | "blue"
+    | "purple"
+    | "red";
 
-export function useColor(color: Ref<Colors>) {
+export function useColor(color: Ref<Colors> | Colors) {
     return useCssVar(
         computed(() => {
-            return `--${color.value}`;
+            return `--${toValue(color)}`;
         }),
         document.body
     );

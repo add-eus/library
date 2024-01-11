@@ -237,7 +237,7 @@ function getValueByPath(row: any, key: any) {
                     :columns="columns"
                     :index="index"></slot>
             </template>
-            <VProgress v-if="wrapper.loading" size="tiny" />
+            <VProgress v-if="wrapper?.loading" size="tiny" />
         </slot>
     </div>
 </template>

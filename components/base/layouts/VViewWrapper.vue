@@ -18,8 +18,7 @@ const props = defineProps<VViewWrapperProps>();
             props.full && 'view-wrapper-full',
             viewWrapper.isPushed && 'is-pushed-full',
             viewWrapper.isPushedBlock && 'is-pushed-block',
-        ]"
-    >
+        ]">
         <slot></slot>
     </div>
 </template>
@@ -96,12 +95,17 @@ const props = defineProps<VViewWrapperProps>();
     }
 }
 
+.sidebar-layout {
+    .view-wrapper {
+        width: calc(100% - 240px);
+        margin-left: 240px;
+    }
+}
+
 .view-wrapper {
     position: relative;
     height: 100%;
     min-height: 100vh;
-    width: calc(100% - 240px);
-    margin-left: 240px;
     background: var(--background-grey);
     transition: all 0.3s; // transition-all test
 
@@ -139,8 +143,8 @@ const props = defineProps<VViewWrapperProps>();
 
 @media (max-width: 1024px) {
     .view-wrapper {
-        width: 100%;
-        margin-left: 0;
+        width: 100% !important;
+        margin-left: 0 !important;
 
         &.has-top-nav {
             .is-navbar-md,

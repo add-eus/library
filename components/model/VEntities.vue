@@ -15,15 +15,15 @@ export interface VEntitiesProps {
     model?: any;
     component?: any;
     labelAttr?: any;
-    onlyIds: boolean;
-    multiple: boolean;
-    sortable: boolean;
+    onlyIds?: boolean;
+    multiple?: boolean;
+    sortable?: boolean;
     opened: boolean;
     property: string;
-    required: boolean;
-    schema: any;
-    save: boolean;
-    canOpen: boolean;
+    required?: boolean;
+    schema?: any;
+    save?: boolean;
+    canOpen?: boolean;
     defaultNewValue?: () => any;
 }
 const props = withDefaults(defineProps<VEntitiesProps>(), {
@@ -31,9 +31,14 @@ const props = withDefaults(defineProps<VEntitiesProps>(), {
     model: undefined,
     component: undefined,
     labelAttr: undefined,
+    sortable: false,
     save: true,
+    required: false,
+    schema: undefined,
     defaultNewValue: undefined,
     canOpen: true,
+    multiple: false,
+    onlyIds: false,
 });
 const emits = defineEmits<VEntitiesEmits>();
 
@@ -102,7 +107,11 @@ if (props.onlyIds) {
         });
     } else {
         onSaved(async () => {
-            if (props.save && typeof entities.value.$save === "function")
+            if (
+                props.save &&
+                entities.value !== null &&
+                typeof entities.value.$save === "function"
+            )
                 return entities.value.$save();
         });
     }
@@ -167,6 +176,9 @@ function update() {
                     </template>
                     <template #default="{ field: fieldArray }">
                         <slot :field="multiple ? fieldArray : field"></slot>
+                    </template>
+                    <template #actions="{ value, index }">
+                        <slot name="actions" :value="value" :index="index"></slot>
                     </template>
                 </VArray>
                 <p v-for="error in field.errors" :key="error" class="help is-danger">

@@ -175,8 +175,6 @@ export function useCollection<T extends typeof Entity>(
             );
         }
 
-        entities.isUpdating = true;
-
         let limit = 10;
         if (isRef(options.limit) && typeof options.limit.value === "number")
             limit = options.limit.value;
@@ -184,6 +182,8 @@ export function useCollection<T extends typeof Entity>(
         if (limit === 0) return;
 
         try {
+            entities.isUpdating = true;
+
             await query.next(limit);
             entities.isUpdating = false;
         } catch (err) {
@@ -232,7 +232,10 @@ export function useCollection<T extends typeof Entity>(
             await fetch();
         });
 
-    fetch().catch(() => {});
+    fetch().catch((e) => {
+        // eslint-disable-next-line no-console
+        console.error(e);
+    });
 
     return entities;
 }
@@ -259,6 +262,7 @@ export function newDoc<T extends typeof Entity>(collectionModel: T): InstanceTyp
     const entity = new collectionModel();
 
     (getCurrentScope() ? onScopeDispose : () => {})(() => {
+        if (typeof entity.$getID !== "function") return;
         const cachedIdEntity = `${collectionModel.collectionName}/${entity.$getID()}`;
         if (cachedEntities[cachedIdEntity] === undefined) return;
         cachedEntities[cachedIdEntity].usedBy--;
@@ -300,9 +304,11 @@ export async function findDoc<T extends typeof Entity>(
     const collectionRef = collection(firebase.firestore, collectionModel.collectionName);
 
     const onDestroy: (() => void)[] = [];
-    onScopeDispose(() => {
-        onDestroy.forEach((callback) => callback());
-    });
+    getCurrentScope()
+        ? onScopeDispose(() => {
+              onDestroy.forEach((callback) => callback());
+          })
+        : void 0;
 
     if (search && search.length > 0) {
         const algoliaIndex = algoliaClient.initIndex(
@@ -373,4 +379,11 @@ function transform<T extends typeof Entity>(
     });
 
     return cachedEntities[cachedIdEntity].entity;
+}
+
+export function clearCache() {
+    for (const cachedIdEntity in cachedEntities) {
+        cachedEntities[cachedIdEntity].entity.$getMetadata().destroy();
+        delete cachedEntities[cachedIdEntity];
+    }
 }

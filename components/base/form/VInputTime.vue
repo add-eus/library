@@ -80,11 +80,11 @@ watch(
         justify-content="center"
         align-items="center"
         class="v-input-time">
-        <VFlexItem flex-grow="50" style="max-width: 100px; min-width: 30px">
+        <VFlexItem :flex-grow="50" style="max-width: 100px; min-width: 30px">
             <VInputNumber v-model="hour" :max="maxHour" :min="minHour" :step="hourStep" />
         </VFlexItem>
         :
-        <VFlexItem flex-grow="50" style="max-width: 100px; min-width: 30px">
+        <VFlexItem :flex-grow="50" style="max-width: 100px; min-width: 30px">
             <VInputNumber v-model="minute" :max="59" :min="0" :step="minuteStep" />
         </VFlexItem>
     </VFlex>

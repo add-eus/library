@@ -24,15 +24,15 @@ const collapsed = ref<boolean>(!props.opened);
 function update() {}
 </script>
 <template>
-    <VCard>
+    <VCard v-hide-on-hidden :elevated="true" class="my-1">
         <VFlex flex-direction="row" align-items="start" column-gap="10px">
             <!-- Solo -->
 
             <VFlexItem
                 v-if="collapsed"
                 align-self="center"
-                flex-grow="1"
-                flex-shrink="1"
+                :flex-grow="1"
+                :flex-shrink="1"
                 flex-direction="column"
                 justify-content="center"
                 align-items="center"
@@ -45,8 +45,8 @@ function update() {}
             <VFlexItem
                 v-show="!collapsed"
                 align-self="center"
-                flex-grow="1"
-                flex-shrink="1"
+                :flex-grow="1"
+                :flex-shrink="1"
                 flex-direction="column"
                 class="entity-container content-container">
                 <!-- Not Collapsed -->

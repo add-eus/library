@@ -8,8 +8,8 @@ export interface VModalEmits {
     (e: "close"): void;
 }
 export interface VModalProps {
-    title: string;
-    size: VModalSize;
+    title?: string;
+    size?: VModalSize;
     actions?: VModalAction;
     open?: boolean;
     rounded?: boolean;
@@ -21,6 +21,7 @@ export interface VModalProps {
 
 const emit = defineEmits<VModalEmits>();
 const props = withDefaults(defineProps<VModalProps>(), {
+    title: ".title",
     size: "medium",
     actions: undefined,
     cancelLabel: undefined,

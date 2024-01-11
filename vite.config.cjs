@@ -21,15 +21,15 @@ const {
 
 const SILENT = Boolean(process.env.SILENT) ?? false;
 const DEV = process.env.NODE_ENV === "development" || false;
+const PACKAGE = require("./package.json");
 
-const localDependencies = Object.keys(
-    require("./package.json").dependencies ?? []
-).filter(
+const localDependencies = Object.keys(PACKAGE.dependencies ?? []).filter(
     (dependency) =>
+        Object.keys(PACKAGE.devDependencies ?? []).includes(dependency) === false &&
         dependency !== "bulma" &&
-        dependency !== "material-icons" &&
+        dependency !== "addeus-common-library" &&
         dependency !== "firebase" &&
-        dependency !== "addeus-common-library"
+        dependency.match(/^@types\//) === null
 );
 
 /**
@@ -82,6 +82,7 @@ module.exports.define = function (config = {}) {
             optimizeDeps: {
                 include: localDependencies,
                 exclude: [
+                    "@commitlint/prompt-cli",
                     "~pages",
                     "@intlify/unplugin-vue-i18n/messages",
                     "firebase",
@@ -97,8 +98,6 @@ module.exports.define = function (config = {}) {
                 },
             },
             resolve: {
-                //dedupe: localDependencies,
-                //preserveSymlinks: true,
                 alias: [
                     {
                         find: "/@src",
@@ -134,6 +133,7 @@ module.exports.define = function (config = {}) {
                                 : "assets/[name].js"; // others in `assets/js/`
                         },
                     },
+                    //external: [/^virtual\:/],
                 },
                 /* watch: {
                     include: "../../lib/**",
@@ -277,7 +277,6 @@ module.exports.define = function (config = {}) {
                         //             `directives/${lowerCamelCase(name)}.ts`
                         //         );
                         //         if (fs.existsSync(p)) return p;
-
                         //         const libPath = path.join(
                         //             rootDir,
                         //             `./node_modules/addeus-common-library/directives/${lowerCamelCase(
@@ -285,7 +284,6 @@ module.exports.define = function (config = {}) {
                         //             )}.ts`
                         //         );
                         //         if (fs.existsSync(libPath)) return libPath;
-
                         //         const libPath = path.join(
                         //             rootDir,
                         //             `./library/directives/${lowerCamelCase(name)}.ts`
@@ -304,12 +302,13 @@ module.exports.define = function (config = {}) {
                     extensions: ["vue", "ts"],
                     dts: "components.d.ts",
                     deep: true,
-                    allowOverrides: true,
+                    allowOverrides: false,
+                    //allowOverrides: true,
                     include: [
                         /\.vue$/,
                         /\.vue\?vue/,
                         /\.ts$/,
-                        /[\\/]node_modules[\\/]addeus-common-library[\\/]/,
+                        ///[\\/]node_modules[\\/]addeus-common-library[\\/]/,
                     ],
                     exclude: [
                         /[\\/]node_modules[\\/](?!addeus-common-library[\\/])/,
@@ -393,6 +392,9 @@ module.exports.define = function (config = {}) {
                               "robots.txt",
                               "apple-touch-icon.png",
                           ],
+                          workbox: {
+                              maximumFileSizeToCacheInBytes: 3000000,
+                          },
                           manifest: {
                               start_url: "/?utm_source=pwa",
                               display: "standalone",

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, watch, reactive, computed } from "vue";
-import { useVField } from "../../composable/useVField";
+import { useFocus } from "@vueuse/core";
+import { ref, watch, computed } from "vue";
 
 export interface VTextareaEmits {
     (event: "update:modelValue", value?: any): void;
@@ -13,6 +13,9 @@ export interface VTextareaProps {
 const emits = defineEmits<VTextareaEmits>();
 const props = withDefaults(defineProps<VTextareaProps>(), { modelValue: "" });
 const value = ref(props.modelValue);
+
+const textarea = ref<HTMLTextAreaElement | null>(null);
+const { focused } = useFocus(textarea);
 
 watch(value, () => {
     emits("update:modelValue", value.value);
@@ -29,8 +32,12 @@ const classes = computed(() => {
 
     return ["textarea"];
 });
+
+defineExpose({
+    focused,
+});
 </script>
 
 <template>
-    <textarea v-model="value" :class="classes"></textarea>
+    <textarea ref="textarea" v-model="value" :class="classes"></textarea>
 </template>

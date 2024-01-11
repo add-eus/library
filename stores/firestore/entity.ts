@@ -6,11 +6,13 @@ import {
     doc,
     setDoc,
     updateDoc,
+    FirestoreError,
 } from "firebase/firestore";
 import { lowerCaseFirst } from "../../utils/string";
-import { markRaw, shallowReactive } from "vue";
+import { isReactive, markRaw, shallowReactive } from "vue";
 import { useFirebase } from "../firebase";
 import { EntityMetaData } from "./entityMetadata";
+import { FirebaseError } from "firebase/app";
 
 export function onInitialize(target: any, callback: Function) {
     const constructor = target.constructor;
@@ -38,12 +40,21 @@ export class EntityBase {
     constructor() {
         const constructor = this.constructor as typeof EntityBase;
 
+        let hasPreventGetEmit = true;
         const proxied = new Proxy(this, {
-            get(obj, key: string) {
-                obj.$getMetadata().emit("get", key);
+            get(obj, key: any) {
+                if (
+                    !hasPreventGetEmit &&
+                    (typeof key !== "string" || !key.startsWith("$"))
+                )
+                    obj.$getMetadata().emit("get", key);
                 return (obj as any)[key];
             },
             set(obj: { [key: string]: any }, key: string, value: any) {
+                if (Array.isArray(value)) {
+                    if (isReactive(value.constructor) === false)
+                        value = EntityArray(value);
+                }
                 obj[key] = value;
 
                 obj.$getMetadata().emit("set", key, value);
@@ -68,6 +79,8 @@ export class EntityBase {
             });
         }
 
+        hasPreventGetEmit = false;
+
         return reactivity;
     }
 
@@ -79,11 +92,22 @@ export class EntityBase {
         return (this as any).$metadata;
     }
 
+    $clone() {
+        const clone = new (this.constructor as typeof EntityBase)();
+        const raw = {};
+        this.$getMetadata().emit("format", raw, true);
+        clone.$getMetadata().emit("parse", raw);
+        return clone;
+    }
+
     $hasChanged() {
         const $metadata = this.$getMetadata();
-        return Object.values($metadata.properties).some(
-            (property: any) => property.isChanged
-        );
+        const result = Object.keys($metadata.properties).some((propertyKey: string) => {
+            const property = $metadata.properties[propertyKey];
+            const isChanged = property.isChanged;
+            return isChanged;
+        });
+        return result;
     }
 
     $reset() {
@@ -152,14 +176,15 @@ export class Entity extends EntityBase {
         );
     }
 
-    async $save() {
+    async $save(): Promise<void> {
         const constructor = this.constructor as typeof Entity;
 
         const raw = this.$getChangedPlain();
         const $metadata = this.$getMetadata();
+        const isNew = $metadata.reference === null;
 
         try {
-            if ($metadata.reference === null) {
+            if (isNew) {
                 const firebase = useFirebase();
                 const docRef = doc(
                     collection(firebase.firestore, constructor.collectionName)
@@ -173,8 +198,18 @@ export class Entity extends EntityBase {
             $metadata.previousOrigin = $metadata.origin;
             $metadata.origin = this.$getPlain();
         } catch (err) {
-            // eslint-disable-next-line no-console
-            console.error(err);
+            if (err instanceof FirestoreError && err.code === "permission-denied") {
+                throw new Error(
+                    `You don't have permission to ${isNew ? "create" : "edit"} ${
+                        $metadata.reference?.path
+                    }`
+                );
+            } else if (
+                err instanceof FirebaseError &&
+                err.code === "auth/network-request-failed"
+            )
+                return this.$save();
+
             throw err;
         }
         this.$getMetadata().emit("saved");

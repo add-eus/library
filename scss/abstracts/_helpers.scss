@@ -6,6 +6,7 @@
     3. Shadow helpers
     4. Dark helpers
     5. Radius helpers
+    6. Border helpers
 */
 
 /* ==========================================================================
@@ -125,6 +126,15 @@ $sides: top, bottom, left, right;
     background-color: var(--secondary) !important;
 }
 
+.has-text-blue {
+    color: $blue;
+}
+
+.has-background-blue {
+    background-color: $blue;
+    color: $white;
+}
+
 // /* ==========================================================================
 // 3. Shadow helpers
 // ========================================================================== */
@@ -205,4 +215,80 @@ $sides: top, bottom, left, right;
 
 .max-w-540 {
     max-width: 540px;
+}
+
+/* ==========================================================================
+6. Colors helpers
+========================================================================== */
+
+@mixin applyColor($colorName, $colorValue) {
+    .has-background-#{$colorName} {
+        background-color: $colorValue;
+    }
+
+    .has-text-#{colorName} {
+        color: $colorValue;
+    }
+
+    .has-background-#{$colorName}-dark {
+        background-color: findDarkColor($colorValue);
+    }
+
+    .has-text-#{colorName}-dark {
+        color: findDarkColor($colorValue);
+    }
+
+    .has-text-#{colorName}-light {
+        color: findLightColor($colorValue);
+    }
+
+    .has-background-#{$colorName}-light {
+        background-color: findLightColor($colorValue);
+    }
+
+    .has-border-#{$colorName} {
+        border-width: 1px;
+        border-style: solid;
+        border-color: $colorValue;
+    }
+
+    .has-border-#{$colorName}-dark {
+        border-width: 1px;
+        border-style: solid;
+        border-color: findDarkColor($colorValue);
+    }
+
+    .has-border-#{$colorName}-light {
+        border-width: 1px;
+        border-style: solid;
+        border-color: findLightColor($colorValue);
+    }
+}
+
+@include applyColor("primary", $primary);
+@include applyColor("grey", $grey);
+@include applyColor("grey-dark", $grey-dark);
+@include applyColor("grey-light", $grey-light);
+@include applyColor("grey-lighter", $grey-lighter);
+@include applyColor("orange", $orange);
+@include applyColor("yellow", $yellow);
+@include applyColor("green", $green);
+@include applyColor("turquoise", $turquoise);
+@include applyColor("blue", $blue);
+@include applyColor("purple", $purple);
+@include applyColor("cyan", $cyan);
+@include applyColor("red", $red);
+
+.is-integration-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    opacity: 0.4;
+    pointer-events: none;
+    object-fit: contain;
 }

@@ -57,12 +57,12 @@ function updateModelValue(value) {
         :options="options"
         @change="updateModelValue($event)">
         <template #nooptions>
-            <span class="p-2 text-ellipsis">
+            <span class="p-2 has-text-ellipsis">
                 <Translate>.noOptions</Translate>
             </span>
         </template>
         <template #noresults>
-            <span class="p-2 text-ellipsis">
+            <span class="p-2 has-text-ellipsis">
                 <Translate>.noResults</Translate>
             </span>
         </template>

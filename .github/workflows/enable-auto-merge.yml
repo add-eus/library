@@ -1,0 +1,10 @@
+name: Enable auto-merge
+on: pull_request
+
+permissions:
+    contents: write
+    pull-requests: write
+
+jobs:
+    auto-merge:
+        uses: ../../workflows/enable-auto-merge.yml

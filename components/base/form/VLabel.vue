@@ -22,6 +22,6 @@ const forInput = computed(() => props.for);
     display: flex;
     font-family: $family-sans-serif;
     font-size: 0.9rem;
-    color: var(--light-text) !important;
+    // color: var(--light-text) !important;
 }
 </style>

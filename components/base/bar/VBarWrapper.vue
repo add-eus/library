@@ -19,7 +19,7 @@ const isShown = computed(() => props.shownBar);
 const bar = ref(null);
 const wrapper = ref(null);
 
-//const emit = defineEmits<VBarEmits>();
+// const emit = defineEmits<VBarEmits>();
 const props = withDefaults(defineProps<VBarProps>(), {
     shownBar: true,
     barPosition: "bottom",
@@ -39,8 +39,7 @@ defineExpose({
     <VFlex
         class="app-wrapper"
         :flex-direction="isLargeScreen ? 'row' : 'column'"
-        align-items="stretch"
-    >
+        align-items="stretch">
         <VFlexItem
             ref="wrapper"
             :flex-grow="1"
@@ -59,8 +58,7 @@ defineExpose({
                 'app-wrapper-slot': true,
                 'app-wrapper-slot-margin': isShown,
                 'app-wrapper-disable-overflow': props.disableOverflow,
-            }"
-        >
+            }">
             <slot name="content"></slot>
         </VFlexItem>
         <VFlexItem
@@ -72,8 +70,7 @@ defineExpose({
                     : isLargeScreen
                     ? 1
                     : 0
-            "
-        >
+            ">
             <Transition :name="isLargeScreen ? 'from-left' : 'from-bottom'">
                 <VBar
                     v-show="isShown"
@@ -82,8 +79,7 @@ defineExpose({
                     class="app-menu"
                     :position="props.barPosition"
                     :flex-direction="props.barFlexDirection"
-                    :align-items="props.barAlignItems"
-                >
+                    :align-items="props.barAlignItems">
                     <slot name="bar"></slot>
                 </VBar>
             </Transition>
@@ -129,9 +125,6 @@ defineExpose({
             margin-left: 0;
             margin-bottom: 0;
             transition: margin-left 0.3s ease-in-out;
-
-            &.app-wrapper-slot-margin {
-            }
         }
     }
 }

@@ -34,12 +34,12 @@ watch(
 <template>
     <div class="collapse">
         <VButton
-            class="collapse-header text-ellipsis"
+            class="collapse-header has-text-ellipsis"
             v-bind="$attrs"
             :icon="isOpen ? 'expand_more' : 'chevron_right'"
             @keydown.space.prevent="isOpen = !isOpen"
             @click.prevent="isOpen = !isOpen">
-            <slot name="title" class="text-ellipsis">
+            <slot name="title" class="has-text-ellipsis">
                 <Translate>.details</Translate>
             </slot>
         </VButton>

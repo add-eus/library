@@ -79,6 +79,8 @@ const isIconify = computed(() => {
 </template>
 
 <style lang="scss">
+@import "bulma/sass/utilities/_all.sass";
+
 .icon-wrap {
     display: flex;
     justify-content: center;

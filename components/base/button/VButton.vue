@@ -9,17 +9,10 @@ import VIcon from "../icon/VIcon.vue";
 import { useHaptic } from "../../../stores/haptic";
 
 import VPlaceload from "../loader/VPlaceload.vue";
+import type { Colors } from "stores/color";
 
 export type VButtonSize = "small" | "normal" | "medium" | "big" | "huge";
-export type VButtonColor =
-    | "primary"
-    | "info"
-    | "success"
-    | "warning"
-    | "danger"
-    | "white"
-    | "dark"
-    | "light";
+export type VButtonColor = Colors;
 export type VButtonDark = "1" | "2" | "3" | "4" | "5" | "6";
 
 export default defineComponent({
@@ -57,30 +50,6 @@ export default defineComponent({
         color: {
             type: String as PropType<VButtonColor>,
             default: undefined,
-            validator: (value: VButtonColor) => {
-                // The value must match one of these strings
-                if (
-                    [
-                        undefined,
-                        "primary",
-                        "info",
-                        "success",
-                        "warning",
-                        "danger",
-                        "white",
-                        "dark",
-                        "light",
-                    ].indexOf(value) === -1
-                ) {
-                    // eslint-disable-next-line no-console
-                    console.warn(
-                        `VButton: invalid "${value}" color. Should be primary, info, success, warning, danger, dark, light, white or undefined`
-                    );
-                    return false;
-                }
-
-                return true;
-            },
         },
         size: {
             type: String as PropType<VButtonSize>,
@@ -206,7 +175,9 @@ export default defineComponent({
                     })
                 );
             } else {
-                childrens.push(h("span", { class: "text-ellipsis" }, slots.default?.()));
+                childrens.push(
+                    h("span", { class: "has-text-ellipsis" }, slots.default?.())
+                );
             }
             if (caretWrapper) {
                 childrens.push(caretWrapper);
@@ -321,6 +292,16 @@ export default defineComponent({
         &.is-elevated {
             box-shadow: var(--info-box-shadow);
         }
+
+        &.is-light {
+            background: $info-light;
+            color: $info-dark;
+        }
+
+        &.is-dark {
+            background: $info-dark;
+            color: $info-light;
+        }
     }
 
     &.is-warning {
@@ -387,7 +368,6 @@ export default defineComponent({
 
     &.is-huge {
         height: 50px;
-        width: 220px;
     }
 
     .icon {
@@ -397,7 +377,7 @@ export default defineComponent({
 
         &:first-child {
             &:not(:last-child) {
-                margin-left: 0;
+                margin-left: 0 !important;
                 margin-right: 4px;
             }
 
@@ -411,16 +391,24 @@ export default defineComponent({
 
 .is-dark {
     .button {
-        &:not(.is-primary):not(.is-success):not(.is-info):not(.is-warning):not(
-                .is-danger
-            ):not(.is-light):not(.is-white) {
-            background: $dark;
-            border-color: $light;
-            color: $light;
+        &:not(.is-primary) {
+            &:not(.is-success) {
+                &:not(.is-info) {
+                    &:not(.is-warning) &:not(.is-danger) {
+                        &:not(.is-light) {
+                            &:not(.is-white) {
+                                background: $dark;
+                                border-color: $light;
+                                color: $light;
 
-            &:hover,
-            &:focus {
-                border-color: var(--dark-sidebar-light-18);
+                                &:hover,
+                                &:focus {
+                                    border-color: var(--dark-sidebar-light-18);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 

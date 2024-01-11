@@ -276,7 +276,6 @@ label[for] {
 
 .select:not(.is-multiple) {
     &:not(.is-loading)::after {
-        border-color: var(--muted-grey-light-14);
         border-width: 1.4px;
     }
 }
@@ -917,7 +916,7 @@ select {
     > .vti__input {
         @extend .input;
 
-        padding-left: 55px;
+        padding-left: 55px !important;
     }
 
     > .vti__dropdown {

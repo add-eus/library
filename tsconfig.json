@@ -32,6 +32,7 @@
         "types": [
             "vite",
             "vite/client",
+            "vite-plugin-pwa/vue",
             "vite-plugin-pwa/client",
             "vite-plugin-pages/client",
             "@intlify/unplugin-vue-i18n/messages"
@@ -44,9 +45,11 @@
         "components/**/*.ts",
         "components/**/*.vue",
         "layouts/**/*.vue",
+        "linter/**/*.js",
         "commitlint.config.cjs",
         "vite.*.ts",
-        ".eslintrc.cjs",
+        ".eslintrc.js",
+        "stylelint.config.js",
         "index.ts",
         "vite.config.cjs",
         "default-styles.ts",

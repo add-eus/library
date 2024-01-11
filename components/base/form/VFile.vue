@@ -139,7 +139,8 @@ async function process(fieldName, file, metadata, loadFile, error) {
                 return;
             }
         }
-        if (blob === undefined) {
+
+        if (blob === undefined && file.type.match(/image\/*/) !== null) {
             const blobURL = URL.createObjectURL(file);
             const { ratio } = await getImageSize(blobURL);
             if (
@@ -150,6 +151,12 @@ async function process(fieldName, file, metadata, loadFile, error) {
                 aspectRatioIsWrong.value = true;
                 return;
             }
+            aspectRatioIsWrong.value = false;
+            const path = await storage.upload(file, props.storagePath);
+            loadFile(path);
+            emit("newFile", { fileType: file.type });
+            skipNextFile = false;
+        } else if (blob === undefined) {
             aspectRatioIsWrong.value = false;
             const path = await storage.upload(file, props.storagePath);
             loadFile(path);

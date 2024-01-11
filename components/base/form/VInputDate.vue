@@ -16,6 +16,7 @@ const emits = defineEmits<VInputDateEmits>();
 const props = withDefaults(defineProps<VInputDateProps>(), {
     maxYear: moment().year() + 130,
     minYear: moment().year() - 130,
+    modelValue: moment(),
 });
 
 let currentDate;
@@ -60,7 +61,7 @@ watch(date, formatModelValue);
 watch(month, formatModelValue);
 watch(year, formatModelValue);
 
-parseModelValue(props.modelValue || moment());
+parseModelValue(props.modelValue);
 </script>
 
 <template>
@@ -69,15 +70,15 @@ parseModelValue(props.modelValue || moment());
         justify-content="center"
         align-items="center"
         class="v-input-date">
-        <VFlexItem flex-grow="33" style="max-width: 100px; min-width: 30px">
+        <VFlexItem :flex-grow="33" style="max-width: 100px; min-width: 30px">
             <VInputNumber v-model="date" :max="getMaxMonth()" :min="1" />
         </VFlexItem>
         /
-        <VFlexItem flex-grow="33" style="max-width: 200px; min-width: 80px">
+        <VFlexItem :flex-grow="33" style="max-width: 200px; min-width: 80px">
             <VInputNumber v-model="month" :max="12" :min="1" :format="formatMonth" />
         </VFlexItem>
         /
-        <VFlexItem flex-grow="33" style="max-width: 100px; min-width: 50px">
+        <VFlexItem :flex-grow="33" style="max-width: 100px; min-width: 50px">
             <VInputNumber v-model="year" :max="maxYear" :min="minYear" />
         </VFlexItem>
     </VFlex>

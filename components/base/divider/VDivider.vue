@@ -31,6 +31,7 @@ const color = useColor(computed(() => props.color));
     display: flex;
     flex-direction: v-bind(direction);
     align-items: center;
+    margin: 10px 0;
 
     > span:not(.title) {
         flex: 1;
@@ -41,6 +42,10 @@ const color = useColor(computed(() => props.color));
         margin: 0 5px;
         font-size: 14px;
         color: v-bind(color);
+
+        &:empty {
+            display: none;
+        }
     }
 }
 </style>
