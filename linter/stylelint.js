@@ -1,13 +1,24 @@
-module.exports = function (path) {
+function resolvePathFromModule(moduleName) {
+    return require.resolve(moduleName);
+}
+
+function resolvePathFromArrayModule(moduleNames) {
+    return moduleNames.map(resolvePathFromModule);
+}
+
+module.exports = function (cwd) {
     return {
         cache: true,
-        extends: ["stylelint-config-standard", "stylelint-config-recommended-vue"],
-        customSyntax: "postcss-scss",
-        plugins: ["stylelint-scss"],
+        extends: resolvePathFromArrayModule([
+            "stylelint-config-standard",
+            "stylelint-config-recommended-vue",
+        ]),
+        customSyntax: resolvePathFromModule("postcss-scss"),
+        plugins: resolvePathFromArrayModule(["stylelint-scss"]),
         overrides: [
             {
                 files: ["*.vue", "**/*.vue"],
-                customSyntax: "postcss-html",
+                customSyntax: resolvePathFromModule("postcss-html"),
             },
         ],
         ignorePattern: "!(src)/**/*",
