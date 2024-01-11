@@ -35,6 +35,7 @@ watch(value, () => {
     margin: auto 0;
     right: 1.2em;
 }
+
 .has-error .percent {
     padding-right: 40px;
 }

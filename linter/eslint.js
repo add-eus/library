@@ -1,7 +1,8 @@
 // Patch imports for ESLint
 require("@rushstack/eslint-patch/modern-module-resolution");
 
-module.exports = {
+const DEFAULT_CONFIG = {
+    root: true,
     env: {
         browser: true,
         node: true,
@@ -9,7 +10,7 @@ module.exports = {
     parserOptions: {
         parser: "@typescript-eslint/parser",
         sourceType: "module",
-        tsconfigRootDir: __dirname,
+        tsconfigRootDir: process.cwd(),
         project: "./tsconfig.json",
         extraFileExtensions: [".vue"],
     },
@@ -106,4 +107,61 @@ module.exports = {
             },
         },
     ],
+};
+
+function mergeDeep(...objects) {
+    const isObject = (obj) => obj && typeof obj === "object";
+
+    return objects.reduce((prev, obj) => {
+        Object.keys(obj).forEach((key) => {
+            const pVal = prev[key];
+            const oVal = obj[key];
+
+            if (Array.isArray(pVal) && Array.isArray(oVal)) {
+                prev[key] = pVal.concat(...oVal);
+            } else if (isObject(pVal) && isObject(oVal)) {
+                prev[key] = mergeDeep(pVal, oVal);
+            } else if (prev[key] == undefined) {
+                prev[key] = oVal;
+            }
+        });
+
+        return prev;
+    }, {});
+}
+
+module.exports = function (data) {
+    return mergeDeep(data, DEFAULT_CONFIG);
+};
+
+module.exports.cloudFunction = function (path) {
+    return mergeDeep(
+        {
+            parserOptions: {
+                tsconfigRootDir: path,
+                project: path + "/tsconfig.json",
+            },
+            env: {
+                browser: false,
+                node: true,
+            },
+        },
+        DEFAULT_CONFIG
+    );
+};
+
+module.exports.web = function (path) {
+    return mergeDeep(
+        {
+            parserOptions: {
+                tsconfigRootDir: path,
+                project: path + "/tsconfig.json",
+            },
+            env: {
+                browser: true,
+                node: false,
+            },
+        },
+        DEFAULT_CONFIG
+    );
 };

@@ -21,6 +21,7 @@
         text-align: right;
     }
 }
+
 @media (max-width: 767px) {
     .flex-table-toolbar {
         margin-bottom: 10px;

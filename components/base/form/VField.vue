@@ -68,6 +68,7 @@ provide(useVFieldSymbol, vField);
 
 <style lang="scss">
 @import "bulma/sass/utilities/all";
+
 .field {
     &.is-vertical {
         flex-direction: column;
