@@ -1,14 +1,7 @@
 // Patch imports for ESLint
 require("@rushstack/eslint-patch/modern-module-resolution");
 
-function resolvePathFromModule(moduleName) {
-    return require.resolve(moduleName);
-}
-
-function resolvePathFromArrayModule(moduleNames) {
-    return moduleNames.map(resolvePathFromModule);
-}
-
+//require.main.paths.push(__dirname + "/node_modules");
 const DEFAULT_CONFIG = {
     root: true,
     env: {
@@ -16,7 +9,7 @@ const DEFAULT_CONFIG = {
         node: true,
     },
     parserOptions: {
-        parser: resolvePathFromModule("@typescript-eslint/parser"),
+        parser: "@typescript-eslint/parser",
         sourceType: "module",
         tsconfigRootDir: process.cwd(),
         project: "./tsconfig.json",
@@ -24,11 +17,11 @@ const DEFAULT_CONFIG = {
     },
     extends: [
         "plugin:@typescript-eslint/eslint-recommended",
-        resolvePathFromModule("eslint-plugin-vue") + "vue3-recommanded",
-        resolvePathFromModule("eslint-plugin-vue") + "vue3-essential",
-        resolvePathFromModule("eslint-plugin-vuejs-accessibility") + "/recommended",
+        "plugin:vue/vue3-recommended",
+        "plugin:vue/vue3-essential",
+        "plugin:vuejs-accessibility/recommended",
         "plugin:prettier-vue/recommended",
-        resolvePathFromModule("eslint-config-prettier"),
+        "prettier",
     ],
     plugins: ["@typescript-eslint", "prettier-vue"],
     rules: {
