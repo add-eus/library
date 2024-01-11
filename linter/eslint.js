@@ -1,6 +1,14 @@
 // Patch imports for ESLint
 require("@rushstack/eslint-patch/modern-module-resolution");
 
+function resolvePathFromModule(moduleName) {
+    return require.resolve(moduleName);
+}
+
+function resolvePathFromArrayModule(moduleNames) {
+    return moduleNames.map(resolvePathFromModule);
+}
+
 const DEFAULT_CONFIG = {
     root: true,
     env: {
