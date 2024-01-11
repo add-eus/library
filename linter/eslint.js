@@ -1,7 +1,7 @@
 // Patch imports for ESLint
 require("@rushstack/eslint-patch/modern-module-resolution");
+require("@rushstack/eslint-patch/custom-config-package-names");
 
-require.main.paths.push(__dirname + "/node_modules");
 const DEFAULT_CONFIG = {
     root: true,
     env: {
