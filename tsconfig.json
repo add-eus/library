@@ -52,6 +52,7 @@
         "stylelint.config.js",
         "index.ts",
         "vite.config.cjs",
-        "default-styles.ts"
+        "default-styles.ts",
+        "reflect-metadata.d.ts"
     ]
 }
