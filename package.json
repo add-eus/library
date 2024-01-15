@@ -14,7 +14,7 @@
         "commit-msg": "commitlint -e -V "
     },
     "scripts": {
-        "lint": "run-s lint:eslint:fix lint:stylelint:fix lint:prettier:fix",
+        "lint": "run-s lint:eslint lint:stylelint",
         "lint:changed": "lint-staged --concurrent false -q",
         "lint:eslint": "eslint",
         "lint:eslint:all": "npm run lint:eslint -- ./{components,composable,directives/layouts/linter/locales/stores/utils}/**/*.{ts,js,vue}",
