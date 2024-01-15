@@ -1,8 +1,1 @@
-module.exports = {
-    semi: true,
-    singleQuote: false,
-    trailingComma : "es5",
-    printWidth: 90,
-    tabWidth: 4,
-    bracketSameLine: true,
-};
+module.exports = require("./linter/prettier");

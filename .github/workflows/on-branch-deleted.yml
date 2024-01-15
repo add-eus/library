@@ -1,0 +1,69 @@
+name: On Branch Deleted
+on:
+    workflow_call:
+
+jobs:
+    delete-firebase-channel-hosting:
+        name: Remove Firebase Channel Hosting
+        if: github.event.ref_type == 'branch'
+        runs-on: ubuntu-latest
+        steps:
+            # Configure checkout
+            - name: Set up Checkout repository
+              uses: actions/checkout@v3
+
+            # Configure Node
+            - name: Set up Node 18
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "18"
+                  cache: "npm"
+
+            # Install dependency
+            - name: Install
+              run: |
+                  npm install -g firebase-tools
+
+            # Auth service account
+            - name: Authenticate to Google Cloud
+              uses: google-github-actions/auth@v1
+              with:
+                  credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+
+            - name: Check if Firebase Channel Hosting exists
+              id: check
+              run: |
+                  export GET_CHANNEL=$(firebase hosting:channel:list --site jarveat | grep ${{ github.event.ref }} | grep -Po 'pr[^\s\.]+\s')
+                  echo "channelAddeus=$GET_CHANNEL" >> $GITHUB_OUTPUT
+            - name: Delete Firebase Channel Hosting Addeus
+              if: steps.check.outputs.channelAddeus != ''
+              run: firebase hosting:channel:delete --site jarveat --force ${{ steps.check.outputs.channelAddeus }}
+
+    delete-cache:
+        name: Remove Cache
+        runs-on: ubuntu-latest
+        if: github.event.ref_type == 'pull_request'
+        steps:
+            - name: Check out code
+              uses: actions/checkout@v3
+
+            - name: Cleanup
+              run: |
+                  gh extension install actions/gh-actions-cache
+
+                  REPO=${{ github.repository }}
+                  BRANCH="refs/pull/${{ github.event.pull_request.number }}/merge"
+
+                  echo "Fetching list of cache key"
+                  cacheKeysForPR=$(gh actions-cache list -R $REPO -B $BRANCH | cut -f 1 )
+
+                  ## Setting this to not fail the workflow while deleting cache keys. 
+                  set +e
+                  echo "Deleting caches..."
+                  for cacheKey in $cacheKeysForPR
+                  do
+                      gh actions-cache delete $cacheKey -R $REPO -B $BRANCH --confirm
+                  done
+                  echo "Done"
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
