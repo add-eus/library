@@ -266,14 +266,19 @@ export function useCollection<T extends typeof Entity>(
     return entities;
 }
 
+interface UseDocOptions {
+    fetch: boolean;
+    collection?: string;
+}
 export function useDoc<T extends typeof Entity>(
     collectionModel: T,
     id?: string,
-    options = { fetch: true }
+    options: UseDocOptions = { fetch: true }
 ): InstanceType<T> {
     if (id === undefined) return newDoc(collectionModel);
     const { firestore } = useFirebase();
-    const reference = doc(collection(firestore, collectionModel.collectionName), id);
+    const collectionName = options.collection ?? collectionModel.collectionName;
+    const reference = doc(collection(firestore, collectionName), id);
     const model = transform(
         reference,
         collectionModel,

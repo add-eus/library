@@ -2,7 +2,7 @@ import type {
     CollectionOptions as UseCollectionOption,
     Collection as UseCollectionType,
 } from ".";
-import { newDoc, useCollection } from ".";
+import { newDoc, useCollection, useDoc } from ".";
 import type { Entity } from "./entity";
 import { onInitialize } from "./entity";
 import type { EntityMetaData } from "./entityMetadata";
@@ -240,6 +240,16 @@ export class SubCollection<T extends Entity> {
         const entity = newDoc(this.model) as T;
         entity.$getMetadata().saveNewDocPath = this.path;
         this.currentList.push(entity);
+        return entity;
+    }
+
+    useDoc(id: string): T | undefined {
+        if (!this.isInitialized)
+            throw new Error(`property subcollection not initialized`);
+        if (this.model === undefined) throw new Error(`model is undefined`);
+        const entity = useDoc(this.model, id, { fetch: true, collection: this.path }) as
+            | T
+            | undefined;
         return entity;
     }
 }

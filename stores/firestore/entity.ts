@@ -195,9 +195,14 @@ export class Entity extends EntityBase {
                 );
 
                 $metadata.setReference(docRef);
+
+                this.$getMetadata().emit("beforeCreated", raw);
                 await setDoc(docRef, raw);
+                this.$getMetadata().emit("created", this);
             } else if (Object.keys(raw).length > 0 && $metadata.reference !== null) {
+                this.$getMetadata().emit("beforeUpdated", raw);
                 await updateDoc($metadata.reference, raw);
+                this.$getMetadata().emit("updated", this);
             }
             $metadata.previousOrigin = $metadata.origin;
             $metadata.origin = this.$getPlain();
@@ -219,7 +224,7 @@ export class Entity extends EntityBase {
         // save subcollections
         await $metadata.savePropertyCollections();
 
-        this.$getMetadata().emit("saved");
+        this.$getMetadata().emit("saved", this);
     }
 
     $isDeleted() {
