@@ -1,0 +1,116 @@
+name: On Milestone Closed
+
+on:
+    milestone:
+        types: [closed]
+    workflow_dispatch:
+        inputs:
+            version:
+                type: choice
+                description: "Type of version"
+                default: "patch"
+                required: false
+                options:
+                    - patch
+                    - minor
+                    - major
+
+concurrency:
+    group: on-milestone-closed-${{ github.event.milestone.number }}
+    cancel-in-progress: true
+
+jobs:
+    install:
+        name: Install Dependencies
+
+        # The type of runner that the job will run on
+        runs-on: ubuntu-latest
+
+        # Steps represent a sequence of tasks that will be executed as part of the job
+        steps:
+            # Configure checkout
+            - name: Set up Checkout repository
+              uses: actions/checkout@v3
+              with:
+                  submodules: true
+                  ssh-key: ${{ secrets.SSH_KEY }}
+                  persist-credentials: true
+
+            # Configure Node
+            - name: Set up Node 18
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "18"
+                  cache: "npm"
+
+            # Configure Cache node_module
+            - name: Cache node_modules
+              id: cache
+              uses: actions/cache@v3
+              env:
+                  cache-name: cache-node-modules
+              with:
+                  path: |
+                      node_modules
+                      functions/node_modules
+                  key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('package-lock.json') }}-${{ hashFiles('functions/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-cache-node-modules-
+                      ${{ runner.os }}-
+
+            # Install dependency
+            - name: Install
+              if: steps.cache.outputs.cache-hit != 'true'
+              run: |
+                  npm ci
+
+    new-version:
+        name: Create a new version (${{ github.event.inputs.version }})
+        runs-on: ubuntu-latest
+        needs: install
+        steps:
+            # Configure checkout
+            - name: Set up Checkout repository
+              uses: actions/checkout@v3
+              with:
+                  submodules: true
+                  ssh-key: ${{ secrets.SSH_KEY }}
+                  persist-credentials: true
+
+            # Configure Node
+            - name: Set up Node 18
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "18"
+                  cache: "npm"
+
+            # Configure node_modules
+            - name: Cache node modules
+              uses: actions/cache@v3
+              env:
+                  cache-name: cache-node-modules
+              with:
+                  path: |
+                      node_modules
+                      functions/node_modules
+                  key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('package-lock.json') }}-${{ hashFiles('functions/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-cache-node-modules-
+                      ${{ runner.os }}-
+            - name: Set up Git
+              run: |
+                  git config --global user.email "contact@track2max.com"
+                  git config --global user.name "Github"
+
+            - name: Create new version
+              run: |
+                  npm version ${{ github.event.inputs.version }} -m "[skip ci] Upgrade to %s"
+                  export TAG_NAME=v$(node -p "require('./package.json').version")
+                  echo tagName=$TAG_NAME >> $GITHUB_ENV
+
+            - name: Create new release on Github
+              uses: softprops/action-gh-release@v1
+              with:
+                  tag_name: ${{ env.tagName }}
+                  generate_release_notes: true
+                  token: ${{ secrets.GH_TOKEN }}
