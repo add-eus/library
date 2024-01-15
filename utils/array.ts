@@ -49,9 +49,9 @@ export function isEnum(enumeration: any) {
         return false;
     }
     if (!isNaN(Number(keys[0]))) {
-        return enumeration[Number(keys[0])] != undefined;
+        return enumeration[Number(keys[0])] !== undefined;
     } else if (typeof keys[0] === "string") {
-        return enumeration[keys[0]] != undefined;
+        return enumeration[keys[0]] !== undefined;
     }
     return false;
 }

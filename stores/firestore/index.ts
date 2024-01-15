@@ -5,11 +5,22 @@ import type {
     WhereFilterOp,
     QueryConstraint,
     OrderByDirection,
-    DocumentSnapshot,
     QueryFilterConstraint,
     FieldPath,
 } from "firebase/firestore";
-import { where, orderBy, collection, doc, or, and } from "firebase/firestore";
+import {
+    where,
+    orderBy,
+    collection,
+    doc,
+    or,
+    and,
+    DocumentSnapshot,
+    DocumentReference,
+    query,
+    collectionGroup,
+    getDocs,
+} from "firebase/firestore";
 import { useFirebase } from "../firebase";
 import type { MaybeRef } from "@vueuse/core";
 import { until } from "@vueuse/core";
@@ -35,6 +46,8 @@ export interface CollectionOptions {
     limit?: MaybeRef<number>;
     search?: MaybeRef<string>;
     compositeConstraint?: MaybeRef<CompositeConstraint>;
+    path?: string;
+    blacklistedProperties?: string[];
 }
 
 const cachedEntities: { [key: string]: { usedBy: number; entity: any } } = {};
@@ -115,7 +128,10 @@ export function useCollection<T extends typeof Entity>(
         }${collectionModel.collectionName}`
     );
 
-    const collectionRef = collection(firebase.firestore, collectionModel.collectionName);
+    const collectionRef = collection(
+        firebase.firestore,
+        options.path === undefined ? collectionModel.collectionName : options.path
+    );
 
     entities.isUpdating = true;
 
@@ -151,9 +167,14 @@ export function useCollection<T extends typeof Entity>(
                 constraints,
                 entities,
                 (doc: DocumentSnapshot) => {
-                    return transform(doc, collectionModel, (callback) => {
-                        onDestroy.push(callback);
-                    });
+                    return transform(
+                        doc,
+                        collectionModel,
+                        (callback) => {
+                            onDestroy.push(callback);
+                        },
+                        options.blacklistedProperties
+                    );
                 },
                 collectionRef,
                 search,
@@ -167,15 +188,20 @@ export function useCollection<T extends typeof Entity>(
                 constraints,
                 entities,
                 (doc: DocumentSnapshot) => {
-                    return transform(doc, collectionModel, (callback) => {
-                        onDestroy.push(callback);
-                    });
+                    return transform(
+                        doc,
+                        collectionModel,
+                        (callback) => {
+                            onDestroy.push(callback);
+                        },
+                        options.blacklistedProperties
+                    );
                 },
                 collectionRef
             );
         }
 
-        let limit = 10;
+        let limit = -1;
         if (isRef(options.limit) && typeof options.limit.value === "number")
             limit = options.limit.value;
         else if (typeof options.limit === "number") limit = options.limit;
@@ -260,6 +286,7 @@ export function useDoc<T extends typeof Entity>(
 
 export function newDoc<T extends typeof Entity>(collectionModel: T): InstanceType<T> {
     const entity = new collectionModel();
+    entity.$getMetadata().initSubCollections(true);
 
     (getCurrentScope() ? onScopeDispose : () => {})(() => {
         if (typeof entity.$getID !== "function") return;
@@ -353,14 +380,22 @@ export async function findDoc<T extends typeof Entity>(
  * @returns
  */
 function transform<T extends typeof Entity>(
-    doc: DocumentSnapshot,
+    doc: DocumentSnapshot | DocumentReference,
     Model: T,
-    onDisposed: (callback: () => void) => void
+    onDisposed: (callback: () => void) => void,
+    blacklistedProperties: string[] = []
 ): InstanceType<T> {
-    const cachedIdEntity = `${Model.collectionName}/${doc.id}`;
+    let path: string | undefined = undefined;
+    if (doc instanceof DocumentReference) {
+        path = doc.path;
+    } else if (doc instanceof DocumentSnapshot) {
+        path = doc.ref.path;
+    }
+    const cachedIdEntity = path ?? `${Model.collectionName}/${doc.id}`;
     if (cachedEntities[cachedIdEntity] === undefined) {
         const model = new Model();
         model.$setAndParseFromReference(doc);
+        model.$getMetadata().blacklistedProperties = blacklistedProperties;
         cachedEntities[cachedIdEntity] = {
             entity: model,
             usedBy: 0,
@@ -380,6 +415,41 @@ function transform<T extends typeof Entity>(
 
     return cachedEntities[cachedIdEntity].entity;
 }
+
+export const useParentOfCollectionGroup = (
+    model: typeof Entity,
+    collectionGroupName: string,
+    wheres: MaybeRef<WhereOption[]>
+) => {
+    const firebase = useFirebase();
+
+    const workspaceRefs = shallowReactive<any>(new Collection());
+
+    if (isRef<WhereOption[]>(wheres)) {
+        watch(
+            wheres,
+            async (value) => {
+                const whereConstraints: QueryConstraint[] = transformWheres(value);
+                const groupQuery = query(
+                    collectionGroup(firebase.firestore, collectionGroupName),
+                    ...whereConstraints
+                );
+                const groupSnapshot = await getDocs(groupQuery);
+                const newWorkspaceRefs = groupSnapshot.docs
+                    .filter(
+                        (doc) =>
+                            doc.ref.parent.parent !== null &&
+                            doc.ref.parent.parent?.parent?.path === model.collectionName
+                    )
+                    .map((doc) => doc.ref.parent.parent!);
+                workspaceRefs.splice(0, workspaceRefs.length, ...newWorkspaceRefs);
+            },
+            { immediate: true }
+        );
+    }
+
+    return workspaceRefs;
+};
 
 export function clearCache() {
     for (const cachedIdEntity in cachedEntities) {

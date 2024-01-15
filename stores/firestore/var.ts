@@ -175,6 +175,12 @@ export function Var(type: any) {
 
             metadata.on("parse", (raw: any, forceAll: boolean = false) => {
                 if (
+                    metadata.blacklistedProperties?.length > 0 &&
+                    metadata.blacklistedProperties.includes(name)
+                ) {
+                    return;
+                }
+                if (
                     typeof raw[name] === "object" &&
                     isEntityClass(type) &&
                     !isEntityStandaloneClass(type) &&
