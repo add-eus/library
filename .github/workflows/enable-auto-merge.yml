@@ -15,7 +15,7 @@ jobs:
         if: github.event.pull_request.draft == false
         steps:
             - name: Enable auto-merge
-              run: gh pr merge --auto --squash "$PR_URL"
+              run: gh pr merge --auto -t "$PR_TITLE"
               env:
-                  PR_URL: ${{github.event.pull_request.html_url}}
+                  PR_TITLE: ${{github.event.pull_request.title}}
                   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
