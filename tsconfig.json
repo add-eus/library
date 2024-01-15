@@ -41,7 +41,7 @@
     "include": [
         "node_modules/addeus-common-library/**/*.ts",
         "composable/**.ts",
-        "stores/**.ts",
+        "stores/**/*.ts",
         "components/**/*.ts",
         "components/**/*.vue",
         "layouts/**/*.vue",

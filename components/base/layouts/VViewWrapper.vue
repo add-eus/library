@@ -261,5 +261,5 @@ const props = defineProps<VViewWrapperProps>();
         width: 100%;
         margin-left: 0;
     }
-}*/
+} */
 </style>

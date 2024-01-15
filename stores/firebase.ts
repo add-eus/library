@@ -1,15 +1,10 @@
 // Import the functions you need from the SDKs you need
-import type { Auth } from "firebase/auth";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
-import type { Firestore } from "firebase/firestore";
 import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
-import type { Functions } from "firebase/functions";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
-import type { FirebaseStorage } from "firebase/storage";
 import { getStorage, connectStorageEmulator } from "firebase/storage";
 import { getAnalytics, initializeAnalytics } from "firebase/analytics";
 import { getPerformance, initializePerformance } from "firebase/performance";
-import type { Database } from "firebase/database";
 import { getDatabase, connectDatabaseEmulator } from "firebase/database";
 import { initializeApp } from "firebase/app";
 import { getRemoteConfig, fetchAndActivate } from "firebase/remote-config";

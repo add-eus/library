@@ -6,7 +6,6 @@ import {
     doc,
     setDoc,
     updateDoc,
-    FirestoreError,
 } from "firebase/firestore";
 import { lowerCaseFirst } from "../../utils/string";
 import { isReactive, markRaw, shallowReactive } from "vue";
@@ -137,19 +136,21 @@ export class Entity extends EntityBase {
     static collectionName: string;
 
     $setAndParseFromReference(querySnapshot: DocumentReference | DocumentSnapshot) {
+        const metadata = this.$getMetadata();
         if (querySnapshot instanceof DocumentReference) {
-            this.$getMetadata().setReference(querySnapshot);
+            metadata.setReference(querySnapshot);
         } else if (querySnapshot instanceof DocumentSnapshot) {
-            this.$getMetadata().setReference(querySnapshot.ref);
-            if (!querySnapshot.exists()) return this.$getMetadata().markAsDeleted();
+            metadata.setReference(querySnapshot.ref);
+            if (!querySnapshot.exists()) return metadata.markAsDeleted();
             const data = querySnapshot.data();
-            this.$getMetadata().previousOrigin = this.$getMetadata().origin =
+            metadata.previousOrigin = metadata.origin =
                 typeof data === "object" && data !== null ? data : {};
 
-            this.$getMetadata().emit("parse", this.$getMetadata().origin);
+            metadata.emit("parse", metadata.origin);
 
-            this.$getMetadata().isFullfilled = true;
+            metadata.isFullfilled = true;
         }
+        metadata.initSubCollections();
     }
 
     static addMethod(name: string, callback: Function) {
@@ -187,18 +188,21 @@ export class Entity extends EntityBase {
             if (isNew) {
                 const firebase = useFirebase();
                 const docRef = doc(
-                    collection(firebase.firestore, constructor.collectionName)
+                    collection(
+                        firebase.firestore,
+                        $metadata.saveNewDocPath ?? constructor.collectionName
+                    )
                 );
 
-                await setDoc(docRef, raw);
                 $metadata.setReference(docRef);
+                await setDoc(docRef, raw);
             } else if (Object.keys(raw).length > 0 && $metadata.reference !== null) {
                 await updateDoc($metadata.reference, raw);
             }
             $metadata.previousOrigin = $metadata.origin;
             $metadata.origin = this.$getPlain();
         } catch (err) {
-            if (err instanceof FirestoreError && err.code === "permission-denied") {
+            if (err instanceof FirebaseError && err.code === "permission-denied") {
                 throw new Error(
                     `You don't have permission to ${isNew ? "create" : "edit"} ${
                         $metadata.reference?.path
@@ -209,9 +213,12 @@ export class Entity extends EntityBase {
                 err.code === "auth/network-request-failed"
             )
                 return this.$save();
-
             throw err;
         }
+
+        // save subcollections
+        await $metadata.savePropertyCollections();
+
         this.$getMetadata().emit("saved");
     }
 
@@ -220,7 +227,8 @@ export class Entity extends EntityBase {
     }
 
     async $delete() {
-        if (this.$getMetadata().reference) await deleteDoc(this.$getMetadata().reference);
+        const ref = this.$getMetadata().reference;
+        if (ref !== null) await deleteDoc(ref);
         this.$getMetadata().markAsDeleted();
         this.$getMetadata().destroy();
     }
@@ -238,6 +246,6 @@ export class Entity extends EntityBase {
     }
 }
 
-export function EntityArray(a: [] = []) {
+export function EntityArray(a: any[] = []) {
     return shallowReactive(a);
 }
