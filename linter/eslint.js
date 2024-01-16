@@ -8,8 +8,8 @@ const DEFAULT_CONFIG = {
         browser: true,
         node: true,
     },
+    parser: "@typescript-eslint/parser",
     parserOptions: {
-        parser: "@typescript-eslint/parser",
         sourceType: "module",
         tsconfigRootDir: process.cwd(),
         project: "./tsconfig.json",
@@ -20,6 +20,8 @@ const DEFAULT_CONFIG = {
         "plugin:vue/vue3-recommended",
         "plugin:vue/vue3-essential",
         "plugin:vuejs-accessibility/recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
         "plugin:prettier-vue/recommended",
         "prettier",
     ],
