@@ -8,8 +8,9 @@ const DEFAULT_CONFIG = {
         browser: true,
         node: true,
     },
-    parser: "@typescript-eslint/parser",
+    //parser: "@typescript-eslint/parser",
     parserOptions: {
+        parser: "@typescript-eslint/parser",
         sourceType: "module",
         tsconfigRootDir: process.cwd(),
         project: "./tsconfig.json",
@@ -30,8 +31,15 @@ const DEFAULT_CONFIG = {
         "no-console": process.env.NODE_ENV === "production" ? "error" : "warn",
         "no-debugger": process.env.NODE_ENV === "production" ? "error" : "warn",
         "no-unused-vars": process.env.NODE_ENV === "production" ? "error" : "warn",
-        "@typescript-eslint/no-unused-vars": ["error"],
         quotes: ["error", "double"],
+
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unsafe-return": "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unsafe-argument": "off",
+        "@typescript-eslint/no-unused-vars": ["error"],
+
         "@typescript-eslint/consistent-type-imports": [
             "error",
             {
