@@ -19,7 +19,8 @@
         "lint:eslint": "eslint",
         "lint:eslint:all": "npm run lint:eslint -- ./{components,composable,directives/layouts/linter/locales/stores/utils}/**/*.{ts,js,vue}",
         "lint:stylelint": "stylelint",
-        "lint:stylelint:all": "npm run lint:stylelint -- ./{components,scss}/**/*.{scss,vue,css}"
+        "lint:stylelint:all": "npm run lint:stylelint -- ./{components,scss}/**/*.{scss,vue,css}",
+        "postversion": "git push origin master && git push origin --tags"
     },
     "repository": {
         "type": "git",
