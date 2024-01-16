@@ -1,5 +1,5 @@
 {
-    "extends": "config/ts-function.json",
+    "extends": "./ts-function.json",
     "tsCheckerConfig": {
         "eslint": {
             "enabled": true,
