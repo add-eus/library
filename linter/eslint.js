@@ -82,6 +82,8 @@ const DEFAULT_CONFIG = {
                     { terms: ["todo", "fixme"], location: "start" },
                 ],
                 "spaced-comment": ["error", "always", { markers: ["/"] }],
+                "no-dupe-else-if": "error",
+
                 "@typescript-eslint/no-unused-vars": "error",
                 "@typescript-eslint/strict-boolean-expressions": [
                     "error",
@@ -96,7 +98,7 @@ const DEFAULT_CONFIG = {
                 ],
                 "@typescript-eslint/no-floating-promises": "error",
                 "@typescript-eslint/no-misused-promises": "error",
-
+                
                 "vue/no-export-in-script-setup": "off",
                 "vue/no-expose-after-await": "off",
                 "vue/script-setup-uses-vars": "error",
