@@ -16,7 +16,7 @@ export class QuerySearch extends Query {
     constructor(
         constraints: QueryConstraint[],
         list: any[],
-        transform: Function,
+        transform: () => void,
         reference: CollectionReference,
         searchText: string,
         algoliaIndex: any
@@ -29,17 +29,18 @@ export class QuerySearch extends Query {
 
     async next(
         limit: number,
-        additionalConstraints: QueryConstraint[] = []
+        additionalConstraints: Query[] = []
     ): Promise<DocumentSnapshot[]> {
         if (!this.hits) {
             const facetFilters = this.constraints
                 .filter((constraint) => {
                     return (
-                        constraint.type == "where" && constraint._op == "array-contains"
+                        constraint.type === "where" && constraint._op === "array-contains"
                     );
                 })
                 .map((constraint) => {
                     const key = constraint._field.segments.join(".");
+                    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                     return `${key}:${constraint._value}`;
                 });
             // https://www.algolia.com/doc/api-reference/api-parameters/filters/
