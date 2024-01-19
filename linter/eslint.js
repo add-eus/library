@@ -108,7 +108,11 @@ const DEFAULT_CONFIG = {
                 ],
                 "@typescript-eslint/no-floating-promises": "error",
                 "@typescript-eslint/no-misused-promises": "error",
-                
+                "@typescript-eslint/restrict-plus-operands": "off",
+                "@typescript-eslint/no-explicit-any": "off",
+                "@typescript-eslint/no-inferrable-types": "off",
+                "@typescript-eslint/restrict-template-expressions": "off",
+
                 "vue/no-export-in-script-setup": "off",
                 "vue/no-expose-after-await": "off",
                 "vue/script-setup-uses-vars": "error",
