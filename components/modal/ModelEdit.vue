@@ -30,8 +30,8 @@ const events =
 const isEdit = computed(() => props.entity.$getMetadata().reference !== null);
 provide("isEdit", isEdit);
 const translateNamespacePath = computed(() => {
-    const modelName = props.entity.$getModelName();
-    return `model.${modelName}.${isEdit.value ? "edit" : "create"}`;
+    const modelName: string = props.entity.$getModelName();
+    return `model.${modelName}.${isEdit.value === true ? "edit" : "create"}`;
 });
 
 const cancelReason = ref<null | any>(null);
