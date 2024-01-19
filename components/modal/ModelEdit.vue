@@ -69,21 +69,42 @@ watch(vmodel, (value) => {
 
 async function beforeCreate({ onEnd }: { onEnd: () => void }) {
     if (typeof events.onBeforeCreate === "function") {
-        await events.onBeforeCreate(props.entity);
+        try {
+            await events.onBeforeCreate(props.entity);
+        } catch (e) {
+            console.error(e);
+            onEnd();
+            cancelReason.value = e;
+            return;
+        }
     }
     onEnd();
 }
 
 async function beforeUpdate({ onEnd }: { onEnd: () => void }) {
     if (typeof events.onBeforeEdit === "function") {
-        await events.onBeforeEdit(props.entity);
+        try {
+            await events.onBeforeEdit(props.entity);
+        } catch (e) {
+            console.error(e);
+            onEnd();
+            cancelReason.value = e;
+            return;
+        }
     }
     onEnd();
 }
 
 async function created({ onEnd }: { onEnd: () => void }) {
     if (typeof events.onCreate === "function") {
-        await events.onCreate(props.entity);
+        try {
+            await events.onCreate(props.entity);
+        } catch (e) {
+            console.error(e);
+            onEnd();
+            cancelReason.value = e;
+            return;
+        }
     }
     onEnd();
     successReason.value = props.entity;
@@ -91,7 +112,14 @@ async function created({ onEnd }: { onEnd: () => void }) {
 
 async function updated({ onEnd }: { onEnd: () => void }) {
     if (typeof events.onEdit === "function") {
-        await events.onEdit(props.entity);
+        try {
+            await events.onEdit(props.entity);
+        } catch (e) {
+            console.error(e);
+            onEnd();
+            cancelReason.value = e;
+            return;
+        }
     }
     onEnd();
     successReason.value = props.entity;
