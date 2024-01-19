@@ -112,6 +112,7 @@ const DEFAULT_CONFIG = {
                 "@typescript-eslint/no-explicit-any": "off",
                 "@typescript-eslint/no-inferrable-types": "off",
                 "@typescript-eslint/restrict-template-expressions": "off",
+                "@typescript-eslint/unbound-method": "off",
 
                 "vue/no-export-in-script-setup": "off",
                 "vue/no-expose-after-await": "off",
