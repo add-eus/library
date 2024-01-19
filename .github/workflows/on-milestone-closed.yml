@@ -73,6 +73,7 @@ jobs:
             - name: Set up Checkout repository
               uses: actions/checkout@v3
               with:
+                  ssh-key: ${{ secrets.SSH_KEY }}
                   persist-credentials: true
 
             # Configure Node
