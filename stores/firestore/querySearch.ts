@@ -52,7 +52,7 @@ export class QuerySearch extends Query {
 
         let i;
         let docs: DocumentSnapshot[] = [];
-        const scale = limit > 10 ? 10 : limit;
+        const scale = limit > 10 || limit < 0 ? 10 : limit;
         for (i = this.currentHitIndex; i < this.hits.length; i += scale) {
             const hitObjectIDS = this.hits
                 .slice(this.currentHitIndex, scale + this.currentHitIndex)
