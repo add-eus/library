@@ -72,7 +72,6 @@ async function beforeCreate({ onEnd }: { onEnd: () => void }) {
         try {
             await events.onBeforeCreate(props.entity);
         } catch (e) {
-            console.error(e);
             onEnd();
             cancelReason.value = e;
             return;
@@ -86,7 +85,6 @@ async function beforeUpdate({ onEnd }: { onEnd: () => void }) {
         try {
             await events.onBeforeEdit(props.entity);
         } catch (e) {
-            console.error(e);
             onEnd();
             cancelReason.value = e;
             return;
@@ -100,7 +98,6 @@ async function created({ onEnd }: { onEnd: () => void }) {
         try {
             await events.onCreate(props.entity);
         } catch (e) {
-            console.error(e);
             onEnd();
             cancelReason.value = e;
             return;
@@ -115,7 +112,6 @@ async function updated({ onEnd }: { onEnd: () => void }) {
         try {
             await events.onEdit(props.entity);
         } catch (e) {
-            console.error(e);
             onEnd();
             cancelReason.value = e;
             return;
@@ -137,7 +133,7 @@ provide(
     }
 );
 
-async function onSaving(isSaving: boolean) {
+function onSaving(isSaving: boolean) {
     isNotSubmittable.value = isSaving;
     loading.value = isSaving;
 }
