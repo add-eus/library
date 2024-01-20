@@ -8,6 +8,7 @@ const DEFAULT_CONFIG = {
         browser: true,
         node: true,
     },
+    //parser: "@typescript-eslint/parser",
     parserOptions: {
         parser: "@typescript-eslint/parser",
         sourceType: "module",
@@ -20,6 +21,8 @@ const DEFAULT_CONFIG = {
         "plugin:vue/vue3-recommended",
         "plugin:vue/vue3-essential",
         "plugin:vuejs-accessibility/recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
         "plugin:prettier-vue/recommended",
         "prettier",
     ],
@@ -28,8 +31,15 @@ const DEFAULT_CONFIG = {
         "no-console": process.env.NODE_ENV === "production" ? "error" : "warn",
         "no-debugger": process.env.NODE_ENV === "production" ? "error" : "warn",
         "no-unused-vars": process.env.NODE_ENV === "production" ? "error" : "warn",
-        "@typescript-eslint/no-unused-vars": ["error"],
         quotes: ["error", "double"],
+
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unsafe-return": "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unsafe-argument": "off",
+        "@typescript-eslint/no-unused-vars": ["error"],
+
         "@typescript-eslint/consistent-type-imports": [
             "error",
             {
@@ -73,6 +83,8 @@ const DEFAULT_CONFIG = {
                     { terms: ["todo", "fixme"], location: "start" },
                 ],
                 "spaced-comment": ["error", "always", { markers: ["/"] }],
+                "no-dupe-else-if": "error",
+
                 "@typescript-eslint/no-unused-vars": "error",
                 "@typescript-eslint/strict-boolean-expressions": [
                     "error",
@@ -87,6 +99,11 @@ const DEFAULT_CONFIG = {
                 ],
                 "@typescript-eslint/no-floating-promises": "error",
                 "@typescript-eslint/no-misused-promises": "error",
+                "@typescript-eslint/restrict-plus-operands": "off",
+                "@typescript-eslint/no-explicit-any": "off",
+                "@typescript-eslint/no-inferrable-types": "off",
+                "@typescript-eslint/restrict-template-expressions": "off",
+                "@typescript-eslint/unbound-method": "off",
 
                 "vue/no-export-in-script-setup": "off",
                 "vue/no-expose-after-await": "off",
