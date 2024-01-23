@@ -79,8 +79,10 @@ export function usePrint() {
             );
             await promise;
 
+            await sleep(2000);
+
             await print(printFrame);
-            // await destroy(node);
+            destroy(node);
         },
     };
 }
