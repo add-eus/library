@@ -47,7 +47,7 @@ const DEFAULT_CONFIG = {
                 disallowTypeAnnotations: false,
             },
         ],
-        "prettier/prettier": ["error", require("./prettier")],
+        //"prettier/prettier": ["error", require("./prettier")],
         "prettier-vue/prettier": ["error", require("./prettier")],
         "vue/no-multiple-template-root": ["error"],
         "vue/no-lifecycle-after-await": ["error"],
