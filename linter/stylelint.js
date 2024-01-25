@@ -14,7 +14,7 @@ module.exports = function (cwd) {
             "stylelint-config-recommended-vue",
         ]),
         customSyntax: resolvePathFromModule("postcss-scss"),
-        plugins: resolvePathFromArrayModule(["stylelint-scss"]),
+        plugins: resolvePathFromArrayModule(["stylelint-scss", "stylelint-prettier"]),
         overrides: [
             {
                 files: ["*.vue", "**/*.vue"],
@@ -23,6 +23,7 @@ module.exports = function (cwd) {
         ],
         ignorePattern: "!(src)/**/*",
         rules: {
+            "prettier/prettier": [true, require("./prettier.js")],
             /** Font icons */
             "font-family-no-missing-generic-family-keyword": null,
 
