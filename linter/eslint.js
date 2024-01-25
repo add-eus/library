@@ -26,7 +26,7 @@ const DEFAULT_CONFIG = {
         "plugin:prettier-vue/recommended",
         "prettier",
     ],
-    plugins: ["@typescript-eslint", "prettier-vue"],
+    plugins: ["@typescript-eslint", "prettier-vue", "prettier"],
     rules: {
         "no-console": process.env.NODE_ENV === "production" ? "error" : "warn",
         "no-debugger": process.env.NODE_ENV === "production" ? "error" : "warn",
