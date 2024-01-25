@@ -47,6 +47,7 @@ const DEFAULT_CONFIG = {
                 disallowTypeAnnotations: false,
             },
         ],
+        "prettier/prettier": ["error", require("./prettier")],
         "prettier-vue/prettier": ["error", require("./prettier")],
         "vue/no-multiple-template-root": ["error"],
         "vue/no-lifecycle-after-await": ["error"],
@@ -155,7 +156,7 @@ module.exports.cloudFunction = function (path) {
                 node: true,
             },
         },
-        DEFAULT_CONFIG
+        DEFAULT_CONFIG,
     );
 };
 
@@ -171,6 +172,6 @@ module.exports.web = function (path) {
                 node: false,
             },
         },
-        DEFAULT_CONFIG
+        DEFAULT_CONFIG,
     );
 };
