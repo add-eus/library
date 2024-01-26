@@ -130,7 +130,7 @@ provide(
         isSubNotSubmittable.value = !submittable;
         submitText.value = text;
         onSubmit.value = onClick;
-    }
+    },
 );
 
 function onSaving(isSaving: boolean) {
