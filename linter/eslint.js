@@ -26,7 +26,7 @@ const DEFAULT_CONFIG = {
         "plugin:prettier-vue/recommended",
         "prettier",
     ],
-    plugins: ["@typescript-eslint", "prettier-vue"],
+    plugins: ["@typescript-eslint", "prettier-vue", "prettier"],
     rules: {
         "no-console": process.env.NODE_ENV === "production" ? "error" : "warn",
         "no-debugger": process.env.NODE_ENV === "production" ? "error" : "warn",
@@ -47,16 +47,8 @@ const DEFAULT_CONFIG = {
                 disallowTypeAnnotations: false,
             },
         ],
-        "prettier-vue/prettier": [
-            "error",
-            {
-                semi: true,
-                singleQuote: false,
-                printWidth: 90,
-                tabWidth: 4,
-                bracketSameLine: true,
-            },
-        ],
+        //"prettier/prettier": ["error", require("./prettier")],
+        "prettier-vue/prettier": ["error", require("./prettier")],
         "vue/no-multiple-template-root": ["error"],
         "vue/no-lifecycle-after-await": ["error"],
         "vue/no-expose-after-await": ["error"],
@@ -108,7 +100,12 @@ const DEFAULT_CONFIG = {
                 ],
                 "@typescript-eslint/no-floating-promises": "error",
                 "@typescript-eslint/no-misused-promises": "error",
-                
+                "@typescript-eslint/restrict-plus-operands": "off",
+                "@typescript-eslint/no-explicit-any": "off",
+                "@typescript-eslint/no-inferrable-types": "off",
+                "@typescript-eslint/restrict-template-expressions": "off",
+                "@typescript-eslint/unbound-method": "off",
+
                 "vue/no-export-in-script-setup": "off",
                 "vue/no-expose-after-await": "off",
                 "vue/script-setup-uses-vars": "error",
@@ -159,7 +156,7 @@ module.exports.cloudFunction = function (path) {
                 node: true,
             },
         },
-        DEFAULT_CONFIG
+        DEFAULT_CONFIG,
     );
 };
 
@@ -175,6 +172,6 @@ module.exports.web = function (path) {
                 node: false,
             },
         },
-        DEFAULT_CONFIG
+        DEFAULT_CONFIG,
     );
 };

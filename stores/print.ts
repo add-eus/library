@@ -75,12 +75,14 @@ export function usePrint() {
                         printFrame.contentDocument.head.appendChild(cloneNode);
                         await new Promise((resolve) => setTimeout(resolve, 0));
                     }
-                })
+                }),
             );
             await promise;
 
+            await sleep(2000);
+
             await print(printFrame);
-            // await destroy(node);
+            destroy(node);
         },
     };
 }

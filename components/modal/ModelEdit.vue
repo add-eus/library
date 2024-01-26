@@ -30,8 +30,8 @@ const events =
 const isEdit = computed(() => props.entity.$getMetadata().reference !== null);
 provide("isEdit", isEdit);
 const translateNamespacePath = computed(() => {
-    const modelName = props.entity.$getModelName();
-    return `model.${modelName}.${isEdit.value ? "edit" : "create"}`;
+    const modelName: string = props.entity.$getModelName();
+    return `model.${modelName}.${isEdit.value === true ? "edit" : "create"}`;
 });
 
 const cancelReason = ref<null | any>(null);
@@ -69,21 +69,39 @@ watch(vmodel, (value) => {
 
 async function beforeCreate({ onEnd }: { onEnd: () => void }) {
     if (typeof events.onBeforeCreate === "function") {
-        await events.onBeforeCreate(props.entity);
+        try {
+            await events.onBeforeCreate(props.entity);
+        } catch (e) {
+            onEnd();
+            cancelReason.value = e;
+            return;
+        }
     }
     onEnd();
 }
 
 async function beforeUpdate({ onEnd }: { onEnd: () => void }) {
     if (typeof events.onBeforeEdit === "function") {
-        await events.onBeforeEdit(props.entity);
+        try {
+            await events.onBeforeEdit(props.entity);
+        } catch (e) {
+            onEnd();
+            cancelReason.value = e;
+            return;
+        }
     }
     onEnd();
 }
 
 async function created({ onEnd }: { onEnd: () => void }) {
     if (typeof events.onCreate === "function") {
-        await events.onCreate(props.entity);
+        try {
+            await events.onCreate(props.entity);
+        } catch (e) {
+            onEnd();
+            cancelReason.value = e;
+            return;
+        }
     }
     onEnd();
     successReason.value = props.entity;
@@ -91,7 +109,13 @@ async function created({ onEnd }: { onEnd: () => void }) {
 
 async function updated({ onEnd }: { onEnd: () => void }) {
     if (typeof events.onEdit === "function") {
-        await events.onEdit(props.entity);
+        try {
+            await events.onEdit(props.entity);
+        } catch (e) {
+            onEnd();
+            cancelReason.value = e;
+            return;
+        }
     }
     onEnd();
     successReason.value = props.entity;
@@ -106,10 +130,10 @@ provide(
         isSubNotSubmittable.value = !submittable;
         submitText.value = text;
         onSubmit.value = onClick;
-    }
+    },
 );
 
-async function onSaving(isSaving: boolean) {
+function onSaving(isSaving: boolean) {
     isNotSubmittable.value = isSaving;
     loading.value = isSaving;
 }
