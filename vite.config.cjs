@@ -4,7 +4,7 @@ const { cpus } = require("os");
 const Vue = require("@vitejs/plugin-vue");
 const { default: Pages } = require("vite-plugin-pages");
 const Components = require("unplugin-vue-components/vite");
-const { default: ViteFonts } = require("vite-plugin-fonts");
+const Unfonts = require("unplugin-fonts/vite");
 const { default: dynamicImport } = require("vite-plugin-dynamic-import");
 const { imagetools } = require("vite-imagetools");
 const ImageMin = require("vite-plugin-imagemin");
@@ -27,7 +27,7 @@ const localDependencies = Object.keys(PACKAGE.dependencies ?? []).filter(
         dependency !== "bulma" &&
         dependency !== "addeus-common-library" &&
         dependency !== "firebase" &&
-        dependency.match(/^@types\//) === null
+        dependency.match(/^@types\//) === null,
 );
 
 /**
@@ -39,7 +39,7 @@ module.exports.define = function (config = {}) {
     const currentDir = process.cwd();
     const outDir = path.join(
         currentDir,
-        config.output !== undefined ? config.output : "dist"
+        config.output !== undefined ? config.output : "dist",
     );
     const rootDir = path.join(currentDir, "src");
     const publicDir = path.join(currentDir, "public");
@@ -308,24 +308,7 @@ module.exports.define = function (config = {}) {
                  *
                  * @see https://github.com/stafyniaksacha/vite-plugin-fonts
                  */
-                ViteFonts({
-                    google: {
-                        families: [
-                            {
-                                name: "Fira Code",
-                                styles: "wght@400;600",
-                            },
-                            {
-                                name: "Montserrat",
-                                styles: "wght@500;600;700;800;900",
-                            },
-                            {
-                                name: "Roboto",
-                                styles: "wght@300;400;500;600;700",
-                            },
-                        ],
-                    },
-                    // Custom fonts.
+                Unfonts({
                     custom: {
                         families: config.customFonts,
                         display: "auto",
@@ -420,11 +403,11 @@ module.exports.define = function (config = {}) {
                         defaultExtractor(content) {
                             const contentWithoutStyleBlocks = content.replace(
                                 /<style[^]+?<\/style>/gi,
-                                ""
+                                "",
                             );
                             return (
                                 contentWithoutStyleBlocks.match(
-                                    /[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g
+                                    /[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g,
                                 ) || []
                             );
                         },
