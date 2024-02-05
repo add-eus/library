@@ -124,6 +124,7 @@
         "tslib": "2.6.2",
         "tsuml2": "^0.14.0",
         "typescript": "^5.1.3",
+        "unplugin-fonts": "^1.1.1",
         "unplugin-vue-components": "^0.26.0",
         "uuid": "^9.0.1",
         "v-calendar": "^3.0.0-alpha.8",
