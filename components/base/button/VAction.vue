@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import type { ComponentPublicInstance } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
+import type { RouteLocation } from "vue-router";
+import { RouterLink } from "vue-router";
 import { useHaptic } from "../../../stores/haptic";
 
 export type VActionDark = "1" | "2" | "3" | "4" | "5" | "6";
@@ -9,25 +12,40 @@ export interface VActionProps {
     rounded?: boolean;
     hoverable?: boolean;
     grey?: boolean;
+    to: RouteLocation;
 }
 
 const props = withDefaults(defineProps<VActionProps>(), {
     dark: undefined,
 });
 
-const element = ref(null);
+const buttonElement = ref<HTMLButtonElement | null>(null);
+const routerElement = ref<ComponentPublicInstance<typeof RouterLink> | null>(null);
 const haptic = useHaptic();
 
+function vibrate() {
+    haptic.vibrate();
+}
 onMounted(() => {
-    element.value.addEventListener("click", () => {
-        haptic.vibrate();
-    });
+    if (buttonElement.value !== null)
+        buttonElement.value.addEventListener("click", vibrate);
+    if (routerElement.value !== null)
+        routerElement.value.$el.addEventListener("click", vibrate);
+});
+
+onUnmounted(() => {
+    if (buttonElement.value !== null)
+        buttonElement.value.removeEventListener("click", vibrate);
+    if (routerElement.value !== null)
+        routerElement.value.$el.removeEventListener("click", vibrate);
 });
 </script>
 
 <template>
-    <button
-        ref="element"
+    <RouterLink
+        v-if="$props.to"
+        :to="$props.to"
+        ref="routerElement"
         class="button v-action"
         :class="[
             props.active && 'is-active',
@@ -35,7 +53,22 @@ onMounted(() => {
             props.dark && `is-dark-bg-${props.dark}`,
             props.hoverable && 'is-hoverable',
             props.grey && 'is-grey',
-        ]">
+        ]"
+        v-bind="$attrs">
+        <slot></slot>
+    </RouterLink>
+    <button
+        v-else
+        ref="buttonElement"
+        class="button v-action"
+        :class="[
+            props.active && 'is-active',
+            props.rounded && 'is-rounded',
+            props.dark && `is-dark-bg-${props.dark}`,
+            props.hoverable && 'is-hoverable',
+            props.grey && 'is-grey',
+        ]"
+        v-bind="$attrs">
         <slot></slot>
     </button>
 </template>
@@ -52,10 +85,6 @@ onMounted(() => {
         font-weight: 500;
         font-size: 0.9rem;
         line-height: 0;
-        border-radius: 3px;
-        background: var(--white);
-        color: var(--dark-text);
-        border: 1px solid var(--placeholder);
         transition: all 0.3s; // transition-all test
         cursor: pointer;
         box-shadow: none !important;

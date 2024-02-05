@@ -1,6 +1,6 @@
+import { resolveUnref, syncRef } from "@vueuse/core";
 import type { Ref } from "vue";
 import { getCurrentInstance, isRef, ref, watch } from "vue";
-import { resolveUnref, syncRef } from "@vueuse/core";
 
 function parseOptions(options: any | string, values?: any): any {
     if (typeof options === "string")
@@ -8,21 +8,21 @@ function parseOptions(options: any | string, values?: any): any {
             path: options,
         };
 
-    if (!options.values) options.values = values;
+    if (options.values === undefined) options.values = values;
 
     return options;
 }
 
 function transformOptionsFromNamespaces(
     options: any,
-    namespacesUnfiltered: string[]
+    namespacesUnfiltered: string[],
 ): any {
     const namespaces = namespacesUnfiltered.filter((namespace) => {
         return typeof namespace === "string";
     });
 
     const newOptions = { ...options };
-    if (options.path.startsWith(".")) {
+    if (options.path.startsWith(".") === true) {
         let finalNamespace = "";
         for (let i = 0; i < namespaces.length; i++) {
             finalNamespace = namespaces[i] + finalNamespace;
@@ -36,9 +36,9 @@ function transformOptionsFromNamespaces(
 export function translate(options: any, component: any, values?: any) {
     if (isRef(options)) {
         const translated = ref("");
-        let stop: Function;
+        let stop: () => void | undefined;
         function update() {
-            if (stop) stop();
+            if (stop !== undefined) stop();
             const translatedSubRef = translate(options.value, component, values);
             stop = syncRef(translatedSubRef, translated);
         }
@@ -65,23 +65,23 @@ export function translate(options: any, component: any, values?: any) {
 
                 translated.value = component.appContext.app.config.globalProperties.$t(
                     transformedOptions.path,
-                    unrefValues
+                    unrefValues,
                 );
             } catch (e) {
                 // eslint-disable-next-line no-console
                 console.error(e);
             }
         }
-        while ((parentComponent = parentComponent.parent)) {
+        while ((parentComponent = parentComponent.parent) !== undefined) {
             const currentIndex: number = index;
-            if (parentComponent.translationNamespace) {
+            if (parentComponent.translationNamespace !== undefined) {
                 translationNamespaces[currentIndex] =
                     parentComponent.translationNamespace.value;
                 const currentComponent = parentComponent;
                 watch(currentComponent.translationNamespace, () => {
                     if (
-                        !currentComponent.translationNamespace ||
-                        !currentComponent.translationNamespace.value
+                        currentComponent.translationNamespace === undefined ||
+                        currentComponent.translationNamespace.value === undefined
                     ) {
                         return;
                     }
@@ -89,7 +89,7 @@ export function translate(options: any, component: any, values?: any) {
                         currentComponent.translationNamespace.value;
                     transformedOptions = transformOptionsFromNamespaces(
                         options,
-                        translationNamespaces
+                        translationNamespaces,
                     );
 
                     translateInScope();
@@ -101,7 +101,7 @@ export function translate(options: any, component: any, values?: any) {
 
         transformedOptions = transformOptionsFromNamespaces(
             options,
-            translationNamespaces
+            translationNamespaces,
         );
 
         translateInScope();
@@ -111,17 +111,18 @@ export function translate(options: any, component: any, values?: any) {
             () => {
                 translateInScope();
             },
-            { deep: true }
+            { deep: true },
         );
     });
 
     return translated;
 }
 
-export function setTranslateNamespace(path: string | Ref<string>, instance: any) {
-    if (isRef(path) && !instance.translationNamespace) {
+export function setTranslateNamespace(path: string | Ref<string>, instance?: any) {
+    if (instance === undefined) instance = getCurrentInstance();
+    if (isRef(path) === true && instance.translationNamespace === undefined) {
         instance.translationNamespace = path;
-    } else if (!instance.translationNamespace) {
+    } else if (instance.translationNamespace === undefined) {
         instance.translationNamespace = ref(path);
     } else instance.translationNamespace.value = path;
 }

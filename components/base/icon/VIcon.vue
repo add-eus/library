@@ -36,7 +36,7 @@ const styles = getIconStyles();
 
 <style lang="scss">
 .icon {
-    font-size: v-bind(size);
+    font-size: v-bind(size) !important;
     height: v-bind(size) !important;
     width: v-bind(size) !important;
     display: flex;

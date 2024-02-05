@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { Colors } from "../../../stores/color";
-import { useColor } from "../../../stores/color";
 import { computed } from "vue";
+import type { Colors } from "../../../stores/color";
+import { useColor, useInvertedColor } from "../../../stores/color";
 
 export type VTabsType = "boxed" | "toggle" | "rounded";
 export type VTabsAlign = "centered" | "right";
@@ -37,6 +37,7 @@ const props = withDefaults(defineProps<VTabsProps>(), {
 });
 
 const color = useColor(computed(() => props.color));
+const textColor = useInvertedColor(computed(() => props.color));
 
 const activeValue = computed({
     get() {
@@ -175,11 +176,7 @@ function toggle(value: string) {
                 a {
                     background: v-bind(color) !important;
                     border-color: v-bind(color) !important;
-
-                    &:hover,
-                    &:focus {
-                        color: var(--white);
-                    }
+                    color: v-bind(textColor) !important;
                 }
             }
 
@@ -202,7 +199,6 @@ function toggle(value: string) {
                 &:hover,
                 &:focus {
                     border-bottom-color: v-bind(color) !important;
-                    color: v-bind(color) !important;
                 }
             }
         }
@@ -243,6 +239,10 @@ function toggle(value: string) {
                 margin-left: 5px;
             }
         }
+    }
+
+    > ul {
+        margin: 0;
     }
 }
 

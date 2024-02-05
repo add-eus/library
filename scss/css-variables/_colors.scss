@@ -8,25 +8,31 @@ $varColors: (
     "primary": $primary,
     "primary-dark": $primary-dark,
     "primary-light": $primary-light,
+    "primary-invert": $primary-invert,
 
     "info": $info,
     "info-dark": $info-dark,
     "info-light": $info-light,
+    "info-invert": $info-invert,
 
     "success": $success,
     "success-dark": $success-dark,
     "success-light": $success-light,
+    "success-invert": $success-invert,
 
     "warning": $warning,
     "warning-dark": $warning-dark,
     "warning-light": $warning-light,
+    "warning-invert": $warning-invert,
 
     "danger": $danger,
     "danger-dark": $danger-dark,
     "danger-light": $danger-light,
+    "danger-invert": $danger-invert,
 
     "black-bis": $black-bis,
     "black-ter": $black-ter,
+    "black-invert": $black,
 
     "grey-darker": $grey-darker,
     "grey-dark": $grey-dark,
@@ -38,16 +44,25 @@ $varColors: (
     "white-bis": $white-bis,
 
     "gold": $gold,
+
     "silver": $silver,
+
     "bronze": $bronze,
 
     "orange": $orange,
+
     "yellow": $yellow,
+
     "green": $green,
+
     "turquoise": $turquoise,
+
     "cyan": $cyan,
+
     "blue": $blue,
+
     "purple": $purple,
+
     "red": $red,
 );
 
