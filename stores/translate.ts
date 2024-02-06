@@ -72,7 +72,7 @@ export function translate(options: any, component: any, values?: any) {
                 console.error(e);
             }
         }
-        while ((parentComponent = parentComponent.parent) !== undefined) {
+        while ((parentComponent = parentComponent.parent) !== null) {
             const currentIndex: number = index;
             if (parentComponent.translationNamespace !== undefined) {
                 translationNamespaces[currentIndex] =
