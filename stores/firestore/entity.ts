@@ -13,7 +13,10 @@ import { useFirebase } from "../firebase";
 import { EntityMetaData } from "./entityMetadata";
 import { FirebaseError } from "firebase/app";
 
-export function onInitialize(target: any, callback: Function) {
+export function onInitialize(
+    target: any,
+    callback: (this: any, metadata: EntityMetaData) => void,
+) {
     const constructor = target.constructor;
     if (constructor.onInitialize === undefined) constructor.onInitialize = [];
     constructor.onInitialize.push(callback);
@@ -73,7 +76,7 @@ export class EntityBase {
         const reactivity = shallowReactive(proxied);
 
         if (Array.isArray((constructor as any).onInitialize)) {
-            (constructor as any).onInitialize.map((callback: Function) => {
+            (constructor as any).onInitialize.map((callback) => {
                 return callback.call(reactivity, this.$getMetadata());
             });
         }
@@ -83,7 +86,7 @@ export class EntityBase {
         return reactivity;
     }
 
-    static addMethod(name: string, callback: Function) {
+    static addMethod(name: string, callback: (this: any, ...args: any[]) => any) {
         (this.prototype as any)["$" + name] = callback;
     }
 
@@ -153,7 +156,7 @@ export class Entity extends EntityBase {
         metadata.initSubCollections();
     }
 
-    static addMethod(name: string, callback: Function) {
+    static addMethod(name: string, callback: (this: any, ...args: any[]) => any) {
         (this.prototype as any)["$" + name] = callback;
     }
 
@@ -190,8 +193,8 @@ export class Entity extends EntityBase {
                 const docRef = doc(
                     collection(
                         firebase.firestore,
-                        $metadata.saveNewDocPath ?? constructor.collectionName
-                    )
+                        $metadata.saveNewDocPath ?? constructor.collectionName,
+                    ),
                 );
 
                 $metadata.setReference(docRef);
@@ -211,7 +214,7 @@ export class Entity extends EntityBase {
                 throw new Error(
                     `You don't have permission to ${isNew ? "create" : "edit"} ${
                         $metadata.reference?.path
-                    }`
+                    }`,
                 );
             } else if (
                 err instanceof FirebaseError &&
