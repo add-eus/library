@@ -27,7 +27,7 @@ watch(
     () => props.isOpen,
     () => {
         isOpen.value = props.isOpen;
-    }
+    },
 );
 </script>
 
@@ -58,7 +58,6 @@ watch(
 
 .collapse {
     padding: 0;
-    margin-bottom: 1.5rem;
     max-width: 100%;
 
     &[open] {

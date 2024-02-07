@@ -1,6 +1,5 @@
-import { useCssVar, toValue } from "@vueuse/core";
+import { toValue, useCssVar } from "@vueuse/core";
 import type { Ref } from "vue";
-import { computed } from "vue";
 
 export type Colors =
     | "primary"
@@ -40,10 +39,13 @@ export type Colors =
     | "red";
 
 export function useColor(color: Ref<Colors> | Colors) {
-    return useCssVar(
-        computed(() => {
-            return `--${toValue(color)}`;
-        }),
-        document.body
-    );
+    return useCssVar(() => {
+        return `--${toValue(color)}`;
+    }, document.body);
+}
+
+export function useInvertedColor(color: Ref<Colors> | Colors) {
+    return useCssVar(() => {
+        return `--${toValue(color)}-invert`;
+    }, document.body);
 }
