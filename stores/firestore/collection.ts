@@ -2,7 +2,7 @@ import type {
     CollectionOptions as UseCollectionOption,
     Collection as UseCollectionType,
 } from ".";
-import { newDoc, useCollection } from ".";
+import { newDoc, useCollection, useDoc } from ".";
 import type { Entity } from "./entity";
 import { onInitialize } from "./entity";
 import type { EntityMetaData } from "./entityMetadata";
@@ -72,13 +72,13 @@ export function Collection<T>(options: CollectionOptions<T>) {
 
                 // save propertyKey in subCollections of model
                 const subPathInfo = info.subPaths.find(
-                    ({ path }) => path === propertyKey
+                    ({ path }) => path === propertyKey,
                 );
                 if (subPathInfo !== undefined) {
                     subPathInfo.blacklistedProperties.forEach((blacklistedProperty) => {
                         if (!blacklistedProperties.includes(blacklistedProperty)) {
                             throw new Error(
-                                `property ${propertyKey} already exists, a subcollection name must have the same blacklistedProperties`
+                                `property ${propertyKey} already exists, a subcollection name must have the same blacklistedProperties`,
                             );
                         }
                     });
@@ -128,7 +128,7 @@ export class SubCollection<T extends Entity> {
     init(
         model: typeof Entity,
         path: string | undefined,
-        blacklistedProperties: string[]
+        blacklistedProperties: string[],
     ) {
         this.model = model;
         this.path = path;
@@ -151,26 +151,29 @@ export class SubCollection<T extends Entity> {
             path: this.path,
             blacklistedProperties: this.blacklistedProperties,
         };
-        this.firestoreArray = useCollection(this.model, useCollectionOptions) as any;
+        this.firestoreArray = useCollection(
+            this.model,
+            useCollectionOptions,
+        ) as UseCollectionType<T>;
 
         this.currentList.splice(0, this.currentList.length);
 
         this.stopWatch = watchArray(
-            this.firestoreArray!,
+            this.firestoreArray,
             (value, oldValue, added: T[], removed: T[]) => {
                 added.forEach((a) => {
                     const alreadyInArray = this.currentList.some(
-                        (entity) => entity.$getID() === a.$getID()
+                        (entity) => entity.$getID() === a.$getID(),
                     );
                     if (!alreadyInArray) this.currentList.push(a);
                 });
                 removed.forEach((r) => {
                     const index = this.currentList.findIndex(
-                        (entity) => entity.$getID() === r.$getID()
+                        (entity) => entity.$getID() === r.$getID(),
                     );
                     if (index !== -1) this.currentList.splice(index, 1);
                 });
-            }
+            },
         );
         this.isFetched = true;
     }
@@ -225,10 +228,10 @@ export class SubCollection<T extends Entity> {
         const appEntities = [...this.currentList];
 
         const toDelete = dbEntities.filter(
-            (f) => !appEntities.some((a) => a.$getID() === f.$getID())
+            (f) => !appEntities.some((a) => a.$getID() === f.$getID()),
         );
         const toAdd = appEntities.filter(
-            (a) => !dbEntities.some((f) => a.$getID() === f.$getID())
+            (a) => !dbEntities.some((f) => a.$getID() === f.$getID()),
         );
         return { toDelete, toAdd };
     }
@@ -240,6 +243,16 @@ export class SubCollection<T extends Entity> {
         const entity = newDoc(this.model) as T;
         entity.$getMetadata().saveNewDocPath = this.path;
         this.currentList.push(entity);
+        return entity;
+    }
+
+    useDoc(id: string): T | undefined {
+        if (!this.isInitialized)
+            throw new Error(`property subcollection not initialized`);
+        if (this.model === undefined) throw new Error(`model is undefined`);
+        const entity = useDoc(this.model, id, { fetch: true, collection: this.path }) as
+            | T
+            | undefined;
         return entity;
     }
 }
@@ -254,13 +267,14 @@ export const updatePropertyCollection = async (
     toRemove: Array<Entity>,
     toAdd: Array<Entity>,
     path: string,
-    blacklistedProperties: string[] = []
+    blacklistedProperties: string[] = [],
 ) => {
     const firebase = useFirebase();
 
     const collectionRef = collection(firebase.firestore, path);
     const removePromises = toRemove.map(async (entity) => {
-        const id = entity.$getMetadata().reference!.id;
+        const id = entity.$getMetadata().reference?.id;
+        if (id === undefined) throw new Error("id is undefined");
         const docRef = doc(collectionRef, id);
         await deleteDoc(docRef);
     });
@@ -276,8 +290,10 @@ export const updatePropertyCollection = async (
         if (id === undefined) {
             // entity is new, save it before add to collection
             await entity.$save();
-            id = entity.$getMetadata().reference!.id;
-            docRef = entity.$getMetadata().reference!;
+            const reference = entity.$getMetadata().reference;
+            if (reference === null) throw new Error("reference is null");
+            id = reference.id;
+            docRef = reference;
         } else {
             docRef = doc(collectionRef, id);
             await setDoc(docRef, entity.$getPlain(), { merge: true });

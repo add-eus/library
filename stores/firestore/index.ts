@@ -53,7 +53,7 @@ export interface CollectionOptions {
 const cachedEntities: { [key: string]: { usedBy: number; entity: any } } = {};
 const algoliaClient = algoliasearch(
     import.meta.env.VITE_ALGOLIA_APPLICATION_ID,
-    import.meta.env.VITE_ALGOLIA_API_KEY
+    import.meta.env.VITE_ALGOLIA_API_KEY,
 );
 
 function transformWheres(whereOptions: WhereOption[] = []): QueryConstraint[] {
@@ -69,19 +69,19 @@ function transformOrders(orderOptions: OrderOption[] = []): QueryConstraint[] {
 }
 
 function transformCompositeConstraint(
-    compositeConstraint: CompositeConstraint
+    compositeConstraint: CompositeConstraint,
 ): QueryFilterConstraint {
     if (compositeConstraint.type === "OR") {
         return or(
             ...compositeConstraint.constraints.map((c) =>
-                transformCompositeConstraint(c as CompositeConstraint)
-            )
+                transformCompositeConstraint(c as CompositeConstraint),
+            ),
         );
     } else if (compositeConstraint.type === "AND") {
         return and(
             ...compositeConstraint.constraints.map((c) =>
-                transformCompositeConstraint(c as CompositeConstraint)
-            )
+                transformCompositeConstraint(c as CompositeConstraint),
+            ),
         );
     } else if (compositeConstraint.type === "WHERE") {
         return where(...(compositeConstraint.constraints as WhereOption));
@@ -107,7 +107,7 @@ export class Collection<T> extends Array<T> {
  */
 export function useCollection<T extends typeof Entity>(
     collectionModel: T,
-    options: CollectionOptions
+    options: CollectionOptions,
 ): Collection<InstanceType<T>> {
     if (options.wheres !== undefined && options.compositeConstraint !== undefined) {
         throw new Error("You can't use both wheres and compositeConstraint");
@@ -125,21 +125,21 @@ export function useCollection<T extends typeof Entity>(
             import.meta.env.VITE_ALGOLIA_PREFIX !== undefined
                 ? import.meta.env.VITE_ALGOLIA_PREFIX
                 : ""
-        }${collectionModel.collectionName}`
+        }${collectionModel.collectionName}`,
     );
 
     const collectionRef = collection(
         firebase.firestore,
-        options.path === undefined ? collectionModel.collectionName : options.path
+        options.path === undefined ? collectionModel.collectionName : options.path,
     );
 
     entities.isUpdating = true;
 
     let wheres: QueryConstraint[] = transformWheres(
-        isRef(options.wheres) ? options.wheres.value : options.wheres
+        isRef(options.wheres) ? options.wheres.value : options.wheres,
     );
     let orders: QueryConstraint[] = transformOrders(
-        isRef(options.orders) ? options.orders.value : options.orders
+        isRef(options.orders) ? options.orders.value : options.orders,
     );
     let search: string | undefined = isRef(options.search)
         ? options.search.value
@@ -173,12 +173,12 @@ export function useCollection<T extends typeof Entity>(
                         (callback) => {
                             onDestroy.push(callback);
                         },
-                        options.blacklistedProperties
+                        options.blacklistedProperties,
                     );
                 },
                 collectionRef,
                 search,
-                algoliaIndex
+                algoliaIndex,
             );
         } else {
             const constraints = [...wheres, ...orders];
@@ -194,10 +194,10 @@ export function useCollection<T extends typeof Entity>(
                         (callback) => {
                             onDestroy.push(callback);
                         },
-                        options.blacklistedProperties
+                        options.blacklistedProperties,
                     );
                 },
-                collectionRef
+                collectionRef,
             );
         }
 
@@ -253,7 +253,7 @@ export function useCollection<T extends typeof Entity>(
     if (isRef(options.compositeConstraint))
         watch(options.compositeConstraint, async () => {
             compositeConstraint = transformCompositeConstraint(
-                (options.compositeConstraint as Ref).value
+                (options.compositeConstraint as Ref).value,
             );
             await fetch();
         });
@@ -266,18 +266,23 @@ export function useCollection<T extends typeof Entity>(
     return entities;
 }
 
+interface UseDocOptions {
+    fetch: boolean;
+    collection?: string;
+}
 export function useDoc<T extends typeof Entity>(
     collectionModel: T,
     id?: string,
-    options = { fetch: true }
+    options: UseDocOptions = { fetch: true },
 ): InstanceType<T> {
     if (id === undefined) return newDoc(collectionModel);
     const { firestore } = useFirebase();
-    const reference = doc(collection(firestore, collectionModel.collectionName), id);
+    const collectionName = options.collection ?? collectionModel.collectionName;
+    const reference = doc(collection(firestore, collectionName), id);
     const model = transform(
         reference,
         collectionModel,
-        getCurrentScope() ? onScopeDispose : () => {}
+        getCurrentScope() ? onScopeDispose : undefined,
     );
 
     if (options.fetch) void model.$getMetadata().refresh();
@@ -288,16 +293,18 @@ export function newDoc<T extends typeof Entity>(collectionModel: T): InstanceTyp
     const entity = new collectionModel();
     entity.$getMetadata().initSubCollections(true);
 
-    (getCurrentScope() ? onScopeDispose : () => {})(() => {
-        if (typeof entity.$getID !== "function") return;
-        const cachedIdEntity = `${collectionModel.collectionName}/${entity.$getID()}`;
-        if (cachedEntities[cachedIdEntity] === undefined) return;
-        cachedEntities[cachedIdEntity].usedBy--;
-        if (cachedEntities[cachedIdEntity].usedBy === 0) {
-            cachedEntities[cachedIdEntity].entity.$getMetadata().destroy();
-            delete cachedEntities[cachedIdEntity];
-        }
-    });
+    if (getCurrentScope() !== undefined) {
+        onScopeDispose(() => {
+            if (typeof entity.$getID !== "function") return;
+            const cachedIdEntity = `${collectionModel.collectionName}/${entity.$getID()}`;
+            if (cachedEntities[cachedIdEntity] === undefined) return;
+            cachedEntities[cachedIdEntity].usedBy--;
+            if (cachedEntities[cachedIdEntity].usedBy === 0) {
+                cachedEntities[cachedIdEntity].entity.$getMetadata().destroy();
+                delete cachedEntities[cachedIdEntity];
+            }
+        });
+    }
 
     entity.$getMetadata().on("saved", () => {
         const cachedIdEntity = `${collectionModel.collectionName}/${entity.$getID()}`;
@@ -313,13 +320,13 @@ export function newDoc<T extends typeof Entity>(collectionModel: T): InstanceTyp
 
 export async function findDoc<T extends typeof Entity>(
     collectionModel: T,
-    options: any
+    options: any,
 ): Promise<InstanceType<T> | undefined> {
     const wheres: QueryConstraint[] = transformWheres(
-        isRef(options.wheres) ? options.wheres.value : options.wheres
+        isRef(options.wheres) ? options.wheres.value : options.wheres,
     );
     const orders: QueryConstraint[] = transformOrders(
-        isRef(options.orders) ? options.orders.value : options.orders
+        isRef(options.orders) ? options.orders.value : options.orders,
     );
     const search: string = isRef(options.search) ? options.search.value : options.search;
 
@@ -341,7 +348,7 @@ export async function findDoc<T extends typeof Entity>(
         const algoliaIndex = algoliaClient.initIndex(
             import.meta.env.PROD
                 ? collectionModel.collectionName
-                : `dev_${collectionModel.collectionName}`
+                : `dev_${collectionModel.collectionName}`,
         );
         query = new QuerySearch(
             [...wheres, ...orders],
@@ -353,7 +360,7 @@ export async function findDoc<T extends typeof Entity>(
             },
             collectionRef,
             search,
-            algoliaIndex
+            algoliaIndex,
         );
     } else {
         query = new Query(
@@ -364,7 +371,7 @@ export async function findDoc<T extends typeof Entity>(
                     onDestroy.push(callback);
                 });
             },
-            collectionRef
+            collectionRef,
         );
     }
     const docs = await query.next(1);
@@ -382,8 +389,8 @@ export async function findDoc<T extends typeof Entity>(
 function transform<T extends typeof Entity>(
     doc: DocumentSnapshot | DocumentReference,
     Model: T,
-    onDisposed: (callback: () => void) => void,
-    blacklistedProperties: string[] = []
+    onDisposed?: (callback: () => void) => void,
+    blacklistedProperties: string[] = [],
 ): InstanceType<T> {
     let path: string | undefined = undefined;
     if (doc instanceof DocumentReference) {
@@ -404,7 +411,7 @@ function transform<T extends typeof Entity>(
 
     cachedEntities[cachedIdEntity].usedBy++;
 
-    onDisposed(() => {
+    onDisposed?.(() => {
         if (cachedEntities[cachedIdEntity] === undefined) return;
         cachedEntities[cachedIdEntity].usedBy--;
         if (cachedEntities[cachedIdEntity].usedBy === 0) {
@@ -419,7 +426,7 @@ function transform<T extends typeof Entity>(
 export const useParentOfCollectionGroup = (
     model: typeof Entity,
     collectionGroupName: string,
-    wheres: MaybeRef<WhereOption[]>
+    wheres: MaybeRef<WhereOption[]>,
 ) => {
     const firebase = useFirebase();
 
@@ -432,19 +439,19 @@ export const useParentOfCollectionGroup = (
                 const whereConstraints: QueryConstraint[] = transformWheres(value);
                 const groupQuery = query(
                     collectionGroup(firebase.firestore, collectionGroupName),
-                    ...whereConstraints
+                    ...whereConstraints,
                 );
                 const groupSnapshot = await getDocs(groupQuery);
                 const newWorkspaceRefs = groupSnapshot.docs
                     .filter(
                         (doc) =>
                             doc.ref.parent.parent !== null &&
-                            doc.ref.parent.parent?.parent?.path === model.collectionName
+                            doc.ref.parent.parent?.parent?.path === model.collectionName,
                     )
-                    .map((doc) => doc.ref.parent.parent!);
+                    .map((doc) => doc.ref.parent.parent);
                 workspaceRefs.splice(0, workspaceRefs.length, ...newWorkspaceRefs);
             },
-            { immediate: true }
+            { immediate: true },
         );
     }
 
