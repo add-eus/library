@@ -29,6 +29,7 @@ watch(
         isOpen.value = props.isOpen;
     },
 );
+defineExpose({ toggle, close, open, isOpen });
 </script>
 
 <template>
