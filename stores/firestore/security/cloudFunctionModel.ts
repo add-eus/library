@@ -37,19 +37,18 @@ const getCollectionProperties = (entitiesInfo: EntityInfo): CollectionProperties
 const getNamespaceCollections = (
     namespace: string,
     path?: string,
-    blacklistedSubPaths: string[] = []
+    blacklistedSubPaths: string[] = [],
 ): Collection[] => {
     const collections: Collection[] = [];
     if (path === undefined) {
-        const rootPath = `${namespace}/{${namespace}Id}`;
         collections.push({
-            path: rootPath,
+            path: namespace,
             namespace,
             group: namespace,
             parentGroupsWithThisCollection: [],
             blacklistedSubPaths,
         });
-        path = rootPath;
+        path = namespace;
     }
     const entitiesInfo = entitiesInfos.get(namespace);
     if (entitiesInfo === undefined) {
@@ -59,7 +58,7 @@ const getNamespaceCollections = (
     const collectionsPaths = collectionNamespaces
         .filter(([name]) => !blacklistedSubPaths.includes(name))
         .map(([name, group]): Collection[] => {
-            const collectionPath = `${path}/${name}/{${name}Id}`;
+            const collectionPath = `${path}/${name}`;
             const collectionNamespace = `${group.namespace}`;
             const collectionBlacklistedSubPaths = group.blacklistedProperties as
                 | string[]
@@ -67,7 +66,7 @@ const getNamespaceCollections = (
             const subPaths = getNamespaceCollections(
                 collectionNamespace,
                 collectionPath,
-                collectionBlacklistedSubPaths
+                collectionBlacklistedSubPaths,
             );
 
             return [
@@ -102,10 +101,10 @@ const getCollections = (): Collection[] => {
         const parentGroups = collections.filter(
             (parentCollection) =>
                 parentCollection.namespace === collection.parentNamespace &&
-                !parentCollection.blacklistedSubPaths.includes(collection.group)
+                !parentCollection.blacklistedSubPaths.includes(collection.group),
         );
         collection.parentGroupsWithThisCollection = parentGroups.map(
-            (parentCollection) => parentCollection.group
+            (parentCollection) => parentCollection.group,
         );
     });
 
