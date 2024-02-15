@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { VNode } from "vue";
-import { toRaw, computed, reactive, isReactive, inject } from "vue";
+import { computed, inject, isReactive, reactive as vueReactive, toRaw } from "vue";
 import { flewTableWrapperSymbol } from "./VFlexTableWrapper.vue";
 
 export interface VFlexTableColumn {
@@ -30,7 +30,7 @@ export interface VFlexTableProps {
     clickable?: boolean;
     subtable?: boolean;
     noHeader?: boolean;
-    getKey?: Function | undefined;
+    getKey?: (row: any) => any | undefined;
 }
 
 const emits = defineEmits<{
@@ -51,7 +51,7 @@ const data = computed(() => {
         if (isReactive(props.data)) {
             return props.data;
         } else {
-            return reactive(props.data);
+            return vueReactive(props.data);
         }
     }
 
@@ -149,9 +149,12 @@ function getValueByPath(row: any, key: any) {
                     class="flex-table-item"
                     :class="[props.clickable && 'is-clickable']"
                     :tabindex="props.clickable ? 0 : undefined"
-                    @keydown.space.prevent="
-                        () => {
-                            props.clickable && emits('rowClick', row, index);
+                    @keydown.space="
+                        (event) => {
+                            if (props.clickable) {
+                                emits('rowClick', row, index);
+                                event.preventDefault();
+                            }
                         }
                     "
                     @click="
@@ -172,7 +175,7 @@ function getValueByPath(row: any, key: any) {
                                             column.format(
                                                 getValueByPath(row, column.key),
                                                 row,
-                                                index
+                                                index,
                                             )
                                         ">
                                         <component
@@ -181,7 +184,7 @@ function getValueByPath(row: any, key: any) {
                                                     column.renderRow?.(
                                                         row,
                                                         column,
-                                                        index
+                                                        index,
                                                     ),
                                             }"
                                             v-if="column.renderRow"></component>
@@ -190,7 +193,7 @@ function getValueByPath(row: any, key: any) {
                                                 typeof column.format(
                                                     getValueByPath(row, column.key),
                                                     row,
-                                                    index
+                                                    index,
                                                 ) === 'object'
                                             "
                                             :class="[
@@ -221,7 +224,7 @@ function getValueByPath(row: any, key: any) {
                                                 column.format(
                                                     getValueByPath(row, column.key),
                                                     row,
-                                                    index
+                                                    index,
                                                 )
                                             }}
                                         </span>
