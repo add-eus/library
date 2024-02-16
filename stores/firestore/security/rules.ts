@@ -24,7 +24,7 @@ const createCollectionRules = (
     collectionName: string,
     modelNamespace?: string,
     blacklistedProperties?: string[],
-    parentModelNamespace?: string
+    parentModelNamespace?: string,
 ): string => {
     if (modelNamespace === undefined) modelNamespace = collectionName;
     const entitiesInfo = entitiesInfos.get(modelNamespace);
@@ -32,12 +32,12 @@ const createCollectionRules = (
         throw new Error(`Collection ${modelNamespace} is not defined`);
     }
     const { documentProperties, collectionProperties } = getProperties(
-        entitiesInfo.model
+        entitiesInfo.model,
     );
     const collectionSecurityOptions = securityInfos.get(
         parentModelNamespace === undefined
             ? collectionName
-            : `${parentModelNamespace}/${collectionName}`
+            : `${parentModelNamespace}/${collectionName}`,
     );
 
     const rules: string[] = [];
@@ -48,36 +48,37 @@ const createCollectionRules = (
             "create",
             collectionSecurityOptions?.security?.create,
             documentProperties,
-            collectionSecurityOptions
-        )
+            collectionSecurityOptions,
+        ),
     );
     rules.push(
         createWriteRule(
             "update",
             collectionSecurityOptions?.security?.update,
             documentProperties,
-            collectionSecurityOptions
-        )
+            collectionSecurityOptions,
+        ),
     );
     rules.push(
         createWriteRule(
             "delete",
             collectionSecurityOptions?.security?.delete,
             [],
-            collectionSecurityOptions
-        )
+            collectionSecurityOptions,
+        ),
     );
 
     const subCollectionsRules = Object.entries(collectionProperties)
         .filter(
-            ([collectionProperty]) => !blacklistedProperties?.includes(collectionProperty)
+            ([collectionProperty]) =>
+                !blacklistedProperties?.includes(collectionProperty),
         )
         .map(([collectionProperty, { namespace, blacklistedProperties }]) => {
             return createCollectionRules(
                 collectionProperty,
                 namespace,
                 blacklistedProperties,
-                modelNamespace
+                modelNamespace,
             );
         });
 
@@ -101,7 +102,7 @@ const createWriteRule = (
     rule: "create" | "update" | "delete",
     ruleContent: string | undefined,
     documentProperties: string[],
-    collectionSecurityOptions: SecurityInfo | undefined
+    collectionSecurityOptions: SecurityInfo | undefined,
 ) => {
     if (ruleContent === undefined || ruleContent === "false") {
         return "";
@@ -116,7 +117,7 @@ const createWriteRule = (
     return `allow ${rule}: if ${documentPropertiesCheck}(${ruleContent}) ${createPropertiesRules(
         documentProperties,
         collectionSecurityOptions,
-        rule
+        rule,
     )};`;
 };
 
@@ -125,7 +126,7 @@ const createModelWritePropertiesRules = (properties: string[]): string => {
 };
 
 const getProperties = (
-    model: typeof Entity
+    model: typeof Entity,
 ): {
     documentProperties: string[];
     collectionProperties: CollectionProperties;
@@ -143,10 +144,10 @@ const getProperties = (
 const createPropertiesRules = (
     properties: string[],
     modelSecurity: SecurityInfo | undefined,
-    operation: "create" | "update" | "delete"
+    operation: "create" | "update" | "delete",
 ): string => {
     const propertiesRules = properties.filter(
-        (property) => modelSecurity?.properties?.[property]?.[operation] !== undefined
+        (property) => modelSecurity?.properties?.[property]?.[operation] !== undefined,
     );
     if (propertiesRules.length === 0) {
         return "";
@@ -154,8 +155,9 @@ const createPropertiesRules = (
     return `&& (${propertiesRules
         .map((property) => {
             const rule = modelSecurity?.properties?.[property][operation];
-            if (rule === "false") return `request.resource.data.${property} == null`;
-            return `(request.resource.data.${property} == null || ${modelSecurity?.properties?.[property][operation]})`;
+            if (rule === "false")
+                return `!request.resource.data.keys().hasAny(["${property}"])`;
+            return `(!request.resource.data.keys().hasAny(["${property}"]) || ${modelSecurity?.properties?.[property][operation]})`;
         })
         .join(" && ")})`;
 };
