@@ -1,23 +1,22 @@
 <script setup lang="ts">
-export type VMessageColor =
-    | "primary"
-    | "success"
-    | "info"
-    | "warning"
-    | "danger"
-    | "white";
+import { computed } from "vue";
+import type { Colors } from "../../../stores/color";
+import { useColor } from "../../../stores/color";
+
 export interface VMessageEmits {
     (e: "close"): void;
 }
 export interface VMessageProps {
-    color?: VMessageColor;
+    color?: Colors;
     closable?: boolean;
 }
 
 const emit = defineEmits<VMessageEmits>();
 const props = withDefaults(defineProps<VMessageProps>(), {
-    color: undefined,
+    color: "primary",
 });
+
+const color = useColor(computed(() => props.color));
 </script>
 
 <template>
@@ -33,65 +32,19 @@ const props = withDefaults(defineProps<VMessageProps>(), {
     </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import "bulma/sass/utilities/_all.sass";
 .message {
     position: relative;
     border: 1px solid var(--fade-grey-dark-3);
     box-shadow: $shadow;
     padding-right: 20px;
+    border-color: v-bind(color);
 
-    &.is-primary {
-        border-color: $primary-light;
-
-        .delete {
-            &::before,
-            &::after {
-                background-color: var(--primary);
-            }
-        }
-    }
-
-    &.is-info {
-        border-color: $info-light;
-
-        .delete {
-            &::before,
-            &::after {
-                background-color: var(--info);
-            }
-        }
-    }
-
-    &.is-success {
-        border-color: $success-light;
-
-        .delete {
-            &::before,
-            &::after {
-                background-color: var(--success);
-            }
-        }
-    }
-
-    &.is-warning {
-        border-color: $warning-light;
-
-        .delete {
-            &::before,
-            &::after {
-                background-color: var(--warning);
-            }
-        }
-    }
-
-    &.is-danger {
-        border-color: $danger-light;
-
-        .delete {
-            &::before,
-            &::after {
-                background-color: var(--danger);
-            }
+    .delete {
+        &::before,
+        &::after {
+            background-color: v-bind(color);
         }
     }
 
@@ -115,111 +68,6 @@ const props = withDefaults(defineProps<VMessageProps>(), {
     .message-body {
         border: none;
         font-family: $family-sans-serif;
-    }
-}
-
-.is-dark {
-    .message {
-        &:not(.is-primary) {
-            &:not(.is-info) {
-                &:not(.is-success) {
-                    &:not(.is-warning) {
-                        &:not(.is-danger) {
-                            background-color: var(--dark-sidebar);
-                            border-color: var(--dark-sidebar-light-3);
-
-                            .message-body {
-                                color: var(--light-text);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        span {
-            color: var(--white);
-        }
-
-        &.is-primary {
-            background: var(--primary);
-            border-color: var(--primary);
-
-            .message-body {
-                color: var(--white);
-            }
-
-            .delete {
-                &::before,
-                &::after {
-                    background-color: var(--white);
-                }
-            }
-        }
-
-        &.is-success {
-            background: var(--success);
-            border-color: var(--success);
-
-            .message-body {
-                color: var(--white);
-            }
-
-            .delete {
-                &::before,
-                &::after {
-                    background-color: var(--white);
-                }
-            }
-        }
-
-        &.is-info {
-            background: var(--info);
-            border-color: var(--info);
-
-            .message-body {
-                color: var(--white);
-            }
-
-            .delete {
-                &::before,
-                &::after {
-                    background-color: var(--white);
-                }
-            }
-        }
-
-        &.is-warning {
-            background: var(--warning);
-            border-color: var(--warning);
-
-            .message-body {
-                color: var(--white);
-            }
-
-            .delete {
-                &::before,
-                &::after {
-                    background-color: var(--white);
-                }
-            }
-        }
-
-        &.is-danger {
-            background: var(--danger);
-            border-color: var(--danger);
-
-            .message-body {
-                color: var(--white);
-            }
-
-            .delete {
-                &::before,
-                &::after {
-                    background-color: var(--white);
-                }
-            }
-        }
     }
 }
 </style>
