@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useTranslate } from "../../../stores/translate";
 import { computed, ref } from "vue";
 import { VueTelInput } from "vue-tel-input";
+import { useTranslate } from "../../../stores/translate";
 
 export interface VTelInputEmits {
     (e: "update:modelValue", value: string | number): void;
@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<VTelInputProps>(), {
 const {translate} = useTranslate();
 
 const telInput = ref(null);
-const modelValue = ref(props.modelValue);
+const modelValue = ref(props.modelValue.replace(/\+[0-9]+ /, ""));
 const placeholder = translate(computed(() => props.placeholder));
 
 function onInput(phone, phoneObject) {
@@ -58,7 +58,7 @@ function onInput(phone, phoneObject) {
             type: props.type,
         }"
         :valid-characters-only="props.validCharactersOnly"
-        @onInput="onInput"
+        @on-input="onInput"
     ></VueTelInput>
 </template>
 <style lang="scss">

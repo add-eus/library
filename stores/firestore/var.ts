@@ -1,10 +1,16 @@
-import moment from "moment-with-locales-es6";
 import { deleteField, GeoPoint } from "firebase/firestore";
-import { useDoc } from "./index";
-import { Entity, EntityBase, isEntity } from "./entity";
-import { onInitialize, isEntityClass, isEntityStandaloneClass } from "./entity";
-import type { EntityMetaData } from "./entityMetadata";
+import moment from "moment-with-locales-es6";
 import { shallowReactive } from "vue";
+import {
+    Entity,
+    EntityBase,
+    isEntity,
+    isEntityClass,
+    isEntityStandaloneClass,
+    onInitialize,
+} from "./entity";
+import type { EntityMetaData } from "./entityMetadata";
+import { useDoc } from "./index";
 
 function parseData(toTransform: any | any[], type: any): any {
     if (typeof toTransform === "undefined") return undefined;
@@ -14,7 +20,7 @@ function parseData(toTransform: any | any[], type: any): any {
         return shallowReactive(
             toTransform.map((data) => {
                 return parseData(data, type[0]);
-            })
+            }),
         );
     } else if (
         type === moment &&
@@ -68,6 +74,7 @@ function formatData(toTransform: any | any[], type: any, forceAll: boolean = fal
         return toTransform.$getID();
     } else if (isEntityClass(type)) {
         const raw = {};
+        console.log(toTransform);
         toTransform.$getMetadata().emit("format", raw, true);
         return raw;
     } else if (typeof type === "function" && /^\s*class\s+/.test(type.toString())) {
@@ -76,7 +83,7 @@ function formatData(toTransform: any | any[], type: any, forceAll: boolean = fal
             raw[key] = formatData(
                 toTransform[key],
                 toTransform[key].constructor,
-                forceAll
+                forceAll,
             );
         });
         return raw;
