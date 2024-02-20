@@ -74,7 +74,6 @@ function formatData(toTransform: any | any[], type: any, forceAll: boolean = fal
         return toTransform.$getID();
     } else if (isEntityClass(type)) {
         const raw = {};
-        console.log(toTransform);
         toTransform.$getMetadata().emit("format", raw, true);
         return raw;
     } else if (typeof type === "function" && /^\s*class\s+/.test(type.toString())) {
