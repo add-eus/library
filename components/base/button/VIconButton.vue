@@ -1,27 +1,13 @@
 <script lang="ts">
 import type { PropType } from "vue";
 import { computed, defineComponent, h, resolveComponent } from "vue";
+import { type Colors } from "../../../stores/color";
 import { useHaptic } from "../../../stores/haptic";
 import VIcon from "../icon/VIcon.vue";
 import type { VButtonSize } from "./VButton.vue";
 
 export type VIconButtonDark = "1" | "2" | "3" | "4" | "5" | "6";
-export type VIconButtonColor =
-    | "primary"
-    | "info"
-    | "success"
-    | "warning"
-    | "danger"
-    | "white"
-    | "grey"
-    | "orange"
-    | "yellow"
-    | "green"
-    | "turquoise"
-    | "purple"
-    | "blue"
-    | "red"
-    | "cyan";
+export type VIconButtonColor = Colors;
 
 export default defineComponent({
     props: {
@@ -124,6 +110,7 @@ export default defineComponent({
                 class: "icon",
                 ...props,
                 size: "21px",
+                color: `${props.color}-invert`,
             });
 
             if (props.to) {
@@ -137,7 +124,7 @@ export default defineComponent({
                     },
                     {
                         default: () => [iconWrapper],
-                    }
+                    },
                 );
             } else if (props.href !== undefined) {
                 return h(
@@ -150,7 +137,7 @@ export default defineComponent({
                     },
                     {
                         default: () => [iconWrapper],
-                    }
+                    },
                 );
             }
 
@@ -165,7 +152,7 @@ export default defineComponent({
                 },
                 {
                     default: () => [iconWrapper],
-                }
+                },
             );
         };
     },
