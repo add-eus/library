@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { onMounted, onScopeDispose, provide, ref } from "vue";
-import {} from "../../../stores/firebase";
 import { useCurrentElement, useDebounceFn, useIntervalFn } from "@vueuse/core";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
 import "photoswipe/style.css";
+import { onMounted, onScopeDispose, provide, ref } from "vue";
+import {} from "../../../stores/firebase";
 
 export type VGalleryProps = {
     backIcon?: string;
@@ -67,12 +67,14 @@ provide("v-gallery", {
     pause,
     addPage,
 });
+
+console.log(pages);
 </script>
 
 <template>
     <div class="v-gallery-container">
         <VIconButton
-            v-if="backIcon"
+            v-if="backIcon && pages.length > 1"
             :icon="backIcon"
             @click.stop="
                 previous();
@@ -81,7 +83,7 @@ provide("v-gallery", {
         <slot></slot>
 
         <VIconButton
-            v-if="forwardIcon"
+            v-if="forwardIcon && pages.length > 1"
             :icon="forwardIcon"
             @click.stop="
                 next();

@@ -107,14 +107,17 @@ const props = withDefaults(defineProps<VAvatarProps>(), {
         </slot>
 
         <slot name="badge">
-            <p v-if="props.badge" class="badge">{{ props.badge }}</p>
-            <!--img
-                v-if="props.badge"
-                
-                :src="props.badge"
+            <img
+                v-if="
+                    badge &&
+                    typeof badge === 'string' &&
+                    (badge.startsWith('http') || badge.startsWith('/'))
+                "
+                :src="badge"
                 alt=""
-                @error.once="(event) => onceImageErrored(event, '150x150')"
-            /-->
+                class="badge"
+                @error.once="(event) => onceImageErrored(event, '150x150')" />
+            <p v-else-if="badge" class="badge">{{ badge }}</p>
         </slot>
     </div>
 </template>

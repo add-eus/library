@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { getIconClasses, getIconStyles } from "../../../stores/icon";
+import { useColor } from "../../../stores/color";
 
 export interface VIconProps {
     icon: string;
     size?: string;
+    color: string;
 }
 
 const props = withDefaults(defineProps<VIconProps>(), {
@@ -20,7 +22,7 @@ const isImage = computed(() => {
 });
 
 const classes = getIconClasses();
-const styles = getIconStyles();
+const styles = getIconStyles(computed(() => props.color));
 </script>
 
 <template>

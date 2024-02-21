@@ -1,3 +1,6 @@
+import { computed } from "vue";
+import { useColor } from "./color";
+
 let iconClasses: string[] = [],
     iconStyles: string[] = [];
 
@@ -13,6 +16,10 @@ export function setIconStyles(iconStylesArg: string[]) {
     iconStyles = iconStylesArg;
 }
 
-export function getIconStyles() {
-    return iconStyles;
+export function getIconStyles(computedColor) {
+    const color = useColor(computedColor);
+
+    return computed(() => {
+        return [...iconStyles, `color: ${color.value}`];
+    });
 }

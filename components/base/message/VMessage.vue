@@ -28,7 +28,7 @@ const color = useColor(computed(() => props.color));
             tabindex="0"
             @keydown.space.prevent="emit('close')"
             @click.prevent="emit('close')"></button>
-        <div class="message-body"><slot></slot></div>
+        <p class="message-body"><slot></slot></p>
     </div>
 </template>
 
