@@ -1,6 +1,6 @@
-import { acceptHMRUpdate, defineStore } from "pinia";
+import { createGlobalState } from "@vueuse/core";
 
-export const useClipboard = defineStore("clipboard", () => {
+export const useClipboard = createGlobalState(() => {
     return {
         // Copies a string to the clipboard. Must be called from within an
         // event handler such as click. May return false if it failed, but
@@ -10,11 +10,14 @@ export const useClipboard = defineStore("clipboard", () => {
         // an administrator. By default a prompt is shown the first
         // time the clipboard is used (per session).
         copy(text) {
-            if (window.clipboardData && window.clipboardData.setData) {
+            if (
+                window.clipboardData !== undefined &&
+                window.clipboardData.setData !== undefined
+            ) {
                 // Internet Explorer-specific code path to prevent textarea being shown while dialog is visible.
                 return window.clipboardData.setData("Text", text);
             } else if (
-                document.queryCommandSupported &&
+                document.queryCommandSupported !== undefined &&
                 document.queryCommandSupported("copy")
             ) {
                 const textarea = document.createElement("textarea");
@@ -33,14 +36,3 @@ export const useClipboard = defineStore("clipboard", () => {
         },
     };
 });
-
-/**
- * Pinia supports Hot Module replacement so you can edit your stores and
- * interact with them directly in your app without reloading the page.
- *
- * @see https://pinia.esm.dev/cookbook/hot-module-replacement.html
- * @see https://vitejs.dev/guide/api-hmr.html
- */
-if (import.meta.hot) {
-    import.meta.hot.accept(acceptHMRUpdate(useClipboard, import.meta.hot));
-}

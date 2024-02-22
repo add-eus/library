@@ -1,10 +1,9 @@
+import { createGlobalState, until } from "@vueuse/core";
 import { ref } from "vue";
-import { until } from "@vueuse/core";
+import VButton from "../components/base/button/VButton.vue";
 import ModalComponent from "../components/modal/Modal.vue";
 import PromptComponent from "../components/modal/Prompt.vue";
-import VButton from "../components/base/button/VButton.vue";
 import { useComponent } from "./component";
-import { acceptHMRUpdate, defineStore } from "pinia";
 
 export class Modal {
     isClosed = ref(false);
@@ -44,7 +43,7 @@ export class Modal {
     }
 }
 
-export const useModal = defineStore("modal", () => {
+export const useModal = createGlobalState(() => {
     const { initialize, destroy } = useComponent();
     async function prompt(
         titleArg: string,
@@ -52,7 +51,7 @@ export const useModal = defineStore("modal", () => {
         messageArg: string,
         cancelArg: string,
         confirmArg: string,
-        confirmColorArg: string = "primary"
+        confirmColorArg: string = "primary",
     ) {
         const cancelReason = ref<any>(null);
         const successReason = ref<any>(null);
@@ -116,14 +115,3 @@ export const useModal = defineStore("modal", () => {
         createModal,
     };
 });
-
-/**
- * Pinia supports Hot Module replacement so you can edit your stores and
- * interact with them directly in your app without reloading the page.
- *
- * @see https://pinia.esm.dev/cookbook/hot-module-replacement.html
- * @see https://vitejs.dev/guide/api-hmr.html
- */
-if (import.meta.hot) {
-    import.meta.hot.accept(acceptHMRUpdate(useModal, import.meta.hot));
-}
