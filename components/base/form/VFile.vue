@@ -95,7 +95,7 @@ const getImageSize = async (url: string) => {
     var img = new Image();
     const loadPromise = new Promise<{ width: number; height: number; ratio: number }>(
         (resolve) => {
-            img.onload = async function (this: any) {
+            img.onload = function (this: any) {
                 resolve({
                     width: this.width,
                     height: this.height,
@@ -190,7 +190,7 @@ async function remove(url, load) {
     emit("endProcessing");
     if (field !== undefined) field.isProcessing = false;
 }
-async function revert(uniqueFileId, load) {
+function revert(uniqueFileId, load) {
     void storage.remove(uniqueFileId);
     load();
 }
@@ -206,7 +206,7 @@ function reorderFiles() {
     emitChangedEvent();
 }
 
-async function fileAdd(error, metadata) {
+function fileAdd(error, metadata) {
     if (metadata.status !== 2) {
         if (field !== undefined) field.isProcessing = true;
         emit("processing");
