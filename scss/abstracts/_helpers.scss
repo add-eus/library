@@ -198,7 +198,23 @@ $sides: top, bottom, left, right;
 ========================================================================== */
 
 .has-border-radius {
-    border-radius: $radius;
+    border-radius: $radius; // 4px
+}
+
+.has-border-radius-s {
+    border-radius: $radius-small; // 2px
+}
+
+.has-border-radius-l {
+    border-radius: $radius-large; // 6px
+}
+
+.has-border-radius-xl {
+    border-radius: $radius-xlarge; // 12px
+}
+
+.has-border-radius-rounded {
+    border-radius: $radius-rounded; // 9999px
 }
 
 /* ==========================================================================

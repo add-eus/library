@@ -27,7 +27,7 @@ const localDependencies = Object.keys(PACKAGE.dependencies ?? []).filter(
         dependency !== "bulma" &&
         dependency !== "addeus-common-library" &&
         dependency !== "firebase" &&
-        dependency.match(/^@types\//) === null
+        dependency.match(/^@types\//) === null,
 );
 
 /**
@@ -39,7 +39,7 @@ module.exports.define = function (config = {}) {
     const currentDir = process.cwd();
     const outDir = path.join(
         currentDir,
-        config.output !== undefined ? config.output : "dist"
+        config.output !== undefined ? config.output : "dist",
     );
     const rootDir = path.join(currentDir, "src");
     const publicDir = path.join(currentDir, "public");
@@ -134,11 +134,6 @@ module.exports.define = function (config = {}) {
                 host: true,
                 port: config.port !== undefined ? config.port : 8018,
                 strictPort: true,
-                cors: {
-                    origin: "*",
-                    allowedHeaders: ["User-Agent", "Accept-Encoding"],
-                    credentials: true,
-                },
                 fs: {
                     allow: [cacheDir, currentDir],
                 },
@@ -420,11 +415,11 @@ module.exports.define = function (config = {}) {
                         defaultExtractor(content) {
                             const contentWithoutStyleBlocks = content.replace(
                                 /<style[^]+?<\/style>/gi,
-                                ""
+                                "",
                             );
                             return (
                                 contentWithoutStyleBlocks.match(
-                                    /[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g
+                                    /[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g,
                                 ) || []
                             );
                         },
