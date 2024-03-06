@@ -3,12 +3,12 @@ import { ref, watch } from "vue";
 
 export interface VCollapseProps {
     isOpen: boolean;
-    showButton: boolean;
+    hasButton: boolean;
 }
 
 const props = withDefaults(defineProps<VCollapseProps>(), {
     isOpen: false,
-    showButton: true,
+    hasButton: true,
 });
 
 const isOpen = ref(props.isOpen);
@@ -37,7 +37,7 @@ defineExpose({ toggle, close, open, isOpen });
 <template>
     <div class="collapse">
         <VButton
-            v-if="showButton"
+            v-if="hasButton"
             class="collapse-header has-text-ellipsis"
             v-bind="$attrs"
             :icon="isOpen ? 'expand_more' : 'chevron_right'"
