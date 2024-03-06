@@ -31,6 +31,12 @@ defineExpose({ getResult });
             :min-width="props.options?.minWidth"
             :max-height="props.options?.maxHeight"
             :max-width="props.options?.maxWidth"
-            :size-restrictions-algorithm="(size: any) => size" />
+            :size-restrictions-algorithm="(size: any) => size"
+            :default-size="
+                ({ imageSize, visibleArea }) => ({
+                    width: (visibleArea || imageSize).width,
+                    height: (visibleArea || imageSize).height,
+                })
+            " />
     </div>
 </template>
