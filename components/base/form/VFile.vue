@@ -47,7 +47,7 @@ const Filepond = vueFilePond(
     FilePondPluginImagePreview,
     FilePondPluginFileValidateSize,
     FilePondPluginFileValidateType,
-    FilePondPluginMediaPreview
+    FilePondPluginMediaPreview,
 );
 
 const storage = useStorage();
@@ -102,7 +102,7 @@ const getImageSize = async (url: string) => {
                     ratio: this.width / this.height,
                 });
             };
-        }
+        },
     );
     img.src = url;
     return await loadPromise;
@@ -216,7 +216,7 @@ function emitChangedEvent() {
     if (pond.value === undefined || pond.value === null) return;
     let processingFiles = pond.value.getFiles(),
         isFilesUploaded = processingFiles.every(
-            (file) => file.status === 5 || file.status === 2
+            (file) => file.status === 5 || file.status === 2,
         );
 
     if (isFilesUploaded === true) {
@@ -224,15 +224,15 @@ function emitChangedEvent() {
             emit(
                 "update:modelValue",
                 processingFiles.map((file) =>
-                    props.storagePath ? file.serverId : file.source
-                )
+                    props.storagePath ? file.serverId : file.source,
+                ),
             );
         } else if (processingFiles.length === 1) {
             emit(
                 "update:modelValue",
                 props.storagePath
                     ? processingFiles[0].serverId
-                    : processingFiles[0].source
+                    : processingFiles[0].source,
             );
         } else {
             emit("update:modelValue", undefined);

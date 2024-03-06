@@ -134,11 +134,11 @@ module.exports.define = function (config = {}) {
                 host: true,
                 port: config.port !== undefined ? config.port : 8018,
                 strictPort: true,
-                cors: {
-                    origin: "*",
-                    allowedHeaders: ["User-Agent", "Accept-Encoding"],
-                    credentials: true,
-                },
+                //cors: {
+                //    origin: "*",
+                //    allowedHeaders: ["User-Agent", "Accept-Encoding"],
+                //    credentials: true,
+                //},
                 fs: {
                     allow: [cacheDir, currentDir],
                 },
