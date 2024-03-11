@@ -86,6 +86,7 @@ module.exports = function (cwd) {
                     ignoreAtRules: ["use", "charset", "layer"],
                 },
             ],
+            "media-feature-range-notation": ["prefix"],
         },
     };
 };
