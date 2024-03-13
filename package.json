@@ -99,7 +99,6 @@
         "npm-run-all": "^4.1.5",
         "nprogress": "0.2.0",
         "photoswipe": "^5.3.7",
-        "pinia": "2.0.29",
         "plyr": "3.7.3",
         "postcss-html": "1.5.0",
         "postcss-scss": "4.0.6",

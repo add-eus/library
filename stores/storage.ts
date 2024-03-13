@@ -1,17 +1,16 @@
-import { acceptHMRUpdate, defineStore } from "pinia";
-
+import { createGlobalState } from "@vueuse/core";
 import {
-    ref as refStorage,
     deleteObject,
     getBlob,
-    uploadBytes,
-    updateMetadata,
     getDownloadURL,
+    ref as refStorage,
+    updateMetadata,
+    uploadBytes,
 } from "firebase/storage";
-import { useFirebase } from "./firebase";
 import { v4 as uuid } from "uuid";
+import { useFirebase } from "./firebase";
 
-export const useStorage = defineStore("Storage", () => {
+export const useStorage = createGlobalState(() => {
     const storage = useFirebase().storage;
     const cached = {};
 
@@ -61,7 +60,7 @@ export const useStorage = defineStore("Storage", () => {
                 `${storage._protocol}://${
                     storage.host
                 }${storage._bucket.fullServerUrl()}`,
-                ""
+                "",
             )
             .replace(/\?.*$/, "");
     }
@@ -73,14 +72,3 @@ export const useStorage = defineStore("Storage", () => {
 
     return { upload, remove, fetch, fetchAsDataUrl, pathToPublicUrl, publicUrlToPath };
 });
-
-/**
- * Pinia supports Hot Module replacement so you can edit your stores and
- * interact with them directly in your app without reloading the page.
- *
- * @see https://pinia.esm.dev/cookbook/hot-module-replacement.html
- * @see https://vitejs.dev/guide/api-hmr.html
- */
-if (import.meta.hot) {
-    import.meta.hot.accept(acceptHMRUpdate(useStorage, import.meta.hot));
-}

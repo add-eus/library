@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useWindowScroll } from "@vueuse/core";
 import { computed, ref, watchEffect } from "vue";
-import VueScrollTo from "vue-scrollto";
 import { useI18n } from "vue-i18n";
+import VueScrollTo from "vue-scrollto";
 
-import { isLargeScreen } from "../../../utils/responsive";
 import { useDarkmode } from "../../../stores/darkmode";
+import { isLargeScreen } from "../../../utils/responsive";
 
 const { t } = useI18n();
 const darkmode = useDarkmode();
@@ -76,7 +76,7 @@ watchEffect(() => {
                     <label class="theme-toggle">
                         <input
                             id="navbar-night-toggle--daynight"
-                            v-model="darkmode.isDark"
+                            v-model="darkmode.isDark.value"
                             type="checkbox" />
                         <span class="toggler">
                             <span class="dark">
