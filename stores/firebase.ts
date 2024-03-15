@@ -1,14 +1,15 @@
 // Import the functions you need from the SDKs you need
-import { getAuth, connectAuthEmulator } from "firebase/auth";
-import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
-import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
-import { getStorage, connectStorageEmulator } from "firebase/storage";
 import { getAnalytics, initializeAnalytics } from "firebase/analytics";
-import { getPerformance, initializePerformance } from "firebase/performance";
-import { getDatabase, connectDatabaseEmulator } from "firebase/database";
 import { initializeApp } from "firebase/app";
-import { getRemoteConfig, fetchAndActivate } from "firebase/remote-config";
-import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
+import { ReCaptchaEnterpriseProvider, initializeAppCheck } from "firebase/app-check";
+import { connectAuthEmulator, getAuth } from "firebase/auth";
+import { connectDatabaseEmulator, getDatabase } from "firebase/database";
+import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
+import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
+import { getPerformance, initializePerformance } from "firebase/performance";
+import { fetchAndActivate, getRemoteConfig } from "firebase/remote-config";
+import { connectStorageEmulator, getStorage } from "firebase/storage";
+import { initORM } from "./firestore/firebase";
 
 export function useFirebase() {
     if (window.providers === undefined) {
@@ -117,6 +118,8 @@ export function useFirebase() {
             // tokens as needed.
             // isTokenAutoRefreshEnabled: true,
         });
+
+        initORM(window.providers.firestore);
     }
     return window.providers;
 }

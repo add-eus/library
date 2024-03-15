@@ -1,17 +1,17 @@
+import { FirebaseError } from "firebase/app";
 import {
     DocumentReference,
     DocumentSnapshot,
-    deleteDoc,
     collection,
+    deleteDoc,
     doc,
     setDoc,
     updateDoc,
 } from "firebase/firestore";
-import { lowerCaseFirst } from "../../utils/string";
 import { isReactive, markRaw, shallowReactive } from "vue";
-import { useFirebase } from "../firebase";
+import { lowerCaseFirst } from "../../utils/string";
 import { EntityMetaData } from "./entityMetadata";
-import { FirebaseError } from "firebase/app";
+import { useFirestore } from "./firebase";
 
 export function onInitialize(
     target: any,
@@ -189,10 +189,10 @@ export class Entity extends EntityBase {
 
         try {
             if (isNew) {
-                const firebase = useFirebase();
+                const firestore = useFirestore();
                 const docRef = doc(
                     collection(
-                        firebase.firestore,
+                        firestore,
                         $metadata.saveNewDocPath ?? constructor.collectionName,
                     ),
                 );
