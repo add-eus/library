@@ -56,7 +56,7 @@ export function useFirebase() {
                           import.meta.env.VITE_AUTH_PORT !== undefined
                               ? import.meta.env.VITE_AUTH_PORT
                               : 8012
-                      }`
+                      }`,
             );
 
             connectFirestoreEmulator(
@@ -64,7 +64,7 @@ export function useFirebase() {
                 host,
                 import.meta.env.VITE_FIRESTORE_PORT !== undefined
                     ? import.meta.env.VITE_FIRESTORE_PORT
-                    : 8014
+                    : 8014,
             );
 
             connectFunctionsEmulator(
@@ -72,7 +72,7 @@ export function useFirebase() {
                 host,
                 import.meta.env.VITE_FUNCTION_PORT !== undefined
                     ? import.meta.env.VITE_FUNCTION_PORT
-                    : 8013
+                    : 8013,
             );
 
             connectDatabaseEmulator(
@@ -80,7 +80,7 @@ export function useFirebase() {
                 host,
                 import.meta.env.VITE_DATABASE_PORT !== undefined
                     ? import.meta.env.VITE_DATABASE_PORT
-                    : 8015
+                    : 8015,
             );
 
             connectStorageEmulator(
@@ -88,7 +88,7 @@ export function useFirebase() {
                 host,
                 import.meta.env.VITE_STORAGE_PORT !== undefined
                     ? import.meta.env.VITE_STORAGE_PORT
-                    : 8016
+                    : 8016,
             );
 
             (<any>window).FIREBASE_APPCHECK_DEBUG_TOKEN =
@@ -120,3 +120,5 @@ export function useFirebase() {
     }
     return window.providers;
 }
+
+export const useFirestore = () => useFirebase().firestore;

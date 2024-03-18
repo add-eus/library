@@ -1,3 +1,7 @@
+import { watchArray } from "@vueuse/core";
+import type { DocumentData, DocumentReference } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
+import { shallowReactive } from "vue";
 import type {
     CollectionOptions as UseCollectionOption,
     Collection as UseCollectionType,
@@ -6,11 +10,7 @@ import { newDoc, useCollection, useDoc } from ".";
 import type { Entity } from "./entity";
 import { onInitialize } from "./entity";
 import type { EntityMetaData } from "./entityMetadata";
-import { useFirebase } from "addeus-common-library/stores/firebase";
-import type { DocumentData, DocumentReference } from "firebase/firestore";
-import { collection, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
-import { shallowReactive } from "vue";
-import { watchArray } from "@vueuse/core";
+import { useFirestore } from "../firebase";
 import { securityCollectionCallbacks } from "./security/securityDecorators";
 
 export type FunctionPropertyNames<T> = {
@@ -187,8 +187,8 @@ export class SubCollection<T extends Entity> {
     async existsById(id: string): Promise<boolean> {
         if (!this.initialized) throw new Error(`property subcollection not initialized`);
         if (this.new) throw new Error(`property subcollection is new`);
-        const firebase = useFirebase();
-        const snap = await getDoc(doc(firebase.firestore, `${this.path}/${id}`));
+        const firestore = useFirestore();
+        const snap = await getDoc(doc(firestore, `${this.path}/${id}`));
         return snap.exists();
     }
 
@@ -246,14 +246,29 @@ export class SubCollection<T extends Entity> {
         return entity;
     }
 
-    useDoc(id: string): T | undefined {
+    useDoc(id: string): T {
         if (!this.isInitialized)
             throw new Error(`property subcollection not initialized`);
         if (this.model === undefined) throw new Error(`model is undefined`);
-        const entity = useDoc(this.model, id, { fetch: true, collection: this.path }) as
-            | T
-            | undefined;
+        const entity = useDoc(this.model, id, {
+            fetch: true,
+            collection: this.path,
+        }) as T;
         return entity;
+    }
+
+    useCollection(options?: UseCollectionOption): UseCollectionType<T> {
+        if (!this.isInitialized)
+            throw new Error(`property subcollection not initialized`);
+        if (this.model === undefined) throw new Error(`model is undefined`);
+
+        const useCollectionOptions: UseCollectionOption = {
+            ...options,
+            path: this.path,
+            blacklistedProperties: this.blacklistedProperties,
+        };
+
+        return useCollection(this.model, useCollectionOptions) as UseCollectionType<T>;
     }
 }
 
@@ -269,9 +284,9 @@ export const updatePropertyCollection = async (
     path: string,
     blacklistedProperties: string[] = [],
 ) => {
-    const firebase = useFirebase();
+    const firestore = useFirestore();
 
-    const collectionRef = collection(firebase.firestore, path);
+    const collectionRef = collection(firestore, path);
     const removePromises = toRemove.map(async (entity) => {
         const id = entity.$getMetadata().reference?.id;
         if (id === undefined) throw new Error("id is undefined");

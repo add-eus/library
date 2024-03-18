@@ -1,35 +1,35 @@
-import type { Ref } from "vue";
-import { watch, isRef, shallowReactive, onScopeDispose, getCurrentScope } from "vue";
-import algoliasearch from "algoliasearch";
-import type {
-    WhereFilterOp,
-    QueryConstraint,
-    OrderByDirection,
-    QueryFilterConstraint,
-    FieldPath,
-} from "firebase/firestore";
-import {
-    where,
-    orderBy,
-    collection,
-    doc,
-    or,
-    and,
-    DocumentSnapshot,
-    DocumentReference,
-    query,
-    collectionGroup,
-    getDocs,
-} from "firebase/firestore";
-import { useFirebase } from "../firebase";
 import type { MaybeRef } from "@vueuse/core";
 import { until } from "@vueuse/core";
+import algoliasearch from "algoliasearch";
+import type {
+    FieldPath,
+    OrderByDirection,
+    QueryConstraint,
+    QueryFilterConstraint,
+    WhereFilterOp,
+} from "firebase/firestore";
+import {
+    DocumentReference,
+    DocumentSnapshot,
+    and,
+    collection,
+    collectionGroup,
+    doc,
+    getDocs,
+    or,
+    orderBy,
+    query,
+    where,
+} from "firebase/firestore";
+import type { Ref } from "vue";
+import { getCurrentScope, isRef, onScopeDispose, shallowReactive, watch } from "vue";
+import type { Entity } from "./entity";
+import { useFirestore } from "../firebase";
 import { Query } from "./query";
 import { QuerySearch } from "./querySearch";
-import type { Entity } from "./entity";
 
-export { Input } from "./input";
 export { Entity, EntityBase } from "./entity";
+export { Input } from "./input";
 export { Var } from "./var";
 
 export type WhereOption = [string | FieldPath, WhereFilterOp, any];
@@ -119,7 +119,7 @@ export function useCollection<T extends typeof Entity>(
           })
         : void 0;
     const entities = shallowReactive<any>(new Collection());
-    const firebase = useFirebase();
+    const firestore = useFirestore();
     const algoliaIndex = algoliaClient.initIndex(
         `${
             import.meta.env.VITE_ALGOLIA_PREFIX !== undefined
@@ -129,7 +129,7 @@ export function useCollection<T extends typeof Entity>(
     );
 
     const collectionRef = collection(
-        firebase.firestore,
+        firestore,
         options.path === undefined ? collectionModel.collectionName : options.path,
     );
 
@@ -276,7 +276,7 @@ export function useDoc<T extends typeof Entity>(
     options: UseDocOptions = { fetch: true },
 ): InstanceType<T> {
     if (id === undefined) return newDoc(collectionModel);
-    const { firestore } = useFirebase();
+    const firestore = useFirestore();
     const collectionName = options.collection ?? collectionModel.collectionName;
     const reference = doc(collection(firestore, collectionName), id);
     const model = transform(
@@ -333,9 +333,9 @@ export async function findDoc<T extends typeof Entity>(
     let query: Query | QuerySearch | null;
 
     const entities: any[] = [];
-    const firebase = useFirebase();
+    const firestore = useFirestore();
 
-    const collectionRef = collection(firebase.firestore, collectionModel.collectionName);
+    const collectionRef = collection(firestore, collectionModel.collectionName);
 
     const onDestroy: (() => void)[] = [];
     getCurrentScope()
@@ -428,7 +428,7 @@ export const useParentOfCollectionGroup = (
     collectionGroupName: string,
     wheres: MaybeRef<WhereOption[]>,
 ) => {
-    const firebase = useFirebase();
+    const firestore = useFirestore();
 
     const workspaceRefs = shallowReactive<any>(new Collection());
 
@@ -438,7 +438,7 @@ export const useParentOfCollectionGroup = (
             async (value) => {
                 const whereConstraints: QueryConstraint[] = transformWheres(value);
                 const groupQuery = query(
-                    collectionGroup(firebase.firestore, collectionGroupName),
+                    collectionGroup(firestore, collectionGroupName),
                     ...whereConstraints,
                 );
                 const groupSnapshot = await getDocs(groupQuery);
