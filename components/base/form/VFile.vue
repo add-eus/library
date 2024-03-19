@@ -73,18 +73,18 @@ const emit = defineEmits<VFileEmits>();
 const pond = ref<any>(null);
 
 const field = inject<any>("field");
-const imageIsTooSmall = ref(false);
-const aspectRatioIsWrong = ref(false);
+const isImageTooSmall = ref(false);
+const isAaspectRatioWrong = ref(false);
 
-const imageSizeIsTooBig = ref(false);
-const imageSizeIsTooSmall = ref(false);
+const isImageSizeTooBig = ref(false);
+const isImageSizeTooSmall = ref(false);
 
-const videoSizeIsTooSmall = ref(false);
-const videoSizeIsTooBig = ref(false);
-const videoDurationIsTooShort = ref(false);
-const videoDurationIsTooLong = ref(false);
-const videoResolutionIsTooLow = ref(false);
-const videoResolutionIsTooHigh = ref(false);
+const isVideoSizeTooSmall = ref(false);
+const isVideoSizeTooBig = ref(false);
+const isVideoDurationTooShort = ref(false);
+const isVideoDurationTooLong = ref(false);
+const isVideoResolutionTooLow = ref(false);
+const isVideoResolutionTooHigh = ref(false);
 
 const uploadedImages = computed(() => {
     if (props.modelValue === undefined) {
@@ -163,16 +163,16 @@ async function process(fieldName, file, metadata, loadFile, error) {
         if (field !== undefined) field.isProcessing = true;
         emit("processing");
 
-        imageSizeIsTooBig.value = false;
-        imageIsTooSmall.value = false;
-        aspectRatioIsWrong.value = false;
-        imageSizeIsTooSmall.value = false;
-        videoSizeIsTooSmall.value = false;
-        videoSizeIsTooBig.value = false;
-        videoDurationIsTooShort.value = false;
-        videoDurationIsTooLong.value = false;
-        videoResolutionIsTooLow.value = false;
-        videoResolutionIsTooHigh.value = false;
+        isImageSizeTooBig.value = false;
+        isImageTooSmall.value = false;
+        isAaspectRatioWrong.value = false;
+        isImageSizeTooSmall.value = false;
+        isVideoSizeTooSmall.value = false;
+        isVideoSizeTooBig.value = false;
+        isVideoDurationTooShort.value = false;
+        isVideoDurationTooLong.value = false;
+        isVideoResolutionTooLow.value = false;
+        isVideoResolutionTooHigh.value = false;
 
         let blob: Blob | undefined;
         if (!skipNextFile && file.type.match(/image\/*/) !== null) {
@@ -180,7 +180,7 @@ async function process(fieldName, file, metadata, loadFile, error) {
                 props.imageOptions?.maxSize !== undefined &&
                 file.size > props.imageOptions.maxSize
             ) {
-                imageSizeIsTooBig.value = true;
+                isImageSizeTooBig.value = true;
                 error();
                 return;
             }
@@ -189,7 +189,7 @@ async function process(fieldName, file, metadata, loadFile, error) {
                 props.imageOptions?.minSize !== undefined &&
                 file.size < props.imageOptions.minSize
             ) {
-                imageSizeIsTooSmall.value = true;
+                isImageSizeTooSmall.value = true;
                 error();
                 return;
             }
@@ -203,7 +203,7 @@ async function process(fieldName, file, metadata, loadFile, error) {
                         height < props.cropOptions?.minHeight)
                 ) {
                     error();
-                    imageIsTooSmall.value = true;
+                    isImageTooSmall.value = true;
                     return;
                 }
                 blob = await cropModal(blobURL, props.cropOptions);
@@ -216,35 +216,35 @@ async function process(fieldName, file, metadata, loadFile, error) {
 
         if (file.type.match(/video\/*/) !== null && props.videoOptions !== undefined) {
             const { minSize, maxSize, minDuration, maxDuration } = props.videoOptions;
-            videoSizeIsTooSmall.value = minSize !== undefined && file.size < minSize;
-            videoSizeIsTooBig.value = maxSize !== undefined && file.size > maxSize;
+            isVideoSizeTooSmall.value = minSize !== undefined && file.size < minSize;
+            isVideoSizeTooBig.value = maxSize !== undefined && file.size > maxSize;
 
-            if (videoSizeIsTooSmall.value || videoSizeIsTooBig.value) {
+            if (isVideoSizeTooSmall.value || isVideoSizeTooBig.value) {
                 error();
                 return;
             }
 
             const { duration, width, height } = await getVideoInfos();
-            videoDurationIsTooShort.value =
+            isVideoDurationTooShort.value =
                 minDuration !== undefined && duration < minDuration;
-            videoDurationIsTooLong.value =
+            isVideoDurationTooLong.value =
                 maxDuration !== undefined && duration > maxDuration;
-            videoResolutionIsTooLow.value =
+            isVideoResolutionTooLow.value =
                 (props.videoOptions?.minWidth !== undefined &&
                     width < props.videoOptions?.minWidth) ||
                 (props.videoOptions?.minHeight !== undefined &&
                     height < props.videoOptions?.minHeight);
-            videoResolutionIsTooHigh.value =
+            isVideoResolutionTooHigh.value =
                 (props.videoOptions?.maxWidth !== undefined &&
                     width > props.videoOptions?.maxWidth) ||
                 (props.videoOptions?.maxHeight !== undefined &&
                     height > props.videoOptions?.maxHeight);
 
             if (
-                videoDurationIsTooShort.value ||
-                videoDurationIsTooLong.value ||
-                videoResolutionIsTooLow.value ||
-                videoResolutionIsTooHigh.value
+                isVideoDurationTooShort.value ||
+                isVideoDurationTooLong.value ||
+                isVideoResolutionTooLow.value ||
+                isVideoResolutionTooHigh.value
             ) {
                 error();
                 return;
@@ -259,7 +259,7 @@ async function process(fieldName, file, metadata, loadFile, error) {
                 ratio !== props.cropOptions?.aspectRatio
             ) {
                 error();
-                aspectRatioIsWrong.value = true;
+                isAaspectRatioWrong.value = true;
                 return;
             }
             const path = await storage.upload(file, props.storagePath);
@@ -267,7 +267,7 @@ async function process(fieldName, file, metadata, loadFile, error) {
             emit("newFile", { fileType: file.type });
             skipNextFile = false;
         } else if (blob === undefined) {
-            aspectRatioIsWrong.value = false;
+            isAaspectRatioWrong.value = false;
             const path = await storage.upload(file, props.storagePath);
             loadFile(path);
             emit("newFile", { fileType: file.type });
@@ -394,48 +394,51 @@ function formatFileSize(bytes?: number) {
             @reorderfiles="reorderFiles"
             @error="error"
             @addfile="fileAdd" />
-        <p v-if="imageIsTooSmall" class="help is-danger">
+        <p v-if="isImageTooSmall" class="help is-danger">
             <Translate
-                :values="{ minWidth: cropOptions!.minWidth, minHeight: cropOptions!.minHeight}">
+                :values="{
+                    minWidth: cropOptions!.minWidth,
+                    minHeight: cropOptions!.minHeight,
+                }">
                 .{{ name }}.validation.imageIsTooSmall
             </Translate>
         </p>
-        <p v-if="aspectRatioIsWrong" class="help is-danger">
+        <p v-if="isAaspectRatioWrong" class="help is-danger">
             <Translate :values="{ aspectRatio: cropOptions!.aspectRatio }">
                 .{{ name }}.validation.aspectRatioIsWrong
             </Translate>
         </p>
-        <p v-if="imageSizeIsTooBig" class="help is-danger">
+        <p v-if="isImageSizeTooBig" class="help is-danger">
             <Translate :values="{ maxSize: formatFileSize(props.imageOptions?.maxSize) }">
                 .{{ name }}.validation.imageSizeIsTooBig
             </Translate>
         </p>
-        <p v-if="imageSizeIsTooSmall" class="help is-danger">
+        <p v-if="isImageSizeTooSmall" class="help is-danger">
             <Translate :values="{ minSize: formatFileSize(props.imageOptions?.minSize) }">
                 .{{ name }}.validation.imageSizeIsTooSmall
             </Translate>
         </p>
-        <p v-if="videoSizeIsTooSmall" class="help is-danger">
+        <p v-if="isVideoSizeTooSmall" class="help is-danger">
             <Translate :values="{ minSize: formatFileSize(props.videoOptions?.minSize) }">
                 .{{ name }}.validation.videoSizeIsTooSmall
             </Translate>
         </p>
-        <p v-if="videoSizeIsTooBig" class="help is-danger">
+        <p v-if="isVideoSizeTooBig" class="help is-danger">
             <Translate :values="{ maxSize: formatFileSize(props.videoOptions?.maxSize) }">
                 .{{ name }}.validation.videoSizeIsTooBig
             </Translate>
         </p>
-        <p v-if="videoDurationIsTooShort" class="help is-danger">
+        <p v-if="isVideoDurationTooShort" class="help is-danger">
             <Translate :values="{ minDuration: props.videoOptions?.minDuration }">
                 .{{ name }}.validation.videoDurationIsTooShort
             </Translate>
         </p>
-        <p v-if="videoDurationIsTooLong" class="help is-danger">
+        <p v-if="isVideoDurationTooLong" class="help is-danger">
             <Translate :values="{ maxDuration: props.videoOptions?.maxDuration }">
                 .{{ name }}.validation.videoDurationIsTooLong
             </Translate>
         </p>
-        <p v-if="videoResolutionIsTooLow" class="help is-danger">
+        <p v-if="isVideoResolutionTooLow" class="help is-danger">
             <Translate
                 :values="{
                     minWidth: props.videoOptions?.minWidth,
@@ -444,7 +447,7 @@ function formatFileSize(bytes?: number) {
                 .{{ name }}.validation.videoResolutionIsTooLow
             </Translate>
         </p>
-        <p v-if="videoResolutionIsTooHigh" class="help is-danger">
+        <p v-if="isVideoResolutionTooHigh" class="help is-danger">
             <Translate
                 :values="{
                     maxWidth: props.videoOptions?.maxWidth,
