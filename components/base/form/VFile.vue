@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { computed, inject, ref } from "vue";
-import vueFilePond from "vue-filepond";
-import "filepond/dist/filepond.min.css";
-import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
-import "filepond-plugin-media-preview/dist/filepond-plugin-media-preview.min.css";
-import FilePondPluginImagePreview from "filepond-plugin-image-preview";
-import FilePondPluginMediaPreview from "filepond-plugin-media-preview";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
-import { useStorage } from "../../../stores/storage";
+import FilePondPluginImagePreview from "filepond-plugin-image-preview";
+import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
+import FilePondPluginMediaPreview from "filepond-plugin-media-preview";
+import "filepond-plugin-media-preview/dist/filepond-plugin-media-preview.min.css";
+import "filepond/dist/filepond.min.css";
+import { computed, inject, ref } from "vue";
+import vueFilePond from "vue-filepond";
 import type { CropOptions } from "../../../stores/cropModal";
 import { useCropModal } from "../../../stores/cropModal";
+import { useStorage } from "../../../stores/storage";
 
 export type VFileProps = {
     multiple?: boolean;
@@ -21,6 +21,20 @@ export type VFileProps = {
     label?: string;
     cropOptions?: CropOptions;
     name: string;
+    imageOptions?: {
+        minSize?: number;
+        maxSize?: number;
+    };
+    videoOptions?: {
+        minSize?: number;
+        maxSize?: number;
+        minDuration?: number;
+        maxDuration?: number;
+        minWidth?: number;
+        minHeight?: number;
+        maxWidth?: number;
+        maxHeight?: number;
+    };
 };
 
 export interface NewFileEvent {
@@ -41,6 +55,8 @@ const props = withDefaults(defineProps<VFileProps>(), {
     accepts: () => ["image/png", "image/jpeg", "image/gif"],
     label: "",
     cropOptions: undefined,
+    imageOptions: undefined,
+    videoOptions: undefined,
 });
 
 const Filepond = vueFilePond(
@@ -57,8 +73,18 @@ const emit = defineEmits<VFileEmits>();
 const pond = ref<any>(null);
 
 const field = inject<any>("field");
-const imageIsTooSmall = ref(false);
-const aspectRatioIsWrong = ref(false);
+const isImageTooSmall = ref(false);
+const isAaspectRatioWrong = ref(false);
+
+const isImageSizeTooBig = ref(false);
+const isImageSizeTooSmall = ref(false);
+
+const isVideoSizeTooSmall = ref(false);
+const isVideoSizeTooBig = ref(false);
+const isVideoDurationTooShort = ref(false);
+const isVideoDurationTooLong = ref(false);
+const isVideoResolutionTooLow = ref(false);
+const isVideoResolutionTooHigh = ref(false);
 
 const uploadedImages = computed(() => {
     if (props.modelValue === undefined) {
@@ -92,7 +118,7 @@ async function load(url, load) {
 }
 
 const getImageSize = async (url: string) => {
-    var img = new Image();
+    const img = document.createElement("img");
     const loadPromise = new Promise<{ width: number; height: number; ratio: number }>(
         (resolve) => {
             img.onload = function (this: any) {
@@ -108,6 +134,27 @@ const getImageSize = async (url: string) => {
     return await loadPromise;
 };
 
+interface VideoInfos {
+    duration: number;
+    width: number;
+    height: number;
+}
+
+const getVideoInfos = async (): Promise<VideoInfos> => {
+    const video = document.createElement("video");
+    video.src = URL.createObjectURL(pond.value.getFiles()[0].file);
+    const loadPromise = new Promise<VideoInfos>((resolve) => {
+        video.onloadedmetadata = function () {
+            resolve({
+                duration: video.duration,
+                width: video.videoWidth,
+                height: video.videoHeight,
+            });
+        };
+    });
+    return await loadPromise;
+};
+
 let skipNextFile = false;
 async function process(fieldName, file, metadata, loadFile, error) {
     if (!props.storagePath) {
@@ -116,8 +163,36 @@ async function process(fieldName, file, metadata, loadFile, error) {
         if (field !== undefined) field.isProcessing = true;
         emit("processing");
 
+        isImageSizeTooBig.value = false;
+        isImageTooSmall.value = false;
+        isAaspectRatioWrong.value = false;
+        isImageSizeTooSmall.value = false;
+        isVideoSizeTooSmall.value = false;
+        isVideoSizeTooBig.value = false;
+        isVideoDurationTooShort.value = false;
+        isVideoDurationTooLong.value = false;
+        isVideoResolutionTooLow.value = false;
+        isVideoResolutionTooHigh.value = false;
+
         let blob: Blob | undefined;
         if (!skipNextFile && file.type.match(/image\/*/) !== null) {
+            if (
+                props.imageOptions?.maxSize !== undefined &&
+                file.size > props.imageOptions.maxSize
+            ) {
+                isImageSizeTooBig.value = true;
+                error();
+                return;
+            }
+
+            if (
+                props.imageOptions?.minSize !== undefined &&
+                file.size < props.imageOptions.minSize
+            ) {
+                isImageSizeTooSmall.value = true;
+                error();
+                return;
+            }
             try {
                 const blobURL = URL.createObjectURL(file);
                 const { width, height } = await getImageSize(blobURL);
@@ -128,13 +203,49 @@ async function process(fieldName, file, metadata, loadFile, error) {
                         height < props.cropOptions?.minHeight)
                 ) {
                     error();
-                    imageIsTooSmall.value = true;
+                    isImageTooSmall.value = true;
                     return;
                 }
-                imageIsTooSmall.value = false;
                 blob = await cropModal(blobURL, props.cropOptions);
                 URL.revokeObjectURL(blobURL);
             } catch {
+                error();
+                return;
+            }
+        }
+
+        if (file.type.match(/video\/*/) !== null && props.videoOptions !== undefined) {
+            const { minSize, maxSize, minDuration, maxDuration } = props.videoOptions;
+            isVideoSizeTooSmall.value = minSize !== undefined && file.size < minSize;
+            isVideoSizeTooBig.value = maxSize !== undefined && file.size > maxSize;
+
+            if (isVideoSizeTooSmall.value || isVideoSizeTooBig.value) {
+                error();
+                return;
+            }
+
+            const { duration, width, height } = await getVideoInfos();
+            isVideoDurationTooShort.value =
+                minDuration !== undefined && duration < minDuration;
+            isVideoDurationTooLong.value =
+                maxDuration !== undefined && duration > maxDuration;
+            isVideoResolutionTooLow.value =
+                (props.videoOptions?.minWidth !== undefined &&
+                    width < props.videoOptions?.minWidth) ||
+                (props.videoOptions?.minHeight !== undefined &&
+                    height < props.videoOptions?.minHeight);
+            isVideoResolutionTooHigh.value =
+                (props.videoOptions?.maxWidth !== undefined &&
+                    width > props.videoOptions?.maxWidth) ||
+                (props.videoOptions?.maxHeight !== undefined &&
+                    height > props.videoOptions?.maxHeight);
+
+            if (
+                isVideoDurationTooShort.value ||
+                isVideoDurationTooLong.value ||
+                isVideoResolutionTooLow.value ||
+                isVideoResolutionTooHigh.value
+            ) {
                 error();
                 return;
             }
@@ -148,16 +259,15 @@ async function process(fieldName, file, metadata, loadFile, error) {
                 ratio !== props.cropOptions?.aspectRatio
             ) {
                 error();
-                aspectRatioIsWrong.value = true;
+                isAaspectRatioWrong.value = true;
                 return;
             }
-            aspectRatioIsWrong.value = false;
             const path = await storage.upload(file, props.storagePath);
             loadFile(path);
             emit("newFile", { fileType: file.type });
             skipNextFile = false;
         } else if (blob === undefined) {
-            aspectRatioIsWrong.value = false;
+            isAaspectRatioWrong.value = false;
             const path = await storage.upload(file, props.storagePath);
             loadFile(path);
             emit("newFile", { fileType: file.type });
@@ -239,6 +349,17 @@ function emitChangedEvent() {
         }
     }
 }
+
+function formatFileSize(bytes?: number) {
+    if (bytes === undefined) return undefined;
+    if (bytes === 0) return "0 Bytes";
+
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    const formattedSize = parseFloat((bytes / Math.pow(1024, i)).toFixed(2));
+
+    return `${formattedSize} ${sizes[i]}`;
+}
 </script>
 
 <template>
@@ -273,16 +394,67 @@ function emitChangedEvent() {
             @reorderfiles="reorderFiles"
             @error="error"
             @addfile="fileAdd" />
-        <p v-if="imageIsTooSmall" class="help is-danger">
+        <p v-if="isImageTooSmall" class="help is-danger">
             <Translate
-                :values="{ minWidth: cropOptions!.minWidth, minHeight: cropOptions!.minHeight}"
-                >.{{ name }}.validation.imageIsTooSmall</Translate
-            >
+                :values="{
+                    minWidth: cropOptions!.minWidth,
+                    minHeight: cropOptions!.minHeight,
+                }">
+                .{{ name }}.validation.imageIsTooSmall
+            </Translate>
         </p>
-        <p v-if="aspectRatioIsWrong" class="help is-danger">
-            <Translate :values="{ aspectRatio: cropOptions!.aspectRatio }"
-                >.{{ name }}.validation.aspectRatioIsWrong</Translate
-            >
+        <p v-if="isAaspectRatioWrong" class="help is-danger">
+            <Translate :values="{ aspectRatio: cropOptions!.aspectRatio }">
+                .{{ name }}.validation.aspectRatioIsWrong
+            </Translate>
+        </p>
+        <p v-if="isImageSizeTooBig" class="help is-danger">
+            <Translate :values="{ maxSize: formatFileSize(props.imageOptions?.maxSize) }">
+                .{{ name }}.validation.imageSizeIsTooBig
+            </Translate>
+        </p>
+        <p v-if="isImageSizeTooSmall" class="help is-danger">
+            <Translate :values="{ minSize: formatFileSize(props.imageOptions?.minSize) }">
+                .{{ name }}.validation.imageSizeIsTooSmall
+            </Translate>
+        </p>
+        <p v-if="isVideoSizeTooSmall" class="help is-danger">
+            <Translate :values="{ minSize: formatFileSize(props.videoOptions?.minSize) }">
+                .{{ name }}.validation.videoSizeIsTooSmall
+            </Translate>
+        </p>
+        <p v-if="isVideoSizeTooBig" class="help is-danger">
+            <Translate :values="{ maxSize: formatFileSize(props.videoOptions?.maxSize) }">
+                .{{ name }}.validation.videoSizeIsTooBig
+            </Translate>
+        </p>
+        <p v-if="isVideoDurationTooShort" class="help is-danger">
+            <Translate :values="{ minDuration: props.videoOptions?.minDuration }">
+                .{{ name }}.validation.videoDurationIsTooShort
+            </Translate>
+        </p>
+        <p v-if="isVideoDurationTooLong" class="help is-danger">
+            <Translate :values="{ maxDuration: props.videoOptions?.maxDuration }">
+                .{{ name }}.validation.videoDurationIsTooLong
+            </Translate>
+        </p>
+        <p v-if="isVideoResolutionTooLow" class="help is-danger">
+            <Translate
+                :values="{
+                    minWidth: props.videoOptions?.minWidth,
+                    minHeight: props.videoOptions?.minHeight,
+                }">
+                .{{ name }}.validation.videoResolutionIsTooLow
+            </Translate>
+        </p>
+        <p v-if="isVideoResolutionTooHigh" class="help is-danger">
+            <Translate
+                :values="{
+                    maxWidth: props.videoOptions?.maxWidth,
+                    maxHeight: props.videoOptions?.maxHeight,
+                }">
+                .{{ name }}.validation.videoResolutionIsTooHigh
+            </Translate>
         </p>
     </div>
 </template>
