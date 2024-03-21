@@ -1,4 +1,4 @@
-const { RuleConfigSeverity } = require("@commitlint/types");
+import { RuleConfigSeverity } from "@commitlint/types";
 
 function generateConfig(scopes) {
     return {
@@ -10,5 +10,6 @@ function generateConfig(scopes) {
         },
     };
 }
-module.exports = generateConfig([]);
-module.exports.generateConfig = generateConfig;
+
+export default generateConfig([]);
+export { generateConfig };
