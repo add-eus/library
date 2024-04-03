@@ -113,6 +113,10 @@ export function translate(options: any, component: any, values?: any) {
             },
             { deep: true },
         );
+
+        watch(() => component.appContext.app.config.globalProperties.$i18n.locale, () => {
+            translateInScope();
+        });
     });
 
     return translated;
