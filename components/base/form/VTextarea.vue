@@ -8,6 +8,7 @@ export interface VTextareaEmits {
 export interface VTextareaProps {
     raw?: boolean;
     modelValue?: any;
+    disabled?: boolean;
 }
 
 const emits = defineEmits<VTextareaEmits>();
@@ -24,7 +25,7 @@ watch(
     () => props.modelValue,
     () => {
         value.value = props.modelValue;
-    }
+    },
 );
 
 const classes = computed(() => {
@@ -39,5 +40,9 @@ defineExpose({
 </script>
 
 <template>
-    <textarea ref="textarea" v-model="value" :class="classes"></textarea>
+    <textarea
+        ref="textarea"
+        v-model="value"
+        :class="classes"
+        :disabled="disabled"></textarea>
 </template>
