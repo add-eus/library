@@ -37,7 +37,7 @@ class Queue {
         callback: (
             startAfter: undefined | any,
             update: (list?: any, docs?: any) => void,
-        ) => any,
+        ) => void,
     ): Promise<any> {
         const chunkIndex = this.chunk.length;
         const waitPrevious = Promise.all(this.queue);
@@ -83,7 +83,11 @@ class Queue {
 
                     resolve(list);
                 };
-                callback(previousItem, onUpdate).then(undefined, reject);
+                try {
+                    callback(previousItem, onUpdate);
+                } catch (err) {
+                    reject(err);
+                }
             };
         });
 
