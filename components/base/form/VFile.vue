@@ -106,7 +106,7 @@ const uploadedImages = computed(() => {
     });
 });
 
-async function load(url, load) {
+async function load(url, load, error) {
     if (url.constructor === File) return load(url);
     try {
         const blob = await storage.fetch(url);
@@ -114,6 +114,7 @@ async function load(url, load) {
     } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err);
+        if (typeof err === "object" && err.code === "storage/unauthorized") error();
     }
 }
 
