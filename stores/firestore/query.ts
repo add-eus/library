@@ -1,4 +1,3 @@
-import { useDebounceFn } from "@vueuse/core";
 import EventEmitter from "./event";
 import type {
     CollectionReference,
@@ -35,57 +34,55 @@ class Queue {
     }
 
     async add(
-        callback: (startAfter: undefined | any, update: Function) => any
+        callback: (
+            startAfter: undefined | any,
+            update: (list?: any, docs?: any) => void,
+        ) => any,
     ): Promise<any> {
         const chunkIndex = this.chunk.length;
         const waitPrevious = Promise.all(this.queue);
-        let subCallback: Function | undefined;
+        let subCallback: ((previousItem: any) => void) | undefined;
         let lastSnapshotIndex = -1;
 
         // if (this.chunk[chunkIndex] === undefined) this.chunk[chunkIndex] = [];
 
         const waitCurrent = new Promise((resolve, reject) => {
             subCallback = (previousItem: any) => {
-                const onUpdate = useDebounceFn(
-                    (list?: any[], snapshots?: DocumentSnapshot[]) => {
-                        if (list === undefined) return resolve([]);
+                const onUpdate = (list?: any[], snapshots?: DocumentSnapshot[]) => {
+                    if (list === undefined) return resolve([]);
 
-                        this.chunk[chunkIndex] = list;
+                    this.chunk[chunkIndex] = list;
 
-                        const newList = [...this.list];
+                    const newList = [...this.list];
 
-                        let index = 0;
-                        // We replace all items in the queue with the new ones or existant
-                        for (let iChunk = 0; iChunk < this.chunk.length; iChunk++) {
-                            for (let iRow = 0; iRow < this.chunk[iChunk].length; iRow++) {
-                                if (
-                                    !isInArrayTo(newList, index, this.chunk[iChunk][iRow])
-                                ) {
-                                    newList[index] = this.chunk[iChunk][iRow];
-                                    index++;
-                                }
+                    let index = 0;
+                    // We replace all items in the queue with the new ones or existant
+                    for (let iChunk = 0; iChunk < this.chunk.length; iChunk++) {
+                        for (let iRow = 0; iRow < this.chunk[iChunk].length; iRow++) {
+                            if (!isInArrayTo(newList, index, this.chunk[iChunk][iRow])) {
+                                newList[index] = this.chunk[iChunk][iRow];
+                                index++;
                             }
                         }
-                        // Set length of array
-                        newList.length = index;
+                    }
+                    // Set length of array
+                    newList.length = index;
 
-                        // Clear end of array
-                        while (index < newList.length || index < this.list.length) {
-                            if (newList[index] !== undefined) delete newList[index];
-                            index++;
-                        }
+                    // Clear end of array
+                    while (index < newList.length || index < this.list.length) {
+                        if (newList[index] !== undefined) delete newList[index];
+                        index++;
+                    }
 
-                        this.list.splice(0, index, ...newList);
+                    this.list.splice(0, index, ...newList);
 
-                        const snapshot = snapshots[snapshots.length - 1];
-                        if (snapshot !== undefined) {
-                            this.lastSnapshots[lastSnapshotIndex] = snapshot;
-                        }
+                    const snapshot = snapshots[snapshots.length - 1];
+                    if (snapshot !== undefined) {
+                        this.lastSnapshots[lastSnapshotIndex] = snapshot;
+                    }
 
-                        resolve(list);
-                    },
-                    100
-                );
+                    resolve(list);
+                };
                 callback(previousItem, onUpdate).then(undefined, reject);
             };
         });
@@ -96,7 +93,7 @@ class Queue {
 
         const previousLastSnapshot = this.lastSnapshots[lastSnapshotIndex];
 
-        if (subCallback) subCallback(previousLastSnapshot);
+        if (subCallback !== undefined) subCallback(previousLastSnapshot);
         const result = await waitCurrent;
         const indexToRemove = this.queue.indexOf(waitCurrent);
         this.queue.splice(indexToRemove, 1);
@@ -106,7 +103,7 @@ class Queue {
 
 export class Query extends EventEmitter {
     private constraints: QueryConstraint[] = [];
-    private transform: Function;
+    private transform: (...args: any) => void;
     private reference: CollectionReference;
     private indexes: number[] = [];
     public queue: Queue;
@@ -114,8 +111,8 @@ export class Query extends EventEmitter {
     constructor(
         constraints: QueryConstraint[],
         list: any[],
-        transform: Function,
-        reference: CollectionReference
+        transform: (...args: any) => void,
+        reference: CollectionReference,
     ) {
         super();
         this.constraints = constraints;
@@ -126,9 +123,9 @@ export class Query extends EventEmitter {
 
     async next(
         sizeLimit: number | undefined,
-        additionalConstraints: QueryConstraint[] = []
+        additionalConstraints: QueryConstraint[] = [],
     ): Promise<DocumentSnapshot[]> {
-        return this.queue.add(async (startAfterItem, update) => {
+        return this.queue.add((startAfterItem, update) => {
             const constraints = [...additionalConstraints, ...this.constraints];
 
             if (startAfterItem !== undefined) {
@@ -164,12 +161,12 @@ export class Query extends EventEmitter {
                     (err) => {
                         if (err instanceof Error && err.code === "permission-denied") {
                             throw new Error(
-                                `You don't have permission to access ${this.reference?.path}`
+                                `You don't have permission to access ${this.reference?.path}`,
                             );
                         }
                         throw err;
-                    }
-                )
+                    },
+                ),
             );
         });
     }
