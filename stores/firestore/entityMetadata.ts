@@ -37,16 +37,13 @@ export class EntityMetaData extends EventEmitter {
     async refresh() {
         if (!this.reference) return;
         if (!this.isFullfilling) {
-            this.isFullfilling = getDoc(this.reference).then(async (querySnapshot) => {
-                // this.previousOrigin = this.origin;
-                this.entity.$setAndParseFromReference(querySnapshot);
-                // this.origin = querySnapshot.data();
-                // if (this.origin === undefined)
-                //     throw new Error(`${this.reference.path} does not exist`);
+            this.isFullfilling = getDoc(this.reference);
 
-                // this.emit("parse", this.origin);
-                // this.isFullfilled = true;
-            });
+            const querySnapshot = await this.isFullfilling;
+
+            
+
+            this.entity.$setAndParseFromReference(querySnapshot);
         }
 
         await this.isFullfilling;

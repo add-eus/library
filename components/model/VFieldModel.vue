@@ -2,13 +2,14 @@
 /* eslint vue/no-mutating-props: 0 */
 import type { ComputedRef } from "vue";
 import { computed, ref } from "vue";
+
 import { VueTelInput } from "vue-tel-input";
 import * as yup from "yup";
 import { enumToObject, isEnum } from "../../utils/array";
 import { useTranslate } from "../../stores/translate";
 import { useCollection } from "../../stores/firestore";
 import { isValidPhoneNumber } from "libphonenumber-js";
-import { resolveUnref, until } from "@vueuse/core";
+import { resolveUnref, until, useArrayMap } from "@vueuse/core";
 
 export interface VFieldModelProps {
     modelValue: any;
@@ -60,18 +61,18 @@ if (input.value.attrs.options !== undefined) {
             orders,
             limit: input.value.attrs.options.limit,
         });
+        console.log(input.value.attrs.options.entity, wheres, orders, options.length);
 
         schema = yup.object();
-        selectOptions = computed(() => {
-            return options.map((option) => {
-                const label = option.toString();
-                return {
-                    label: typeof label === "string" ? label : "",
-                    value: option,
-                    id: option.$getID(),
-                };
-            });
+        selectOptions = useArrrayMap(options, (option) => {
+            const label = option.toString();
+            return {
+                label: typeof label === "string" ? label : "",
+                value: option,
+                id: option.$getID(),
+            };
         });
+        
     } else if (isEnum(input.value.attrs.options)) {
         const enumerable = enumToObject(input.value.attrs.options);
         selectOptions = Object.keys(enumerable).map((rowKey) => {
