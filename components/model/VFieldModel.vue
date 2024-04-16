@@ -64,7 +64,7 @@ if (input.value.attrs.options !== undefined) {
         console.log(input.value.attrs.options.entity, wheres, orders, options.length);
 
         schema = yup.object();
-        selectOptions = useArrrayMap(options, (option) => {
+        selectOptions = useArrayMap(options, (option) => {
             const label = option.toString();
             return {
                 label: typeof label === "string" ? label : "",
@@ -72,7 +72,6 @@ if (input.value.attrs.options !== undefined) {
                 id: option.$getID(),
             };
         });
-        
     } else if (isEnum(input.value.attrs.options)) {
         const enumerable = enumToObject(input.value.attrs.options);
         selectOptions = Object.keys(enumerable).map((rowKey) => {
@@ -127,7 +126,7 @@ if (Array.isArray(input.value.attrs.validate)) {
                 `.${props.property}.validation.${validate[0]}`,
                 (value) => {
                     return validate[1](value, props.modelValue);
-                }
+                },
             );
     });
 }
@@ -161,13 +160,13 @@ if (input.value.type === "number" || input.value.type === "percent") {
     if (input.value.attrs.min !== undefined || input.value.type === "percent") {
         schema = schema.min(
             input.value.attrs.min !== undefined ? input.value.attrs.min : 0,
-            `.${props.property}.validation.min`
+            `.${props.property}.validation.min`,
         );
     }
     if (input.value.attrs.max !== undefined || input.value.type === "percent") {
         schema = schema.max(
             input.value.attrs.min !== undefined ? input.value.attrs.max : 1,
-            `.${props.property}.validation.max`
+            `.${props.property}.validation.max`,
         );
     }
 }
