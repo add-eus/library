@@ -354,6 +354,7 @@ export async function findDoc<T extends typeof Entity>(
             [...wheres, ...orders],
             entities,
             (doc: DocumentSnapshot) => {
+                console.log(collectionModel, doc, [...wheres, ...orders]);
                 return transform(doc, collectionModel, (callback) => {
                     onDestroy.push(callback);
                 });
@@ -367,6 +368,7 @@ export async function findDoc<T extends typeof Entity>(
             [...wheres, ...orders],
             entities,
             (doc: DocumentSnapshot) => {
+                console.log(collectionModel, doc, [...wheres, ...orders]);
                 return transform(doc, collectionModel, (callback) => {
                     onDestroy.push(callback);
                 });
