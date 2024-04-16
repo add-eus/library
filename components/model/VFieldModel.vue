@@ -61,7 +61,6 @@ if (input.value.attrs.options !== undefined) {
             orders,
             limit: input.value.attrs.options.limit,
         });
-        console.log(input.value.attrs.options.entity, wheres, orders, options);
 
         schema = yup.object();
         selectOptions = useArrayMap(options, (option) => {
