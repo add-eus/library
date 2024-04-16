@@ -167,7 +167,6 @@ export function useCollection<T extends typeof Entity>(
                 constraints,
                 entities,
                 (doc: DocumentSnapshot) => {
-                    console.log(collectionModel, doc, [...wheres, ...orders], "search");
                     return transform(
                         doc,
                         collectionModel,
@@ -189,7 +188,6 @@ export function useCollection<T extends typeof Entity>(
                 constraints,
                 entities,
                 (doc: DocumentSnapshot) => {
-                    console.log(collectionModel, doc, [...wheres, ...orders]);
                     return transform(
                         doc,
                         collectionModel,
@@ -356,7 +354,6 @@ export async function findDoc<T extends typeof Entity>(
             [...wheres, ...orders],
             entities,
             (doc: DocumentSnapshot) => {
-                console.log(collectionModel, doc, [...wheres, ...orders]);
                 return transform(doc, collectionModel, (callback) => {
                     onDestroy.push(callback);
                 });
@@ -370,7 +367,6 @@ export async function findDoc<T extends typeof Entity>(
             [...wheres, ...orders],
             entities,
             (doc: DocumentSnapshot) => {
-                console.log(collectionModel, doc, [...wheres, ...orders]);
                 return transform(doc, collectionModel, (callback) => {
                     onDestroy.push(callback);
                 });
