@@ -139,6 +139,7 @@ export class Entity extends EntityBase {
     static collectionName: string;
 
     $setAndParseFromReference(querySnapshot: DocumentReference | DocumentSnapshot) {
+        
         const metadata = this.$getMetadata();
         if (querySnapshot instanceof DocumentReference) {
             metadata.setReference(querySnapshot);

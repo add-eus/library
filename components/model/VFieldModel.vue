@@ -2,13 +2,14 @@
 /* eslint vue/no-mutating-props: 0 */
 import type { ComputedRef } from "vue";
 import { computed, ref } from "vue";
+
 import { VueTelInput } from "vue-tel-input";
 import * as yup from "yup";
 import { enumToObject, isEnum } from "../../utils/array";
 import { useTranslate } from "../../stores/translate";
 import { useCollection } from "../../stores/firestore";
 import { isValidPhoneNumber } from "libphonenumber-js";
-import { resolveUnref, until } from "@vueuse/core";
+import { resolveUnref, until, useArrayMap } from "@vueuse/core";
 
 export interface VFieldModelProps {
     modelValue: any;
@@ -62,15 +63,13 @@ if (input.value.attrs.options !== undefined) {
         });
 
         schema = yup.object();
-        selectOptions = computed(() => {
-            return options.map((option) => {
-                const label = option.toString();
-                return {
-                    label: typeof label === "string" ? label : "",
-                    value: option,
-                    id: option.$getID(),
-                };
-            });
+        selectOptions = useArrayMap(options, (option) => {
+            const label = option.toString();
+            return {
+                label: typeof label === "string" ? label : "",
+                value: option,
+                id: option.$getID(),
+            };
         });
     } else if (isEnum(input.value.attrs.options)) {
         const enumerable = enumToObject(input.value.attrs.options);
@@ -126,7 +125,7 @@ if (Array.isArray(input.value.attrs.validate)) {
                 `.${props.property}.validation.${validate[0]}`,
                 (value) => {
                     return validate[1](value, props.modelValue);
-                }
+                },
             );
     });
 }
@@ -160,13 +159,13 @@ if (input.value.type === "number" || input.value.type === "percent") {
     if (input.value.attrs.min !== undefined || input.value.type === "percent") {
         schema = schema.min(
             input.value.attrs.min !== undefined ? input.value.attrs.min : 0,
-            `.${props.property}.validation.min`
+            `.${props.property}.validation.min`,
         );
     }
     if (input.value.attrs.max !== undefined || input.value.type === "percent") {
         schema = schema.max(
             input.value.attrs.min !== undefined ? input.value.attrs.max : 1,
-            `.${props.property}.validation.max`
+            `.${props.property}.validation.max`,
         );
     }
 }
