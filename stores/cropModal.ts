@@ -9,6 +9,8 @@ export interface CropOptions {
     minHeight?: number;
     maxWidth?: number;
     maxHeight?: number;
+    mimeType?: string;
+    quality?: number;
 }
 
 export const useCropModal = () => {
@@ -42,7 +44,7 @@ export const useCropModal = () => {
                             async click() {
                                 if (cropping) return;
                                 cropping = true;
-                                const blobPromise = modal.reference.getResult();
+                                const blobPromise = modal.reference.getResult(cropOptions.mimeType, cropOptions.quality);
                                 modal.close();
                                 resolve(await blobPromise);
                             },
