@@ -11,7 +11,10 @@ interface VCropProps {
 const props = defineProps<VCropProps>();
 
 const cropperRef = vRef<typeof Cropper>();
-const getResult = async (mimeType: string = "image/png", quality: number = 1): Promise<string> => {
+const getResult = async (
+    mimeType: string = "image/png", 
+    quality: number = 1,
+): Promise<string> => {
     const { canvas } = cropperRef.value?.getResult();
     const blob = await new Promise<any>((resolve) => canvas.toBlob(resolve, mimeType, quality));
     return blob;
