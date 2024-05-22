@@ -44,7 +44,10 @@ export const useCropModal = () => {
                             async click() {
                                 if (cropping) return;
                                 cropping = true;
-                                const blobPromise = modal.reference.getResult(cropOptions?.mimeType, cropOptions?.quality);
+                                const blobPromise = modal.reference.getResult(
+                                    cropOptions?.mimeType, 
+                                    cropOptions?.quality
+                                );
                                 modal.close();
                                 resolve(await blobPromise);
                             },
