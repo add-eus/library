@@ -1,6 +1,6 @@
-import { useModal } from "../stores/modal";
 import VCropComponent from "../components/base/VCrop.vue";
 import VButton from "../components/base/button/VButton.vue";
+import { useModal } from "../stores/modal";
 import { useTranslate } from "./translate";
 
 export interface CropOptions {
@@ -44,7 +44,7 @@ export const useCropModal = () => {
                             async click() {
                                 if (cropping) return;
                                 cropping = true;
-                                const blobPromise = modal.reference.getResult(cropOptions.mimeType, cropOptions.quality);
+                                const blobPromise = modal.reference.getResult(cropOptions?.mimeType, cropOptions?.quality);
                                 modal.close();
                                 resolve(await blobPromise);
                             },
