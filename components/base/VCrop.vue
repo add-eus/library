@@ -16,7 +16,7 @@ const getResult = async (
     quality: number = 1,
 ): Promise<string> => {
     const { canvas } = cropperRef.value?.getResult();
-    const blob = await new Promise<any>((resolve) => 
+    const blob = await new Promise<any>((resolve) =>
         canvas.toBlob(resolve, mimeType, quality),
     );
     return blob;
