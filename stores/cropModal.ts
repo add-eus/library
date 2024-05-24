@@ -20,12 +20,12 @@ export const useCropModal = () => {
         return new Promise((resolve, reject) => {
             let cropping = false;
             const modal = modalManager.createModal(VCropComponent, {
-                title: translate("crop-modal.title").value,
+                title: translate("crop-modal.title"),
                 props: { src, options: cropOptions },
                 actions: [
                     {
                         component: VButton,
-                        content: translate("crop-modal.cancel").value,
+                        content: translate("crop-modal.cancel"),
                         props: {},
                         events: {
                             click() {
@@ -36,7 +36,7 @@ export const useCropModal = () => {
                     },
                     {
                         component: VButton,
-                        content: translate("crop-modal.crop").value,
+                        content: translate("crop-modal.crop"),
                         props: {
                             color: "primary",
                         },

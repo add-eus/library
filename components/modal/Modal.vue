@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { toValue } from "@vueuse/core";
+import { computed } from "vue";
 import type { Modal } from "../../stores/modal";
 
 export interface ModalProps {
@@ -10,11 +12,19 @@ function setReference(ref) {
     // eslint-disable-next-line vue/no-mutating-props
     props.modal.reference = ref;
 }
+
+const title = computed(() => toValue(props.modal.title));
+const actions = computed(() => props.modal.actions.map((action) => {
+    return {
+        ...action,
+        content: toValue(action.content),
+    };
+}));
 </script>
 <template>
     <VModal
         :open="modal.isClosed"
-        :title="modal.title"
+        :title="title"
         actions="center"
         :noclose="modal.isCloseDisabled"
         :size="modal.size"
@@ -35,7 +45,7 @@ function setReference(ref) {
                 <component
                     :is="action.component"
                     v-bind="action.props"
-                    v-for="(action, index) in modal.actions"
+                    v-for="(action, index) in actions"
                     :key="index"
                     v-on="action.events"
                     >{{ action.content }}</component
