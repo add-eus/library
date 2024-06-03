@@ -141,7 +141,7 @@ watch(() => props.filters, fetch);
         :sort="sortKey"
         :loading="entities.isUpdating"
         :data="entities"
-        use-infinite-scroll
+        :useInfiniteScroll="true"
         @update:infinite-scroll="onInfiniteScroll"
         @update:sort="onSort">
         <template #default>

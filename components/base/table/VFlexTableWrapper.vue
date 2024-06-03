@@ -196,7 +196,7 @@ export default defineComponent({
 
         const defaultLimit = ref(10);
         const limit = computed({
-            get: () => Math.max(1, props.limit ?? defaultLimit.value),
+            get: () => props.limit ?? defaultLimit.value,
             set(value) {
                 if (props.limit === undefined) {
                     defaultLimit.value = value;
@@ -497,7 +497,7 @@ export default defineComponent({
             const elementBoundingBox = this.$el.getBoundingClientRect();
             const offset = elementBoundingBox.height - this.scrollableParent.scrollTop;
             const targetHeight = this.scrollableParent.getBoundingClientRect().height;
-
+            
             if (offset < targetHeight) {
                 this.$.exposed.wrapperState.loading = true;
                 const previousSize = this.$.exposed.wrapperState.data.length;
