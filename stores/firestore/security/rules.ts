@@ -156,8 +156,8 @@ const createPropertiesRules = (
         .map((property) => {
             const rule = modelSecurity?.properties?.[property][operation];
             if (rule === "false")
-                return `!request.resource.data.keys().hasAny(["${property}"])`;
-            return `(!request.resource.data.keys().hasAny(["${property}"]) || ${modelSecurity?.properties?.[property][operation]})`;
+                return `request.resource.data['${property}'] == resource.data['${property}']`;
+            return `(request.resource.data['${property}'] == resource.data['${property}'] || ${modelSecurity?.properties?.[property][operation]})`;
         })
         .join(" && ")})`;
 };
