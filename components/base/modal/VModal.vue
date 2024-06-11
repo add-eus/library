@@ -114,6 +114,8 @@ defineExpose({
 .modal {
     transition: all 0.5s;
     color: $grey;
+    height: 100vh;
+    position: fixed;
 
     &.is-giant {
         .modal-content {
