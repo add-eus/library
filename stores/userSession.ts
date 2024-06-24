@@ -1,35 +1,32 @@
-import { acceptHMRUpdate, defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { UserImpl } from "@firebase/auth/internal";
 import type {
-    User as UserFirebase,
-    ConfirmationResult,
     ApplicationVerifier,
+    ConfirmationResult,
+    User as UserFirebase,
 } from "firebase/auth";
 import {
     EmailAuthProvider,
-    reauthenticateWithCredential,
-    signInWithEmailLink,
-    updatePassword,
-} from "firebase/auth";
-import { isSignInWithEmailLink } from "firebase/auth";
-import {
-    sendPasswordResetEmail,
-    signInWithEmailAndPassword,
-    verifyPasswordResetCode,
-    confirmPasswordReset,
-    setPersistence,
-    browserSessionPersistence,
     browserLocalPersistence,
-    signInWithPhoneNumber,
-    updateProfile,
-    reload,
+    browserSessionPersistence,
+    confirmPasswordReset,
     deleteUser,
+    isSignInWithEmailLink,
+    reauthenticateWithCredential,
+    reload,
+    sendPasswordResetEmail,
+    setPersistence,
+    signInWithEmailAndPassword,
+    signInWithEmailLink,
+    signInWithPhoneNumber,
     signOut,
+    updatePassword,
+    updateProfile,
+    verifyPasswordResetCode,
 } from "firebase/auth";
-import { UserImpl } from "@firebase/auth/internal";
+import { computed, ref } from "vue";
 
+import { createGlobalState, until } from "@vueuse/core";
 import { useFirebase } from "addeus-common-library/stores/firebase";
-import { until } from "@vueuse/core";
 
 export type UserData = Record<string, any> | null;
 
@@ -37,7 +34,7 @@ interface User extends UserFirebase {
     reloadUserInfo?: any;
 }
 
-export const useUserSession = defineStore("userSession", () => {
+export const useUserSession = createGlobalState(() => {
     const firebase = useFirebase();
 
     const auth = firebase.auth;
@@ -85,7 +82,7 @@ export const useUserSession = defineStore("userSession", () => {
 
     async function loginOrRegisterWithPhoneNumber(
         phoneNumber: string,
-        recaptchaVerifier: ApplicationVerifier
+        recaptchaVerifier: ApplicationVerifier,
     ): Promise<ConfirmationResult> {
         return await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
     }
@@ -128,7 +125,7 @@ export const useUserSession = defineStore("userSession", () => {
 
     let permissionManagement: (user: User, permission: string) => boolean = () => false;
     function configurePermissionManagement(
-        callbackPermissionManagement: (user: User, permission: string) => boolean
+        callbackPermissionManagement: (user: User, permission: string) => boolean,
     ) {
         permissionManagement = callbackPermissionManagement;
     }
@@ -182,7 +179,7 @@ export const useUserSession = defineStore("userSession", () => {
                             window.history.replaceState(
                                 {},
                                 document.title,
-                                removeParamsURL
+                                removeParamsURL,
                             );
                         });
                 });
@@ -192,10 +189,10 @@ export const useUserSession = defineStore("userSession", () => {
 
     const onUserChangeCallbacks: ((
         authUser: User | null,
-        customAttributes: null | any
+        customAttributes: null | any,
     ) => Promise<void>)[] = [];
     async function onUserChange(
-        callback: (authUser: User | null, customAttributes: null | any) => Promise<void>
+        callback: (authUser: User | null, customAttributes: null | any) => Promise<void>,
     ) {
         if (isLoaded.value) {
             const authUser = auth.currentUser;
@@ -207,7 +204,7 @@ export const useUserSession = defineStore("userSession", () => {
                 const customAttributes = JSON.parse(
                     authUser.reloadUserInfo.customAttributes !== undefined
                         ? authUser.reloadUserInfo.customAttributes
-                        : "{}"
+                        : "{}",
                 );
                 await callback(authUser, customAttributes);
             } else {
@@ -225,7 +222,7 @@ export const useUserSession = defineStore("userSession", () => {
             await Promise.all(
                 onUserChangeCallbacks.map((onUserChangeCallback) => {
                     return onUserChangeCallback(authUser, null);
-                })
+                }),
             );
             return;
         }
@@ -235,14 +232,14 @@ export const useUserSession = defineStore("userSession", () => {
         const customAttributes = JSON.parse(
             authUser.reloadUserInfo.customAttributes !== undefined
                 ? authUser.reloadUserInfo.customAttributes
-                : "{}"
+                : "{}",
         );
         user.value = authUser;
 
         await Promise.all(
             onUserChangeCallbacks.map((onUserChangeCallback) => {
                 return onUserChangeCallback(authUser, customAttributes);
-            })
+            }),
         );
 
         if (!isLoaded.value) {
@@ -272,14 +269,3 @@ export const useUserSession = defineStore("userSession", () => {
         resetPassword,
     };
 });
-
-/**
- * Pinia supports Hot Module replacement so you can edit your stores and
- * interact with them directly in your app without reloading the page.
- *
- * @see https://pinia.esm.dev/cookbook/hot-module-replacement.html
- * @see https://vitejs.dev/guide/api-hmr.html
- */
-if (import.meta.hot) {
-    import.meta.hot.accept(acceptHMRUpdate(useUserSession, import.meta.hot));
-}

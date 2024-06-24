@@ -16,8 +16,8 @@ const props = defineProps<VViewWrapperProps>();
         :class="[
             props.topNav && 'has-top-nav',
             props.full && 'view-wrapper-full',
-            viewWrapper.isPushed && 'is-pushed-full',
-            viewWrapper.isPushedBlock && 'is-pushed-block',
+            viewWrapper.isPushed.value && 'is-pushed-full',
+            viewWrapper.isPushedBlock.value && 'is-pushed-block',
         ]">
         <slot></slot>
     </div>
