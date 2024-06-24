@@ -49,6 +49,9 @@
     "homepage": "https://github.com/add-eus/library#readme",
     "dependencies": {
         "@anatine/esbuild-decorators": "^0.2.19",
+        "@capacitor/android": "^6.1.0",
+        "@capacitor/core": "^6.1.0",
+        "@capacitor/ios": "^6.1.0",
         "@intlify/unplugin-vue-i18n": "^0.10.0",
         "@rollup/plugin-node-resolve": "^15.0.1",
         "@rushstack/eslint-patch": "^1.6.1",
