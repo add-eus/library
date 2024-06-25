@@ -1,35 +1,34 @@
-import { acceptHMRUpdate, defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { Capacitor } from "@capacitor/core";
+import { UserImpl } from "@firebase/auth/internal";
 import type {
-    User as UserFirebase,
-    ConfirmationResult,
     ApplicationVerifier,
+    ConfirmationResult,
+    User as UserFirebase,
 } from "firebase/auth";
 import {
     EmailAuthProvider,
-    reauthenticateWithCredential,
-    signInWithEmailLink,
-    updatePassword,
-} from "firebase/auth";
-import { isSignInWithEmailLink } from "firebase/auth";
-import {
-    sendPasswordResetEmail,
-    signInWithEmailAndPassword,
-    verifyPasswordResetCode,
-    confirmPasswordReset,
-    setPersistence,
-    browserSessionPersistence,
     browserLocalPersistence,
-    signInWithPhoneNumber,
-    updateProfile,
-    reload,
+    browserSessionPersistence,
+    confirmPasswordReset,
     deleteUser,
+    isSignInWithEmailLink,
+    reauthenticateWithCredential,
+    reload,
+    sendPasswordResetEmail,
+    setPersistence,
+    signInWithEmailAndPassword,
+    signInWithEmailLink,
+    signInWithPhoneNumber,
     signOut,
+    updatePassword,
+    updateProfile,
+    verifyPasswordResetCode,
 } from "firebase/auth";
-import { UserImpl } from "@firebase/auth/internal";
+import { acceptHMRUpdate, defineStore } from "pinia";
+import { computed, ref } from "vue";
 
-import { useFirebase } from "addeus-common-library/stores/firebase";
 import { until } from "@vueuse/core";
+import { useFirebase } from "addeus-common-library/stores/firebase";
 
 export type UserData = Record<string, any> | null;
 
@@ -54,11 +53,13 @@ export const useUserSession = defineStore("userSession", () => {
     }
 
     async function login(username: string, password: string, hasRemember: boolean) {
-        if (hasRemember) await setPersistence(auth, browserLocalPersistence);
-        else await setPersistence(auth, browserSessionPersistence);
+        if (!Capacitor.isNativePlatform()) {
+
+            if (hasRemember) await setPersistence(auth, browserLocalPersistence);
+            else await setPersistence(auth, browserSessionPersistence);
+        }
 
         const userCredential = await signInWithEmailAndPassword(auth, username, password);
-
         const user = userCredential.user;
 
         return user;
@@ -251,6 +252,9 @@ export const useUserSession = defineStore("userSession", () => {
     };
     // auth.onIdTokenChanged(onLogin);
     auth.onAuthStateChanged((authUser) => void onLogin(authUser));
+    if (Capacitor.isNativePlatform()) {
+        onLogin(auth.currentUser);
+    }
 
     return {
         user,

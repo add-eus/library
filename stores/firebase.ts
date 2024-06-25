@@ -1,14 +1,13 @@
 // Import the functions you need from the SDKs you need
-import { getAuth, connectAuthEmulator } from "firebase/auth";
-import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
-import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
-import { getStorage, connectStorageEmulator } from "firebase/storage";
-import { getAnalytics, initializeAnalytics } from "firebase/analytics";
-import { getPerformance, initializePerformance } from "firebase/performance";
-import { getDatabase, connectDatabaseEmulator } from "firebase/database";
+import { Capacitor } from "@capacitor/core";
 import { initializeApp } from "firebase/app";
-import { getRemoteConfig, fetchAndActivate } from "firebase/remote-config";
-import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
+import { ReCaptchaEnterpriseProvider, initializeAppCheck } from "firebase/app-check";
+import { connectAuthEmulator, getAuth, indexedDBLocalPersistence, initializeAuth } from "firebase/auth";
+import { connectDatabaseEmulator, getDatabase } from "firebase/database";
+import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
+import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
+import { fetchAndActivate, getRemoteConfig } from "firebase/remote-config";
+import { connectStorageEmulator, getStorage } from "firebase/storage";
 
 export function useFirebase() {
     if (window.providers === undefined) {
@@ -29,7 +28,14 @@ export function useFirebase() {
         // Initialize Firebase
         window.providers.app = initializeApp(firebaseConfig);
 
-        window.providers.auth = getAuth(window.providers.app);
+        if (Capacitor.isNativePlatform()) {        
+            window.providers.auth = initializeAuth(window.providers.app, {
+              persistence: indexedDBLocalPersistence
+            })
+        }
+        else {
+            window.providers.auth = getAuth(window.providers.app);
+        }
         window.providers.firestore = getFirestore(window.providers.app);
         window.providers.database = getDatabase(window.providers.app);
         window.providers.storage = getStorage(window.providers.app);
