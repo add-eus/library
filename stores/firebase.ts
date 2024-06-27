@@ -1,11 +1,13 @@
 // Import the functions you need from the SDKs you need
 import { Capacitor } from "@capacitor/core";
+import { getAnalytics, initializeAnalytics } from "firebase/analytics";
 import { initializeApp } from "firebase/app";
 import { ReCaptchaEnterpriseProvider, initializeAppCheck } from "firebase/app-check";
 import { connectAuthEmulator, getAuth, indexedDBLocalPersistence, initializeAuth } from "firebase/auth";
 import { connectDatabaseEmulator, getDatabase } from "firebase/database";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
+import { getPerformance, initializePerformance } from "firebase/performance";
 import { fetchAndActivate, getRemoteConfig } from "firebase/remote-config";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 
@@ -28,7 +30,7 @@ export function useFirebase() {
         // Initialize Firebase
         window.providers.app = initializeApp(firebaseConfig);
 
-        if (Capacitor.isNativePlatform()) {        
+        if (Capacitor.isNativePlatform()) {
             window.providers.auth = initializeAuth(window.providers.app, {
               persistence: indexedDBLocalPersistence
             })
