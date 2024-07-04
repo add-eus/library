@@ -28,6 +28,8 @@ const localDependencies = Object.keys(PACKAGE.dependencies ?? []).filter(
         dependency !== "addeus-common-library" &&
         dependency.match(/^@addeus\//) === null &&
         dependency !== "firebase" &&
+        dependency !== "@capacitor/android" &&
+        dependency !== "@capacitor/ios" &&
         dependency.match(/^@types\//) === null,
 );
 
