@@ -21,11 +21,12 @@ export async function httpsOpen(path: string, args: { [name: string]: string | n
 export default new Proxy(
     {},
     {
-        get(object: { [key: string]: Function }, name: string) {
+        get(object: { [key: string]: ((...args) => any) | undefined }, name: string) {
             if (!object[name]) {
                 const callableFunction = firebaseHttpsCallable(
                     useFirebase().functions,
-                    name
+                    name,
+                    { timeout: 540_000 },
                 );
                 object[name] = async function (...args: any[]) {
                     const result = await callableFunction(...args, navigator?.language);
@@ -34,5 +35,5 @@ export default new Proxy(
             }
             return object[name];
         },
-    }
+    },
 );
