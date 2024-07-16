@@ -1,22 +1,29 @@
 <script setup lang="ts">
-import { useCurrentElement, useDebounceFn, useIntervalFn } from "@vueuse/core";
+import {
+    useCurrentElement,
+    useDebounceFn,
+    useIntervalFn,
+    useElementBounding,
+} from "@vueuse/core";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
 import "photoswipe/style.css";
-import { onMounted, onScopeDispose, provide, ref } from "vue";
-import {} from "../../../stores/firebase";
+import { onMounted, onScopeDispose, provide, ref, computed } from "vue";
+import { } from "../../../stores/firebase";
 
 export type VGalleryProps = {
     backIcon?: string;
     forwardIcon?: string;
+    autoHeight?: boolean;
 };
 
 export type VGalleryPage = {
     index: number;
 };
 
-withDefaults(defineProps<VGalleryProps>(), {
+const props = withDefaults(defineProps<VGalleryProps>(), {
     backIcon: "arrow_back",
     forwardIcon: "arrow_forward",
+    autoHeight: false,
 });
 
 const cursor = ref(0);
@@ -68,40 +75,43 @@ provide("v-gallery", {
     addPage,
 });
 
-console.log(pages);
+const currentPage = computed(() => {
+    if (!pages.value[cursor.value]) return 0;
+
+    return pages.value.find((p) => p.index === cursor.value);
+});
+
+const currentInnerElement = computed(() => currentPage.value.element);
+
+const currentInnerElementBoundingRect = useElementBounding(currentInnerElement);
+
+const currentHeight = computed(() => {
+    return currentInnerElementBoundingRect.height.value + "px";
+});
 </script>
 
 <template>
-    <div class="v-gallery-container">
-        <VIconButton
-            v-if="backIcon && pages.length > 1"
-            :icon="backIcon"
-            @click.stop="
-                previous();
-                pause();
-            "></VIconButton>
+    <div class="v-gallery-container" :class="{ 'auto-height': autoHeight }" :style="{
+        height: currentHeight,
+    }">
+        <VIconButton v-if="backIcon && pages.length > 1" :icon="backIcon" @click.stop="
+            previous();
+        pause();
+        "></VIconButton>
         <slot></slot>
 
-        <VIconButton
-            v-if="forwardIcon && pages.length > 1"
-            :icon="forwardIcon"
-            @click.stop="
-                next();
-                pause();
-            "></VIconButton>
+        <VIconButton v-if="forwardIcon && pages.length > 1" :icon="forwardIcon" @click.stop="
+            next();
+        pause();
+        "></VIconButton>
         <div class="cursors">
-            <button
-                v-for="(page, index) in pages"
-                :key="index"
-                class="cursor"
-                :class="{ active: index == cursor }"
+            <button v-for="(page, index) in pages" :key="index" class="cursor" :class="{ active: index == cursor }"
                 @keydown="
                     cursor = index;
-                    pause();
-                "
-                @click="
+                pause();
+                " @click="
                     cursor = index;
-                    pause();
+                pause();
                 "></button>
         </div>
     </div>
@@ -114,7 +124,7 @@ console.log(pages);
     position: relative;
     overflow: hidden;
 
-    > .button {
+    >.button {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
@@ -137,7 +147,7 @@ console.log(pages);
         }
     }
 
-    > .cursors {
+    >.cursors {
         position: absolute;
         bottom: 0;
         left: 0;
@@ -160,6 +170,21 @@ console.log(pages);
 
             &.active {
                 background-color: $primary;
+            }
+        }
+    }
+
+    &.auto-height {
+        >.vgallery-page {
+            height: auto;
+            bottom: initial;
+
+            >* {
+                height: auto;
+
+                >img {
+                    height: auto;
+                }
             }
         }
     }
