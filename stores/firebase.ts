@@ -11,6 +11,25 @@ import { getPerformance, initializePerformance } from "firebase/performance";
 import { fetchAndActivate, getRemoteConfig } from "firebase/remote-config";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 
+if (Capacitor.isNativePlatform()) {
+    window["gapi"] = {
+        load: (name) => Promise.resolve(),
+        iframes: {
+            getContext: () => {
+                return {
+                    iframe: {
+                        contentWindow: {
+                            postMessage: (message) => {
+                                console.log("gapi iframe message:", message);
+                            },
+                        },
+                    },
+                };
+            },
+        },
+    };
+}
+
 export function useFirebase() {
     if (window.providers === undefined) {
         window.providers = {};
