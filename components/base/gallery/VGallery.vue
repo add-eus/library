@@ -14,6 +14,9 @@ export type VGalleryProps = {
     backIcon?: string;
     forwardIcon?: string;
     autoHeight?: boolean;
+    hideDots?: boolean;
+    autoPlay?: boolean;
+    disableLoop?: boolean;
 };
 
 export type VGalleryPage = {
@@ -24,6 +27,9 @@ const props = withDefaults(defineProps<VGalleryProps>(), {
     backIcon: "arrow_back",
     forwardIcon: "arrow_forward",
     autoHeight: false,
+    hideDots: false,
+    autoPlay: false,
+    disableLoop: false
 });
 
 const cursor = ref(0);
@@ -61,6 +67,10 @@ function addPage(page: VGalleryPage) {
     });
 }
 
+function goTo(inCursor: number) {
+    cursor.value = inCursor;
+}
+
 const { pause } = useIntervalFn(() => {
     next();
 }, 5000);
@@ -88,23 +98,41 @@ const currentInnerElementBoundingRect = useElementBounding(currentInnerElement);
 const currentHeight = computed(() => {
     return currentInnerElementBoundingRect.height.value + "px";
 });
+
+const isFirst = computed(() => {
+    return cursor.value === 0;
+});
+const isLast = computed(() => {
+    return cursor.value === pages.value.length - 1;
+});
+
+if (!props.autoPlay) {
+    pause();
+}
+
+defineExpose({
+    cursor,
+    next,
+    previous,
+    goTo
+})
 </script>
 
 <template>
     <div class="v-gallery-container" :class="{ 'auto-height': autoHeight }" :style="{
-        height: currentHeight,
+        height: autoHeight ? currentHeight : undefined,
     }">
-        <VIconButton v-if="backIcon && pages.length > 1" :icon="backIcon" @click.stop="
+        <VIconButton v-if="backIcon && pages.length > 1 && (!disableLoop || !isFirst)" class="previous" :icon="backIcon" @click.stop="
             previous();
-        pause();
+            pause();
         "></VIconButton>
         <slot></slot>
 
-        <VIconButton v-if="forwardIcon && pages.length > 1" :icon="forwardIcon" @click.stop="
+        <VIconButton v-if="forwardIcon && pages.length > 1 && (!disableLoop || !isLast)" class="next" :icon="forwardIcon" @click.stop="
             next();
-        pause();
+            pause();
         "></VIconButton>
-        <div class="cursors">
+        <div class="cursors" v-if="!hideDots">
             <button v-for="(page, index) in pages" :key="index" class="cursor" :class="{ active: index == cursor }"
                 @keydown="
                     cursor = index;
@@ -137,11 +165,11 @@ const currentHeight = computed(() => {
         filter: drop-shadow(0 0 10px #000);
         cursor: pointer;
 
-        &:first-of-type {
+        &.previous {
             left: 0;
         }
 
-        &:last-of-type {
+        &.next {
             right: 0;
             z-index: 300;
         }
