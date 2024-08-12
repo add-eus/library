@@ -176,7 +176,7 @@ export default defineComponent({
                 );
             } else {
                 childrens.push(
-                    h("span", { class: "has-text-ellipsis" }, slots.default?.())
+                    h("span", { class: "has-text-ellipsis w-100" }, slots.default?.())
                 );
             }
             if (caretWrapper) {
@@ -238,6 +238,10 @@ export default defineComponent({
 
 <style lang="scss">
 @import "bulma/sass/utilities/all";
+
+.w-100 {
+    width: 100%;
+}
 
 .button {
     padding: 7px 14px;
