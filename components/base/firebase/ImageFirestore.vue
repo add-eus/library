@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { useStorage } from "../../../stores/storage";
-import { computed, ref } from "vue";
 import { computedAsync } from "@vueuse/core";
+import { computed, ref } from "vue";
+import { useStorage } from "../../../stores/storage";
 
 interface FirebaseImageProps {
     path: string;
     alt: string;
+    videoPreload: "auto" | "metadata" | "none";
 }
 
 const DEFAULT_IMAGE =
@@ -31,7 +32,7 @@ const src = computedAsync(
         }
     },
     undefined,
-    evaluating
+    evaluating,
 );
 
 const mimeType = computed(() => {
@@ -51,7 +52,7 @@ const isVideo = computed(() => {
             <slot v-if="evaluating" name="loading" v-bind="$attrs">
                 <VPlaceload height="100%" width="100%"></VPlaceload>
             </slot>
-            <video v-else-if="isVideo" v-bind="$attrs">
+            <video v-else-if="isVideo" :preload="videoPreload" v-bind="$attrs">
                 <source :src="src" :type="mimeType" />
 
                 <track kind="captions" />
