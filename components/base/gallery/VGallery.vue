@@ -60,11 +60,21 @@ onMounted(() => {
     lightbox.value.init();
 });
 
-function addPage(page: VGalleryPage) {
-    pages.value[page.index] = page;
-    onScopeDispose(() => {
-        delete pages.value[page.index];
+function removePage(index: number) {
+    let hasFiltered = false;
+    pages.value = pages.value.filter((p) => {
+        if (hasFiltered)
+            return true;
+        if (p.index === index) {
+            hasFiltered = true;
+            return false;
+        }
+        return p.index !== index;
     });
+}
+
+function addPage(page: VGalleryPage) {
+    pages.value.push(page);
 }
 
 function goTo(inCursor: number) {
@@ -82,13 +92,15 @@ provide("v-gallery", {
     next,
     showFullScreen,
     pause,
+    removePage,
     addPage,
 });
 
 const currentPage = computed(() => {
-    if (!pages.value[cursor.value]) return 0;
+    const cPage = pages.value.find((p) => p.index === cursor.value);
+    if (!cPage) return 0;
 
-    return pages.value.find((p) => p.index === cursor.value);
+    return cPage;
 });
 
 const currentInnerElement = computed(() => currentPage.value.element);
@@ -109,6 +121,7 @@ const isLast = computed(() => {
 if (!props.autoPlay) {
     pause();
 }
+console.log(pages);
 
 defineExpose({
     cursor,

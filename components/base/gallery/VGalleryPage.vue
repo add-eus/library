@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject } from "vue";
+import { inject, onMounted, onUnmounted } from "vue";
 import { useCurrentElement } from "@vueuse/core";
 
 export type VGalleryPageProps = {
@@ -10,18 +10,27 @@ const props = withDefaults(defineProps<VGalleryPageProps>(), {
     index: () => 0,
 });
 
-const { cursor, addPage } = inject("v-gallery");
+const { cursor, addPage, removePage } = inject("v-gallery");
 const element = useCurrentElement();
 
-addPage({
-    index: props.index,
-    element,
+onMounted(() => {
+    addPage({
+        index: props.index,
+        element,
+    });
 });
+
+onUnmounted(() => {
+    removePage(props.index);
+});
+
 </script>
 
 <template>
-    <div class="vgallery-page" :class="{ 'is-active': cursor === index, 'is-after': cursor < index }">
-        <slot></slot>
+    <div
+        class="vgallery-page"
+        :class="{ 'is-active': cursor === index, 'is-after': cursor < index }">
+        <slot :is-current="cursor === index"></slot>
     </div>
 </template>
 
@@ -39,11 +48,11 @@ addPage({
     transition: transform 0.5s ease-in-out;
     transform: translateX(-100%);
 
-    >* {
+    > * {
         height: 100%;
         width: 100%;
 
-        >img {
+        > img {
             height: 100%;
             width: 100%;
             object-fit: contain;
