@@ -121,7 +121,6 @@ const isLast = computed(() => {
 if (!props.autoPlay) {
     pause();
 }
-console.log(pages);
 
 defineExpose({
     cursor,
