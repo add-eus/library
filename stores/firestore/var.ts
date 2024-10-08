@@ -147,7 +147,7 @@ export function Var(type: any) {
                             metadata.origin[name] === undefined
                         )
                             return true;
-                        return thisTarget[name].some((row: any) => {
+                        return thisTarget[name].some((row: any, rowIndex) => {
                             if (
                                 row instanceof EntityBase &&
                                 !(thisTarget[name] instanceof Entity) &&
@@ -159,7 +159,7 @@ export function Var(type: any) {
                                 metadata.origin[name].findIndex((r) => {
                                     if (row instanceof Entity) return row.$getID() === r;
                                     return r === row;
-                                }) === -1
+                                }) !== rowIndex
                             );
                         });
                     }
