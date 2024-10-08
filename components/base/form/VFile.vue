@@ -317,8 +317,12 @@ function reorderFiles() {
     emitChangedEvent();
 }
 
-function fileAdd(error, metadata) {
-    if (metadata.status !== 2) {
+function fileAdd(error, file) {
+    if (file.status !== 2) {
+        if (pond.value !== undefined && pond.value !== null) {
+            const fileCount = pond.value.getFiles().length;
+            pond.value.moveFile(file.id, fileCount - 1);
+        }
         if (field !== undefined) field.isProcessing = true;
         emit("processing");
     }
