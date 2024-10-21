@@ -7,10 +7,10 @@ import type {
     Collection as UseCollectionType,
 } from ".";
 import { newDoc, useCollection, useDoc } from ".";
-import type { Entity } from "./entity";
+import { useFirestore } from "../firebase";
+import type { Entity, EntityBase } from "./entity";
 import { onInitialize } from "./entity";
 import type { EntityMetaData } from "./entityMetadata";
-import { useFirestore } from "../firebase";
 import { securityCollectionCallbacks } from "./security/securityDecorators";
 
 export type FunctionPropertyNames<T> = {
@@ -40,8 +40,13 @@ export const entitiesInfos = new Map<string, EntityInfo>();
 
 const onCollectionsInitialize = new Map<string, (() => void)[]>();
 
+export const entitiesDeclared: {[key: string]: EntityBase} = {};
 export function Collection<T>(options: CollectionOptions<T>) {
     return function (target: any, propertyKey?: string) {
+        
+        const name = target.name || target.constructor.name;
+        if (entitiesDeclared[name] === undefined) 
+            entitiesDeclared[name] = target.constructor;
         // On class
         if (propertyKey === undefined) {
             target.collectionName = options.namespace;

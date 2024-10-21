@@ -1,6 +1,7 @@
 import { deleteField, GeoPoint } from "firebase/firestore";
 import moment from "moment-with-locales-es6";
 import { shallowReactive } from "vue";
+import { entitiesDeclared } from "./collection";
 import {
     Entity,
     EntityBase,
@@ -124,9 +125,15 @@ function isUnparsedEqual(a: any, b: any, type: any): boolean {
     return a === b;
 }
 
+
 export function Var(type: any) {
     return function (target: EntityBase, name: string) {
         onInitialize(target, function (this: any, metadata: EntityMetaData) {
+
+            
+            if (typeof type === "string" && type.length > 0) {
+                type = entitiesDeclared[type];
+            }
             if (metadata.properties[name] === undefined) metadata.properties[name] = {};
 
             let isChanged: boolean = false;
