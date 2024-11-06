@@ -142,7 +142,7 @@ export function useFirebase() {
 
             // Optional argument. If true, the SDK automatically refreshes App Check
             // tokens as needed.
-            // isTokenAutoRefreshEnabled: true,
+            isTokenAutoRefreshEnabled: true
         });
     }
     return window.providers;
