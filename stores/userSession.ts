@@ -7,6 +7,7 @@ import type {
 } from "firebase/auth";
 import {
     EmailAuthProvider,
+    RecaptchaVerifier,
     browserLocalPersistence,
     browserSessionPersistence,
     confirmPasswordReset,
@@ -22,7 +23,7 @@ import {
     signOut,
     updatePassword,
     updateProfile,
-    verifyPasswordResetCode,
+    verifyPasswordResetCode
 } from "firebase/auth";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { computed, ref } from "vue";
@@ -41,6 +42,7 @@ export const useUserSession = defineStore("userSession", () => {
 
     const auth = firebase.auth;
     const user = ref<User | null>(null);
+    
 
     const isLoggedIn = computed(() => {
         return user.value !== null;
@@ -58,6 +60,10 @@ export const useUserSession = defineStore("userSession", () => {
             if (hasRemember) await setPersistence(auth, browserLocalPersistence);
             else await setPersistence(auth, browserSessionPersistence);
         }
+        
+        const verifier = new RecaptchaVerifier('recaptcha-container', { /*size: 'invisible'*/ }, firebase.auth);
+
+        await verifier.verify();
 
         const userCredential = await signInWithEmailAndPassword(auth, username, password);
         const user = userCredential.user;
