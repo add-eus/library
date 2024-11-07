@@ -7,7 +7,6 @@ import type {
 } from "firebase/auth";
 import {
     EmailAuthProvider,
-    RecaptchaVerifier,
     browserLocalPersistence,
     browserSessionPersistence,
     confirmPasswordReset,
@@ -59,13 +58,6 @@ export const useUserSession = defineStore("userSession", () => {
 
             if (hasRemember) await setPersistence(auth, browserLocalPersistence);
             else await setPersistence(auth, browserSessionPersistence);
-        }
-
-        const verifierContainer = document.getElementById("recaptcha-container");
-        if (verifierContainer !== null) {
-            const verifier = new RecaptchaVerifier('recaptcha-container', { /*size: 'invisible'*/ }, firebase.auth);
-
-            await verifier.verify();
         }
 
         const userCredential = await signInWithEmailAndPassword(auth, username, password);
