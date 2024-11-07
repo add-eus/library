@@ -60,10 +60,13 @@ export const useUserSession = defineStore("userSession", () => {
             if (hasRemember) await setPersistence(auth, browserLocalPersistence);
             else await setPersistence(auth, browserSessionPersistence);
         }
-        
-        const verifier = new RecaptchaVerifier('recaptcha-container', { /*size: 'invisible'*/ }, firebase.auth);
 
-        await verifier.verify();
+        const verifierContainer = document.getElementById("recaptcha-container");
+        if (verifierContainer !== null) {
+            const verifier = new RecaptchaVerifier('recaptcha-container', { /*size: 'invisible'*/ }, firebase.auth);
+
+            await verifier.verify();
+        }
 
         const userCredential = await signInWithEmailAndPassword(auth, username, password);
         const user = userCredential.user;
