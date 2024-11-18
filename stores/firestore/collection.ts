@@ -1,12 +1,13 @@
-import { watchArray } from "@vueuse/core";
+import { MaybeRef, watchArray } from "@vueuse/core";
 import type { DocumentData, DocumentReference } from "firebase/firestore";
 import { collection, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
-import { shallowReactive } from "vue";
+import { Ref, shallowReactive } from "vue";
 import type {
     CollectionOptions as UseCollectionOption,
     Collection as UseCollectionType,
+    WhereOption,
 } from ".";
-import { newDoc, useCollection, useDoc } from ".";
+import { newDoc, useCollection, useCount, useDoc } from ".";
 import { useFirestore } from "../firebase";
 import type { Entity, EntityBase } from "./entity";
 import { onInitialize } from "./entity";
@@ -274,6 +275,13 @@ export class SubCollection<T extends Entity> {
         };
 
         return useCollection(this.model, useCollectionOptions) as UseCollectionType<T>;
+    }
+
+    useCount(whereOptions?: MaybeRef<WhereOption[]>): Ref<number> {
+        if (!this.isInitialized)
+            throw new Error(`property subcollection not initialized`);
+        if(this.path === undefined) throw new Error(`path is undefined`);
+        return useCount(this.path, whereOptions);
     }
 }
 

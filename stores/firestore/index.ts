@@ -15,16 +15,17 @@ import {
     collection,
     collectionGroup,
     doc,
+    getCountFromServer,
     getDocs,
     or,
     orderBy,
     query,
-    where,
+    where
 } from "firebase/firestore";
 import type { Ref } from "vue";
-import { getCurrentScope, isRef, onScopeDispose, shallowReactive, watch } from "vue";
-import type { Entity } from "./entity";
+import { getCurrentScope, isRef, onScopeDispose, ref, shallowReactive, watch } from "vue";
 import { useFirestore } from "../firebase";
+import type { Entity } from "./entity";
 import { Query } from "./query";
 import { QuerySearch } from "./querySearch";
 
@@ -96,6 +97,28 @@ export class Collection<T> extends Array<T> {
             return this.isUpdating;
         }).toBe(false);
     }
+}
+
+export function useCount(
+    path: string,
+    whereOptions?: MaybeRef<WhereOption[]>,
+): Ref<number> {
+    const wheres: QueryConstraint[] = transformWheres(
+        isRef(whereOptions) ? whereOptions.value : whereOptions,
+    );
+
+    const firestore = useFirestore();
+    const collectionRef = collection(firestore, path);
+    const countRef = ref(0);
+    const updateCount = async () => {
+        const collectionQuery = query(collectionRef, ...wheres);
+        const aggregateQuerySnapshot = await getCountFromServer(collectionQuery);
+        countRef.value = aggregateQuerySnapshot.data().count;
+    };
+
+    if (isRef(whereOptions)) watch(whereOptions, updateCount, { immediate: true });
+    else updateCount();
+    return countRef;
 }
 
 /**
