@@ -2,7 +2,9 @@ import type { MaybeRef } from "@vueuse/core";
 import { until } from "@vueuse/core";
 import algoliasearch from "algoliasearch";
 import type {
+    DocumentData,
     FieldPath,
+    Query as FirestoreQuery,
     OrderByDirection,
     QueryConstraint,
     QueryFilterConstraint,
@@ -20,7 +22,7 @@ import {
     or,
     orderBy,
     query,
-    where
+    where,
 } from "firebase/firestore";
 import type { Ref } from "vue";
 import { getCurrentScope, isRef, onScopeDispose, ref, shallowReactive, watch } from "vue";
@@ -119,6 +121,66 @@ export function useCount(
     if (isRef(whereOptions)) watch(whereOptions, updateCount, { immediate: true });
     else updateCount();
     return countRef;
+}
+
+export function useModelListQuery<T extends typeof Entity>(
+    collectionModel: T, firestoreQuery: 
+    MaybeRef<FirestoreQuery<DocumentData>>
+): Collection<InstanceType<T>>{
+    const onDestroy: (() => void)[] = [];
+    getCurrentScope()
+        ? onScopeDispose(() => {
+              onDestroy.forEach((callback) => callback());
+          })
+        : void 0;
+    const entities = shallowReactive<any>(new Collection());
+
+    entities.isUpdating = true;
+
+    let query: Query | QuerySearch | null;
+
+    async function fetch() {
+        entities.splice(0, entities.length);
+        if (query) query.destroy();
+        query = new Query(
+            [],
+            entities,
+            (doc: DocumentSnapshot) => {
+                return transform(
+                    doc,
+                    collectionModel,
+                    (callback) => {
+                        onDestroy.push(callback);
+                    },
+                );
+            },
+            undefined,
+            isRef(firestoreQuery) ? firestoreQuery.value : firestoreQuery,
+        );
+
+        try {
+            entities.isUpdating = true;
+
+            await query.next(undefined);
+            entities.isUpdating = false;
+        } catch (err) {
+            entities.isUpdating = false;
+            throw err;
+        }
+    }
+
+
+    if (isRef(firestoreQuery))
+        watch(firestoreQuery, () => {
+            fetch().catch(console.error);
+        });
+
+    fetch().catch((e) => {
+        // eslint-disable-next-line no-console
+        console.error(e);
+    });
+
+    return entities;
 }
 
 /**

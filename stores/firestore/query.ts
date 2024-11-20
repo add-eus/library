@@ -1,10 +1,12 @@
-import EventEmitter from "./event";
 import type {
     CollectionReference,
+    DocumentData,
     DocumentSnapshot,
+    Query as FirestoreQuery,
     QueryConstraint,
 } from "firebase/firestore";
 import { limit, onSnapshot, query, startAfter } from "firebase/firestore";
+import EventEmitter from "./event";
 
 /**
  * Check if an element exist in array from 0 to maxIndex number
@@ -108,21 +110,46 @@ class Queue {
 export class Query extends EventEmitter {
     private constraints: QueryConstraint[] = [];
     private transform: (...args: any) => void;
-    private reference: CollectionReference;
+    private reference?: CollectionReference;
     private indexes: number[] = [];
     public queue: Queue;
+    private firestoreQuery?: FirestoreQuery<DocumentData>;
 
     constructor(
         constraints: QueryConstraint[],
         list: any[],
         transform: (...args: any) => void,
-        reference: CollectionReference,
+        reference?: CollectionReference,
+        firestoreQuery?: FirestoreQuery<DocumentData>,
     ) {
         super();
         this.constraints = constraints;
         this.transform = transform;
         this.reference = reference;
         this.queue = new Queue(list, reference);
+        this.firestoreQuery = firestoreQuery;
+    }
+
+    private getQuery(
+        sizeLimit: number | undefined,
+        additionalConstraints: QueryConstraint[] = [],
+        startAfterItem?: any,
+    ) {
+        if (this.firestoreQuery !== undefined) return this.firestoreQuery;
+        if (this.reference === undefined)
+            throw new Error("Reference is needed when firestoreQuery is not provided");
+        const constraints = [...additionalConstraints, ...this.constraints];
+
+        if (startAfterItem !== undefined) {
+            constraints.push(startAfter(startAfterItem));
+        }
+
+        if (typeof sizeLimit === "number" && sizeLimit < 0) sizeLimit = undefined;
+
+        if (sizeLimit) {
+            constraints.push(limit(sizeLimit));
+        }
+        return query(this.reference, ...this.constraints);
     }
 
     async next(
@@ -130,19 +157,7 @@ export class Query extends EventEmitter {
         additionalConstraints: QueryConstraint[] = [],
     ): Promise<DocumentSnapshot[]> {
         return this.queue.add((startAfterItem, update) => {
-            const constraints = [...additionalConstraints, ...this.constraints];
-
-            if (startAfterItem !== undefined) {
-                constraints.push(startAfter(startAfterItem));
-            }
-
-            if (typeof sizeLimit === "number" && sizeLimit < 0) sizeLimit = undefined;
-
-            if (sizeLimit) {
-                constraints.push(limit(sizeLimit));
-            }
-
-            const q = query(this.reference, ...constraints);
+            const q = this.getQuery(sizeLimit, additionalConstraints, startAfterItem);
 
             this.on(
                 "destroy",
