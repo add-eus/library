@@ -19,6 +19,7 @@ export interface SecurityInfo {
 }
 
 export const securityInfos = new Map<string, SecurityInfo>();
+export const securityGroupInfos = new Map<string, SecurityInfo>();
 export const rootCollections: string[] = [];
 export const securityCollectionCallbacks = new Map<string, (() => void)[]>();
 const securityPropertyCallbacks = new Map<string, (() => void)[]>();
@@ -74,6 +75,23 @@ export function SecuritySubCollection(options: SecurityOptions) {
             } else {
                 init();
             }
+        }
+    };
+}
+export function SecurityCollectionGroup(options: SecurityOptions) {
+    return function (target: any, propertyKey?: string) {
+        // on class
+        if (propertyKey === undefined) {
+            throw new Error(`SecuritySubCollection is not allowed on class`);
+        }
+        // on property
+        else {
+            if(securityGroupInfos.has(propertyKey)) {
+                throw new Error(`SecurityCollectionGroup already defined for ${propertyKey}`);
+            }
+            securityGroupInfos.set(propertyKey, {
+                security: options,
+            });
         }
     };
 }

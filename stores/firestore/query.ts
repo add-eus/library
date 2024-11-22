@@ -29,6 +29,7 @@ class Queue {
     chunk: any[] = [];
     lastSnapshots: any[] = [];
     reference: any;
+    lastCallback: any;
 
     constructor(list: any[], reference) {
         this.list = list;
@@ -46,12 +47,10 @@ class Queue {
         let subCallback: ((previousItem: any) => void) | undefined;
         let lastSnapshotIndex = -1;
 
-        // if (this.chunk[chunkIndex] === undefined) this.chunk[chunkIndex] = [];
-
         const waitCurrent = new Promise((resolve, reject) => {
             subCallback = (previousItem: any) => {
                 const onUpdate = (list?: any[], snapshots?: DocumentSnapshot[]) => {
-                    if (list === undefined) return resolve([]);
+                    if (list === undefined || this.destroyed) return resolve([]);
 
                     this.chunk[chunkIndex] = list;
 
@@ -84,6 +83,14 @@ class Queue {
                     }
 
                     resolve(list);
+                    if (
+                        this.lastCallback !== undefined &&
+                        this.lastCallback !== subCallback
+                    ) {
+                        const previousLastSnapshot =
+                            this.lastSnapshots[lastSnapshotIndex];
+                        this.lastCallback(previousLastSnapshot);
+                    }
                 };
                 try {
                     callback(previousItem, onUpdate);
@@ -103,7 +110,14 @@ class Queue {
         const result = await waitCurrent;
         const indexToRemove = this.queue.indexOf(waitCurrent);
         this.queue.splice(indexToRemove, 1);
+        if (!this.destroyed) this.lastCallback = subCallback;
         return result;
+    }
+
+    destroyed: boolean = false;
+    destroy() {
+        this.lastCallback = undefined;
+        this.destroyed = true;
     }
 }
 
@@ -111,7 +125,6 @@ export class Query extends EventEmitter {
     private constraints: QueryConstraint[] = [];
     private transform: (...args: any) => void;
     private reference?: CollectionReference;
-    private indexes: number[] = [];
     public queue: Queue;
     private firestoreQuery?: FirestoreQuery<DocumentData>;
 
@@ -135,9 +148,6 @@ export class Query extends EventEmitter {
         additionalConstraints: QueryConstraint[] = [],
         startAfterItem?: any,
     ) {
-        if (this.firestoreQuery !== undefined) return this.firestoreQuery;
-        if (this.reference === undefined)
-            throw new Error("Reference is needed when firestoreQuery is not provided");
         const constraints = [...additionalConstraints, ...this.constraints];
 
         if (startAfterItem !== undefined) {
@@ -149,13 +159,51 @@ export class Query extends EventEmitter {
         if (sizeLimit) {
             constraints.push(limit(sizeLimit));
         }
-        return query(this.reference, ...this.constraints);
+        const q =
+            this.firestoreQuery !== undefined ? this.firestoreQuery : this.reference;
+        if (q === undefined) throw new Error("firestoreQuery or reference is required");
+
+        return query(q, ...constraints);
     }
 
     async next(
         sizeLimit: number | undefined,
         additionalConstraints: QueryConstraint[] = [],
+        startIndex: number = 0,
     ): Promise<DocumentSnapshot[]> {
+        this.queue.lastCallback = undefined;
+        if (startIndex > 0) {
+            await this.queue.add((startAfterItem, update) => {
+                const q = this.getQuery(
+                    startIndex,
+                    additionalConstraints,
+                    startAfterItem,
+                );
+
+                this.on(
+                    "destroy",
+                    onSnapshot(
+                        q,
+                        (snapshot) => {
+                            if (this.firestoreQuery !== undefined)
+                                void update([], snapshot.docs);
+                        },
+                        (err) => {
+                            if (
+                                err instanceof Error &&
+                                err.code === "permission-denied"
+                            ) {
+                                throw new Error(
+                                    `You don't have permission to access ${this.reference?.path}`,
+                                );
+                            }
+                            throw err;
+                        },
+                    ),
+                );
+            });
+        }
+
         return this.queue.add((startAfterItem, update) => {
             const q = this.getQuery(sizeLimit, additionalConstraints, startAfterItem);
 
@@ -192,5 +240,6 @@ export class Query extends EventEmitter {
 
     destroy() {
         this.emit("destroy");
+        this.queue.destroy();
     }
 }

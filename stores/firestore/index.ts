@@ -1,5 +1,5 @@
 import type { MaybeRef } from "@vueuse/core";
-import { until } from "@vueuse/core";
+import { toValue, until } from "@vueuse/core";
 import algoliasearch from "algoliasearch";
 import type {
     DocumentData,
@@ -24,8 +24,8 @@ import {
     query,
     where,
 } from "firebase/firestore";
-import type { Ref } from "vue";
-import { getCurrentScope, isRef, onScopeDispose, ref, shallowReactive, watch } from "vue";
+import type { Ref, WatchSource } from "vue";
+import { computed, getCurrentScope, isRef, onScopeDispose, ref, shallowReactive, watch } from "vue";
 import { useFirestore } from "../firebase";
 import type { Entity } from "./entity";
 import { Query } from "./query";
@@ -106,27 +106,37 @@ export function useCount(
     whereOptions?: MaybeRef<WhereOption[]>,
 ): Ref<number> {
     const wheres: QueryConstraint[] = transformWheres(
-        isRef(whereOptions) ? whereOptions.value : whereOptions,
+        toValue(whereOptions),
     );
 
     const firestore = useFirestore();
     const collectionRef = collection(firestore, path);
+    const firestoreQuery = computed(() => query(collectionRef, ...wheres));
+    return useCountQuery(firestoreQuery as any);
+} 
+
+export function useCountQuery(
+    firestoreQuery: MaybeRef<FirestoreQuery<DocumentData>>,
+    watchSources: WatchSource[] = []
+): Ref<number> {
     const countRef = ref(0);
     const updateCount = async () => {
-        const collectionQuery = query(collectionRef, ...wheres);
-        const aggregateQuerySnapshot = await getCountFromServer(collectionQuery);
+        const aggregateQuerySnapshot = await getCountFromServer(toValue(firestoreQuery));
         countRef.value = aggregateQuerySnapshot.data().count;
     };
 
-    if (isRef(whereOptions)) watch(whereOptions, updateCount, { immediate: true });
+    if (isRef(firestoreQuery)) watch(firestoreQuery, updateCount, { immediate: true });
     else updateCount();
+    watch(watchSources, updateCount)
     return countRef;
 }
 
 export function useModelListQuery<T extends typeof Entity>(
-    collectionModel: T, firestoreQuery: 
-    MaybeRef<FirestoreQuery<DocumentData>>
-): Collection<InstanceType<T>>{
+    collectionModel: T,
+    firestoreQuery: MaybeRef<FirestoreQuery<DocumentData>>,
+    startIndex: MaybeRef<number>,
+    endIndex: MaybeRef<number>,
+): Collection<InstanceType<T>> {
     const onDestroy: (() => void)[] = [];
     getCurrentScope()
         ? onScopeDispose(() => {
@@ -137,31 +147,27 @@ export function useModelListQuery<T extends typeof Entity>(
 
     entities.isUpdating = true;
 
-    let query: Query | QuerySearch | null;
+    let query: Query | null;
 
     async function fetch() {
         entities.splice(0, entities.length);
-        if (query) query.destroy();
+        if (query !== undefined && query !== null) query.destroy();
         query = new Query(
             [],
             entities,
             (doc: DocumentSnapshot) => {
-                return transform(
-                    doc,
-                    collectionModel,
-                    (callback) => {
-                        onDestroy.push(callback);
-                    },
-                );
+                return transform(doc, collectionModel, (callback) => {
+                    onDestroy.push(callback);
+                });
             },
             undefined,
-            isRef(firestoreQuery) ? firestoreQuery.value : firestoreQuery,
+            toValue(firestoreQuery),
         );
 
         try {
             entities.isUpdating = true;
 
-            await query.next(undefined);
+            await query.next(toValue(endIndex) - toValue(startIndex), [], toValue(startIndex));
             entities.isUpdating = false;
         } catch (err) {
             entities.isUpdating = false;
@@ -169,9 +175,18 @@ export function useModelListQuery<T extends typeof Entity>(
         }
     }
 
-
     if (isRef(firestoreQuery))
         watch(firestoreQuery, () => {
+            fetch().catch(console.error);
+        });
+
+    if (isRef(startIndex))
+        watch(startIndex, async () => {
+            fetch().catch(console.error);
+        });
+    
+    if (isRef(endIndex))
+        watch(endIndex, async () => {
             fetch().catch(console.error);
         });
 
