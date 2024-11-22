@@ -34,8 +34,9 @@ export function SecurityEntity(options: SecurityOptions) {
                     throw new Error(`Security already defined for ${key}`);
                 }
                 securityInfos.set(key, { security: options });
-                if (securityPropertyCallbacks.has(target.name)) {
-                    securityPropertyCallbacks.get(target.name)!.forEach((callback) => {
+                const callbacks = securityCollectionCallbacks.get(target.name);
+                if (callbacks !== undefined) {
+                    callbacks.forEach((callback) => {
                         callback();
                     });
                 }
@@ -45,7 +46,8 @@ export function SecurityEntity(options: SecurityOptions) {
                 if (!securityCollectionCallbacks.has(target.name)) {
                     securityCollectionCallbacks.set(target.name, []);
                 }
-                securityCollectionCallbacks.get(target.name)!.push(init);
+                const callbacks = securityCollectionCallbacks.get(target.name);
+                if (callbacks !== undefined) callbacks.push(init);
             } else {
                 init();
             }
@@ -71,7 +73,8 @@ export function SecuritySubCollection(options: SecurityOptions) {
                 if (!securityPropertyCallbacks.has(target.constructor.name)) {
                     securityPropertyCallbacks.set(target.constructor.name, []);
                 }
-                securityPropertyCallbacks.get(target.constructor.name)!.push(init);
+                const callbacks = securityPropertyCallbacks.get(target.constructor.name);
+                if (callbacks !== undefined) callbacks.push(init);
             } else {
                 init();
             }
@@ -82,12 +85,14 @@ export function SecurityCollectionGroup(options: SecurityOptions) {
     return function (target: any, propertyKey?: string) {
         // on class
         if (propertyKey === undefined) {
-            throw new Error(`SecuritySubCollection is not allowed on class`);
+            throw new Error("SecuritySubCollection is not allowed on class");
         }
         // on property
         else {
-            if(securityGroupInfos.has(propertyKey)) {
-                throw new Error(`SecurityCollectionGroup already defined for ${propertyKey}`);
+            if (securityGroupInfos.has(propertyKey)) {
+                throw new Error(
+                    `SecurityCollectionGroup already defined for ${propertyKey}`,
+                );
             }
             securityGroupInfos.set(propertyKey, {
                 security: options,
@@ -113,13 +118,13 @@ export function SecurityProperty(options: SecurityOptions) {
                 }
                 if (notAllowed.length > 0) {
                     throw new Error(
-                        `Security ${notAllowed.join(", ")} is not allowed on property`
+                        `Security ${notAllowed.join(", ")} is not allowed on property`,
                     );
                 }
                 const securityInfo = securityInfos.get(target.constructor.collectionName);
                 if (securityInfo === undefined) {
                     throw new Error(
-                        `Security is not defined on ${target.constructor.collectionName}`
+                        `Security is not defined on ${target.constructor.collectionName}`,
                     );
                 }
                 securityInfo.properties = securityInfo.properties ?? {};
@@ -129,7 +134,8 @@ export function SecurityProperty(options: SecurityOptions) {
                 if (!securityPropertyCallbacks.has(target.constructor.name)) {
                     securityPropertyCallbacks.set(target.constructor.name, []);
                 }
-                securityPropertyCallbacks.get(target.constructor.name)!.push(init);
+                const callbacks = securityPropertyCallbacks.get(target.constructor.name);
+                if (callbacks !== undefined) callbacks.push(init);
             } else {
                 init();
             }

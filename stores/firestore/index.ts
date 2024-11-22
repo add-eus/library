@@ -134,7 +134,7 @@ export function useCountQuery(
     };
 
     if (isRef(firestoreQuery)) watch(firestoreQuery, updateCount, { immediate: true });
-    else updateCount();
+    else void updateCount();
     watch(watchSources, updateCount);
     return countRef;
 }
@@ -191,17 +191,20 @@ export function useModelListQuery<T extends typeof Entity>(
 
     if (isRef(firestoreQuery))
         watch(firestoreQuery, () => {
-            fetch().catch(console.error);
+            // eslint-disable-next-line no-console
+            void fetch().catch(console.error);
         });
 
     if (isRef(startIndex))
-        watch(startIndex, async () => {
-            fetch().catch(console.error);
+        watch(startIndex, () => {
+            // eslint-disable-next-line no-console
+            void fetch().catch(console.error);
         });
 
     if (isRef(endIndex))
-        watch(endIndex, async () => {
-            fetch().catch(console.error);
+        watch(endIndex, () => {
+            // eslint-disable-next-line no-console
+            void fetch().catch(console.error);
         });
 
     fetch().catch((e) => {
