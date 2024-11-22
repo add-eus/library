@@ -25,7 +25,15 @@ import {
     where,
 } from "firebase/firestore";
 import type { Ref, WatchSource } from "vue";
-import { computed, getCurrentScope, isRef, onScopeDispose, ref, shallowReactive, watch } from "vue";
+import {
+    computed,
+    getCurrentScope,
+    isRef,
+    onScopeDispose,
+    ref,
+    shallowReactive,
+    watch,
+} from "vue";
 import { useFirestore } from "../firebase";
 import type { Entity } from "./entity";
 import { Query } from "./query";
@@ -51,6 +59,8 @@ export interface CollectionOptions {
     compositeConstraint?: MaybeRef<CompositeConstraint>;
     path?: string;
     blacklistedProperties?: string[];
+    startIndex?: MaybeRef<number>;
+    endIndex?: MaybeRef<number>;
 }
 
 const cachedEntities: { [key: string]: { usedBy: number; entity: any } } = {};
@@ -105,19 +115,17 @@ export function useCount(
     path: string,
     whereOptions?: MaybeRef<WhereOption[]>,
 ): Ref<number> {
-    const wheres: QueryConstraint[] = transformWheres(
-        toValue(whereOptions),
-    );
+    const wheres: QueryConstraint[] = transformWheres(toValue(whereOptions));
 
     const firestore = useFirestore();
     const collectionRef = collection(firestore, path);
     const firestoreQuery = computed(() => query(collectionRef, ...wheres));
     return useCountQuery(firestoreQuery as any);
-} 
+}
 
 export function useCountQuery(
     firestoreQuery: MaybeRef<FirestoreQuery<DocumentData>>,
-    watchSources: WatchSource[] = []
+    watchSources: WatchSource[] = [],
 ): Ref<number> {
     const countRef = ref(0);
     const updateCount = async () => {
@@ -127,7 +135,7 @@ export function useCountQuery(
 
     if (isRef(firestoreQuery)) watch(firestoreQuery, updateCount, { immediate: true });
     else updateCount();
-    watch(watchSources, updateCount)
+    watch(watchSources, updateCount);
     return countRef;
 }
 
@@ -167,7 +175,13 @@ export function useModelListQuery<T extends typeof Entity>(
         try {
             entities.isUpdating = true;
 
-            await query.next(toValue(endIndex) - toValue(startIndex), [], toValue(startIndex));
+            if (startIndex !== undefined && endIndex !== undefined) {
+                await query.next(
+                    toValue(endIndex) - toValue(startIndex),
+                    [],
+                    toValue(startIndex),
+                );
+            } else await query.next(undefined);
             entities.isUpdating = false;
         } catch (err) {
             entities.isUpdating = false;
@@ -184,7 +198,7 @@ export function useModelListQuery<T extends typeof Entity>(
         watch(startIndex, async () => {
             fetch().catch(console.error);
         });
-    
+
     if (isRef(endIndex))
         watch(endIndex, async () => {
             fetch().catch(console.error);
@@ -257,7 +271,7 @@ export function useCollection<T extends typeof Entity>(
 
     async function fetch() {
         entities.splice(0, entities.length);
-        if (query) query.destroy();
+        if (query !== null && query !== undefined) query.destroy();
 
         if (search && search.length > 0) {
             const constraints = [...wheres, ...orders];
@@ -310,7 +324,13 @@ export function useCollection<T extends typeof Entity>(
         try {
             entities.isUpdating = true;
 
-            await query.next(limit);
+            if (options.startIndex !== undefined && options.endIndex !== undefined) {
+                await query.next(
+                    toValue(options.endIndex) - toValue(options.startIndex),
+                    [],
+                    toValue(options.startIndex),
+                );
+            } else await query.next(limit);
             entities.isUpdating = false;
         } catch (err) {
             entities.isUpdating = false;
@@ -355,6 +375,16 @@ export function useCollection<T extends typeof Entity>(
             compositeConstraint = transformCompositeConstraint(
                 (options.compositeConstraint as Ref).value,
             );
+            await fetch();
+        });
+
+    if (isRef(options.startIndex))
+        watch(options.startIndex, async () => {
+            await fetch();
+        });
+
+    if (isRef(options.endIndex))
+        watch(options.endIndex, async () => {
             await fetch();
         });
 
