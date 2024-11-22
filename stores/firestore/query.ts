@@ -41,6 +41,7 @@ class Queue {
             startAfter: undefined | any,
             update: (list?: any, docs?: any) => void,
         ) => void,
+        saveLastCallback: boolean = false,
     ): Promise<any> {
         const chunkIndex = this.chunk.length;
         const waitPrevious = Promise.all(this.queue);
@@ -110,7 +111,7 @@ class Queue {
         const result = await waitCurrent;
         const indexToRemove = this.queue.indexOf(waitCurrent);
         this.queue.splice(indexToRemove, 1);
-        if (!this.destroyed) this.lastCallback = subCallback;
+        if (!this.destroyed && saveLastCallback) this.lastCallback = subCallback;
         return result;
     }
 
@@ -185,8 +186,7 @@ export class Query extends EventEmitter {
                     onSnapshot(
                         q,
                         (snapshot) => {
-                            if (this.firestoreQuery !== undefined)
-                                void update([], snapshot.docs);
+                            void update([], snapshot.docs);
                         },
                         (err) => {
                             if (
@@ -235,7 +235,7 @@ export class Query extends EventEmitter {
                     },
                 ),
             );
-        });
+        }, true);
     }
 
     destroy() {
