@@ -34,7 +34,7 @@ export function SecurityEntity(options: SecurityOptions) {
                     throw new Error(`Security already defined for ${key}`);
                 }
                 securityInfos.set(key, { security: options });
-                const callbacks = securityCollectionCallbacks.get(target.name);
+                const callbacks = securityPropertyCallbacks.get(target.name);
                 if (callbacks !== undefined) {
                     callbacks.forEach((callback) => {
                         callback();
