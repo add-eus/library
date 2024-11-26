@@ -1,8 +1,10 @@
 import type { MaybeRef } from "@vueuse/core";
-import { until } from "@vueuse/core";
+import { toValue, until } from "@vueuse/core";
 import algoliasearch from "algoliasearch";
 import type {
+    DocumentData,
     FieldPath,
+    Query as FirestoreQuery,
     OrderByDirection,
     QueryConstraint,
     QueryFilterConstraint,
@@ -15,16 +17,25 @@ import {
     collection,
     collectionGroup,
     doc,
+    getCountFromServer,
     getDocs,
     or,
     orderBy,
     query,
     where,
 } from "firebase/firestore";
-import type { Ref } from "vue";
-import { getCurrentScope, isRef, onScopeDispose, shallowReactive, watch } from "vue";
-import type { Entity } from "./entity";
+import type { Ref, WatchSource } from "vue";
+import {
+    computed,
+    getCurrentScope,
+    isRef,
+    onScopeDispose,
+    ref,
+    shallowReactive,
+    watch,
+} from "vue";
 import { useFirestore } from "../firebase";
+import type { Entity } from "./entity";
 import { Query } from "./query";
 import { QuerySearch } from "./querySearch";
 
@@ -48,6 +59,8 @@ export interface CollectionOptions {
     compositeConstraint?: MaybeRef<CompositeConstraint>;
     path?: string;
     blacklistedProperties?: string[];
+    startIndex?: MaybeRef<number>;
+    endIndex?: MaybeRef<number>;
 }
 
 const cachedEntities: { [key: string]: { usedBy: number; entity: any } } = {};
@@ -96,6 +109,110 @@ export class Collection<T> extends Array<T> {
             return this.isUpdating;
         }).toBe(false);
     }
+}
+
+export function useCount(
+    path: string,
+    whereOptions?: MaybeRef<WhereOption[]>,
+): Ref<number> {
+    const wheres: QueryConstraint[] = transformWheres(toValue(whereOptions));
+
+    const firestore = useFirestore();
+    const collectionRef = collection(firestore, path);
+    const firestoreQuery = computed(() => query(collectionRef, ...wheres));
+    return useCountQuery(firestoreQuery as any);
+}
+
+export function useCountQuery(
+    firestoreQuery: MaybeRef<FirestoreQuery<DocumentData>>,
+    watchSources: WatchSource[] = [],
+): Ref<number> {
+    const countRef = ref(0);
+    const updateCount = async () => {
+        const aggregateQuerySnapshot = await getCountFromServer(toValue(firestoreQuery));
+        countRef.value = aggregateQuerySnapshot.data().count;
+    };
+
+    if (isRef(firestoreQuery)) watch(firestoreQuery, updateCount, { immediate: true });
+    else void updateCount();
+    watch(watchSources, updateCount);
+    return countRef;
+}
+
+export function useModelListQuery<T extends typeof Entity>(
+    collectionModel: T,
+    firestoreQuery: MaybeRef<FirestoreQuery<DocumentData>>,
+    startIndex: MaybeRef<number>,
+    endIndex: MaybeRef<number>,
+): Collection<InstanceType<T>> {
+    const onDestroy: (() => void)[] = [];
+    getCurrentScope()
+        ? onScopeDispose(() => {
+              onDestroy.forEach((callback) => callback());
+          })
+        : void 0;
+    const entities = shallowReactive<any>(new Collection());
+
+    entities.isUpdating = true;
+
+    let query: Query | null;
+
+    async function fetch() {
+        entities.splice(0, entities.length);
+        if (query !== undefined && query !== null) query.destroy();
+        query = new Query(
+            [],
+            entities,
+            (doc: DocumentSnapshot) => {
+                return transform(doc, collectionModel, (callback) => {
+                    onDestroy.push(callback);
+                });
+            },
+            undefined,
+            toValue(firestoreQuery),
+        );
+
+        try {
+            entities.isUpdating = true;
+
+            if (startIndex !== undefined && endIndex !== undefined) {
+                await query.next(
+                    toValue(endIndex) - toValue(startIndex),
+                    [],
+                    toValue(startIndex),
+                );
+            } else await query.next(undefined);
+            entities.isUpdating = false;
+        } catch (err) {
+            entities.isUpdating = false;
+            throw err;
+        }
+    }
+
+    if (isRef(firestoreQuery))
+        watch(firestoreQuery, () => {
+            // eslint-disable-next-line no-console
+            void fetch().catch(console.error);
+        });
+
+    if (isRef(startIndex))
+        watch(startIndex, () => {
+            // eslint-disable-next-line no-console
+            void fetch().catch(console.error);
+        });
+
+    if (isRef(endIndex))
+        watch(endIndex, () => {
+            // eslint-disable-next-line no-console
+            void fetch().catch(console.error);
+        });
+
+    fetch().catch((e) => {
+        // eslint-disable-next-line no-console
+        console.error(e);
+    });
+
+    return entities;
 }
 
 /**
@@ -157,7 +274,7 @@ export function useCollection<T extends typeof Entity>(
 
     async function fetch() {
         entities.splice(0, entities.length);
-        if (query) query.destroy();
+        if (query !== null && query !== undefined) query.destroy();
 
         if (search && search.length > 0) {
             const constraints = [...wheres, ...orders];
@@ -210,7 +327,13 @@ export function useCollection<T extends typeof Entity>(
         try {
             entities.isUpdating = true;
 
-            await query.next(limit);
+            if (options.startIndex !== undefined && options.endIndex !== undefined) {
+                await query.next(
+                    toValue(options.endIndex) - toValue(options.startIndex),
+                    [],
+                    toValue(options.startIndex),
+                );
+            } else await query.next(limit);
             entities.isUpdating = false;
         } catch (err) {
             entities.isUpdating = false;
@@ -255,6 +378,16 @@ export function useCollection<T extends typeof Entity>(
             compositeConstraint = transformCompositeConstraint(
                 (options.compositeConstraint as Ref).value,
             );
+            await fetch();
+        });
+
+    if (isRef(options.startIndex))
+        watch(options.startIndex, async () => {
+            await fetch();
+        });
+
+    if (isRef(options.endIndex))
+        watch(options.endIndex, async () => {
             await fetch();
         });
 

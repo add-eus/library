@@ -2,7 +2,7 @@ import { entitiesInfos } from "../collection";
 import type { Entity } from "../entity";
 import type { CollectionProperties } from "../entityMetadata";
 import type { SecurityInfo } from "./securityDecorators";
-import { rootCollections, securityInfos } from "./securityDecorators";
+import { rootCollections, securityGroupInfos, securityInfos } from "./securityDecorators";
 
 export const createSecurityRules = (): string => {
     return `
@@ -10,6 +10,11 @@ export const createSecurityRules = (): string => {
 rules_version = "2";
 service cloud.firestore {
     match /databases/{database}/documents {
+        ${Array.from(securityGroupInfos.entries())
+            .map(([groupName, securityInfo]) => {
+                return createCollectionGroupRules(groupName, securityInfo);
+            })
+            .join("")}
         ${rootCollections
             .map((rootCollection) => {
                 return createCollectionRules(rootCollection);
@@ -18,6 +23,53 @@ service cloud.firestore {
     }
 }
     `;
+};
+
+const createCollectionGroupRules = (
+    groupName: string,
+    securityInfo: SecurityInfo,
+): string => {
+    const rules = generateRules(securityInfo);
+    return `
+        // ${groupName}
+        match /{document=**}/${groupName}/{${groupName}Id} {
+            ${rules.filter((rule) => rule !== "").join("\n            ")}
+        }`;
+};
+
+const generateRules = (
+    securityInfo?: SecurityInfo,
+    documentProperties?: string[],
+    collectionSecurityOptions?: SecurityInfo,
+): string[] => {
+    const rules: string[] = [];
+    rules.push(createReadRule("get", securityInfo?.security?.get));
+    rules.push(createReadRule("list", securityInfo?.security?.list));
+    rules.push(
+        createWriteRule(
+            "create",
+            securityInfo?.security?.create,
+            documentProperties ?? [],
+            collectionSecurityOptions,
+        ),
+    );
+    rules.push(
+        createWriteRule(
+            "update",
+            securityInfo?.security?.update,
+            documentProperties ?? [],
+            collectionSecurityOptions,
+        ),
+    );
+    rules.push(
+        createWriteRule(
+            "delete",
+            securityInfo?.security?.delete,
+            [],
+            collectionSecurityOptions,
+        ),
+    );
+    return rules;
 };
 
 const createCollectionRules = (
@@ -40,32 +92,10 @@ const createCollectionRules = (
             : `${parentModelNamespace}/${collectionName}`,
     );
 
-    const rules: string[] = [];
-    rules.push(createReadRule("get", collectionSecurityOptions?.security?.get));
-    rules.push(createReadRule("list", collectionSecurityOptions?.security?.list));
-    rules.push(
-        createWriteRule(
-            "create",
-            collectionSecurityOptions?.security?.create,
-            documentProperties,
-            collectionSecurityOptions,
-        ),
-    );
-    rules.push(
-        createWriteRule(
-            "update",
-            collectionSecurityOptions?.security?.update,
-            documentProperties,
-            collectionSecurityOptions,
-        ),
-    );
-    rules.push(
-        createWriteRule(
-            "delete",
-            collectionSecurityOptions?.security?.delete,
-            [],
-            collectionSecurityOptions,
-        ),
+    const rules = generateRules(
+        collectionSecurityOptions,
+        documentProperties,
+        collectionSecurityOptions,
     );
 
     const subCollectionsRules = Object.entries(collectionProperties)

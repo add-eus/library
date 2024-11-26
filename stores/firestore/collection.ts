@@ -1,12 +1,15 @@
 import { watchArray } from "@vueuse/core";
+import type { MaybeRef } from "@vueuse/core";
 import type { DocumentData, DocumentReference } from "firebase/firestore";
 import { collection, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { shallowReactive } from "vue";
+import type { Ref } from "vue";
 import type {
     CollectionOptions as UseCollectionOption,
     Collection as UseCollectionType,
+    WhereOption,
 } from ".";
-import { newDoc, useCollection, useDoc } from ".";
+import { newDoc, useCollection, useCount, useDoc } from ".";
 import { useFirestore } from "../firebase";
 import type { Entity, EntityBase } from "./entity";
 import { onInitialize } from "./entity";
@@ -40,12 +43,11 @@ export const entitiesInfos = new Map<string, EntityInfo>();
 
 const onCollectionsInitialize = new Map<string, (() => void)[]>();
 
-export const entitiesDeclared: {[key: string]: EntityBase} = {};
+export const entitiesDeclared: { [key: string]: EntityBase } = {};
 export function Collection<T>(options: CollectionOptions<T>) {
     return function (target: any, propertyKey?: string) {
-        
-        const name = target.name || target.constructor.name;
-        if (entitiesDeclared[name] === undefined) 
+        const name = target.name !== undefined ? target.name : target.constructor.name;
+        if (entitiesDeclared[name] === undefined)
             entitiesDeclared[name] = target.constructor;
         // On class
         if (propertyKey === undefined) {
@@ -274,6 +276,13 @@ export class SubCollection<T extends Entity> {
         };
 
         return useCollection(this.model, useCollectionOptions) as UseCollectionType<T>;
+    }
+
+    useCount(whereOptions?: MaybeRef<WhereOption[]>): Ref<number> {
+        if (!this.isInitialized)
+            throw new Error(`property subcollection not initialized`);
+        if (this.path === undefined) throw new Error(`path is undefined`);
+        return useCount(this.path, whereOptions);
     }
 }
 
