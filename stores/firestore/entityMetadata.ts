@@ -46,7 +46,11 @@ export class EntityMetaData extends EventEmitter {
             this.entity.$setAndParseFromReference(querySnapshot);
         }
 
-        await this.isFullfilling;
+        try {
+            await this.isFullfilling;
+        } catch (e) {
+            throw new Error(`Error from getting ${this.reference.path}: ${e.message}`);
+        }
     }
 
     async waitFullfilled() {
