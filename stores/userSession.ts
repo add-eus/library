@@ -179,20 +179,24 @@ export const useUserSession = defineStore("userSession", () => {
             }
 
             signInWithEmailLink(auth, email, window.location.href).finally(() => {
+                console.log('finally', auth.currentUser);
                 hasMagicLink.value = false;
                 // eslint-disable-next-line no-console
                 onLogin(auth.currentUser).catch(console.error);
-                window.addEventListener("load", () => {
-                    until(isLoaded)
-                        .toBe(true)
-                        .finally(() => {
+                console.log('finally is loaded', isLoaded.value);
+                until(isLoaded)
+                    .toBe(true)
+                    .finally(() => {
+
+                        if (params.has("continueUrl"))
+                            window.history.pushState({}, document.title, removeParamsURL);
+                        else 
                             window.history.replaceState(
                                 {},
                                 document.title,
                                 removeParamsURL
                             );
-                        });
-                });
+                    });
             });
         }
     })();
