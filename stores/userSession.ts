@@ -171,7 +171,12 @@ export const useUserSession = defineStore("userSession", () => {
             params.delete("oobCode");
             params.delete("apiKey");
 
-            const removeParamsURL = window.location.pathname + "?" + params.toString();
+            let removeParamsURL = window.location.pathname + "?" + params.toString();
+            if (params.has("continueUrl")) {
+                console.log(params.get("continueUrl"));
+                removeParamsURL = decodeURI(params.get("continueUrl") as string);
+                console.log(removeParamsURL);
+            }
 
             signInWithEmailLink(auth, email, window.location.href).finally(() => {
                 hasMagicLink.value = false;
