@@ -178,25 +178,27 @@ export const useUserSession = defineStore("userSession", () => {
                 console.log(removeParamsURL);
             }
 
-            signInWithEmailLink(auth, email, window.location.href).finally(() => {
+            signInWithEmailLink(auth, email, window.location.href).finally(async () => {
                 console.log('finally', auth.currentUser);
                 hasMagicLink.value = false;
-                // eslint-disable-next-line no-console
-                onLogin(auth.currentUser).catch(console.error);
+                try {
+                    await onLogin(auth.currentUser);
+                } catch (error) {
+                    console.error(error);
+                }
                 console.log('finally is loaded', isLoaded.value);
-                until(isLoaded)
-                    .toBe(true)
-                    .finally(() => {
+                console.log(params.get("continueUrl"));
 
-                        if (params.has("continueUrl"))
-                            window.history.pushState({}, document.title, removeParamsURL);
-                        else 
-                            window.history.replaceState(
-                                {},
-                                document.title,
-                                removeParamsURL
-                            );
-                    });
+                if (params.has("continueUrl"))
+                    window.location.href = removeParamsURL;
+                else 
+                    window.history.replaceState(
+                        {},
+                        document.title,
+                        removeParamsURL
+                    );
+                
+       
             });
         }
     })();
