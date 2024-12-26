@@ -173,21 +173,16 @@ export const useUserSession = defineStore("userSession", () => {
 
             let removeParamsURL = window.location.pathname + "?" + params.toString();
             if (params.has("continueUrl")) {
-                console.log(params.get("continueUrl"));
                 removeParamsURL = decodeURI(params.get("continueUrl") as string);
-                console.log(removeParamsURL);
             }
 
             signInWithEmailLink(auth, email, window.location.href).finally(async () => {
-                console.log('finally', auth.currentUser);
                 hasMagicLink.value = false;
                 try {
                     await onLogin(auth.currentUser);
                 } catch (error) {
                     console.error(error);
                 }
-                console.log('finally is loaded', isLoaded.value);
-                console.log(params.get("continueUrl"));
 
                 if (params.has("continueUrl"))
                     window.location.href = removeParamsURL;
