@@ -21,7 +21,7 @@ const isImage = computed(() => {
     );
 });
 
-const classes = getIconClasses();
+const classes = [...getIconClasses(), 'notranslate'];
 const styles = getIconStyles(computed(() => props.color));
 </script>
 
