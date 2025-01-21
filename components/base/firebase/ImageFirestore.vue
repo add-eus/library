@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useIntersectionObserver } from "@vueuse/core";
+// import { useIntersectionObserver } from "@vueuse/core";
 import { computed, ref, watch, onMounted } from "vue";
 import { useStorage } from "../../../stores/storage";
 
@@ -26,11 +26,11 @@ const isVideo = computed(() => {
 });
 
 const target = ref(null);
-const targetIsVisible = ref(false);
+const targetIsVisible = ref(true);
 
-useIntersectionObserver(target, ([entry]) => {
-    targetIsVisible.value = entry?.isIntersecting || false;
-});
+// useIntersectionObserver(target, ([entry]) => {
+//     targetIsVisible.value = entry?.isIntersecting || false;
+// });
 
 async function loadSrc() {
     if (targetIsVisible.value && isChanged) {
@@ -56,7 +56,7 @@ watch(
         void loadSrc();
     },
 );
-watch(targetIsVisible, loadSrc);
+// watch(targetIsVisible, loadSrc);
 
 onMounted(() => {
     void loadSrc();
