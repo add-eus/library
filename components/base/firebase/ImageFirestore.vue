@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computedAsync } from "@vueuse/core";
-import { computed, ref } from "vue";
+import { useIntersectionObserver } from "@vueuse/core";
+import { computed, ref, watch } from "vue";
 import { useStorage } from "../../../stores/storage";
 
 interface FirebaseImageProps {
@@ -15,39 +15,52 @@ const DEFAULT_IMAGE =
 const props = defineProps<FirebaseImageProps>();
 const storage = useStorage();
 const evaluating = ref(true);
+const src = ref<string | null>(null);
 
-const src = computedAsync(
-    async () => {
-        if (typeof props.path !== "string") return DEFAULT_IMAGE;
-        try {
-            return await storage.fetchAsDataUrl(props.path);
-        } catch (err) {
-            try {
-                const response = await fetch(props.path);
-                const blob = response.blob();
-                return URL.createObjectURL(blob);
-            } catch (err) {
-                return DEFAULT_IMAGE;
-            }
-        }
-    },
-    undefined,
-    evaluating,
-);
+let isChanged = true;
 
-const mimeType = computed(() => {
-    if (typeof src.value !== "string") return "text/plain";
-    const matched = src.value.match(/^data:([^;]+)/);
-    if (matched === null) return "text/plain";
-    return matched[1];
-});
+const mimeType = ref("text/plain");
 
 const isVideo = computed(() => {
     return mimeType.value.startsWith("video/");
 });
+
+const target = ref(null);
+const targetIsVisible = ref(false);
+
+useIntersectionObserver(target, ([entry], observerElement) => {
+    targetIsVisible.value = entry?.isIntersecting || false;
+});
+
+async function loadSrc() {
+    if (targetIsVisible.value && isChanged) {
+        try {
+            evaluating.value = true;
+            isChanged = false;
+            const metadata = await storage.getMetadata(props.path);
+            mimeType.value = metadata.contentType || "text/plain";
+
+            if (typeof props.path !== "string") src.value = DEFAULT_IMAGE;
+            else src.value = await storage.pathToPublicUrl(props.path);
+        } catch (err) {
+            console.error(err);
+        }
+        evaluating.value = false;
+    }
+}
+
+loadSrc();
+watch(
+    () => props.path,
+    () => {
+        isChanged = true;
+        loadSrc();
+    },
+);
+watch(targetIsVisible, loadSrc);
 </script>
 <template>
-    <div class="v-image-firebase">
+    <div class="v-image-firebase" ref="target">
         <Transition name="fade-fast">
             <slot v-if="evaluating" name="loading" v-bind="$attrs">
                 <VPlaceload height="100%" width="100%"></VPlaceload>

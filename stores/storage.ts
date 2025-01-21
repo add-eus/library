@@ -1,15 +1,16 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 
 import {
-    ref as refStorage,
     deleteObject,
     getBlob,
-    uploadBytes,
-    updateMetadata,
     getDownloadURL,
+    getMetadata as getMetadataStorage,
+    ref as refStorage,
+    updateMetadata,
+    uploadBytes,
 } from "firebase/storage";
-import { useFirebase } from "./firebase";
 import { v4 as uuid } from "uuid";
+import { useFirebase } from "./firebase";
 
 export const useStorage = defineStore("Storage", () => {
     const storage = useFirebase().storage;
@@ -61,7 +62,7 @@ export const useStorage = defineStore("Storage", () => {
                 `${storage._protocol}://${
                     storage.host
                 }${storage._bucket.fullServerUrl()}`,
-                ""
+                "",
             )
             .replace(/\?.*$/, "");
     }
@@ -71,7 +72,20 @@ export const useStorage = defineStore("Storage", () => {
         return getDownloadURL(refFile);
     }
 
-    return { upload, remove, fetch, fetchAsDataUrl, pathToPublicUrl, publicUrlToPath };
+    async function getMetadata(url: string) {
+        const refFile = refStorage(storage, url);
+        return getMetadataStorage(refFile);
+    }
+
+    return {
+        upload,
+        remove,
+        fetch,
+        fetchAsDataUrl,
+        pathToPublicUrl,
+        publicUrlToPath,
+        getMetadata,
+    };
 });
 
 /**
