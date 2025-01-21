@@ -28,12 +28,11 @@ const isVideo = computed(() => {
 const target = ref(null);
 const targetIsVisible = ref(false);
 
-useIntersectionObserver(target, ([entry], observerElement) => {
+useIntersectionObserver(target, ([entry]) => {
     targetIsVisible.value = entry?.isIntersecting || false;
 });
 
 async function loadSrc() {
-    console.log("loadSrc", src.value, targetIsVisible.value, isChanged);
     if (targetIsVisible.value && isChanged) {
         try {
             evaluating.value = true;
@@ -48,21 +47,20 @@ async function loadSrc() {
         }
         evaluating.value = false;
     }
-    console.log("endSrc", src.value);
 }
 
-loadSrc();
+void loadSrc();
 watch(
     () => props.path,
     () => {
         isChanged = true;
-        loadSrc();
+        void loadSrc();
     },
 );
 watch(targetIsVisible, loadSrc);
 </script>
 <template>
-    <div class="v-image-firebase" ref="target">
+    <div ref="target" class="v-image-firebase">
         <Transition name="fade-fast">
             <slot v-if="evaluating" name="loading" v-bind="$attrs">
                 <VPlaceload height="100%" width="100%"></VPlaceload>
