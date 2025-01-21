@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useIntersectionObserver } from "@vueuse/core";
-import { computed, ref, watch } from "vue";
+import { computed, ref, watch, onMounted } from "vue";
 import { useStorage } from "../../../stores/storage";
 
 interface FirebaseImageProps {
@@ -49,7 +49,6 @@ async function loadSrc() {
     }
 }
 
-void loadSrc();
 watch(
     () => props.path,
     () => {
@@ -58,6 +57,10 @@ watch(
     },
 );
 watch(targetIsVisible, loadSrc);
+
+onMounted(() => {
+    void loadSrc();
+});
 </script>
 <template>
     <div ref="target" class="v-image-firebase">
