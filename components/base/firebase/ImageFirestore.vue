@@ -33,6 +33,7 @@ useIntersectionObserver(target, ([entry], observerElement) => {
 });
 
 async function loadSrc() {
+    console.log("loadSrc", src.value, targetIsVisible.value, isChanged);
     if (targetIsVisible.value && isChanged) {
         try {
             evaluating.value = true;
@@ -47,6 +48,7 @@ async function loadSrc() {
         }
         evaluating.value = false;
     }
+    console.log("endSrc", src.value);
 }
 
 loadSrc();
