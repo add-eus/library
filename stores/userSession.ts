@@ -16,6 +16,7 @@ import {
     reload,
     sendPasswordResetEmail,
     setPersistence,
+    signInWithCustomToken,
     signInWithEmailAndPassword,
     signInWithEmailLink,
     signInWithPhoneNumber,
@@ -148,6 +149,7 @@ export const useUserSession = defineStore("userSession", () => {
     const hasMagicLink = ref(false);
 
     (() => {
+        const params = new URL(document.location.toString()).searchParams;
         if (isSignInWithEmailLink(auth, window.location.href)) {
             hasMagicLink.value = true;
             // Additional state parameters can also be passed via URL.
@@ -155,7 +157,7 @@ export const useUserSession = defineStore("userSession", () => {
             // the sign-in operation.
             // Get the email if available. This should be available if the user completes
             // the flow on the same device where they started it.
-            const params = new URL(document.location.toString()).searchParams;
+            
             const email = params.get("email");
 
             if (email === null) {
@@ -195,6 +197,30 @@ export const useUserSession = defineStore("userSession", () => {
                 
        
             });
+        }
+        else if (params.has('authToken')) {
+            let removeParamsURL = window.location.pathname + "?" + params.toString();
+            if (params.has("continueUrl")) {
+                removeParamsURL = decodeURI(params.get("continueUrl") as string);
+            }
+            const authToken = params.get("authToken") as string;
+            signInWithCustomToken(auth, authToken)
+                .finally(async () => {
+                    try {
+                        await onLogin(auth.currentUser);
+                    } catch (error) {
+                        console.error(error);
+                    }
+    
+                    if (params.has("continueUrl"))
+                        window.location.href = removeParamsURL;
+                    else 
+                        window.history.replaceState(
+                            {},
+                            document.title,
+                            removeParamsURL
+                        );
+                });
         }
     })();
 
