@@ -35,6 +35,7 @@ export type VFileProps = {
         maxWidth?: number;
         maxHeight?: number;
     };
+    deleteStoragePath: boolean;
 };
 
 export interface NewFileEvent {
@@ -57,6 +58,7 @@ const props = withDefaults(defineProps<VFileProps>(), {
     cropOptions: undefined,
     imageOptions: undefined,
     videoOptions: undefined,
+    deleteStoragePath: true,
 });
 
 const Filepond = vueFilePond(
@@ -291,7 +293,7 @@ async function remove(url, load) {
     if (field !== undefined) field.isProcessing = true;
     emit("processing");
     try {
-        await storage.remove(url);
+        if (props.deleteStoragePath) await storage.remove(url);
         load();
     } catch (error) {
         // eslint-disable-next-line no-console
@@ -302,7 +304,7 @@ async function remove(url, load) {
     if (field !== undefined) field.isProcessing = false;
 }
 function revert(uniqueFileId, load) {
-    void storage.remove(uniqueFileId);
+    if (props.deleteStoragePath) void storage.remove(uniqueFileId);
     load();
 }
 
