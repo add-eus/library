@@ -10,8 +10,8 @@ import {
 } from "firebase/firestore";
 import { isReactive, markRaw, shallowReactive } from "vue";
 import { lowerCaseFirst } from "../../utils/string";
-import { EntityMetaData } from "./entityMetadata";
 import { useFirestore } from "../firebase";
+import { EntityMetaData } from "./entityMetadata";
 
 export function onInitialize(
     target: any,
@@ -139,7 +139,6 @@ export class Entity extends EntityBase {
     static collectionName: string;
 
     $setAndParseFromReference(querySnapshot: DocumentReference | DocumentSnapshot) {
-        
         const metadata = this.$getMetadata();
         if (querySnapshot instanceof DocumentReference) {
             metadata.setReference(querySnapshot);
@@ -191,12 +190,15 @@ export class Entity extends EntityBase {
         try {
             if (isNew) {
                 const firestore = useFirestore();
-                const docRef = doc(
-                    collection(
-                        firestore,
-                        $metadata.saveNewDocPath ?? constructor.collectionName,
-                    ),
+                console.log($metadata.saveNewDocId);
+                const docCollection = collection(
+                    firestore,
+                    $metadata.saveNewDocPath ?? constructor.collectionName,
                 );
+                const docRef =
+                    $metadata.saveNewDocId === undefined
+                        ? doc(docCollection)
+                        : doc(docCollection, $metadata.saveNewDocId);
 
                 $metadata.setReference(docRef);
 
@@ -224,9 +226,6 @@ export class Entity extends EntityBase {
                 return this.$save();
             throw err;
         }
-
-        // save subcollections
-        await $metadata.savePropertyCollections();
 
         this.$getMetadata().emit("saved", this);
     }
