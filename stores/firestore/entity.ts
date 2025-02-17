@@ -190,7 +190,6 @@ export class Entity extends EntityBase {
         try {
             if (isNew) {
                 const firestore = useFirestore();
-                console.log($metadata.saveNewDocId);
                 const docCollection = collection(
                     firestore,
                     $metadata.saveNewDocPath ?? constructor.collectionName,
