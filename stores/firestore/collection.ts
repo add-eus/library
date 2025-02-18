@@ -1,8 +1,5 @@
-import { watchArray } from "@vueuse/core";
 import type { MaybeRef } from "@vueuse/core";
-import type { DocumentData, DocumentReference } from "firebase/firestore";
-import { collection, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
-import { shallowReactive } from "vue";
+import { doc, getDoc } from "firebase/firestore";
 import type { Ref } from "vue";
 import type {
     CollectionOptions as UseCollectionOption,
@@ -122,13 +119,9 @@ export function Collection<T>(options: CollectionOptions<T>) {
 }
 
 export class SubCollection<T extends Entity> {
-    private firestoreArray?: UseCollectionType<T>;
-    private currentList = shallowReactive(new Array<T>());
     private model?: typeof Entity;
     private path?: string;
     private initialized = false;
-    private stopWatch?: () => void;
-    private isFetched = false;
     private new = false;
     public blacklistedProperties: string[] = [];
 
@@ -142,47 +135,6 @@ export class SubCollection<T extends Entity> {
         this.blacklistedProperties = blacklistedProperties;
         this.initialized = true;
         this.new = path === undefined;
-    }
-
-    setOptions(options?: Omit<UseCollectionOption, "path" | "blacklistedProperties">) {
-        if (!this.initialized) throw new Error(`property subcollection not initialized`);
-        if (this.model === undefined)
-            throw new Error(`model in property ${this.path} is undefined`);
-        if (this.path === undefined)
-            throw new Error(`path in property ${this.path} is undefined`);
-
-        this.stopWatch?.();
-
-        const useCollectionOptions: UseCollectionOption = {
-            ...options,
-            path: this.path,
-            blacklistedProperties: this.blacklistedProperties,
-        };
-        this.firestoreArray = useCollection(
-            this.model,
-            useCollectionOptions,
-        ) as UseCollectionType<T>;
-
-        this.currentList.splice(0, this.currentList.length);
-
-        this.stopWatch = watchArray(
-            this.firestoreArray,
-            (value, oldValue, added: T[], removed: T[]) => {
-                added.forEach((a) => {
-                    const alreadyInArray = this.currentList.some(
-                        (entity) => entity.$getID() === a.$getID(),
-                    );
-                    if (!alreadyInArray) this.currentList.push(a);
-                });
-                removed.forEach((r) => {
-                    const index = this.currentList.findIndex(
-                        (entity) => entity.$getID() === r.$getID(),
-                    );
-                    if (index !== -1) this.currentList.splice(index, 1);
-                });
-            },
-        );
-        this.isFetched = true;
     }
 
     async exists(entity: Entity): Promise<boolean> {
@@ -199,11 +151,6 @@ export class SubCollection<T extends Entity> {
         return snap.exists();
     }
 
-    get list() {
-        if (!this.isFetched && !this.new) this.setOptions();
-        return this.currentList;
-    }
-
     get entityModel() {
         return this.model;
     }
@@ -216,41 +163,21 @@ export class SubCollection<T extends Entity> {
         return this.new;
     }
 
-    fetched() {
-        if (!this.isFetched) throw new Error(`property subcollection not initialized`);
-        if (this.firestoreArray === undefined)
-            throw new Error(`firestoreArray is undefined`);
-        return this.firestoreArray.fetched();
-    }
-
-    /**
-     * Get array modification between app datas and firestore datas
-     * @param appArray Current data in app (with new or deleted entities)
-     * @param firestoreArray Current data in firestore
-     * @returns {toDelete, toAdd} entities to delete and entities to add
-     */
-    getArrayModification() {
-        const dbEntities: Entity[] = [];
-        if (this.firestoreArray) dbEntities.push(...this.firestoreArray);
-        const appEntities = [...this.currentList];
-
-        const toDelete = dbEntities.filter(
-            (f) => !appEntities.some((a) => a.$getID() === f.$getID()),
-        );
-        const toAdd = appEntities.filter(
-            (a) => !dbEntities.some((f) => a.$getID() === f.$getID()),
-        );
-        return { toDelete, toAdd };
-    }
-
-    newDoc(): T {
+    newDoc(toClone?: T): T {
         if (!this.isInitialized)
             throw new Error(`property subcollection not initialized`);
         if (this.model === undefined) throw new Error(`model is undefined`);
-        const entity = newDoc(this.model) as T;
-        entity.$getMetadata().saveNewDocPath = this.path;
-        this.currentList.push(entity);
-        return entity;
+        if (toClone === undefined) {
+            const entity = newDoc(this.model) as T;
+            entity.$getMetadata().saveNewDocPath = this.path;
+            return entity;
+        } else {
+            if (this.path === undefined) throw new Error(`path is undefined`);
+            const entity = toClone.$clone() as T;
+            entity.$getMetadata().saveNewDocPath = this.path;
+            entity.$getMetadata().saveNewDocId = toClone.$getID();
+            return entity;
+        }
     }
 
     useDoc(id: string): T {
@@ -285,56 +212,3 @@ export class SubCollection<T extends Entity> {
         return useCount(this.path, whereOptions);
     }
 }
-
-/**
- * Add and/or remove elements from firestore
- * @param toRemove elements to remove
- * @param toAdd elements to add
- * @param path path of the collection
- */
-export const updatePropertyCollection = async (
-    toRemove: Array<Entity>,
-    toAdd: Array<Entity>,
-    path: string,
-    blacklistedProperties: string[] = [],
-) => {
-    const firestore = useFirestore();
-
-    const collectionRef = collection(firestore, path);
-    const removePromises = toRemove.map(async (entity) => {
-        const id = entity.$getMetadata().reference?.id;
-        if (id === undefined) throw new Error("id is undefined");
-        const docRef = doc(collectionRef, id);
-        await deleteDoc(docRef);
-    });
-    const addPromises = toAdd.map(async (entity) => {
-        let id = entity.$getMetadata().reference?.id;
-
-        // entity is already in collection
-        if (entity.$getMetadata().reference?.path === `${collectionRef.path}/${id}`) {
-            return;
-        }
-
-        let docRef: DocumentReference<DocumentData> | undefined;
-        if (id === undefined) {
-            // entity is new, save it before add to collection
-            await entity.$save();
-            const reference = entity.$getMetadata().reference;
-            if (reference === null) throw new Error("reference is null");
-            id = reference.id;
-            docRef = reference;
-        } else {
-            docRef = doc(collectionRef, id);
-            await setDoc(docRef, entity.$getPlain(), { merge: true });
-        }
-
-        // save sub collections of added entity recursively
-        const constructor = entity.constructor as typeof Entity;
-        const model = new constructor();
-        const metadata = model.$getMetadata();
-        metadata.setReference(docRef);
-        metadata.blacklistedProperties = blacklistedProperties;
-        await metadata.savePropertyCollections(entity);
-    });
-    await Promise.all([...removePromises, ...addPromises]);
-};
