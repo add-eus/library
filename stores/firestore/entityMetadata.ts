@@ -17,7 +17,7 @@ export class EntityMetaData extends EventEmitter {
     previousOrigin: any = {};
     properties: { [key: string]: any } = {};
     entity: Entity;
-    unsuscribeSnapshot: Function | null = null;
+    unsuscribeSnapshot: (() => void) | null = null;
     disableWatch: boolean = false;
 
     blacklistedProperties: string[] = [];
