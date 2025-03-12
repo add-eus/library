@@ -142,8 +142,8 @@ export function useCountQuery(
 export function useModelListQuery<T extends typeof Entity>(
     collectionModel: T,
     firestoreQuery: MaybeRef<FirestoreQuery<DocumentData>>,
-    startIndex: MaybeRef<number>,
-    endIndex: MaybeRef<number>,
+    startIndex?: MaybeRef<number>,
+    endIndex?: MaybeRef<number>,
 ): Collection<InstanceType<T>> {
     const onDestroy: (() => void)[] = [];
     getCurrentScope()
