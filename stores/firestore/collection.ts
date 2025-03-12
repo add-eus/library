@@ -167,12 +167,12 @@ export class SubCollection<T extends Entity> {
         if (!this.isInitialized)
             throw new Error(`property subcollection not initialized`);
         if (this.model === undefined) throw new Error(`model is undefined`);
+        if (this.path === undefined) throw new Error(`path is undefined`);
         if (toClone === undefined) {
             const entity = newDoc(this.model) as T;
             entity.$getMetadata().saveNewDocPath = this.path;
             return entity;
         } else {
-            if (this.path === undefined) throw new Error(`path is undefined`);
             const entity = toClone.$clone() as T;
             entity.$getMetadata().saveNewDocPath = this.path;
             entity.$getMetadata().saveNewDocId = toClone.$getID();

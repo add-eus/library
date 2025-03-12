@@ -204,6 +204,7 @@ export class Entity extends EntityBase {
                 this.$getMetadata().emit("beforeCreated", raw);
                 await setDoc(docRef, raw);
                 this.$getMetadata().emit("created", this);
+                this.$getMetadata().initSubCollections();
             } else if (Object.keys(raw).length > 0 && $metadata.reference !== null) {
                 this.$getMetadata().emit("beforeUpdated", raw);
                 await updateDoc($metadata.reference, raw);
