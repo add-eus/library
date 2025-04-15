@@ -16,8 +16,8 @@ export const useStorage = defineStore("Storage", () => {
     const storage = useFirebase().storage;
     const cached = {};
 
-    const upload = async (file: File | Path | Blob, path: string) => {
-        const pathName = path + "/" + uuid();
+    const upload = async (file: File | Blob, path: string, fileName?: string) => {
+        const pathName = path + "/" + (fileName ?? uuid());
         const refFile = refStorage(storage, pathName);
         const arrayBuffer = await file.arrayBuffer();
 
@@ -29,8 +29,9 @@ export const useStorage = defineStore("Storage", () => {
             contentType: file.type,
         });
 
-        return refFile.fullPath;
+        return refFile;
     };
+
     const remove = async (url: string) => {
         const ref = refStorage(storage, url);
         await deleteObject(ref);
@@ -95,6 +96,8 @@ export const useStorage = defineStore("Storage", () => {
  * @see https://pinia.esm.dev/cookbook/hot-module-replacement.html
  * @see https://vitejs.dev/guide/api-hmr.html
  */
-if (import.meta.hot) {
-    import.meta.hot.accept(acceptHMRUpdate(useStorage, import.meta.hot));
+if ((import.meta as any).hot !== undefined) {
+    (import.meta as any).hot.accept(
+        acceptHMRUpdate(useStorage, (import.meta as any).hot),
+    );
 }
