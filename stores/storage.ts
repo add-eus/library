@@ -96,7 +96,7 @@ export const useStorage = defineStore("Storage", () => {
  * @see https://pinia.esm.dev/cookbook/hot-module-replacement.html
  * @see https://vitejs.dev/guide/api-hmr.html
  */
-if ((import.meta as any).hot) {
+if ((import.meta as any).hot !== undefined) {
     (import.meta as any).hot.accept(
         acceptHMRUpdate(useStorage, (import.meta as any).hot),
     );
