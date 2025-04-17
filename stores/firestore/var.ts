@@ -125,39 +125,34 @@ function isUnparsedEqual(a: any, b: any, type: any): boolean {
     return a === b;
 }
 
-
 export function Var(type: any) {
     return function (target: EntityBase, name: string) {
         onInitialize(target, function (this: any, metadata: EntityMetaData) {
-
-            
             if (typeof type === "string" && type.length > 0) {
                 type = entitiesDeclared[type];
             }
             if (metadata.properties[name] === undefined) metadata.properties[name] = {};
 
             let isChanged: boolean = false;
-            const thisTarget = this;
             Object.defineProperty(metadata.properties[name], "isChanged", {
-                get() {
+                get: () => {
                     if (
-                        typeof thisTarget[name] === "object" &&
-                        thisTarget[name] instanceof EntityBase &&
-                        !(thisTarget[name] instanceof Entity)
+                        typeof this[name] === "object" &&
+                        this[name] instanceof EntityBase &&
+                        !(this[name] instanceof Entity)
                     )
-                        return thisTarget[name].$hasChanged();
-                    else if (Array.isArray(thisTarget[name])) {
+                        return this[name].$hasChanged();
+                    else if (Array.isArray(this[name])) {
                         if (
                             (metadata.origin[name] !== undefined &&
-                                metadata.origin[name].length !==
-                                    thisTarget[name].length) ||
+                                metadata.origin[name].length !== this[name].length) ||
                             metadata.origin[name] === undefined
                         )
                             return true;
-                        return thisTarget[name].some((row: any, rowIndex) => {
+                        return this[name].some((row: any, rowIndex) => {
                             if (
                                 row instanceof EntityBase &&
-                                !(thisTarget[name] instanceof Entity) &&
+                                !(this[name] instanceof Entity) &&
                                 row.$hasChanged()
                             )
                                 return true;
@@ -255,6 +250,14 @@ export function Var(type: any) {
             metadata.on("saved", () => {
                 originalPropertyValue = this[name];
                 isChanged = false;
+                // call saved recursively on child entities
+                if (isEntity(this[name])) {
+                    this[name].$getMetadata().emit("saved");
+                } else if (Array.isArray(this[name])) {
+                    this[name].forEach((row: EntityBase) => {
+                        if (isEntity(row)) row.$getMetadata().emit("saved");
+                    });
+                }
             });
         });
     };
