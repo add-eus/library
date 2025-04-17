@@ -134,27 +134,25 @@ export function Var(type: any) {
             if (metadata.properties[name] === undefined) metadata.properties[name] = {};
 
             let isChanged: boolean = false;
-            const thisTarget = this;
             Object.defineProperty(metadata.properties[name], "isChanged", {
-                get() {
+                get: () => {
                     if (
-                        typeof thisTarget[name] === "object" &&
-                        thisTarget[name] instanceof EntityBase &&
-                        !(thisTarget[name] instanceof Entity)
+                        typeof this[name] === "object" &&
+                        this[name] instanceof EntityBase &&
+                        !(this[name] instanceof Entity)
                     )
-                        return thisTarget[name].$hasChanged();
-                    else if (Array.isArray(thisTarget[name])) {
+                        return this[name].$hasChanged();
+                    else if (Array.isArray(this[name])) {
                         if (
                             (metadata.origin[name] !== undefined &&
-                                metadata.origin[name].length !==
-                                    thisTarget[name].length) ||
+                                metadata.origin[name].length !== this[name].length) ||
                             metadata.origin[name] === undefined
                         )
                             return true;
-                        return thisTarget[name].some((row: any, rowIndex) => {
+                        return this[name].some((row: any, rowIndex) => {
                             if (
                                 row instanceof EntityBase &&
-                                !(thisTarget[name] instanceof Entity) &&
+                                !(this[name] instanceof Entity) &&
                                 row.$hasChanged()
                             )
                                 return true;
