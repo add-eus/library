@@ -265,8 +265,8 @@ async function process(fieldName, file, metadata, loadFile, error) {
                 isAaspectRatioWrong.value = true;
                 return;
             }
-            const path = await storage.upload(file, props.storagePath);
-            loadFile(path);
+            const ref = await storage.upload(file, props.storagePath);
+            loadFile(ref.fullPath);
             emit("newFile", { fileType: file.type });
             skipNextFile = false;
         } else if (blob === undefined) {
