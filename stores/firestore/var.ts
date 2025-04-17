@@ -125,12 +125,9 @@ function isUnparsedEqual(a: any, b: any, type: any): boolean {
     return a === b;
 }
 
-
 export function Var(type: any) {
     return function (target: EntityBase, name: string) {
         onInitialize(target, function (this: any, metadata: EntityMetaData) {
-
-            
             if (typeof type === "string" && type.length > 0) {
                 type = entitiesDeclared[type];
             }
@@ -255,6 +252,14 @@ export function Var(type: any) {
             metadata.on("saved", () => {
                 originalPropertyValue = this[name];
                 isChanged = false;
+                // call saved recursively on child entities
+                if (isEntity(this[name])) {
+                    this[name].$getMetadata().emit("saved");
+                } else if (Array.isArray(this[name])) {
+                    this[name].forEach((row: EntityBase) => {
+                        if (isEntity(row)) row.$getMetadata().emit("saved");
+                    });
+                }
             });
         });
     };
