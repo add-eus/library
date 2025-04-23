@@ -143,9 +143,9 @@ interface VideoInfos {
     height: number;
 }
 
-const getVideoInfos = async (): Promise<VideoInfos> => {
+const getVideoInfos = async (file: any): Promise<VideoInfos> => {
     const video = document.createElement("video");
-    video.src = URL.createObjectURL(pond.value.getFiles()[0].file);
+    video.src = URL.createObjectURL(file);
     const loadPromise = new Promise<VideoInfos>((resolve) => {
         video.onloadedmetadata = function () {
             resolve({
@@ -221,13 +221,12 @@ async function process(fieldName, file, metadata, loadFile, error) {
             const { minSize, maxSize, minDuration, maxDuration } = props.videoOptions;
             isVideoSizeTooSmall.value = minSize !== undefined && file.size < minSize;
             isVideoSizeTooBig.value = maxSize !== undefined && file.size > maxSize;
-
             if (isVideoSizeTooSmall.value || isVideoSizeTooBig.value) {
                 error();
                 return;
             }
 
-            const { duration, width, height } = await getVideoInfos();
+            const { duration, width, height } = await getVideoInfos(file);
             isVideoDurationTooShort.value =
                 minDuration !== undefined && duration < minDuration;
             isVideoDurationTooLong.value =
@@ -271,8 +270,8 @@ async function process(fieldName, file, metadata, loadFile, error) {
             skipNextFile = false;
         } else if (blob === undefined) {
             isAaspectRatioWrong.value = false;
-            const path = await storage.upload(file, props.storagePath);
-            loadFile(path);
+            const ref = await storage.upload(file, props.storagePath);
+            loadFile(ref.fullPath);
             emit("newFile", { fileType: file.type });
             skipNextFile = false;
         } else {
