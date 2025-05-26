@@ -18,13 +18,14 @@ import { connectStorageEmulator, getStorage } from "firebase/storage";
 
 if (Capacitor.isNativePlatform()) {
     window["gapi"] = {
-        load: (name) => Promise.resolve(),
+        load: () => Promise.resolve(),
         iframes: {
             getContext: () => {
                 return {
                     iframe: {
                         contentWindow: {
                             postMessage: (message) => {
+                                // eslint-disable-next-line no-console
                                 console.log("gapi iframe message:", message);
                             },
                         },
@@ -153,9 +154,11 @@ export function useFirebase() {
     const cleanup = () => {
         if (!window.providers) return;
 
-        let unsubscribeAuth;
+        let unsubscribeAuth: (() => void) | undefined;
         if (window.providers.auth) {
-            unsubscribeAuth = window.providers.auth.onAuthStateChanged(() => {});
+            unsubscribeAuth = window.providers.auth.onAuthStateChanged(() => {
+                // Empty callback for cleanup
+            });
             if (unsubscribeAuth) unsubscribeAuth();
         }
 
@@ -164,6 +167,7 @@ export function useFirebase() {
                 window.providers.database.goOffline();
                 window.providers.database.app.delete();
             } catch (e) {
+                // eslint-disable-next-line no-console
                 console.debug("Error cleaning up database", e);
             }
         }
@@ -172,6 +176,7 @@ export function useFirebase() {
             try {
                 window.providers.firestore.terminate();
             } catch (e) {
+                // eslint-disable-next-line no-console
                 console.debug("Error cleaning up firestore", e);
             }
         }
@@ -180,6 +185,7 @@ export function useFirebase() {
             try {
                 window.providers.storage.app.delete();
             } catch (e) {
+                // eslint-disable-next-line no-console
                 console.debug("Error cleaning up storage", e);
             }
         }
@@ -188,6 +194,7 @@ export function useFirebase() {
             try {
                 window.providers.analytics.app.delete();
             } catch (e) {
+                // eslint-disable-next-line no-console
                 console.debug("Error cleaning up analytics", e);
             }
         }
@@ -196,6 +203,7 @@ export function useFirebase() {
             try {
                 window.providers.performance.app.delete();
             } catch (e) {
+                // eslint-disable-next-line no-console
                 console.debug("Error cleaning up performance", e);
             }
         }

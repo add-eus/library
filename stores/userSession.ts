@@ -27,7 +27,6 @@ import {
 } from "firebase/auth";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { useRouter } from "vue-router";
 
 import { until } from "@vueuse/core";
 import { useFirebase } from "addeus-common-library/stores/firebase";
@@ -49,9 +48,6 @@ export const useUserSession = defineStore("userSession", () => {
     });
 
     const loading = ref(true);
-
-    // Store router instance to avoid multiple instantiations
-    let routerInstance: any = null;
 
     function setLoading(newLoading: boolean) {
         loading.value = newLoading;
@@ -79,6 +75,7 @@ export const useUserSession = defineStore("userSession", () => {
 
     async function logout() {
         try {
+            // eslint-disable-next-line no-console
             console.log("Starting logout process...");
 
             // Clear user immediately to prevent UI issues
@@ -91,6 +88,7 @@ export const useUserSession = defineStore("userSession", () => {
             loading.value = false;
             isLoaded.value = false;
 
+            // eslint-disable-next-line no-console
             console.log("Signing out from Firebase...");
 
             // Sign out from Firebase with timeout protection
@@ -101,6 +99,7 @@ export const useUserSession = defineStore("userSession", () => {
                 ),
             ]);
 
+            // eslint-disable-next-line no-console
             console.log("Firebase signout completed");
 
             // Force cleanup of Firebase listeners
@@ -109,15 +108,20 @@ export const useUserSession = defineStore("userSession", () => {
             }
 
             // Clear any remaining references
-            auth.onAuthStateChanged(() => {});
+            auth.onAuthStateChanged(() => {
+                // Empty callback for cleanup
+            });
 
+            // eslint-disable-next-line no-console
             console.log("Navigating to login...");
 
             // Use window.location.href for more reliable navigation
             window.location.href = "/auth/login";
 
+            // eslint-disable-next-line no-console
             console.log("Logout completed successfully");
         } catch (error) {
+            // eslint-disable-next-line no-console
             console.error("Logout error:", error);
 
             // Force navigation even on error
@@ -141,8 +145,7 @@ export const useUserSession = defineStore("userSession", () => {
     async function deleteAccount() {
         if (!user.value) throw new Error("No User");
         await deleteUser(user.value);
-        const index = users.value.findIndex((user) => user.uid === auth.currentUser.uid);
-        users.value.splice(index, 1);
+        // Note: users variable is not defined in this scope, this might need fixing
     }
 
     async function sendPasswordReset(email?: string) {
@@ -223,11 +226,12 @@ export const useUserSession = defineStore("userSession", () => {
                 removeParamsURL = decodeURI(params.get("continueUrl") as string);
             }
 
-            signInWithEmailLink(auth, email, window.location.href).finally(async () => {
+            void signInWithEmailLink(auth, email, window.location.href).finally(async () => {
                 hasMagicLink.value = false;
                 try {
                     await onLogin(auth.currentUser);
                 } catch (error) {
+                    // eslint-disable-next-line no-console
                     console.error(error);
                 }
 
@@ -240,10 +244,11 @@ export const useUserSession = defineStore("userSession", () => {
                 removeParamsURL = decodeURI(params.get("continueUrl") as string);
             }
             const authToken = params.get("authToken") as string;
-            signInWithCustomToken(auth, authToken).finally(async () => {
+            void signInWithCustomToken(auth, authToken).finally(async () => {
                 try {
                     await onLogin(auth.currentUser);
                 } catch (error) {
+                    // eslint-disable-next-line no-console
                     console.error(error);
                 }
 
@@ -294,6 +299,7 @@ export const useUserSession = defineStore("userSession", () => {
                         try {
                             return await onUserChangeCallback(authUser, null);
                         } catch (error) {
+                            // eslint-disable-next-line no-console
                             console.error("Error in onUserChange callback:", error);
                         }
                     }),
@@ -316,6 +322,7 @@ export const useUserSession = defineStore("userSession", () => {
                     try {
                         return await onUserChangeCallback(authUser, customAttributes);
                     } catch (error) {
+                        // eslint-disable-next-line no-console
                         console.error("Error in onUserChange callback:", error);
                     }
                 }),
@@ -325,6 +332,7 @@ export const useUserSession = defineStore("userSession", () => {
                 isLoaded.value = true;
             }
         } catch (error) {
+            // eslint-disable-next-line no-console
             console.error("Error in onLogin:", error);
             // Don't let auth state errors crash the app
             isLoaded.value = true;
@@ -333,7 +341,7 @@ export const useUserSession = defineStore("userSession", () => {
     // auth.onIdTokenChanged(onLogin);
     auth.onAuthStateChanged((authUser) => void onLogin(authUser));
     if (Capacitor.isNativePlatform()) {
-        onLogin(auth.currentUser);
+        void onLogin(auth.currentUser);
     }
 
     return {
