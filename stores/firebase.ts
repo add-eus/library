@@ -3,7 +3,12 @@ import { Capacitor } from "@capacitor/core";
 import { getAnalytics, initializeAnalytics } from "firebase/analytics";
 import { initializeApp } from "firebase/app";
 import { ReCaptchaEnterpriseProvider, initializeAppCheck } from "firebase/app-check";
-import { connectAuthEmulator, getAuth, indexedDBLocalPersistence, initializeAuth } from "firebase/auth";
+import {
+    connectAuthEmulator,
+    getAuth,
+    indexedDBLocalPersistence,
+    initializeAuth,
+} from "firebase/auth";
 import { connectDatabaseEmulator, getDatabase } from "firebase/database";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
@@ -51,10 +56,9 @@ export function useFirebase() {
 
         if (Capacitor.isNativePlatform()) {
             window.providers.auth = initializeAuth(window.providers.app, {
-              persistence: indexedDBLocalPersistence
-            })
-        }
-        else {
+                persistence: indexedDBLocalPersistence,
+            });
+        } else {
             window.providers.auth = getAuth(window.providers.app);
         }
         window.providers.firestore = getFirestore(window.providers.app);
@@ -142,10 +146,67 @@ export function useFirebase() {
 
             // Optional argument. If true, the SDK automatically refreshes App Check
             // tokens as needed.
-            isTokenAutoRefreshEnabled: true
+            isTokenAutoRefreshEnabled: true,
         });
     }
-    return window.providers;
+
+    const cleanup = () => {
+        if (!window.providers) return;
+
+        let unsubscribeAuth;
+        if (window.providers.auth) {
+            unsubscribeAuth = window.providers.auth.onAuthStateChanged(() => {});
+            if (unsubscribeAuth) unsubscribeAuth();
+        }
+
+        if (window.providers.database) {
+            try {
+                window.providers.database.goOffline();
+                window.providers.database.app.delete();
+            } catch (e) {
+                console.debug("Error cleaning up database", e);
+            }
+        }
+
+        if (window.providers.firestore) {
+            try {
+                window.providers.firestore.terminate();
+            } catch (e) {
+                console.debug("Error cleaning up firestore", e);
+            }
+        }
+
+        if (window.providers.storage) {
+            try {
+                window.providers.storage.app.delete();
+            } catch (e) {
+                console.debug("Error cleaning up storage", e);
+            }
+        }
+
+        if (window.providers.analytics) {
+            try {
+                window.providers.analytics.app.delete();
+            } catch (e) {
+                console.debug("Error cleaning up analytics", e);
+            }
+        }
+
+        if (window.providers.performance) {
+            try {
+                window.providers.performance.app.delete();
+            } catch (e) {
+                console.debug("Error cleaning up performance", e);
+            }
+        }
+
+        window.providers = undefined;
+    };
+
+    return {
+        ...window.providers,
+        cleanup,
+    };
 }
 
 export const useFirestore = () => useFirebase().firestore;
