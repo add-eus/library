@@ -3,12 +3,7 @@ import { Capacitor } from "@capacitor/core";
 import { getAnalytics, initializeAnalytics } from "firebase/analytics";
 import { initializeApp } from "firebase/app";
 import { ReCaptchaEnterpriseProvider, initializeAppCheck } from "firebase/app-check";
-import {
-    connectAuthEmulator,
-    getAuth,
-    indexedDBLocalPersistence,
-    initializeAuth,
-} from "firebase/auth";
+import { connectAuthEmulator, getAuth, indexedDBLocalPersistence, initializeAuth } from "firebase/auth";
 import { connectDatabaseEmulator, getDatabase } from "firebase/database";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
@@ -18,7 +13,7 @@ import { connectStorageEmulator, getStorage } from "firebase/storage";
 
 if (Capacitor.isNativePlatform()) {
     window["gapi"] = {
-        load: () => Promise.resolve(),
+        load: (name) => Promise.resolve(),
         iframes: {
             getContext: () => {
                 return {
@@ -56,9 +51,10 @@ export function useFirebase() {
 
         if (Capacitor.isNativePlatform()) {
             window.providers.auth = initializeAuth(window.providers.app, {
-                persistence: indexedDBLocalPersistence,
-            });
-        } else {
+              persistence: indexedDBLocalPersistence
+            })
+        }
+        else {
             window.providers.auth = getAuth(window.providers.app);
         }
         window.providers.firestore = getFirestore(window.providers.app);
@@ -146,22 +142,10 @@ export function useFirebase() {
 
             // Optional argument. If true, the SDK automatically refreshes App Check
             // tokens as needed.
-            isTokenAutoRefreshEnabled: true,
+            isTokenAutoRefreshEnabled: true
         });
     }
-
-    const cleanup = () => {
-        Object.values(window.providers ?? {}).forEach((s) => {
-            try {
-                s.goOffline?.();
-                s.terminate?.();
-                s.app?.delete?.();
-            } catch {}
-        });
-        window.providers = undefined;
-    };
-
-    return { ...window.providers, cleanup };
+    return window.providers;
 }
 
 export const useFirestore = () => useFirebase().firestore;

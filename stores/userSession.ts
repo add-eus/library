@@ -23,7 +23,7 @@ import {
     signOut,
     updatePassword,
     updateProfile,
-    verifyPasswordResetCode,
+    verifyPasswordResetCode
 } from "firebase/auth";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { computed, ref } from "vue";
@@ -42,6 +42,7 @@ export const useUserSession = defineStore("userSession", () => {
 
     const auth = firebase.auth;
     const user = ref<User | null>(null);
+    
 
     const isLoggedIn = computed(() => {
         return user.value !== null;
@@ -55,6 +56,7 @@ export const useUserSession = defineStore("userSession", () => {
 
     async function login(username: string, password: string, hasRemember: boolean) {
         if (!Capacitor.isNativePlatform()) {
+
             if (hasRemember) await setPersistence(auth, browserLocalPersistence);
             else await setPersistence(auth, browserSessionPersistence);
         }
@@ -75,12 +77,7 @@ export const useUserSession = defineStore("userSession", () => {
 
     async function logout() {
         user.value = null;
-        onUserChangeCallbacks.length = 0;
-        loading.value = false;
-        isLoaded.value = false;
         await signOut(auth);
-        firebase.cleanup();
-        window.location.href = "/auth/login";
     }
 
     function update(data: { displayName?: string; photoUrl?: string }) {
@@ -91,7 +88,7 @@ export const useUserSession = defineStore("userSession", () => {
 
     async function loginOrRegisterWithPhoneNumber(
         phoneNumber: string,
-        recaptchaVerifier: ApplicationVerifier,
+        recaptchaVerifier: ApplicationVerifier
     ): Promise<ConfirmationResult> {
         return await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
     }
@@ -134,7 +131,7 @@ export const useUserSession = defineStore("userSession", () => {
 
     let permissionManagement: (user: User, permission: string) => boolean = () => false;
     function configurePermissionManagement(
-        callbackPermissionManagement: (user: User, permission: string) => boolean,
+        callbackPermissionManagement: (user: User, permission: string) => boolean
     ) {
         permissionManagement = callbackPermissionManagement;
     }
@@ -160,7 +157,7 @@ export const useUserSession = defineStore("userSession", () => {
             // the sign-in operation.
             // Get the email if available. This should be available if the user completes
             // the flow on the same device where they started it.
-
+            
             const email = params.get("email");
 
             if (email === null) {
@@ -181,46 +178,58 @@ export const useUserSession = defineStore("userSession", () => {
                 removeParamsURL = decodeURI(params.get("continueUrl") as string);
             }
 
-            void signInWithEmailLink(auth, email, window.location.href).finally(
-                async () => {
-                    hasMagicLink.value = false;
-                    try {
-                        await onLogin(auth.currentUser);
-                    } catch (error) {
-                        // eslint-disable-next-line no-console
-                        console.error(error);
-                    }
+            signInWithEmailLink(auth, email, window.location.href).finally(async () => {
+                hasMagicLink.value = false;
+                try {
+                    await onLogin(auth.currentUser);
+                } catch (error) {
+                    console.error(error);
+                }
 
-                    if (params.has("continueUrl")) window.location.href = removeParamsURL;
-                    else window.history.replaceState({}, document.title, removeParamsURL);
-                },
-            );
-        } else if (params.has("authToken")) {
+                if (params.has("continueUrl"))
+                    window.location.href = removeParamsURL;
+                else 
+                    window.history.replaceState(
+                        {},
+                        document.title,
+                        removeParamsURL
+                    );
+                
+       
+            });
+        }
+        else if (params.has('authToken')) {
             let removeParamsURL = window.location.pathname + "?" + params.toString();
             if (params.has("continueUrl")) {
                 removeParamsURL = decodeURI(params.get("continueUrl") as string);
             }
             const authToken = params.get("authToken") as string;
-            void signInWithCustomToken(auth, authToken).finally(async () => {
-                try {
-                    await onLogin(auth.currentUser);
-                } catch (error) {
-                    // eslint-disable-next-line no-console
-                    console.error(error);
-                }
-
-                if (params.has("continueUrl")) window.location.href = removeParamsURL;
-                else window.history.replaceState({}, document.title, removeParamsURL);
-            });
+            signInWithCustomToken(auth, authToken)
+                .finally(async () => {
+                    try {
+                        await onLogin(auth.currentUser);
+                    } catch (error) {
+                        console.error(error);
+                    }
+    
+                    if (params.has("continueUrl"))
+                        window.location.href = removeParamsURL;
+                    else 
+                        window.history.replaceState(
+                            {},
+                            document.title,
+                            removeParamsURL
+                        );
+                });
         }
     })();
 
     const onUserChangeCallbacks: ((
         authUser: User | null,
-        customAttributes: null | any,
+        customAttributes: null | any
     ) => Promise<void>)[] = [];
     async function onUserChange(
-        callback: (authUser: User | null, customAttributes: null | any) => Promise<void>,
+        callback: (authUser: User | null, customAttributes: null | any) => Promise<void>
     ) {
         if (isLoaded.value) {
             const authUser = auth.currentUser;
@@ -232,7 +241,7 @@ export const useUserSession = defineStore("userSession", () => {
                 const customAttributes = JSON.parse(
                     authUser.reloadUserInfo.customAttributes !== undefined
                         ? authUser.reloadUserInfo.customAttributes
-                        : "{}",
+                        : "{}"
                 );
                 await callback(authUser, customAttributes);
             } else {
@@ -250,7 +259,7 @@ export const useUserSession = defineStore("userSession", () => {
             await Promise.all(
                 onUserChangeCallbacks.map((onUserChangeCallback) => {
                     return onUserChangeCallback(authUser, null);
-                }),
+                })
             );
             return;
         }
@@ -260,14 +269,14 @@ export const useUserSession = defineStore("userSession", () => {
         const customAttributes = JSON.parse(
             authUser.reloadUserInfo.customAttributes !== undefined
                 ? authUser.reloadUserInfo.customAttributes
-                : "{}",
+                : "{}"
         );
         user.value = authUser;
 
         await Promise.all(
             onUserChangeCallbacks.map((onUserChangeCallback) => {
                 return onUserChangeCallback(authUser, customAttributes);
-            }),
+            })
         );
 
         if (!isLoaded.value) {
@@ -277,7 +286,7 @@ export const useUserSession = defineStore("userSession", () => {
     // auth.onIdTokenChanged(onLogin);
     auth.onAuthStateChanged((authUser) => void onLogin(authUser));
     if (Capacitor.isNativePlatform()) {
-        void onLogin(auth.currentUser);
+        onLogin(auth.currentUser);
     }
 
     return {
