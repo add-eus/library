@@ -75,10 +75,11 @@ export const useUserSession = defineStore("userSession", () => {
 
     async function logout() {
         user.value = null;
+        loading.value = false;
+        isLoaded.value = false;
         await signOut(auth).catch(() => {
             // Ignore signOut errors during logout
         });
-        firebase.cleanup();
     }
 
     function update(data: { displayName?: string; photoUrl?: string }) {
