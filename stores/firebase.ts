@@ -18,14 +18,13 @@ import { connectStorageEmulator, getStorage } from "firebase/storage";
 
 if (Capacitor.isNativePlatform()) {
     window["gapi"] = {
-        load: () => Promise.resolve(),
+        load: (name) => Promise.resolve(),
         iframes: {
             getContext: () => {
                 return {
                     iframe: {
                         contentWindow: {
                             postMessage: (message) => {
-                                // eslint-disable-next-line no-console
                                 console.log("gapi iframe message:", message);
                             },
                         },
@@ -152,69 +151,17 @@ export function useFirebase() {
     }
 
     const cleanup = () => {
-        if (typeof window.providers === "undefined" || window.providers === null) return;
-
-        let unsubscribeAuth: (() => void) | undefined;
-        if (typeof window.providers.auth !== "undefined" && window.providers.auth !== null) {
-            unsubscribeAuth = window.providers.auth.onAuthStateChanged(() => {
-                // Empty callback for cleanup
-            });
-            if (typeof unsubscribeAuth === "function") unsubscribeAuth();
-        }
-
-        if (typeof window.providers.database !== "undefined" && window.providers.database !== null) {
+        Object.values(window.providers ?? {}).forEach((s) => {
             try {
-                window.providers.database.goOffline();
-                window.providers.database.app.delete();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.debug("Error cleaning up database", e);
-            }
-        }
-
-        if (typeof window.providers.firestore !== "undefined" && window.providers.firestore !== null) {
-            try {
-                window.providers.firestore.terminate();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.debug("Error cleaning up firestore", e);
-            }
-        }
-
-        if (typeof window.providers.storage !== "undefined" && window.providers.storage !== null) {
-            try {
-                window.providers.storage.app.delete();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.debug("Error cleaning up storage", e);
-            }
-        }
-
-        if (typeof window.providers.analytics !== "undefined" && window.providers.analytics !== null) {
-            try {
-                window.providers.analytics.app.delete();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.debug("Error cleaning up analytics", e);
-            }
-        }
-
-        if (typeof window.providers.performance !== "undefined" && window.providers.performance !== null) {
-            try {
-                window.providers.performance.app.delete();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.debug("Error cleaning up performance", e);
-            }
-        }
-
+                s.goOffline?.();
+                s.terminate?.();
+                s.app?.delete?.();
+            } catch {}
+        });
         window.providers = undefined;
     };
 
-    return {
-        ...window.providers,
-        cleanup,
-    };
+    return { ...window.providers, cleanup };
 }
 
 export const useFirestore = () => useFirebase().firestore;
