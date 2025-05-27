@@ -18,7 +18,7 @@ import { connectStorageEmulator, getStorage } from "firebase/storage";
 
 if (Capacitor.isNativePlatform()) {
     window["gapi"] = {
-        load: (name) => Promise.resolve(),
+        load: () => Promise.resolve(),
         iframes: {
             getContext: () => {
                 return {
