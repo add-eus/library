@@ -79,7 +79,9 @@ export const useUserSession = defineStore("userSession", () => {
         user.value = null;
         loading.value = false;
         isLoaded.value = false;
-        await signOut(auth).catch(() => {});
+        await signOut(auth).catch(() => {
+            // Ignore signOut errors during logout
+        });
         firebase.cleanup();
         void router.push("/auth/login");
     }
@@ -182,11 +184,12 @@ export const useUserSession = defineStore("userSession", () => {
                 removeParamsURL = decodeURI(params.get("continueUrl") as string);
             }
 
-            signInWithEmailLink(auth, email, window.location.href).finally(async () => {
+            void signInWithEmailLink(auth, email, window.location.href).finally(async () => {
                 hasMagicLink.value = false;
                 try {
                     await onLogin(auth.currentUser);
                 } catch (error) {
+                    // eslint-disable-next-line no-console
                     console.error(error);
                 }
 
@@ -199,10 +202,11 @@ export const useUserSession = defineStore("userSession", () => {
                 removeParamsURL = decodeURI(params.get("continueUrl") as string);
             }
             const authToken = params.get("authToken") as string;
-            signInWithCustomToken(auth, authToken).finally(async () => {
+            void signInWithCustomToken(auth, authToken).finally(async () => {
                 try {
                     await onLogin(auth.currentUser);
                 } catch (error) {
+                    // eslint-disable-next-line no-console
                     console.error(error);
                 }
 
@@ -274,7 +278,7 @@ export const useUserSession = defineStore("userSession", () => {
     // auth.onIdTokenChanged(onLogin);
     auth.onAuthStateChanged((authUser) => void onLogin(authUser));
     if (Capacitor.isNativePlatform()) {
-        onLogin(auth.currentUser);
+        void onLogin(auth.currentUser);
     }
 
     return {
