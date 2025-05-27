@@ -79,6 +79,8 @@ export const useUserSession = defineStore("userSession", () => {
         loading.value = false;
         isLoaded.value = false;
         await signOut(auth);
+        firebase.cleanup();
+        window.location.href = "/auth/login";
     }
 
     function update(data: { displayName?: string; photoUrl?: string }) {
