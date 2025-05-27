@@ -27,7 +27,6 @@ import {
 } from "firebase/auth";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { useRouter } from "vue-router";
 
 import { until } from "@vueuse/core";
 import { useFirebase } from "addeus-common-library/stores/firebase";
@@ -40,7 +39,6 @@ interface User extends UserFirebase {
 
 export const useUserSession = defineStore("userSession", () => {
     const firebase = useFirebase();
-    const router = useRouter();
 
     const auth = firebase.auth;
     const user = ref<User | null>(null);
@@ -77,13 +75,10 @@ export const useUserSession = defineStore("userSession", () => {
 
     async function logout() {
         user.value = null;
-        loading.value = false;
-        isLoaded.value = false;
         await signOut(auth).catch(() => {
             // Ignore signOut errors during logout
         });
         firebase.cleanup();
-        void router.push("/auth/login");
     }
 
     function update(data: { displayName?: string; photoUrl?: string }) {
