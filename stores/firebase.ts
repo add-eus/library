@@ -152,17 +152,17 @@ export function useFirebase() {
     }
 
     const cleanup = () => {
-        if (!window.providers) return;
+        if (typeof window.providers === "undefined" || window.providers === null) return;
 
         let unsubscribeAuth: (() => void) | undefined;
-        if (window.providers.auth) {
+        if (typeof window.providers.auth !== "undefined" && window.providers.auth !== null) {
             unsubscribeAuth = window.providers.auth.onAuthStateChanged(() => {
                 // Empty callback for cleanup
             });
-            if (unsubscribeAuth) unsubscribeAuth();
+            if (typeof unsubscribeAuth === "function") unsubscribeAuth();
         }
 
-        if (window.providers.database) {
+        if (typeof window.providers.database !== "undefined" && window.providers.database !== null) {
             try {
                 window.providers.database.goOffline();
                 window.providers.database.app.delete();
@@ -172,7 +172,7 @@ export function useFirebase() {
             }
         }
 
-        if (window.providers.firestore) {
+        if (typeof window.providers.firestore !== "undefined" && window.providers.firestore !== null) {
             try {
                 window.providers.firestore.terminate();
             } catch (e) {
@@ -181,7 +181,7 @@ export function useFirebase() {
             }
         }
 
-        if (window.providers.storage) {
+        if (typeof window.providers.storage !== "undefined" && window.providers.storage !== null) {
             try {
                 window.providers.storage.app.delete();
             } catch (e) {
@@ -190,7 +190,7 @@ export function useFirebase() {
             }
         }
 
-        if (window.providers.analytics) {
+        if (typeof window.providers.analytics !== "undefined" && window.providers.analytics !== null) {
             try {
                 window.providers.analytics.app.delete();
             } catch (e) {
@@ -199,7 +199,7 @@ export function useFirebase() {
             }
         }
 
-        if (window.providers.performance) {
+        if (typeof window.providers.performance !== "undefined" && window.providers.performance !== null) {
             try {
                 window.providers.performance.app.delete();
             } catch (e) {
