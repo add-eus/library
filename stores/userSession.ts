@@ -75,9 +75,10 @@ export const useUserSession = defineStore("userSession", () => {
 
     async function logout() {
         user.value = null;
-        await signOut(auth).catch(() => {
-            // Ignore signOut errors during logout
-        });
+        onUserChangeCallbacks.length = 0;
+        loading.value = false;
+        isLoaded.value = false;
+        await signOut(auth);
     }
 
     function update(data: { displayName?: string; photoUrl?: string }) {
@@ -178,18 +179,20 @@ export const useUserSession = defineStore("userSession", () => {
                 removeParamsURL = decodeURI(params.get("continueUrl") as string);
             }
 
-            void signInWithEmailLink(auth, email, window.location.href).finally(async () => {
-                hasMagicLink.value = false;
-                try {
-                    await onLogin(auth.currentUser);
-                } catch (error) {
-                    // eslint-disable-next-line no-console
-                    console.error(error);
-                }
+            void signInWithEmailLink(auth, email, window.location.href).finally(
+                async () => {
+                    hasMagicLink.value = false;
+                    try {
+                        await onLogin(auth.currentUser);
+                    } catch (error) {
+                        // eslint-disable-next-line no-console
+                        console.error(error);
+                    }
 
-                if (params.has("continueUrl")) window.location.href = removeParamsURL;
-                else window.history.replaceState({}, document.title, removeParamsURL);
-            });
+                    if (params.has("continueUrl")) window.location.href = removeParamsURL;
+                    else window.history.replaceState({}, document.title, removeParamsURL);
+                },
+            );
         } else if (params.has("authToken")) {
             let removeParamsURL = window.location.pathname + "?" + params.toString();
             if (params.has("continueUrl")) {
