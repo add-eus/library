@@ -76,28 +76,9 @@ export const useUserSession = defineStore("userSession", () => {
     }
 
     async function logout() {
-        try {
-            // Clear user immediately to prevent UI issues
-            user.value = null;
-
-            // Clear all callbacks to prevent memory leaks
-            onUserChangeCallbacks.length = 0;
-
-            // Reset loading states
-            loading.value = false;
-            isLoaded.value = false;
-
-            // Sign out from Firebase with timeout protection
-            await Promise.race([
-                signOut(auth),
-                new Promise((_, reject) =>
-                    setTimeout(() => reject(new Error("Logout timeout")), 5000),
-                ),
-            ]);
-
-            // Clear any remaining references
-            auth.onAuthStateChanged(() => {});
-        } catch (error) {}
+        user.value = null;
+        await signOut(auth);
+        window.location.href = "/auth/login";
     }
 
     function update(data: { displayName?: string; photoUrl?: string }) {

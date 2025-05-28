@@ -145,64 +145,7 @@ export function useFirebase() {
             isTokenAutoRefreshEnabled: true
         });
     }
-
-    const cleanup = () => {
-        if (!window.providers) return;
-
-        let unsubscribeAuth;
-        if (window.providers.auth) {
-            unsubscribeAuth = window.providers.auth.onAuthStateChanged(() => {});
-            if (unsubscribeAuth) unsubscribeAuth();
-        }
-
-        if (window.providers.database) {
-            try {
-                window.providers.database.goOffline();
-                window.providers.database.app.delete();
-            } catch (e) {
-                console.debug("Error cleaning up database", e);
-            }
-        }
-
-        if (window.providers.firestore) {
-            try {
-                window.providers.firestore.terminate();
-            } catch (e) {
-                console.debug("Error cleaning up firestore", e);
-            }
-        }
-
-        if (window.providers.storage) {
-            try {
-                window.providers.storage.app.delete();
-            } catch (e) {
-                console.debug("Error cleaning up storage", e);
-            }
-        }
-
-        if (window.providers.analytics) {
-            try {
-                window.providers.analytics.app.delete();
-            } catch (e) {
-                console.debug("Error cleaning up analytics", e);
-            }
-        }
-
-        if (window.providers.performance) {
-            try {
-                window.providers.performance.app.delete();
-            } catch (e) {
-                console.debug("Error cleaning up performance", e);
-            }
-        }
-
-        window.providers = undefined;
-    };
-
-    return {
-        ...window.providers,
-        cleanup,
-    };
+    return window.providers;
 }
 
 export const useFirestore = () => useFirebase().firestore;
