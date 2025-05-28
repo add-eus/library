@@ -42,6 +42,7 @@ export const useUserSession = defineStore("userSession", () => {
 
     const auth = firebase.auth;
     const user = ref<User | null>(null);
+    
 
     const isLoggedIn = computed(() => {
         return user.value !== null;
@@ -55,6 +56,7 @@ export const useUserSession = defineStore("userSession", () => {
 
     async function login(username: string, password: string, hasRemember: boolean) {
         if (!Capacitor.isNativePlatform()) {
+
             if (hasRemember) await setPersistence(auth, browserLocalPersistence);
             else await setPersistence(auth, browserSessionPersistence);
         }
@@ -98,11 +100,6 @@ export const useUserSession = defineStore("userSession", () => {
             ]);
 
             console.log("Firebase signout completed");
-
-            // Force cleanup of Firebase listeners
-            if (firebase.cleanup) {
-                firebase.cleanup();
-            }
 
             // Clear any remaining references
             auth.onAuthStateChanged(() => {});
@@ -198,7 +195,7 @@ export const useUserSession = defineStore("userSession", () => {
             // the sign-in operation.
             // Get the email if available. This should be available if the user completes
             // the flow on the same device where they started it.
-
+            
             const email = params.get("email");
 
             if (email === null) {
@@ -247,12 +244,12 @@ export const useUserSession = defineStore("userSession", () => {
             const authToken = params.get("authToken") as string;
             signInWithCustomToken(auth, authToken)
                 .finally(async () => {
-                try {
-                    await onLogin(auth.currentUser);
-                } catch (error) {
-                    console.error(error);
-                }
-
+                    try {
+                        await onLogin(auth.currentUser);
+                    } catch (error) {
+                        console.error(error);
+                    }
+    
                     if (params.has("continueUrl"))
                         window.location.href = removeParamsURL;
                     else 
@@ -261,7 +258,7 @@ export const useUserSession = defineStore("userSession", () => {
                             document.title,
                             removeParamsURL
                         );
-            });
+                });
         }
     })();
 
@@ -294,33 +291,33 @@ export const useUserSession = defineStore("userSession", () => {
     }
 
     const onLogin = async function (authUser: User | null) {
-            if (hasMagicLink.value) return;
-            if (authUser === null) {
-                isLoaded.value = true;
-                await Promise.all(
+        if (hasMagicLink.value) return;
+        if (authUser === null) {
+            isLoaded.value = true;
+            await Promise.all(
                 onUserChangeCallbacks.map((onUserChangeCallback) => {
                     return onUserChangeCallback(authUser, null);
                 })
-                );
-                return;
-            }
-
-            if (authUser.reloadUserInfo === null) await reload(authUser);
-
-            const customAttributes = JSON.parse(
-                authUser.reloadUserInfo.customAttributes !== undefined
-                    ? authUser.reloadUserInfo.customAttributes
-                : "{}"
             );
-            user.value = authUser;
+            return;
+        }
 
-            await Promise.all(
+        if (authUser.reloadUserInfo === null) await reload(authUser);
+
+        const customAttributes = JSON.parse(
+            authUser.reloadUserInfo.customAttributes !== undefined
+                ? authUser.reloadUserInfo.customAttributes
+                : "{}"
+        );
+        user.value = authUser;
+
+        await Promise.all(
             onUserChangeCallbacks.map((onUserChangeCallback) => {
                 return onUserChangeCallback(authUser, customAttributes);
             })
-            );
+        );
 
-            if (!isLoaded.value) {
+        if (!isLoaded.value) {
             isLoaded.value = true;
         }
     };
