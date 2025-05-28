@@ -30,6 +30,27 @@ if (Capacitor.isNativePlatform()) {
     };
 }
 
+export const cleanup = async () => {
+    const providers = window.providers;
+    if (!providers) return;
+
+    providers.auth?.onAuthStateChanged(() => {})?.();
+
+    providers.database?.goOffline();
+
+    const tasks: Promise<any>[] = [];
+    providers.firestore && tasks.push(providers.firestore.terminate());
+    providers.storage && tasks.push(providers.storage.app.delete());
+    providers.analytics && tasks.push(providers.analytics.app.delete());
+    providers.performance && tasks.push(providers.performance.app.delete());
+    providers.functions && tasks.push(providers.functions.app.delete());
+    providers.check && tasks.push(providers.check.app.delete());
+
+    await Promise.all(tasks);
+
+    window.providers = undefined;
+};
+
 export function useFirebase() {
     if (window.providers === undefined) {
         window.providers = {};

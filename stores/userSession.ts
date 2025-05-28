@@ -42,7 +42,6 @@ export const useUserSession = defineStore("userSession", () => {
 
     const auth = firebase.auth;
     const user = ref<User | null>(null);
-    
 
     const isLoggedIn = computed(() => {
         return user.value !== null;
@@ -56,7 +55,6 @@ export const useUserSession = defineStore("userSession", () => {
 
     async function login(username: string, password: string, hasRemember: boolean) {
         if (!Capacitor.isNativePlatform()) {
-
             if (hasRemember) await setPersistence(auth, browserLocalPersistence);
             else await setPersistence(auth, browserSessionPersistence);
         }
@@ -76,8 +74,24 @@ export const useUserSession = defineStore("userSession", () => {
     }
 
     async function logout() {
+        const cleanup = firebase.cleanup;
         user.value = null;
-        await signOut(auth);
+
+        onUserChangeCallbacks.length = 0;
+
+        loading.value = false;
+        isLoaded.value = false;
+
+        await Promise.race([
+            signOut(auth),
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error("Logout timeout")), 5000),
+            ),
+        ]);
+
+        await cleanup();
+
+        window.location.href = "/auth/login";
     }
 
     function update(data: { displayName?: string; photoUrl?: string }) {
@@ -157,7 +171,7 @@ export const useUserSession = defineStore("userSession", () => {
             // the sign-in operation.
             // Get the email if available. This should be available if the user completes
             // the flow on the same device where they started it.
-            
+
             const email = params.get("email");
 
             if (email === null) {
@@ -206,12 +220,12 @@ export const useUserSession = defineStore("userSession", () => {
             const authToken = params.get("authToken") as string;
             signInWithCustomToken(auth, authToken)
                 .finally(async () => {
-                    try {
-                        await onLogin(auth.currentUser);
-                    } catch (error) {
-                        console.error(error);
-                    }
-    
+                try {
+                    await onLogin(auth.currentUser);
+                } catch (error) {
+                    console.error(error);
+                }
+
                     if (params.has("continueUrl"))
                         window.location.href = removeParamsURL;
                     else 
@@ -220,7 +234,7 @@ export const useUserSession = defineStore("userSession", () => {
                             document.title,
                             removeParamsURL
                         );
-                });
+            });
         }
     })();
 
