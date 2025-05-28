@@ -74,24 +74,51 @@ export const useUserSession = defineStore("userSession", () => {
     }
 
     async function logout() {
-        const cleanup = firebase.cleanup;
-        user.value = null;
+        try {
+            console.log("Starting logout process...");
 
-        onUserChangeCallbacks.length = 0;
+            // Clear user immediately to prevent UI issues
+            user.value = null;
 
-        loading.value = false;
-        isLoaded.value = false;
+            // Clear all callbacks to prevent memory leaks
+            onUserChangeCallbacks.length = 0;
 
-        await Promise.race([
-            signOut(auth),
-            new Promise((_, reject) =>
-                setTimeout(() => reject(new Error("Logout timeout")), 5000),
-            ),
-        ]);
+            // Reset loading states
+            loading.value = false;
+            isLoaded.value = false;
 
-        await cleanup();
+            console.log("Signing out from Firebase...");
 
-        window.location.href = "/auth/login";
+            // Sign out from Firebase with timeout protection
+            await Promise.race([
+                signOut(auth),
+                new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error("Logout timeout")), 5000),
+                ),
+            ]);
+
+            console.log("Firebase signout completed");
+
+            // Force cleanup of Firebase listeners
+            if (firebase.cleanup) {
+                firebase.cleanup();
+            }
+
+            // Clear any remaining references
+            auth.onAuthStateChanged(() => {});
+
+            console.log("Navigating to login...");
+
+            // Use window.location.href for more reliable navigation
+            window.location.href = "/auth/login";
+
+            console.log("Logout completed successfully");
+        } catch (error) {
+            console.error("Logout error:", error);
+
+            // Force navigation even on error
+            window.location.href = "/auth/login";
+        }
     }
 
     function update(data: { displayName?: string; photoUrl?: string }) {
@@ -267,33 +294,33 @@ export const useUserSession = defineStore("userSession", () => {
     }
 
     const onLogin = async function (authUser: User | null) {
-        if (hasMagicLink.value) return;
-        if (authUser === null) {
-            isLoaded.value = true;
-            await Promise.all(
+            if (hasMagicLink.value) return;
+            if (authUser === null) {
+                isLoaded.value = true;
+                await Promise.all(
                 onUserChangeCallbacks.map((onUserChangeCallback) => {
                     return onUserChangeCallback(authUser, null);
                 })
-            );
-            return;
-        }
+                );
+                return;
+            }
 
-        if (authUser.reloadUserInfo === null) await reload(authUser);
+            if (authUser.reloadUserInfo === null) await reload(authUser);
 
-        const customAttributes = JSON.parse(
-            authUser.reloadUserInfo.customAttributes !== undefined
-                ? authUser.reloadUserInfo.customAttributes
+            const customAttributes = JSON.parse(
+                authUser.reloadUserInfo.customAttributes !== undefined
+                    ? authUser.reloadUserInfo.customAttributes
                 : "{}"
-        );
-        user.value = authUser;
+            );
+            user.value = authUser;
 
-        await Promise.all(
+            await Promise.all(
             onUserChangeCallbacks.map((onUserChangeCallback) => {
                 return onUserChangeCallback(authUser, customAttributes);
             })
-        );
+            );
 
-        if (!isLoaded.value) {
+            if (!isLoaded.value) {
             isLoaded.value = true;
         }
     };

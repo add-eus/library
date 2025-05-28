@@ -30,27 +30,6 @@ if (Capacitor.isNativePlatform()) {
     };
 }
 
-export const cleanup = async () => {
-    const providers = window.providers;
-    if (!providers) return;
-
-    providers.auth?.onAuthStateChanged(() => {})?.();
-
-    providers.database?.goOffline();
-
-    const tasks: Promise<any>[] = [];
-    providers.firestore && tasks.push(providers.firestore.terminate());
-    providers.storage && tasks.push(providers.storage.app.delete());
-    providers.analytics && tasks.push(providers.analytics.app.delete());
-    providers.performance && tasks.push(providers.performance.app.delete());
-    providers.functions && tasks.push(providers.functions.app.delete());
-    providers.check && tasks.push(providers.check.app.delete());
-
-    await Promise.all(tasks);
-
-    window.providers = undefined;
-};
-
 export function useFirebase() {
     if (window.providers === undefined) {
         window.providers = {};
@@ -166,7 +145,64 @@ export function useFirebase() {
             isTokenAutoRefreshEnabled: true
         });
     }
-    return window.providers;
+
+    const cleanup = () => {
+        if (!window.providers) return;
+
+        let unsubscribeAuth;
+        if (window.providers.auth) {
+            unsubscribeAuth = window.providers.auth.onAuthStateChanged(() => {});
+            if (unsubscribeAuth) unsubscribeAuth();
+        }
+
+        if (window.providers.database) {
+            try {
+                window.providers.database.goOffline();
+                window.providers.database.app.delete();
+            } catch (e) {
+                console.debug("Error cleaning up database", e);
+            }
+        }
+
+        if (window.providers.firestore) {
+            try {
+                window.providers.firestore.terminate();
+            } catch (e) {
+                console.debug("Error cleaning up firestore", e);
+            }
+        }
+
+        if (window.providers.storage) {
+            try {
+                window.providers.storage.app.delete();
+            } catch (e) {
+                console.debug("Error cleaning up storage", e);
+            }
+        }
+
+        if (window.providers.analytics) {
+            try {
+                window.providers.analytics.app.delete();
+            } catch (e) {
+                console.debug("Error cleaning up analytics", e);
+            }
+        }
+
+        if (window.providers.performance) {
+            try {
+                window.providers.performance.app.delete();
+            } catch (e) {
+                console.debug("Error cleaning up performance", e);
+            }
+        }
+
+        window.providers = undefined;
+    };
+
+    return {
+        ...window.providers,
+        cleanup,
+    };
 }
 
 export const useFirestore = () => useFirebase().firestore;
