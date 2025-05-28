@@ -78,6 +78,7 @@ export const useUserSession = defineStore("userSession", () => {
     async function logout() {
         user.value = null;
         await signOut(auth);
+        window.location.href = "/auth/login";
     }
 
     function update(data: { displayName?: string; photoUrl?: string }) {
