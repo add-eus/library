@@ -77,8 +77,6 @@ export const useUserSession = defineStore("userSession", () => {
 
     async function logout() {
         try {
-            console.log("Starting logout process...");
-
             // Clear user immediately to prevent UI issues
             user.value = null;
 
@@ -89,8 +87,6 @@ export const useUserSession = defineStore("userSession", () => {
             loading.value = false;
             isLoaded.value = false;
 
-            console.log("Signing out from Firebase...");
-
             // Sign out from Firebase with timeout protection
             await Promise.race([
                 signOut(auth),
@@ -99,23 +95,9 @@ export const useUserSession = defineStore("userSession", () => {
                 ),
             ]);
 
-            console.log("Firebase signout completed");
-
             // Clear any remaining references
             auth.onAuthStateChanged(() => {});
-
-            console.log("Navigating to login...");
-
-            // Use window.location.href for more reliable navigation
-            window.location.href = "/auth/login";
-
-            console.log("Logout completed successfully");
-        } catch (error) {
-            console.error("Logout error:", error);
-
-            // Force navigation even on error
-            window.location.href = "/auth/login";
-        }
+        } catch (error) {}
     }
 
     function update(data: { displayName?: string; photoUrl?: string }) {
