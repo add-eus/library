@@ -75,8 +75,8 @@ export const useStorage = defineStore("Storage", () => {
     }
 
     async function getMetadata(url: string) {
-         if (cachedMetadata[path] !== undefined) {
-            return cachedMetadata[path];
+         if (cachedMetadata[url] !== undefined) {
+            return cachedMetadata[url];
         }
         const refFile = refStorage(storage, url);
         cachedMetadata[url] = getMetadataStorage(refFile);
