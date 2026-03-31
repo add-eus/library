@@ -114,15 +114,6 @@ module.exports.define = function (config = {}) {
                         "service-worker": rootDir + "/workers/index.ts",
                     },
                     output: {
-                        // Only split vue/bulma — firebase has circular deps
-                        manualChunks(id) {
-                            if (id.includes("node_modules")) {
-                                if (id.includes("vue") || id.includes("@vue"))
-                                    return "vendor-vue";
-                                if (id.includes("bulma"))
-                                    return "vendor-bulma";
-                            }
-                        },
                         entryFileNames: (assetInfo) => {
                             return assetInfo.name === "service-worker"
                                 ? DEV
