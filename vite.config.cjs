@@ -109,17 +109,10 @@ module.exports.define = function (config = {}) {
                 //chunkSizeWarningLimit: 3000,
                 rollupOptions: {
                     maxParallelFileOps: Math.max(1, cpus().length - 1),
-                    manualChunks(id) {
-                        if (id.includes("node_modules")) {
-                            if (id.includes("firebase") || id.includes("@firebase")) {
-                                return "firebase";
-                            }
-                            if (id.includes("bulma")) {
-                                return "bulma";
-                            }
-                            return "vendor";
-                        }
-                    },
+                    // manualChunks disabled: firebase modules have circular
+                    // dependencies that cause "Cannot access X before initialization"
+                    // when forced into a separate chunk.
+                    // manualChunks(id) { ... },
                     input: {
                         app: rootDir + "/index.html",
                         "service-worker": rootDir + "/workers/index.ts",
