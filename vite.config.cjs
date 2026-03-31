@@ -397,42 +397,53 @@ module.exports.define = function (config = {}) {
                     : undefined,
 
                 /**
-                 * rollup-plugin-purgecss plugin is responsible of purging css rules
-                 * that are not used in the bundle
-                 *
-                 * @see https://github.com/FullHuman/purgecss/tree/main/packages/rollup-plugin-purgecss
+                 * PurgeCSS via Vite generateBundle hook.
+                 * rollup-plugin-purgecss does not work with Vite's CSS pipeline,
+                 * so we run PurgeCSS directly on emitted CSS assets.
                  */
-                !DEV &&
-                    purgecss({
-                        content: [
+                {
+                    name: "vite-plugin-purgecss",
+                    enforce: "post",
+                    apply: "build",
+                    async closeBundle() {
+                        if (DEV) return;
+                        const fs = require("fs");
+                        const glob = require("fast-glob");
+                        const { PurgeCSS } = require("purgecss");
+                        const cssFiles = glob.sync(path.join(outDir, "**/*.css"));
+                        if (cssFiles.length === 0) return;
+                        console.log(`\n  PurgeCSS: processing ${cssFiles.length} CSS files...`);
+                        const contentPaths = [
                             path.join(rootDir, "**/*.vue"),
                             path.join(rootDir, "**/*.ts"),
                             path.join(__dirname, "**/*.vue"),
                             path.join(__dirname, "**/*.ts"),
-                        ],
-                        variables: false,
-                        safelist: {
-                            standard: [
-                                /(autv|lnil|lnir|fas?)/,
-                                /-(leave|enter|appear)(|-(to|from|active))$/,
-                                /^(?!(|.*?:)cursor-move).+-move$/,
-                                /^router-link(|-exact)-active$/,
-                                /data-v-.*/,
-                            ],
-                        },
-                        defaultExtractor(content) {
-                            const contentWithoutStyleBlocks = content.replace(
-                                /<style[^]+?<\/style>/gi,
-                                "",
-                            );
-                            return (
-                                contentWithoutStyleBlocks.match(
-                                    /[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g,
-                                ) || []
-                            );
-                        },
-                        output: undefined,
-                    }),
+                        ];
+                        const results = await new PurgeCSS().purge({
+                            content: contentPaths,
+                            css: cssFiles,
+                            safelist: {
+                                standard: [
+                                    /(autv|lnil|lnir|fas?)/,
+                                    /-(leave|enter|appear)(|-(to|from|active))$/,
+                                    /^(?!(|.*?:)cursor-move).+-move$/,
+                                    /^router-link(|-exact)-active$/,
+                                    /data-v-.*/,
+                                ],
+                            },
+                            defaultExtractor(content) {
+                                const stripped = content.replace(/<style[^]+?<\/style>/gi, "");
+                                return stripped.match(/[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g) || [];
+                            },
+                        });
+                        for (const result of results) {
+                            const before = fs.statSync(result.file).size;
+                            fs.writeFileSync(result.file, result.css);
+                            const after = result.css.length;
+                            console.log(`  PurgeCSS: ${path.basename(result.file)} ${(before/1024).toFixed(0)}KB → ${(after/1024).toFixed(0)}KB (-${(100 - after/before*100).toFixed(0)}%)`);
+                        }
+                    },
+                },
 
                 /**
                  * vite-imagetools plugin allow to perform transformation (blur, resize, crop, etc)
