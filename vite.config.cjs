@@ -109,15 +109,20 @@ module.exports.define = function (config = {}) {
                 //chunkSizeWarningLimit: 3000,
                 rollupOptions: {
                     maxParallelFileOps: Math.max(1, cpus().length - 1),
-                    // manualChunks disabled: firebase modules have circular
-                    // dependencies that cause "Cannot access X before initialization"
-                    // when forced into a separate chunk.
-                    // manualChunks(id) { ... },
                     input: {
                         app: rootDir + "/index.html",
                         "service-worker": rootDir + "/workers/index.ts",
                     },
                     output: {
+                        // Only split vue/bulma — firebase has circular deps
+                        manualChunks(id) {
+                            if (id.includes("node_modules")) {
+                                if (id.includes("vue") || id.includes("@vue"))
+                                    return "vendor-vue";
+                                if (id.includes("bulma"))
+                                    return "vendor-bulma";
+                            }
+                        },
                         entryFileNames: (assetInfo) => {
                             return assetInfo.name === "service-worker"
                                 ? DEV
@@ -330,7 +335,7 @@ module.exports.define = function (config = {}) {
                     // Custom fonts.
                     custom: {
                         families: config.customFonts,
-                        display: "auto",
+                        display: "swap",
                         preload: true,
                         prefetch: false,
                         injectTo: "head-prepend",
@@ -411,6 +416,8 @@ module.exports.define = function (config = {}) {
                         content: [
                             path.join(rootDir, "**/*.vue"),
                             path.join(rootDir, "**/*.ts"),
+                            path.join(__dirname, "**/*.vue"),
+                            path.join(__dirname, "**/*.ts"),
                         ],
                         variables: false,
                         safelist: {
