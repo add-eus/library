@@ -146,6 +146,7 @@ defineExpose({
         "></VIconButton>
         <div class="cursors" v-if="!hideDots">
             <button v-for="(page, index) in pages" :key="index" class="cursor" :class="{ active: index == cursor }"
+                :aria-label="`Go to slide ${index + 1}`"
                 @keydown="
                     cursor = index;
                 pause();
@@ -199,8 +200,8 @@ defineExpose({
         padding: 10px 0;
 
         .cursor {
-            height: 12px;
-            width: 12px;
+            height: 24px;
+            width: 24px;
             border: none;
             border-radius: 50%;
             background-color: $white-ter;
