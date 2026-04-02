@@ -429,11 +429,11 @@ module.exports.define = function (config = {}) {
                                     /^(?!(|.*?:)cursor-move).+-move$/,
                                     /^router-link(|-exact)-active$/,
                                     /data-v-.*/,
+                                    /^fc-/,
                                 ],
                             },
                             defaultExtractor(content) {
-                                const stripped = content.replace(/<style[^]+?<\/style>/gi, "");
-                                return stripped.match(/[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g) || [];
+                                return content.match(/[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g) || [];
                             },
                         });
                         for (const result of results) {
