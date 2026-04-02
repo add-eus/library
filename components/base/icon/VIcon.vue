@@ -28,7 +28,7 @@ const styles = getIconStyles(computed(() => props.color));
 <template>
     <i class="icon" :class="classes" :style="styles">
         <template v-if="isImage">
-            <img :src="props.icon" :alt="props.icon" />
+            <img :src="props.icon" :alt="props.icon" :width="size" :height="size" />
         </template>
         <template v-else>
             {{ props.icon }}
