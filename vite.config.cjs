@@ -429,6 +429,7 @@ module.exports.define = function (config = {}) {
                                     /^(?!(|.*?:)cursor-move).+-move$/,
                                     /^router-link(|-exact)-active$/,
                                     /data-v-.*/,
+                                    /^fc-/,
                                 ],
                             },
                             defaultExtractor(content) {
