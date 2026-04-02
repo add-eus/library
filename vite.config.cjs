@@ -433,8 +433,7 @@ module.exports.define = function (config = {}) {
                                 ],
                             },
                             defaultExtractor(content) {
-                                const stripped = content.replace(/<style[^]+?<\/style>/gi, "");
-                                return stripped.match(/[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g) || [];
+                                return content.match(/[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g) || [];
                             },
                         });
                         for (const result of results) {
