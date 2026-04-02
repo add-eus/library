@@ -430,6 +430,8 @@ module.exports.define = function (config = {}) {
                                     /^router-link(|-exact)-active$/,
                                     /data-v-.*/,
                                     /^fc-/,
+                                    /^multiselect/,
+                                    /^slider/,
                                 ],
                             },
                             defaultExtractor(content) {
