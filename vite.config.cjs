@@ -432,6 +432,7 @@ module.exports.define = function (config = {}) {
                                     /^fc-/,
                                     /^multiselect/,
                                     /^slider/,
+                                    /^has-background-/,
                                 ],
                             },
                             defaultExtractor(content) {
