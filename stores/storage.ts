@@ -2,6 +2,7 @@ import { acceptHMRUpdate, defineStore } from "pinia";
 
 import {
     deleteObject,
+    FullMetadata,
     getBlob,
     getDownloadURL,
     getMetadata as getMetadataStorage,
@@ -14,7 +15,7 @@ import { useFirebase } from "./firebase";
 
 export const useStorage = defineStore("Storage", () => {
     const storage = useFirebase().storage;
-    const cached = {};
+    const cached = {}, cachedMetadata: {[key: string]: Promise<FullMetadata>} = {};
 
     const upload = async (file: File | Blob, path: string, fileName?: string) => {
         const pathName = path + "/" + (fileName ?? uuid());
@@ -74,8 +75,13 @@ export const useStorage = defineStore("Storage", () => {
     }
 
     async function getMetadata(url: string) {
+         if (cachedMetadata[url] !== undefined) {
+            return cachedMetadata[url];
+        }
         const refFile = refStorage(storage, url);
-        return getMetadataStorage(refFile);
+        cachedMetadata[url] = getMetadataStorage(refFile);
+
+        return cachedMetadata[url];
     }
 
     return {
